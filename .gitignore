@@ -1,5 +1,5 @@
 /assets/uploads/*
-/assets/landlord/uploads/media-uploader
+/assets/landlord/uploads/*
 /assets/tenant/uploads/*
 /.idea
 /robots.txt
