@@ -19,7 +19,15 @@
                         <form action="{{route('landlord.admin.price.plan.settings')}}" method="POST" enctype="multipart/form-data">
                           @csrf
                             @php
-                                $fileds = [1 =>'One Day', 2 => 'Two Day', 3 => 'Three Day', 4 => 'Four Day', 5 => 'Five Day', 6 => 'Six Day', 7=> 'Seven Day'];
+                                $fileds = [
+                                        1 => __('One Day'),
+                                        2 => __('Two Day'),
+                                        3 => __('Three Day'),
+                                        4 => __('Four Day'),
+                                        5 => __('Five Day'),
+                                        6 => __('Six Day'),
+                                        7 => __('Seven Day')
+                                    ];
                             @endphp
                                <div class="form-group  mt-3">
                                    <label for="site_logo">{{__('Select How many days earlier expiration mail alert will be send')}}</label>
@@ -42,19 +50,34 @@
 
                             <div class="form-group">
                                 @php
-                                    $themes = \App\Models\Themes::where('status', 1)->get();
+                                    $themes = getAllThemeData();
                                 @endphp
                                 <label for="default-theme">{{__('Default Theme')}}</label>
                                 <select name="default_theme" id="default-theme" class="form-control">
                                     @foreach($themes as $theme)
-                                        <option value="{{$theme->slug}}" {{get_static_option('default_theme') == $theme->slug ? 'selected' : ''}}>{{$theme->title}}</option>
+                                        @php
+                                            $custom_theme_name = get_static_option_central($theme->slug.'_theme_name');
+                                        @endphp
+                                        <option value="{{$theme->slug}}" {{get_static_option('default_theme') == $theme->slug ? 'selected' : ''}}>{{ !empty($custom_theme_name) ? $custom_theme_name : $theme->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                @php
+                                    $languages = \App\Models\Language::all();
+                                @endphp
+                                <label for="default-language">{{__('Default Languages')}}</label>
+                                <select name="default_language" id="default-language" class="form-control">
+                                    @foreach($languages as $language)
+                                        <option value="{{$language->slug}}" {{get_static_option_central('default_language') == $language->slug ? 'selected' : ''}}>{{ $language->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
                             <div class="form-group">
                                 <label for="zero-plan-limit">{{__('Zero Price Plan Purchase Limit (Free Plan)')}}</label>
-                                <input class="form-control" type="number" name="zero_plan_limit" id="zero-plan-limit" placeholder="Example: 1" value="{{get_static_option('zero_plan_limit')}}">
+                                <input class="form-control" type="number" name="zero_plan_limit" id="zero-plan-limit" placeholder="{{__('Example: 1')}}" value="{{get_static_option('zero_plan_limit')}}">
                                 <small>{{__('Purchase limitation for a price plan which price is zero')}}</small>
                             </div>
 

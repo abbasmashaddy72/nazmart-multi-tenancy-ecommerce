@@ -2,9 +2,9 @@
 
 namespace Modules\MobileApp\Http\Controllers;
 
-use App\Campaign\Campaign;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Campaign\Entities\Campaign;
 use Modules\MobileApp\Entities\MobileCampaign;
 
 class MobileCampaignController extends Controller
@@ -25,6 +25,6 @@ class MobileCampaignController extends Controller
 
         MobileCampaign::updateOrCreate(['id' => 1] ,['type' => '1', 'campaign_id' => $data['campaign']]);
 
-        return back()->with(["type" => 'success' , 'msg' => "Successfully campaign updated"]);
+        return back()->with(["type" => 'success' , 'msg' => __("Successfully campaign updated")]);
     }
 }

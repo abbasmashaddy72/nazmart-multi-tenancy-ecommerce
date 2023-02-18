@@ -14,11 +14,14 @@ class CampaignResource extends JsonResource
      */
     public function toArray($request)
     {
+        $image = get_attachment_image_by_id($this->image);
+        $img_url = !empty($image) ? $image['img_url'] : '';
+
         return [
             "id"=> $this->id,
             "title"=> $this->title,
             "subtitle"=> $this->subtitle,
-            "image"=> render_image($this->campaignImage,render_type: 'path'),
+            "image"=> $img_url,
             "start_date"=> $this->start_date,
             "end_date"=> $this->end_date,
         ];

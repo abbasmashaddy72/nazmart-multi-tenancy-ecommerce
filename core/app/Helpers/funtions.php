@@ -1545,6 +1545,16 @@ function externalAddonImagepath($moduleName)
     return 'core/Modules/'.$moduleName.'/assets/addon-image/'; // 'assets/plugins/PageBuilder/images'
 }
 
+function getSelectedThemeSlug()
+{
+    return \App\Facades\ThemeDataFacade::getSelectedThemeSlug();
+}
+
+function getSelectedThemeData()
+{
+    return \App\Facades\ThemeDataFacade::getSelectedThemeData();
+}
+
 function getAllThemeDataForAdmin()
 {
     return \App\Facades\ThemeDataFacade::getAllThemeDataForAdmin();
@@ -1568,4 +1578,9 @@ function renderPrimaryThemeScreenshot($theme_slug)
 function renderFooterHookBladeFile()
 {
     return \App\Facades\ThemeDataFacade::renderFooterHookBladeFile();
+}
+
+function theme_custom_name($theme_data)
+{
+    return !empty(get_static_option_central($theme_data->slug.'_theme_name')) ? get_static_option_central($theme_data->slug.'_theme_name') : $theme_data->name;
 }

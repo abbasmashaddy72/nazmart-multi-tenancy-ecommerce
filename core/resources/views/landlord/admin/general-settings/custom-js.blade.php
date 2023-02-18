@@ -16,7 +16,7 @@
                         <x-flash-msg/>
                         <h4 class="header-title mb-4">{{__("Custom Js")}}</h4>
                         <p class="margin-bottom-30">{{__('you can only add js code here. no other code work here.')}}</p>
-                        <form action="{{route(route_prefix().'admin.general.custom-header.js.settings')}}" method="POST" enctype="multipart/form-data">
+                        <form action="{{route(route_prefix().'admin.general.custom.js.settings')}}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group">
                                 <textarea name="custom_js_area" id="custom_js_area" cols="30" rows="10">{{$custom_js}}</textarea>

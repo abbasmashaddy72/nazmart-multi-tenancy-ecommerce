@@ -44,8 +44,8 @@ Route::middleware([
 
     /* tenant admin login */
     Route::middleware('package_expire')->controller(\App\Http\Controllers\Landlord\Admin\Auth\AdminLoginController::class)->prefix('admin')->group(function (){
-        Route::get('/','login_form')->name('tenant.admin.login');
-        Route::post('/','login_admin');
+        Route::get('/','login_form')->name('tenant.admin.login')->withoutMiddleware('maintenance_mode');
+        Route::post('/','login_admin')->withoutMiddleware('maintenance_mode');
         Route::post('/logout','logout_admin')->name('tenant.admin.logout');
         Route::get('/restricted', 'restricted')->name('tenant.admin.restricted');
 

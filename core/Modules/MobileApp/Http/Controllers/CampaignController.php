@@ -2,10 +2,9 @@
 
 namespace Modules\MobileApp\Http\Controllers;
 
-use App\Campaign\Campaign;
-
 use Carbon\Carbon;
 use Illuminate\Routing\Controller;
+use Modules\Campaign\Entities\Campaign;
 use Modules\MobileApp\Http\Resources\Api\CampaignResource;
 
 class CampaignController extends Controller

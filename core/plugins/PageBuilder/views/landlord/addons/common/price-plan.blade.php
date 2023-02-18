@@ -19,6 +19,16 @@
     .all-features a:hover{
         border-bottom: 1px solid var(--main-color-one);
     }
+    .plan-description {
+        background: var(--section-bg-1);
+    }
+    .plan-description p{
+        text-align: justify;
+        hyphens: none;
+    }
+    .single-price:hover .plan-description {
+        background: #ffffff;
+    }
 </style>
 
 <section class="pricing-area section-bg-1" data-padding-top="{{$data['padding_top']}}"
@@ -140,7 +150,14 @@
                                             </li>
                                         @endif
                                 </ul>
-                                <div class="btn-wrapper text-center all-features mt-4 mt-lg-5">
+
+                                @if(!empty($price_plan_item->description))
+                                    <div class="mt-4 p-3 rounded plan-description">
+                                        <p>{{$price_plan_item->description}}</p>
+                                    </div>
+                                @endif
+
+                                <div class="btn-wrapper text-center all-features mt-4 mt-lg-4">
                                     <a href="{{route('landlord.frontend.plan.order',$price_plan_item->id)}}">{{__('View All Features')}}</a>
                                 </div>
                                 <div class="btn-wrapper mt-4 mt-lg-4">

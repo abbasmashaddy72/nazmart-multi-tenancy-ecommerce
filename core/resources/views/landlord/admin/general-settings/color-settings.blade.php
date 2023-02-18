@@ -45,13 +45,11 @@
 
                     @if(tenant())
                         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3">
-                            @include('landlord.admin.general-settings.tenant.theme.color-settings-theme-01', ['suffix' => 'theme_one'])
-                            @include('landlord.admin.general-settings.tenant.theme.color-settings-theme-02', ['suffix' => 'theme_two'])
-                            @include('landlord.admin.general-settings.tenant.theme.color-settings-theme-03', ['suffix' => 'theme_three'])
+                            @include('landlord.admin.general-settings.tenant.theme.color-settings')
                         </div>
                     @endif
 
-                    <button type="submit" class="btn btn-gradient-primary me-2">{{__('Save Changes')}}</button>
+                    <button type="submit" class="btn btn-gradient-primary mt-4 me-2">{{__('Save Changes')}}</button>
                 </form>
             </div>
         </div>

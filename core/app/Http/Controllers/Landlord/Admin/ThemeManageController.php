@@ -41,7 +41,7 @@ class ThemeManageController extends Controller
             }
         }
 
-        $status = $theme_file->status ? 'inactive' : 'active';
+        $status = $theme_file->status ? __('Inactive') : __('Active');
         return response()->json([
             'status' => $status,
             'msg' => 'The theme is '.$status.' successfully'

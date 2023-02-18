@@ -11,7 +11,7 @@ class StoreMobileIntroRequest extends FormRequest
         return [
             "title" => "required",
             "description" => "required",
-            "image_id" => "required|exists:media_uploads,id"
+            "image_id" => "required|exists:media_uploaders,id"
         ];
     }
 
