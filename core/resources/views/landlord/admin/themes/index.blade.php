@@ -212,7 +212,6 @@
                 modal.find('.modal-body textarea[name=theme_description]').text(description);
                 modal.find('.modal-body input[name=theme_url]').val(theme_url);
 
-                console.log(theme_image, theme_image_id);
                 if (theme_image_id != '') {
                     modal.find('.media-upload-btn-wrapper .img-wrap').html('<div class="attachment-preview"><div class="thumbnail"><div class="centered">' +
                         '<img class="avatar user-thumb" src="' + theme_image + '" > </div></div></div>');
@@ -248,7 +247,7 @@
                     }
                 },
                 success: function (data) {
-                    var success = $('.themeInfo_' + id + '');
+                    var success = $('.themeInfo_' + slug + '');
                     var modal = $('#theme-modal');
 
                     if (data.status == true) {

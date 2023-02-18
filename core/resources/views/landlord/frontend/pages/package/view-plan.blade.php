@@ -256,9 +256,9 @@
                                 $theme_data = getIndividualThemeDetails($theme_slug);
                                 $theme_image = renderPrimaryThemeScreenshot($theme_slug);
 
-                                $theme_custom_name = get_static_option($theme_data['slug'].'_theme_name');
-                                $theme_custom_url = get_static_option($theme_data['slug'].'_theme_url');
-                                $theme_custom_image = get_static_option($theme_data['slug'].'_theme_image');
+                                $theme_custom_name = get_static_option_central($theme_data['slug'].'_theme_name');
+                                $theme_custom_url = get_static_option_central($theme_data['slug'].'_theme_url');
+                                $theme_custom_image = get_static_option_central($theme_data['slug'].'_theme_image');
                             @endphp
 
                             <div class="col-3" style="position: relative">

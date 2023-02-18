@@ -190,6 +190,7 @@ class PricePlanController extends Controller
             'package_expire_notify_mail_days'=> 'required|array',
             'package_expire_notify_mail_days.*'=> 'required|max:7',
             'default_theme'=> 'required',
+            'default_language'=> 'required',
             'zero_plan_limit' => 'required|integer|min:1',
             'tenant_admin_default_username' => 'nullable|min:3',
             'tenant_admin_default_password' => 'nullable|min:6'
@@ -198,6 +199,7 @@ class PricePlanController extends Controller
         update_static_option('package_expire_notify_mail_days',json_encode($request->package_expire_notify_mail_days));
         update_static_option('default_theme', $request->default_theme);
         update_static_option('zero_plan_limit', $request->zero_plan_limit);
+        update_static_option_central('default_language', $request->default_language);
         update_static_option_central('tenant_admin_default_username', $request->tenant_admin_default_username);
         update_static_option_central('tenant_admin_default_password', $request->tenant_admin_default_password);
 

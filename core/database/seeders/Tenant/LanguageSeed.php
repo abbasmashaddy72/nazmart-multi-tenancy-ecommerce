@@ -17,7 +17,7 @@ class LanguageSeed extends Seeder
             'direction' => 0,
             'slug' => 'en_US',
             'status' => 1,
-            'default' => 1
+            'default' => 0
         ]);
 
         Language::create([
@@ -26,6 +26,10 @@ class LanguageSeed extends Seeder
             'slug' => 'ar',
             'status' => 1,
             'default' => 0
+        ]);
+
+        Language::where('slug', get_static_option_central('default_language') ?? 'en_US')->update([
+            'default' => 1
         ]);
     }
 }

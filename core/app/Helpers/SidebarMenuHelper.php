@@ -1269,6 +1269,34 @@ class SidebarMenuHelper
             'parent' => 'mobile-app-settings-menu-items',
             'permissions' => null,
         ]);
+
+        $menu_instance->add_menu_item('mobile-intro-all', [
+            'route' => 'tenant.admin.mobile.intro.all',
+            'label' => __('Mobile Intro'),
+            'parent' => 'mobile-app-settings-menu-items',
+            'permissions' => null,
+        ]);
+
+        $menu_instance->add_menu_item('mobile-campaign-all', [
+            'route' => 'tenant.admin.mobile.campaign.create',
+            'label' => __('Mobile Campaign'),
+            'parent' => 'mobile-app-settings-menu-items',
+            'permissions' => null,
+        ]);
+
+        $menu_instance->add_menu_item('mobile-tac-settings', [
+            'route' => 'tenant.admin.mobile.settings.terms_and_condition',
+            'label' => __('Mobile Terms Condition'),
+            'parent' => 'mobile-app-settings-menu-items',
+            'permissions' => null,
+        ]);
+
+        $menu_instance->add_menu_item('mobile-pap-settings', [
+            'route' => 'tenant.admin.mobile.settings.privacy.policy',
+            'label' => __('Mobile Privacy Policy'),
+            'parent' => 'mobile-app-settings-menu-items',
+            'permissions' => null,
+        ]);
     }
 
     private function tenant_appearance_settings_menus(MenuWithPermission $menu_instance): void

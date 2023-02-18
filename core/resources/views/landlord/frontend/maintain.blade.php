@@ -134,6 +134,10 @@
             color: #fff
         }
 
+        .logo-wrap .maintenance_logo{
+            width: 100%;
+        }
+
         @media screen and (max-width: 991px) {
             .maintenance-page-content-area {
                 width: 100%;
@@ -153,6 +157,22 @@
 
             .counterdown-wrap.event-page #event_countdown {
                 flex-wrap: wrap;
+            }
+        }
+
+        @media only screen and (max-width: 768px){
+            .maintenance-page-content-area {
+                height: 100%;
+                display: flex;
+            }
+
+            body,html {
+                height: 100%;
+                width: 100%;
+            }
+
+            .maintenance-page-content-area .logo-wrap img {
+                max-width: 180px;
             }
         }
     </style>
@@ -180,9 +200,15 @@
             <div class="col-lg-8">
                 <div class="maintenance-page-inner-content">
                     <div class="page-content-wrap">
-                        <div class="logo-wrap">
-                            {!! render_image_markup_by_attachment_id(get_static_option('maintenance_logo')) !!}
+                        <div class="logo-wrap text-center">
+                            {!! render_image_markup_by_attachment_id(get_static_option('maintenance_logo'), 'maintenance_logo') !!}
                         </div>
+
+                        @php
+                            $date = get_static_option('mentenance_back_date');
+                            $date_time = !empty($date) ? \Carbon\Carbon::parse($date) : null;
+                        @endphp
+                        <h2 class="maintain-title">{{!empty($date_time) ? $date_time->diffForHumans() : ''}}</h2>
                         <h2 class="maintain-title">{{get_static_option('maintains_page_title')}}</h2>
 
                         <p>{{get_static_option('maintains_page_description')}}</p>
@@ -202,6 +228,24 @@
 <script src="{{asset('assets/frontend/js/jquery-migrate-3.4.0.min.js')}}"></script>
 <script src="{{asset('assets/frontend/js/bootstrap.bundle.min.js')}}"></script>
 <script src="{{asset('assets/common/js/countdown.jquery.js')}}"></script>
+
+@php
+    $file_name = 'assets/landlord/frontend/js/dynamic-script.js';
+    if (tenant())
+    {
+        $file_name = 'assets/tenant/frontend/js/'.tenant()->id.'/dynamic-script.js';
+    }
+    $file = file_exists($file_name);
+@endphp
+@if($file)
+    <script src="{{global_asset($file_name)}}"></script>
+@endif
+
+{!! get_static_option('site_third_party_tracking_code') !!}
+{!! get_static_option('site_google_analytics') !!}
+{!! get_static_option('tawk_api_key') !!}
+
+<x-google-recaptcha/>
 
 <script>
     var ev_offerTime = "{{get_static_option('mentenance_back_date')}}";
