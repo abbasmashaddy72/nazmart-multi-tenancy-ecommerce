@@ -52,6 +52,9 @@ class CustomDomainController extends Controller
         $full_custom_domain = $custom_domain->custom_domain;
 
         if($request->custom_domain_status == 'connected'){
+            if(is_null($custom_domain->tenant)){
+                return redirect()->back()->with(ResponseMessage::delete(__('no tenant found for this custom domain')));
+            }
             $custom_domain->tenant->domains()->update(['domain' => $full_custom_domain]);
         }
 
