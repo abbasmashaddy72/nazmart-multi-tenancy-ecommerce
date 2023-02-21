@@ -354,7 +354,13 @@ class TenantManageController extends Controller
                 $payment_details = PaymentLogs::findOrFail($old_tenant_log->id);
             }
         } else {
-            event(new TenantRegisterEvent($user, $subdomain, get_static_option('default_theme')));
+            
+           try{
+                event(new TenantRegisterEvent($user, $subdomain, get_static_option('default_theme')));
+            }catch(\Exception $e){
+                return redirect()->back()->with(['type'=> 'danger', 'msg' => $e->getMessage()]);
+            }
+
             $tenant = DB::table('tenants')->where('user_id', $user->id)->latest()->select('id')->first();
 
             $payment_log_id = PaymentLogs::create([
