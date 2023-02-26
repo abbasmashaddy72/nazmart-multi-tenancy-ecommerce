@@ -190,7 +190,6 @@ class BuyerWalletController extends Controller
 
     public function wallet_settings()
     {
-        WalletService::renew_package_from_wallet();
         $balance = Wallet::select('balance')->where('user_id', Auth::guard('web')->user()->id)->first();
         $settings = WalletSettings::where('user_id', Auth::guard('web')->user()->id)->first();
         return view('wallet::frontend.buyer.wallet-settings', compact('settings', 'balance'));

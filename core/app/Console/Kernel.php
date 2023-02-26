@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
             ->daily();
 
         $schedule->command('package:auto-renew')
-            ->twiceDaily();
+            ->everyMinute();
     }
 
     protected function commands()

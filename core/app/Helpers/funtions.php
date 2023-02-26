@@ -419,14 +419,14 @@ function get_modified_title($title)
     }
 }
 
-function get_tenant_highlighted_text($title)
+function get_tenant_highlighted_text($title, $class = 'color-two')
 {
     if (str_contains($title, '{h}') && str_contains($title, '{/h}')) {
         $text = explode('{h}', $title);
 
         $highlighted_word = explode('{/h}', $text[1])[0];
 
-        $highlighted_text = '<span class="color-two">' . $highlighted_word . '</span>';
+        $highlighted_text = '<span class="'.$class.'">' . $highlighted_word . '</span>';
         return str_replace('{h}' . $highlighted_word . '{/h}', $highlighted_text, $title);
     }
 

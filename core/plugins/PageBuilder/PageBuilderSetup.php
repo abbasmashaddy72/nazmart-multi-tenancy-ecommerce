@@ -22,25 +22,26 @@ use Plugins\PageBuilder\Addons\Landlord\Common\WhyChooseUs;
 use Plugins\PageBuilder\Addons\Landlord\Header\AboutHeaderStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\FeaturesStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\HeaderStyleOne;
-use Plugins\PageBuilder\Addons\Tenants\ThemeOne\Contact\ContactAreaOne;
-use Plugins\PageBuilder\Addons\Tenants\ThemeOne\Contact\GoogleMap;
+use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Contact\ContactAreaOne;
+use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Contact\GoogleMap;
+use Plugins\PageBuilder\Addons\Tenants\Medicom\Header\Header;
 use Plugins\PageBuilder\Addons\Tenants\Service\ServiceOne;
-use Plugins\PageBuilder\Addons\Tenants\ThemeOne\Common\CollectionArea;
-use Plugins\PageBuilder\Addons\Tenants\ThemeOne\Common\DealArea;
-use Plugins\PageBuilder\Addons\Tenants\ThemeOne\Common\Services;
-use Plugins\PageBuilder\Addons\Tenants\ThemeOne\Common\Testimonial;
-use Plugins\PageBuilder\Addons\Tenants\ThemeOne\Common\TestimonialTwo;
-use Plugins\PageBuilder\Addons\Tenants\ThemeOne\Common\Team;
-use Plugins\PageBuilder\Addons\Tenants\ThemeOne\Header\HeaderOne;
-use Plugins\PageBuilder\Addons\Tenants\ThemeOne\Product\FeaturedProductSlider;
-use Plugins\PageBuilder\Addons\Tenants\ThemeOne\Product\FlashStore;
-use Plugins\PageBuilder\Addons\Tenants\ThemeOne\Product\ProductTypeList;
-use Plugins\PageBuilder\Addons\Tenants\ThemeOne\About\AboutStory;
-use Plugins\PageBuilder\Addons\Tenants\ThemeOne\About\AboutCounter;
-use Plugins\PageBuilder\Addons\Tenants\ThemeTwo\Blog\BlogOne;
-use Plugins\PageBuilder\Addons\Tenants\ThemeTwo\Common\CategoriesSlider;
-use Plugins\PageBuilder\Addons\Tenants\ThemeTwo\Common\CollectionCard;
-use Plugins\PageBuilder\Addons\Tenants\ThemeTwo\Product\TrendingProducts;
+use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Common\CollectionArea;
+use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Common\DealArea;
+use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Common\Services;
+use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Common\Testimonial;
+use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Common\TestimonialTwo;
+use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Common\Team;
+use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Header\HeaderOne;
+use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Product\FeaturedProductSlider;
+use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Product\FlashStore;
+use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Product\ProductTypeList;
+use Plugins\PageBuilder\Addons\Tenants\Hexfashion\About\AboutStory;
+use Plugins\PageBuilder\Addons\Tenants\Hexfashion\About\AboutCounter;
+use Plugins\PageBuilder\Addons\Tenants\Furnito\Blog\BlogOne;
+use Plugins\PageBuilder\Addons\Tenants\Furnito\Common\CategoriesSlider;
+use Plugins\PageBuilder\Addons\Tenants\Furnito\Common\CollectionCard;
+use Plugins\PageBuilder\Addons\Tenants\Furnito\Product\TrendingProducts;
 
 
 class PageBuilderSetup
@@ -48,6 +49,8 @@ class PageBuilderSetup
     private static function registerd_widgets(): array
     {
         $customAddons = [];
+        $addons = [];
+
         if (!is_null(tenant()))
         {
             $theme = tenant()->theme_slug;
@@ -55,11 +58,11 @@ class PageBuilderSetup
             //Tenant Register
             if ($theme == 'hexfashion')
             {
-                // Theme One
+                // Theme Hexfashion
                 $addons = [
                     HeaderOne::class,
-                    Addons\Tenants\ThemeOne\Blog\BlogOne::class,
-                    Addons\Tenants\ThemeOne\Common\Brand::class,
+                    Addons\Tenants\Hexfashion\Blog\BlogOne::class,
+                    Addons\Tenants\Hexfashion\Common\Brand::class,
                     DealArea::class,
                     ContactAreaOne::class,
                     GoogleMap::class,
@@ -76,25 +79,31 @@ class PageBuilderSetup
                     Team::class,
                 ];
             } elseif ($theme == 'furnito') {
-                // Theme Two
+                // Theme Furnito
                 $addons = [
-                    \Plugins\PageBuilder\Addons\Tenants\ThemeTwo\Header\HeaderOne::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\Header\HeaderOne::class,
                     CollectionCard::class,
                     TrendingProducts::class,
                     CategoriesSlider::class,
-                    \Plugins\PageBuilder\Addons\Tenants\ThemeTwo\Common\Brand::class,
-                    \Plugins\PageBuilder\Addons\Tenants\ThemeTwo\Common\Testimonial::class,
-                    \Plugins\PageBuilder\Addons\Tenants\ThemeTwo\Common\Services::class,
-                    \Plugins\PageBuilder\Addons\Tenants\ThemeTwo\Common\CollectionArea::class,
-                    \Plugins\PageBuilder\Addons\Tenants\ThemeTwo\Product\ProductTypeList::class,
-                    \Plugins\PageBuilder\Addons\Tenants\ThemeTwo\Contact\ContactAreaOne::class,
-                    \Plugins\PageBuilder\Addons\Tenants\ThemeTwo\Contact\GoogleMap::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\Brand::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\Testimonial::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\Services::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\CollectionArea::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\Product\ProductTypeList::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\Contact\ContactAreaOne::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\Contact\GoogleMap::class,
                     BlogOne::class,
-                    \Plugins\PageBuilder\Addons\Tenants\ThemeTwo\About\AboutCounter::class,
-                    \Plugins\PageBuilder\Addons\Tenants\ThemeTwo\About\AboutStory::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutCounter::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutStory::class,
                 ];
             } elseif ($theme == 'medicom') {
-
+                // Theme Medicom
+                $addons = [
+                    Header::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Medicom\Common\Services::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Medicom\Product\FeaturedProductSlider::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Medicom\Product\CategoriesSlider::class
+                ];
             }
 
             // Third party custom addons
