@@ -102,7 +102,10 @@ class PageBuilderSetup
                     Header::class,
                     \Plugins\PageBuilder\Addons\Tenants\Medicom\Common\Services::class,
                     \Plugins\PageBuilder\Addons\Tenants\Medicom\Product\FeaturedProductSlider::class,
-                    \Plugins\PageBuilder\Addons\Tenants\Medicom\Product\CategoriesSlider::class
+                    \Plugins\PageBuilder\Addons\Tenants\Medicom\Product\CategoriesSlider::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Medicom\Common\CollectionCard::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Medicom\Product\ProductTypeList::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Hexfashion\Common\Brand::class,
                 ];
             }
 

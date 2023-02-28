@@ -60,7 +60,8 @@
                 $storage_limit = $permission_limit?->storage_permission_feature == -1 ? __('Unlimited') : $permission_limit?->storage_permission_feature;
 
                 $storage_count = get_tenant_storage_info('mb');
-                $storage_remaining_percent = 100-($storage_count/$permission_limit?->storage_permission_feature ?? 1)*100;
+                $storage_permission_feature = empty($permission_limit?->storage_permission_feature) ? 1 : $permission_limit?->storage_permission_feature;
+                $storage_remaining_percent = 100-($storage_count/$storage_permission_feature)*100;
 
                 // Inventory Warnings
                 $threshold_amount = get_static_option('stock_threshold_amount');

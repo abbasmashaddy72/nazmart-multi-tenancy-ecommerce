@@ -15,7 +15,7 @@ use function render_image_markup_by_attachment_id;
 use function url;
 use App\Helpers\SanitizeInput;
 
-class TenantNewsletterTwo extends WidgetBase
+class TenantNewsletterThree extends WidgetBase
 {
     use LanguageFallbackForWidgetBuilder;
 

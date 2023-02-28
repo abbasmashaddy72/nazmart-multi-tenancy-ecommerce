@@ -13,7 +13,7 @@
                         </div>
                         <div class="single-promo-contents mt-2">
                             <h4 class="single-promo-contents-title fw-400">
-                                <a href="javascript:void(0)"> {{$title}} </a>
+                                <a href="javascript:void(0)"> {{\App\Helpers\SanitizeInput::esc_html($title)}} </a>
                             </h4>
                             <p class="single-promo-contents-para mt-2"> {{\App\Helpers\SanitizeInput::esc_html($data['repeater_data']['repeater_subtitle_'][$key]) ?? ''}} </p>
                         </div>

@@ -1370,7 +1370,7 @@ function load_google_fonts($theme_number = '')
     $heading_font_variant_selected_arr = !empty($heading_font_variant) ? unserialize($heading_font_variant, ['class' => false]) : ['400'];
     $load_heading_font_variant = is_array($heading_font_variant_selected_arr) ? implode(';', $heading_font_variant_selected_arr) : '400';
 
-    if (!empty(get_static_option('heading_font')) && $heading_font_family != $body_font_family) {
+    if (!empty($heading_font_family) && $heading_font_family != $body_font_family) {
 
         $heading_italic = '';
         preg_match('/1,/', $load_heading_font_variant, $match);

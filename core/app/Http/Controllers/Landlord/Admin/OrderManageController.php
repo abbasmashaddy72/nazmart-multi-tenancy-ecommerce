@@ -35,9 +35,9 @@ class OrderManageController extends Controller
     {
         if ($request->filter != null && $request->filter != 'all')
         {
-            $all_orders = PaymentLogs::where('status', $request->filter)->get();
+            $all_orders = PaymentLogs::where('status', $request->filter)->orderByDesc('id')->get();
         } else {
-            $all_orders = PaymentLogs::all();
+            $all_orders = PaymentLogs::orderByDesc('id')->get();
         }
 
         return view(self::ROOT_PATH.'order-manage-all')->with(['all_orders' => $all_orders]);
@@ -133,7 +133,7 @@ class OrderManageController extends Controller
             'subject' => 'required|string',
             'message' => 'required|string',
         ]);
-        $subject = str_replace('{site}',get_static_option('site_'.get_default_language().'_title'),$request->subject);
+        $subject = str_replace('{site}',get_static_option('site_title'),$request->subject);
         $data = [
             'name' => $request->name,
             'message' => $request->message,

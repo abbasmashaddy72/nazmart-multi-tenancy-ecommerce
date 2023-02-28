@@ -1694,7 +1694,7 @@ HTML;
                 ->get();
         }
 
-        $markup = view('pagebuilder::tenant.theme_two.product.partials.product_list_markup', compact('products'))->render();
+        $markup = view('pagebuilder::tenant.furnito.product.partials.product_list_markup', compact('products'))->render();
 
         return response()->json([
             'markup' => $markup,
@@ -1702,6 +1702,40 @@ HTML;
         ]);
     }
 
+    public function product_by_category_ajax_three(Request $request)
+    {
+        (string)$markup = '';
+
+        $products = Product::with('badge')->where('status_id', 1);
+
+        if ($request->category != 'all') {
+            $category_id = Category::where('slug', $request->category)->firstOrFail();
+
+            $products_id = ProductCategory::where('category_id', $category_id->id)->pluck('product_id')->toArray();
+            $products->whereIn('id', $products_id);
+
+            $products = $products->orderBy('id', 'desc')
+                ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
+                ->take($request->limit ?? 8)
+                ->get();
+        } else {
+            $allId = explode(',', $request->allId);
+            $category_id = ProductCategory::whereIn('category_id', $allId)->pluck('product_id')->toArray();
+
+            $products = $products->whereIn('id', $category_id)
+                ->orderBy('id', 'desc')
+                ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
+                ->take($request->limit ?? 8)
+                ->get();
+        }
+
+        $markup = view('pagebuilder::tenant.medicom.product.partials.product_list_markup', compact('products'))->render();
+
+        return response()->json([
+            'markup' => $markup,
+            'category' => $request->category
+        ]);
+    }
 
     public function productQuickViewPage($slug): string
     {

@@ -369,7 +369,6 @@ class PaymentLogController extends Controller
                     return back()->with(FlashMsg::explain('danger', 'Incorrect Class or Method'));
                 }
             } else {
-
                 $gateway = PaymentGatewayCredential::$gateway_function();
                 $redirect_url = $gateway->charge_customer(
                     $this->common_charge_customer_data($payment_gateway_name)

@@ -281,6 +281,7 @@ Route::middleware([
     Route::name('tenant.')->group(function (){
         Route::get('category-wise-product/theme-one', [TenantFrontendController::class, 'product_by_category_ajax_one'])->name('category.wise.product.one');
         Route::get('category-wise-product/theme-two', [TenantFrontendController::class, 'product_by_category_ajax_two'])->name('category.wise.product.two');
+        Route::get('category-wise-product/theme-three', [TenantFrontendController::class, 'product_by_category_ajax_three'])->name('category.wise.product.three');
     });
 });
 
