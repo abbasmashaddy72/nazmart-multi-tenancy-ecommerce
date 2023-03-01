@@ -2,10 +2,12 @@
 
 namespace Modules\MobileApp\Http\Controllers\Api\V1;
 
+use App\Helpers\FlashMsg;
 use App\Http\Controllers\Landlord\Admin\MediaUploaderController;
 use App\Mail\BasicMail;
 use App\Models\MediaUploader;
 use App\Models\Order;
+use App\Models\OrderProducts;
 use App\Models\ProductOrder;
 use App\Models\SupportDepartment;
 use App\Models\SupportTicket;
@@ -558,11 +560,11 @@ class UserController extends Controller
     {
         $shipping = UserDeliveryAddress::find($shipping_id);
         if (empty($shipping)) {
-            return response()->json(["msg" => "Shipping zone not found on the server."])->setStatusCode(404);
+            return response()->json(["msg" => __("Shipping zone not found on the server.")])->setStatusCode(404);
         }
 
         $bool = $shipping->user_id == auth('sanctum')->id() ? $shipping->delete() : false;
-        $msg = $bool ? "Successfully Deleted Shipping Zone" : "You are not eligible to delete this shipping address";
+        $msg = $bool ? __("Successfully Deleted Shipping Zone") : __("You are not eligible to delete this shipping address");
 
         return response()->json(["msg" => $msg]);
     }
@@ -594,6 +596,61 @@ class UserController extends Controller
         $order_details->order_details = $details;
 
         return response()->json(['data' => $order_details]);
+    }
+
+    public function request_order_refund(Request $request)
+    {
+        $validated = $request->validate([
+            'order_id' => 'required|numeric',
+            'refund_products' => 'required|string'
+        ]);
+
+        $refund_products = explode(',', $validated['refund_products']);
+
+        $user_id = auth('sanctum')->user()->id;
+        $existing_order = ProductOrder::find($validated['order_id']);
+        if (empty($existing_order))
+        {
+            return response()->json([
+                'msg' => __('Order is not available')
+            ]);
+        }
+
+        foreach ($refund_products ?? [] as $key => $product)
+        {
+            $order_product = OrderProducts::where('product_id', $product)->first();
+            if (empty($order_product)) {
+                return response()->json([
+                    'msg' => __('Product is not available')
+                ]);
+            }
+
+            $refund = RefundProduct::where([
+                'user_id' => $user_id,
+                'order_id' => $validated['order_id'],
+                'product_id' => $product,
+            ])->first();
+
+            if (empty($refund) && empty($order_product))
+            {
+                RefundProduct::create([
+                    'user_id' => $user_id,
+                    'order_id' => $validated['order_id'],
+                    'product_id' => $product,
+                    'status' => false,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            } else {
+                return response()->json([
+                    'msg' => __('Refund request is already sent')
+                ]);
+            }
+        }
+
+        return response()->json([
+            'msg' => __('Your refund request is sent successfully')
+        ]);
     }
 
     public function get_all_refund_list()

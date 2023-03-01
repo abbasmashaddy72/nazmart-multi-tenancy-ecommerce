@@ -50,6 +50,12 @@ class CollectionCard extends PageBuilderBase
                     'label' => __('Button URL')
                 ],
                 [
+                    'type' => RepeaterField::SWITCHER,
+                    'name' => 'repeater_button_target',
+                    'label' => __('Button Target'),
+                    'info' => __('keep on if you want to open the link in a different tab')
+                ],
+                [
                     'type' => RepeaterField::IMAGE,
                     'name' => 'repeater_image',
                     'label' => __('Image'),

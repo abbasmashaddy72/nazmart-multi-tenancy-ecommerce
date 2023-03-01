@@ -100,7 +100,9 @@ class TenantFrontendController extends Controller
         if ($slug === $shop_page_slug) {
             if (tenant()) {
                 $product_object = Product::where('status_id', 1)->latest()->paginate(12);
-                $categories = Category::whereHas('product_categories')->select('id', 'name', 'slug')->withCount('product_categories')->get();
+                $categories = Category::whereHas('product', function ($query) {
+                    $query->where('status_id', 1);
+                })->select('id', 'name', 'slug')->withCount('product')->get();
                 $sizes = Size::whereHas('product_sizes')->select('id', 'name', 'size_code', 'slug')->get();
                 $colors = Color::select('id', 'name', 'color_code', 'slug')->get();
                 $tags = ProductTag::select('tag_name')->distinct()->get();
