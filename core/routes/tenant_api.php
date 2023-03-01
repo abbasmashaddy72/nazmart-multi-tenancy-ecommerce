@@ -125,6 +125,12 @@ Route::middleware([
             Route::post('ticket/priority-change', [UserController::class,'priority_change']);
             Route::post('ticket/status-change', [UserController::class,'status_change']);
 
+            /* Order list */
+            Route::get('order', [UserController::class, 'all_order_list']);
+            Route::get('order/{order_id}', [UserController::class, 'single_order_details']);
+            Route::post('order/refund', [UserController::class, 'request_order_refund']);
+
+            Route::get("refund",[UserController::class,"get_all_refund_list"]);
         });
     });
 });

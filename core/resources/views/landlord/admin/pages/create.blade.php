@@ -131,7 +131,7 @@
 
             $(document).on('keyup change', 'input[name="title"]', function (e) {
                 var slug = converToSlug($(this).val());
-                var url = `{{route('landlord.homepage')}}/` + removeTags(slug);
+                var url = `{{!empty(tenant()) ? route('tenant.frontend.homepage') : route('landlord.homepage')}}/` + removeTags(slug);
                 $('.permalink_label').show();
                 var data = $('#slug_show').text(url).css('color', 'blue');
                 $('.blog_slug').val(removeTags(slug));
@@ -153,7 +153,7 @@
                 $('.slug_edit_button').show();
                 var update_input = $('.blog_slug').val();
                 var slug = converToSlug(update_input);
-                var url = `{{route('landlord.homepage')}}` + removeTags(slug);
+                var url = `{{!empty(tenant()) ? route('tenant.frontend.homepage') : route('landlord.homepage')}}/` + removeTags(slug);
                 $('#slug_show').text(url);
                 $('.blog_slug').hide();
             });

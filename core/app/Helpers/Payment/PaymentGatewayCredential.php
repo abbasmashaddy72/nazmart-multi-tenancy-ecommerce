@@ -207,7 +207,7 @@ class PaymentGatewayCredential
         $decoded = json_decode($paypal_credential_from_database->credentials);
 
         $server_key = $decoded->server_key ?? '';
-        $client_key = $decoded->server_key ?? '';
+        $client_key = $decoded->client_key ?? '';
         $test_mode = $paypal_credential_from_database->test_mode;
 
         $midtrans = XgPaymentGateway::midtrans();

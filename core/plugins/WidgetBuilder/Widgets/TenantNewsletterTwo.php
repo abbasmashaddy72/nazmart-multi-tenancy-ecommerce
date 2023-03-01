@@ -51,7 +51,7 @@ class TenantNewsletterTwo extends WidgetBase
     {
         $settings = $this->get_settings();
         $widget_title = SanitizeInput::esc_html($settings['title'] ?? '');
-        $widget_subtitle =SanitizeInput::esc_html( $settings['description'] ?? '');
+        $widget_subtitle = SanitizeInput::esc_html( $settings['subtitle'] ?? '');
         $form_action = route('tenant.frontend.subscribe.newsletter');
 
         return '<div class="col-lg-3 col-md-6 col-sm-6 mt-4">
@@ -79,6 +79,6 @@ class TenantNewsletterTwo extends WidgetBase
     }
 
     public function widget_title(){
-        return __('Theme 2: Tenant Newsletter(01)');
+        return __('Theme Hexfashion: Tenant Newsletter(01)');
     }
 }

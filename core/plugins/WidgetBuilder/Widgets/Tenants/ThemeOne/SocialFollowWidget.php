@@ -71,9 +71,10 @@ class SocialFollowWidget extends WidgetBase
                            </li>';
         }
 
+        $top_margin = !empty($widget_title) ? 'mt-4' : '';
         $markup .= '<div class="footer-widget widget center-text">
                             <h4 class="widget-titile fw-500"> '.$widget_title.' </h4>
-                            <div class="footer-inner mt-4">
+                            <div class="footer-inner'.$top_margin.'">
                                 <div class="footer-socials">
                                     <ul class="footer-social-list">
                                         '.$li_markup.'

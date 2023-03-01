@@ -184,8 +184,7 @@ class GeneralSettingsController extends Controller
     {
         $theme_slug = getSelectedThemeSlug();
 
-        if (tenant())
-        {
+        if (tenant()) {
             $fields = [
                 'main_color_one_' . $theme_slug => 'nullable|string|max:191',
                 'main_color_two_' . $theme_slug => 'nullable|string|max:191',
@@ -265,41 +264,35 @@ class GeneralSettingsController extends Controller
 
     public function update_typography_settings(Request $request)
     {
-        $theme_suffix = ['theme_one', 'theme_two', 'theme_three'];
+        $suffix = getSelectedThemeSlug();
 
         if (tenant()) {
-            foreach ($theme_suffix as $key => $suffix) {
-                $fields[$key] = [
-                    'body_font_family_' . $suffix => 'required|string|max:191',
-                    'body_font_variant_' . $suffix => 'required',
-                    'heading_font_' . $suffix => 'nullable|string',
-                    'heading_font_family_' . $suffix => 'nullable|string|max:191',
-                    'heading_font_variant_' . $suffix => 'nullable',
-                ];
+            $fields = [
+                'body_font_family_' . $suffix => 'required|string|max:191',
+                'body_font_variant_' . $suffix => 'required',
+                'heading_font_' . $suffix => 'nullable|string',
+                'heading_font_family_' . $suffix => 'nullable|string|max:191',
+                'heading_font_variant_' . $suffix => 'nullable',
+            ];
 
-                $save_data[$key] = [
-                    'body_font_family_' . $suffix,
-                    'heading_font_family_' . $suffix,
-                    'heading_font_' . $suffix
-                ];
+            $save_data = [
+                'body_font_family_' . $suffix,
+                'heading_font_family_' . $suffix,
+                'heading_font_' . $suffix
+            ];
 
-                $font_variant[$key] = [
-                    'body_font_variant_' . $suffix,
-                    'heading_font_variant_' . $suffix,
-                ];
-            }
-
-            $fields = array_merge($fields[0], $fields[1], $fields[2]);
+            $font_variant = [
+                'body_font_variant_' . $suffix,
+                'heading_font_variant_' . $suffix,
+            ];
 
             $this->validate($request, $fields);
 
-            $save_data = array_merge($save_data[0], $save_data[1], $save_data[2]);
             foreach ($save_data as $item) {
                 update_static_option($item, $request->$item);
             }
 
             // Issue to fix
-            $font_variant = array_merge($font_variant[0], $font_variant[1], $font_variant[2]);
             foreach ($font_variant as $variant) {
                 update_static_option($variant, serialize(!empty($request->$variant) ? $request->$variant : ['regular']));
             }

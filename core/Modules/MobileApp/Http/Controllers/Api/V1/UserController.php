@@ -2,9 +2,13 @@
 
 namespace Modules\MobileApp\Http\Controllers\Api\V1;
 
+use App\Helpers\FlashMsg;
 use App\Http\Controllers\Landlord\Admin\MediaUploaderController;
 use App\Mail\BasicMail;
 use App\Models\MediaUploader;
+use App\Models\Order;
+use App\Models\OrderProducts;
+use App\Models\ProductOrder;
 use App\Models\SupportDepartment;
 use App\Models\SupportTicket;
 use App\Models\SupportTicketMessage;
@@ -19,6 +23,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Modules\MobileApp\Http\Services\Api\UserServices;
 use Modules\Product\Entities\ProductSellInfo;
+use Modules\RefundModule\Entities\RefundProduct;
 use Modules\ShippingModule\Entities\ShippingAddress;
 use Modules\ShippingModule\Http\Requests\StoreShippingAddressRequest;
 use Modules\ShippingModule\Http\Services\ShippingAddressServices;
@@ -29,7 +34,7 @@ class UserController extends Controller
     {
         $validate = UserServices::validateLoginRequest($request->all());
 
-        if ($validate->fails()){
+        if ($validate->fails()) {
             return UserServices::validationErrorsResponse($validate);
         }
 
@@ -38,11 +43,11 @@ class UserController extends Controller
         // Set login type
         $user_login_type = UserServices::loginUserType($validated["username"]);
 
-        if($user_login_type == 'email' && !UserServices::isValideEmail($validated["username"])){
+        if ($user_login_type == 'email' && !UserServices::isValideEmail($validated["username"])) {
             return UserServices::emailValidationResponse();
         }
 
-        $user = User::select('id', 'password', $user_login_type,'email_verified')->where($user_login_type, $validated["username"])->first();
+        $user = User::select('id', 'password', $user_login_type, 'email_verified')->where($user_login_type, $validated["username"])->first();
         if (!$user || !Hash::check($validated["password"], $user->password)) {
             return response()->json([
                 'message' => __('Invalid ' . $user_login_type . ' or Password')
@@ -68,16 +73,16 @@ class UserController extends Controller
         // Set login type
         $user_login_type = UserServices::loginUserType($request->email);
 
-        if($user_login_type == 'email' && !UserServices::isValideEmail($request->email)){
+        if ($user_login_type == 'email' && !UserServices::isValideEmail($request->email)) {
             return UserServices::emailValidationResponse();
         }
 
-        $username = $request->isGoogle === 0 ?  'fb_'. Str::slug($request->displayName) : 'gl_'.Str::slug($request->displayName);
+        $username = $request->isGoogle === 0 ? 'fb_' . Str::slug($request->displayName) : 'gl_' . Str::slug($request->displayName);
         $user = User::select('id', 'email', 'username')
             ->where('email', $request->email)
             ->first();
 
-        if(User::where("username", $username)->count() > 0){
+        if (User::where("username", $username)->count() > 0) {
             $username = $username . uniqid();
         }
 
@@ -106,7 +111,7 @@ class UserController extends Controller
     {
         $validate = UserServices::validateRegisterRequest($request->all());
 
-        if ($validate->fails()){
+        if ($validate->fails()) {
             return UserServices::validationErrorsResponse($validate);
         }
 
@@ -130,37 +135,38 @@ class UserController extends Controller
         ])->setStatusCode(422);
     }
 
-    public function get_all_shipping_address(){
+    public function get_all_shipping_address()
+    {
         $user_id = auth('sanctum')->user()->id;
 
-        return response()->json(["data" => UserDeliveryAddress::with(["state","country:id,name","state:id,name"])->where('user_id', $user_id)->get()]);
+        return response()->json(["data" => UserDeliveryAddress::with(["state", "country:id,name", "state:id,name"])->where('user_id', $user_id)->get()]);
     }
 
     // send otp
     public function sendOTPSuccess(Request $request)
     {
-        $validate = Validator::make($request->all(),[
+        $validate = Validator::make($request->all(), [
             'user_id' => 'required|integer',
             'email_verified' => 'required|integer',
         ]);
 
-        if ($validate->fails()){
+        if ($validate->fails()) {
             return response()->json([
                 'validation_errors' => $validate->messages()
             ])->setStatusCode(422);
         }
 
-        if(!in_array($request->email_verified,[0,1])){
+        if (!in_array($request->email_verified, [0, 1])) {
             return response()->json([
                 'message' => __('email verify code must have to be 1 or 0'),
             ])->setStatusCode(422);
         }
 
         $user = User::where('id', $request->user_id)->update([
-            'email_verified' =>  $request->email_verified
+            'email_verified' => $request->email_verified
         ]);
 
-        if(is_null($user)){
+        if (is_null($user)) {
             return response()->json([
                 'message' => __('Something went wrong, plese try after sometime,'),
             ])->setStatusCode(422);
@@ -173,11 +179,11 @@ class UserController extends Controller
 
     public function sendOTP(Request $request)
     {
-        $validate = Validator::make($request->all(),[
+        $validate = Validator::make($request->all(), [
             'email' => 'required',
         ]);
 
-        if ($validate->fails()){
+        if ($validate->fails()) {
 
             return response()->json([
                 'validation_errors' => $validate->messages()
@@ -189,7 +195,7 @@ class UserController extends Controller
         if (!is_null($user_email)) {
             try {
                 $message_body = __('Here is your otp code') . ' <span class="verify-code">' . $otp_code . '</span>';
-                Mail::to($request->email)->send(new BasicMail($message_body,__('Your OTP Code')));
+                Mail::to($request->email)->send(new BasicMail($message_body, __('Your OTP Code')));
             } catch (\Exception $e) {
                 return response()->json([
                     'message' => $e->getMessage(),
@@ -212,12 +218,12 @@ class UserController extends Controller
     //reset password
     public function resetPassword(Request $request)
     {
-        $validate = Validator::make($request->all(),[
+        $validate = Validator::make($request->all(), [
             'email' => 'required',
             'password' => 'required',
         ]);
 
-        if ($validate->fails()){
+        if ($validate->fails()) {
             return response()->josn([
                 'validation_errors' => $validate->messages()
             ])->setStatusCode(422);
@@ -239,7 +245,8 @@ class UserController extends Controller
     }
 
     //logout
-    public function logout(){
+    public function logout()
+    {
         auth()->user()->tokens()->delete();
 
         return response()->json([
@@ -248,19 +255,20 @@ class UserController extends Controller
     }
 
     //User Profile
-    public function profile(){
+    public function profile()
+    {
 
         $user_id = auth('sanctum')->id();
-        $user = User::with('userCountry','userState','delivery_address')
-            ->where('id',$user_id)->first();
+        $user = User::with('userCountry', 'userState', 'delivery_address')
+            ->where('id', $user_id)->first();
 
         $image_url = null;
-        if(!empty($user->image)){
+        if (!empty($user->image)) {
             $image = get_attachment_image_by_id($user->image);
             $image_url = !empty($image) ? $image['img_url'] : '';
         }
 
-        $user->profile_image_url = $image_url ?  : null;
+        $user->profile_image_url = $image_url ?: null;
 
         return response()->json([
             'user_details' => $user
@@ -268,25 +276,26 @@ class UserController extends Controller
     }
 
 //    change password after login
-    public function changePassword(Request $request){
-        $validate = Validator::make($request->all(),[
+    public function changePassword(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
             'current_password' => 'required|min:6',
             'new_password' => 'required|min:6',
         ]);
-        if ($validate->fails()){
+        if ($validate->fails()) {
             return response()->json([
                 'validation_errors' => $validate->messages()
             ])->setStatusCode(422);
         }
 
-        $user = User::select('id','password')->where('id', auth('sanctum')->user()->id)->first();
+        $user = User::select('id', 'password')->where('id', auth('sanctum')->user()->id)->first();
         if (!Hash::check($request->current_password, $user->password)) {
             return response()->json([
                 'message' => __('Current Password is Wrong'),
             ])->setStatusCode(422);
         }
 
-        User::where('id',auth('sanctum')->user()->id)->update([
+        User::where('id', auth('sanctum')->user()->id)->update([
             'password' => Hash::make($request->new_password),
         ]);
 
@@ -317,7 +326,7 @@ class UserController extends Controller
         ]);
 
 
-        if($request->file('file')){
+        if ($request->file('file')) {
             (new MediaUploaderController())->upload_media_file($request);
             $last_image_id = DB::getPdo()->lastInsertId();
         }
@@ -339,30 +348,33 @@ class UserController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function get_all_tickets(){
+    public function get_all_tickets()
+    {
         $user_id = auth('sanctum')->user()->id;
 
         return SupportTicket::where('user_id', $user_id)->paginate(10)->withQueryString();
     }
 
-    public function single_ticket($id){
+    public function single_ticket($id)
+    {
         $user_id = auth('sanctum')->user()->id;
 
         $ticket_details = SupportTicket::where('user_id', $user_id)
-            ->where("id",$id)
+            ->where("id", $id)
             ->first();
-        $all_messages = SupportTicketMessage::where(['support_ticket_id' => $id])->get()->transform(function ($item){
-            $item->attachment = !empty($item->attachment) ? global_asset('assets/uploads/ticket/'.$item->attachment) : null;
+        $all_messages = SupportTicketMessage::where(['support_ticket_id' => $id])->get()->transform(function ($item) {
+            $item->attachment = !empty($item->attachment) ? global_asset('assets/uploads/ticket/' . $item->attachment) : null;
 
             return $item;
         });
 
-        return response()->json(["ticket_details" => $ticket_details,"all_messages" => $all_messages]);
+        return response()->json(["ticket_details" => $ticket_details, "all_messages" => $all_messages]);
     }
 
-    public function fetch_support_chat($ticket_id){
-        $all_messages = SupportTicketMessage::where(['support_ticket_id' => $ticket_id])->get()->transform(function ($item){
-            $item->attachment = !empty($item->attachment) ? global_asset('assets/uploads/ticket/'.$item->attachment) : null;
+    public function fetch_support_chat($ticket_id)
+    {
+        $all_messages = SupportTicketMessage::where(['support_ticket_id' => $ticket_id])->get()->transform(function ($item) {
+            $item->attachment = !empty($item->attachment) ? global_asset('assets/uploads/ticket/' . $item->attachment) : null;
 
             return $item;
         });
@@ -407,7 +419,7 @@ class UserController extends Controller
                     $sell_info
                 ));
 
-                return response()->json(["payment_status" => ucwords($sell_info->payment_status),"order_status" => ucwords($sell_info->status)]);
+                return response()->json(["payment_status" => ucwords($sell_info->payment_status), "order_status" => ucwords($sell_info->status)]);
             } catch (\Exception $e) {
                 return response()->json(["msg" => "Server error"]);
             }
@@ -416,7 +428,8 @@ class UserController extends Controller
         return response()->json(["msg" => __('No order found for the given information.')]);
     }
 
-    public function send_support_chat(Request $request,$ticket_id){
+    public function send_support_chat(Request $request, $ticket_id)
+    {
         $request->validate([
             'user_type' => 'required|string|max:191',
             'message' => 'required',
@@ -447,65 +460,68 @@ class UserController extends Controller
         return response()->json($ticket);
     }
 
-    public function storeShippingAddress(StoreShippingAddressRequest $request){
+    public function storeShippingAddress(StoreShippingAddressRequest $request)
+    {
         $data = $request->validated();
 
         return ShippingAddressServices::store($data);
     }
 
-    public function viewTickets(Request $request,$id= null)
+    public function viewTickets(Request $request, $id = null)
     {
-        $all_messages = SupportTicketMessage::where(['support_ticket_id'=>$id])->get()->transform(function($item){
-            $item->attachment = !empty($item->attachment) ? asset('assets/uploads/ticket/'.$item->attachment) : null;
+        $all_messages = SupportTicketMessage::where(['support_ticket_id' => $id])->get()->transform(function ($item) {
+            $item->attachment = !empty($item->attachment) ? asset('assets/uploads/ticket/' . $item->attachment) : null;
             return $item;
         });
         $q = $request->q ?? '';
         return response()->json([
-            'ticket_id'=>$id,
-            'all_messages' =>$all_messages,
-            'q' =>$q,
+            'ticket_id' => $id,
+            'all_messages' => $all_messages,
+            'q' => $q,
         ]);
     }
 
     public function sendMessage(Request $request)
     {
         $request->validate([
-             'ticket_id' => 'required',
-             'user_type' => 'required|string|max:191',
-             'message' => 'required',
-             'file' => 'nullable|mimes:jpg,png,jpeg,gif',
-         ]);
+            'ticket_id' => 'required',
+            'user_type' => 'required|string|max:191',
+            'message' => 'required',
+            'file' => 'nullable|mimes:jpg,png,jpeg,gif',
+        ]);
 
-         $ticket_info = SupportTicketMessage::create([
-             'support_ticket_id' => $request->ticket_id,
-             'type' => $request->user_type,
-             'message' => $request->message,
-         ]);
+        $ticket_info = SupportTicketMessage::create([
+            'support_ticket_id' => $request->ticket_id,
+            'type' => $request->user_type,
+            'message' => $request->message,
+        ]);
 
-         if ($request->hasFile('file')){
-             $uploaded_file = $request->file;
-             $file_extension = $uploaded_file->extension();
-             $file_name =  pathinfo($uploaded_file->getClientOriginalName(),PATHINFO_FILENAME).time().'.'.$file_extension;
-             $uploaded_file->move('assets/uploads/ticket',$file_name);
-             $ticket_info->attachment = $file_name;
-             $ticket_info->save();
-         }
+        if ($request->hasFile('file')) {
+            $uploaded_file = $request->file;
+            $file_extension = $uploaded_file->extension();
+            $file_name = pathinfo($uploaded_file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file_extension;
+            $uploaded_file->move('assets/uploads/ticket', $file_name);
+            $ticket_info->attachment = $file_name;
+            $ticket_info->save();
+        }
 
-         return response()->json([
-             'message'=>__('Message Send Success'),
-             'ticket_id'=>$request->ticket_id,
-             'user_type'=>$request->user_type,
-             'ticket_info' => $ticket_info,
-         ]);
+        return response()->json([
+            'message' => __('Message Send Success'),
+            'ticket_id' => $request->ticket_id,
+            'user_type' => $request->user_type,
+            'ticket_info' => $ticket_info,
+        ]);
     }
 
-    public function get_department(){
+    public function get_department()
+    {
 
-        $data = SupportDepartment::select("id","name","status")->where(['status' => 1])->get();
+        $data = SupportDepartment::select("id", "name", "status")->where(['status' => 1])->get();
         return response()->json(["data" => $data]);
     }
 
-    public function createTicket(Request $request){
+    public function createTicket(Request $request)
+    {
         $user_info = auth('sanctum')->user()->id;
         $request->validate([
             'title' => 'required|string|max:191',
@@ -513,10 +529,10 @@ class UserController extends Controller
             'priority' => 'required|string|max:191',
             'description' => 'required|string',
             'departments' => 'required|string',
-        ],[
+        ], [
             'title.required' => __('title required'),
-            'subject.required' =>  __('subject required'),
-            'priority.required' =>  __('priority required'),
+            'subject.required' => __('subject required'),
+            'priority.required' => __('priority required'),
             'description.required' => __('description required'),
             'departments.required' => __('departments required'),
         ]);
@@ -537,16 +553,110 @@ class UserController extends Controller
 
         $msg = get_static_option('support_ticket_success_message') ?? __('Thanks for contact us, we will reply soon');
 
-        return response()->json(["msg" => $msg,"ticket" => $ticket]);
+        return response()->json(["msg" => $msg, "ticket" => $ticket]);
     }
 
-    public function delete_shipping_address($shipping_id){
+    public function delete_shipping_address($shipping_id)
+    {
         $shipping = UserDeliveryAddress::find($shipping_id);
-        if(empty($shipping)){ return response()->json(["msg" => "Shipping zone not found on the server."])->setStatusCode(404); }
+        if (empty($shipping)) {
+            return response()->json(["msg" => __("Shipping zone not found on the server.")])->setStatusCode(404);
+        }
 
         $bool = $shipping->user_id == auth('sanctum')->id() ? $shipping->delete() : false;
-        $msg = $bool ? "Successfully Deleted Shipping Zone" : "You are not eligible to delete this shipping address";
+        $msg = $bool ? __("Successfully Deleted Shipping Zone") : __("You are not eligible to delete this shipping address");
 
         return response()->json(["msg" => $msg]);
+    }
+
+    public function all_order_list()
+    {
+        $user_id = auth('sanctum')->user()->id;
+
+        return ProductOrder::where('user_id', $user_id)->paginate(10)->withQueryString();
+    }
+
+    public function single_order_details($order_id)
+    {
+        $user_id = auth('sanctum')->user()->id;
+        $order_details = ProductOrder::where(['user_id' => $user_id, 'id' => $order_id])->first();
+
+        $details = [];
+        foreach (json_decode($order_details->order_details) as $key => $order)
+        {
+            $image = get_attachment_image_by_id($order?->options?->image);
+            $image_url = !empty($image) ? $image['img_url'] : '';
+
+            unset($order->options->image);
+            $order->options->image = $image_url;
+            $details[$key] = $order;
+        }
+
+        unset($order_details->order_details);
+        $order_details->order_details = $details;
+
+        return response()->json(['data' => $order_details]);
+    }
+
+    public function request_order_refund(Request $request)
+    {
+        $validated = $request->validate([
+            'order_id' => 'required|numeric',
+            'refund_products' => 'required|string'
+        ]);
+
+        $refund_products = explode(',', $validated['refund_products']);
+
+        $user_id = auth('sanctum')->user()->id;
+        $existing_order = ProductOrder::find($validated['order_id']);
+        if (empty($existing_order))
+        {
+            return response()->json([
+                'msg' => __('Order is not available')
+            ]);
+        }
+
+        foreach ($refund_products ?? [] as $key => $product)
+        {
+            $order_product = OrderProducts::where('product_id', $product)->first();
+            if (empty($order_product)) {
+                return response()->json([
+                    'msg' => __('Product is not available')
+                ]);
+            }
+
+            $refund = RefundProduct::where([
+                'user_id' => $user_id,
+                'order_id' => $validated['order_id'],
+                'product_id' => $product,
+            ])->first();
+
+            if (empty($refund) && empty($order_product))
+            {
+                RefundProduct::create([
+                    'user_id' => $user_id,
+                    'order_id' => $validated['order_id'],
+                    'product_id' => $product,
+                    'status' => false,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            } else {
+                return response()->json([
+                    'msg' => __('Refund request is already sent')
+                ]);
+            }
+        }
+
+        return response()->json([
+            'msg' => __('Your refund request is sent successfully')
+        ]);
+    }
+
+    public function get_all_refund_list()
+    {
+        $user_id = auth('sanctum')->user()->id;
+
+        return RefundProduct::with('user', 'product')->where('user_id', $user_id)->paginate(10)->withQueryString();
     }
 }

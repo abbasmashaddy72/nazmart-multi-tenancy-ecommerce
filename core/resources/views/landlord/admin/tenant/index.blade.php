@@ -119,7 +119,7 @@
                                 <option value="">{{__('Select Package')}}</option>
                                 @foreach(\App\Models\PricePlan::all() as $price)
                                     <option value="{{$price->id}}" data-id="{{$price->id}}">
-                                        {{$price->title}} {{ '('.amount_with_currency_symbol($price->price).')' }}
+                                        {{$price->title}} {{ '('.amount_with_currency_symbol($price->price).')' }} - {{\App\Enums\PricePlanTypEnums::getText($price->type)}}
                                     </option>
                                 @endforeach
                             </select>

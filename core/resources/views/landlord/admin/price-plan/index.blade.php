@@ -24,6 +24,7 @@
                     <x-slot name="th">
                         <th>{{__('Id')}}</th>
                         <th>{{__('Title')}}</th>
+                        <th>{{__('Type')}}</th>
                         <th>{{__('Price')}}</th>
                         <th>{{__('Status')}}</th>
                         <th>{{__('Created')}}</th>
@@ -36,6 +37,7 @@
                                 <td>
                                     {{ $plan->title}}
                                 </td>
+                                <td>{{ \App\Enums\PricePlanTypEnums::getText($plan->type)}}</td>
                                 <td>{{ amount_with_currency_symbol($plan->price) }}</td>
                                 <td>{{ \App\Enums\StatusEnums::getText($plan->status)  }}</td>
                                 <td>{{$plan->created_at->format('D, d-m-y')}}</td>
