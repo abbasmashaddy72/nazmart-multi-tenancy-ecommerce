@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugins\PageBuilder\Addons\Tenants\xfashion\Blog;
+namespace Plugins\PageBuilder\Addons\Tenants\Hexfashion\Blog;
 
 use App\Helpers\SanitizeInput;
 use Modules\Blog\Entities\Blog;

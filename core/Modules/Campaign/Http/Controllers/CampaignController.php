@@ -259,7 +259,6 @@ class CampaignController extends Controller
         if($this->getGuardName() == "admin"){
             $arr = [
                 "admin_id" => $this->userId(),
-                "vendor_id" => null,
                 "type" => $this->getGuardName(),
             ];
         }

@@ -12,7 +12,6 @@ class AdminGlobalVariable
 
     public function handle(Request $request, Closure $next)
     {
-
         $all_messages = ContactMessage::orderBy('id','desc')->take(3)->get();
         $new_message =  ContactMessage::where('status',1)->count();
 

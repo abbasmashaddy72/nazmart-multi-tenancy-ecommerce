@@ -5,7 +5,7 @@
 
         $highlighted_word = explode('{/h}', $text[1])[0];
 
-        $highlighted_text = '<span class="section-shape">'. $highlighted_word .'</span>';
+        $highlighted_text = '<span class="section-shape title-shape">'. $highlighted_word .'</span>';
         $final_title = '<h2 class="title">'.str_replace('{h}'.$highlighted_word.'{/h}', $highlighted_text, $data['title']).'</h2>';
     } else {
         $final_title = '<h2 class="title">'. $data['title'] .'</h2>';
@@ -58,7 +58,7 @@
             @endforeach
 
             @if(get_static_option('up_coming_themes_frontend'))
-                @foreach(range(3, 12) as $item)
+                @foreach(range(4, 12) as $item)
                     <div class="col-lg-4 col-sm-6 mt-4">
                         <div class="single-themes">
                             <div class="single-themes-thumb coming_soon">

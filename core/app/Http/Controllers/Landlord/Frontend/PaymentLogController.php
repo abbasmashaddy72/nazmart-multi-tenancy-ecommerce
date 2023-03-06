@@ -66,11 +66,19 @@ class PaymentLogController extends Controller
             }
         }
 
+        $selected_payment_gateway = 'nullable';
+        if ($request->selected_payment_gateway)
+        {
+            $zero_price_condition = 'nullable';
+            $selected_payment_gateway = 'required';
+        }
+
         $data = $request->validate([
             'name' => 'nullable|string|max:191',
             'email' => 'nullable|email|max:191',
             'package_id' => 'required|string',
             'payment_gateway' => ''.$zero_price_condition.'|string',
+            'selected_payment_gateway' => ''.$selected_payment_gateway.'|string',
             'trasaction_id' => '' . $manual_transection_condition . '',
             'trasaction_attachment' => '' . $manual_transection_condition . '|mimes:jpeg,png,jpg,gif|max:2048',
             'subdomain' => "required_if:custom_subdomain,!=,null",
@@ -408,7 +416,13 @@ class PaymentLogController extends Controller
     {
         $paypal = PaymentGatewayCredential::get_paypal_credential();
         $payment_data = $paypal->ipn_response();
-        return $this->common_ipn_data($payment_data);
+
+        // todo: Implement it to every ipn method
+        try{
+            return $this->common_ipn_data($payment_data);
+        }catch(\Exception $e){
+
+        }
     }
 
     public function paytm_ipn()

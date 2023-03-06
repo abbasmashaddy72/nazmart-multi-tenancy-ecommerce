@@ -23,7 +23,7 @@ class MediaSeed extends Seeder
 
         // coping media
         $source_dir = 'assets/tenant/seeder_files/all-media';
-        $destination_dir = 'assets/tenant/uploads/media-uploader/'.tenant()->id;
+        $destination_dir = 'assets/tenant/uploads/media-uploader/' . tenant()->id;
         $this->recursive_files_copy($source_dir, $destination_dir);
     }
 
@@ -36,21 +36,16 @@ class MediaSeed extends Seeder
         @mkdir($destination_dir, 0777, true);
 
         // Loop through the files in source directory
-        while($file = readdir($dir))
-        {
+        while ($file = readdir($dir)) {
             // Skip . and ..
-            if(($file != '.') && ($file != '..'))
-            {
+            if (($file != '.') && ($file != '..')) {
                 // Check if it's folder / directory or file
-                if(is_dir($source_dir.'/'.$file))
-                {
+                if (is_dir($source_dir . '/' . $file)) {
                     // Recursively calling this function for sub directory
-                    $this->recursive_files_copy($source_dir.'/'.$file, $destination_dir.'/'.$file);
-                }
-                else
-                {
+                    $this->recursive_files_copy($source_dir . '/' . $file, $destination_dir . '/' . $file);
+                } else {
                     // Copying the files
-                    copy($source_dir.'/'.$file, $destination_dir.'/'.$file);
+                    copy($source_dir . '/' . $file, $destination_dir . '/' . $file);
                 }
             }
         }
@@ -214,6 +209,14 @@ class MediaSeed extends Seeder
         (449,'theme21668949363.png','theme216689493631672754116.png',NULL,'410.2 KB',0,1,'755 x 557 pixels','2023-01-03 19:55:16','2023-01-03 19:55:16'),
         (451,'cl3.png','cl31672754349.png',NULL,'66.64 KB',0,1,'449 x 402 pixels','2023-01-03 19:59:09','2023-01-03 19:59:09'),
         (452,'cl4.png','cl41672754360.png',NULL,'96.92 KB',0,1,'405 x 402 pixels','2023-01-03 19:59:20','2023-01-03 19:59:20'),
-        (453,'arrival1.png','arrival11672754526.png',NULL,'261.87 KB',0,1,'611 x 385 pixels','2023-01-03 20:02:06','2023-01-03 20:02:06')");
+        (453,'arrival1.png','arrival11672754526.png',NULL,'261.87 KB',0,1,'611 x 385 pixels','2023-01-03 20:02:06','2023-01-03 20:02:06'),
+        (454,'03_logo_themes.png','03-logo-themes1677324023.png',NULL,'3.02 KB',0,1,'181 x 32 pixels','2023-02-25 17:20:23','2023-02-25 17:20:23'),
+        (455,'03_themes_favicon.png','03-themes-favicon1677324189.png',NULL,'486 ',0,1,'37 x 32 pixels','2023-02-25 17:23:09','2023-02-25 17:23:09'),
+        (456,'theme3.png','theme31677389322.png',NULL,'296.02 KB',0,1,'862 x 766 pixels','2023-02-26 11:28:42','2023-02-26 11:28:42'),
+        (457,'category2.png','category21677483542.png',NULL,'7.57 KB',0,1,'120 x 120 pixels','2023-02-27 13:39:02','2023-02-27 13:39:02'),
+        (459,'category3.png','category31677483542.png',NULL,'12.2 KB',0,1,'120 x 120 pixels','2023-02-27 13:39:02','2023-02-27 13:39:02'),
+        (460,'category4.png','category41677483542.png',NULL,'10.64 KB',0,1,'120 x 120 pixels','2023-02-27 13:39:02','2023-02-27 13:39:02'),
+        (461,'category5.png','category51677483542.png',NULL,'21.84 KB',0,1,'120 x 120 pixels','2023-02-27 13:39:02','2023-02-27 13:39:02'),
+        (462,'category1.png','category11677486590.png',NULL,'11.52 KB',0,1,'120 x 120 pixels','2023-02-27 14:29:50','2023-02-27 14:29:50')");
     }
 }

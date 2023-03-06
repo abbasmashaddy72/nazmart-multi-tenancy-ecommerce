@@ -38,7 +38,7 @@
                 @php
                     $theme_slug = $theme->slug;
                     $theme_data = \App\Facades\ThemeDataFacade::getIndividualThemeDetails($theme_slug);
-                    $theme_image = \App\Facades\ThemeDataFacade::renderPrimaryThemeScreenshot($theme_slug);
+                    $theme_image = loadScreenshot($theme_slug);
 
                     $theme_name = get_static_option_central($theme_data['slug'].'_theme_name');
                     $theme_description = get_static_option_central($theme_data['slug'].'_theme_description');

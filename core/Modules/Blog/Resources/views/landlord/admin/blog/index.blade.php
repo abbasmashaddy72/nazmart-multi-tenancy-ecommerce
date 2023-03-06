@@ -91,5 +91,4 @@
         })(jQuery);
     </script>
     <x-media-upload.js/>
-
 @endsection

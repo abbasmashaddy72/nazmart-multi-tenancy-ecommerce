@@ -103,8 +103,8 @@ Route::middleware([
 
         // todo:: hare custom assets route
         Route::get("assets/css/{filename}", function ($filename){
-            if(file_exists(theme_assets('css/'. $filename))){
-                return response()->file(theme_assets('css/'. $filename),['content-type' => "text/css"]);
+            if(file_exists(theme_assets('css/'. $filename . '.css'))){
+                return response()->file(theme_assets('css/'. $filename . '.css'),['content-type' => "text/css"]);
             }
 
             return abort(404);

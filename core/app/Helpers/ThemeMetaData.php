@@ -61,7 +61,7 @@ class ThemeMetaData
         {
             foreach ($headerHook->style as $item)
             {
-                $file_name[] = $item.'.css';
+                $file_name[] = $item;
             }
         }
 

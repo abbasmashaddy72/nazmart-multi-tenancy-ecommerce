@@ -616,7 +616,7 @@ class GeneralSettingsController extends Controller
         Artisan::call('tenants:migrate', ['--force' => true]);
         Artisan::call('db:seed', ['--force' => true]);
 
-        if (!get_static_option('theme_modify_seeder_ran')) {
+        if (!get_static_option('theme_modify_seeder_ran') && (get_static_option('get_script_version_for_seed') < get_static_option_central('get_script_version'))) {
             Artisan::call('db:seed', ['--class' => ThemeModifySeeder::class, '--force' => true]);
             Artisan::call('tenants:seed', ['--class' => ThemeModifySeederTenant::class, '--force' => true]);
             update_static_option('theme_modify_seeder_ran', true);
@@ -690,5 +690,23 @@ class GeneralSettingsController extends Controller
         }
 
         return back()->with(FlashMsg::update_succeed('breadcrumb'));
+    }
+
+    public function highlight()
+    {
+        return view('landlord.admin.appearance-settings.highlight-settings');
+    }
+
+    public function highlight_update(Request $request)
+    {
+        $data = $request->validate([
+            'highlight_text_shape' => 'nullable|integer',
+        ]);
+
+        foreach ($data as $key => $item) {
+            update_static_option($key, $item);
+        }
+
+        return back()->with(FlashMsg::update_succeed('Highlight Text Shape Image'));
     }
 }

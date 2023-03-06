@@ -195,19 +195,24 @@ class PageBuilderSetup
     public static function render_widgets_by_name_for_admin($args)
     {
         $widget_class = $args['namespace'];
-        $instance = new $widget_class($args);
-        if ($instance->enable()) {
-            //            return $instance->admin_render_raw();
-            return $instance->admin_render();
+        if (class_exists($widget_class))
+        {
+            $instance = new $widget_class($args);
+            if ($instance->enable()) {
+                return $instance->admin_render();
+            }
         }
     }
 
     public static function render_widgets_by_name_for_frontend($args)
     {
         $widget_class = $args['namespace'];
-        $instance = new $widget_class($args);
-        if ($instance->enable()) {
-            return $instance->frontend_render();
+        if(class_exists($widget_class))
+        {
+            $instance = new $widget_class($args);
+            if ($instance->enable()) {
+                return $instance->frontend_render();
+            }
         }
     }
 

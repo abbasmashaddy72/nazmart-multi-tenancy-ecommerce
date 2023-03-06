@@ -67,7 +67,7 @@
                 $site_logo = get_attachment_image_by_id(get_static_option('site_white_logo'),"full",false);
             @endphp
             @if (!empty($site_logo))
-                <img src="{{$site_logo['img_url']}}" alt="{{get_static_option('site_'.get_default_language().'_title')}}">
+                <img src="{{$site_logo['img_url']}}" alt="{{get_static_option('site_title')}}">
             @endif
         </a>
     </div>

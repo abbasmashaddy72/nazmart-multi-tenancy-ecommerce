@@ -254,7 +254,7 @@
                             @php
                                 $theme_slug = $theme->slug;
                                 $theme_data = getIndividualThemeDetails($theme_slug);
-                                $theme_image = renderPrimaryThemeScreenshot($theme_slug);
+                                $theme_image = loadScreenshot($theme_slug);
 
                                 $theme_custom_name = get_static_option_central($theme_data['slug'].'_theme_name');
                                 $theme_custom_url = get_static_option_central($theme_data['slug'].'_theme_url');
