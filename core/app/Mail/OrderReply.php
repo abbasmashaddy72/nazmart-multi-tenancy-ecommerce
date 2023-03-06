@@ -31,7 +31,7 @@ class OrderReply extends Mailable
     public function build()
     {
         $admin_mail_check = is_null(tenant()) ? get_static_option('site_global_email') : get_static_option('tenant_site_global_email');
-        return $this->from($admin_mail_check, get_static_option('site_'.get_default_language().'_title'))
+        return $this->from($admin_mail_check, get_static_option('site_title'))
             ->subject($this->subject)
             ->view('emails.order-reply');
     }

@@ -412,14 +412,14 @@ class LandlordFrontendController extends Controller
         if ($request->subdomain != null) {
             $has_subdomain = Tenant::find(trim($request->subdomain));
             if (!empty($has_subdomain)) {
-                return back()->with(['type' => 'danger', 'msg' => 'This subdomain is already in use, Try something different']);
+                return back()->with(['type' => 'danger', 'msg' => __('This subdomain is already in use, Try something different')]);
             }
 
             $site_domain = url('/');
             $site_domain = str_replace(['http://', 'https://'], '', $site_domain);
             $site_domain = substr($site_domain, 0, strpos($site_domain, '.'));
             $restricted_words = ['https', 'http', 'http://', 'https://','www', 'subdomain', 'domain', 'primary-domain', 'central-domain',
-                'landlord', 'landlords', 'tenant', 'tenants', 'multi-store', 'multistore', 'admin',
+                'landlord', 'landlords', 'tenant', 'tenants', 'admin',
                 'user', 'user', $site_domain];
 
             if (in_array(trim($request->subdomain), $restricted_words))
@@ -493,15 +493,15 @@ class LandlordFrontendController extends Controller
             }
         }
 
-//        try{
+        try{
             TenantCreateEventWithMail::tenant_create_event_with_credential_mail($user, $subdomain, $theme);
             TenantTrialPaymentLog::trial_payment_log($user,$plan,$subdomain);
 
-//        }catch(\Exception $ex){
-//            $message = $ex->getMessage();
-//            LandlordPricePlanAndTenantCreate::store_exception($subdomain,'domain failed on trial',$message,0);
-//            return response()->json(['msg' => __('something went wrong, we have notified to admin regarding this issue, please try after sometime'), 'type'=>'danger']);
-//        }
+        }catch(\Exception $ex){
+            $message = $ex->getMessage();
+            LandlordPricePlanAndTenantCreate::store_exception($subdomain,'domain failed on trial',$message,0);
+            return response()->json(['msg' => __('something went wrong, we have notified to admin regarding this issue, please try after sometime'), 'type'=>'danger']);
+        }
 
         $domain_details = DB::table('domains')->where('tenant_id',$subdomain)->first(); //domain; //issue in this line
 

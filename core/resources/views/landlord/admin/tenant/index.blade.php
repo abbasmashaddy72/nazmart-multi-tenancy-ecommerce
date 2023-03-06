@@ -142,8 +142,8 @@
                         <div class="form-group">
                             <label for="">{{__('Payment Status')}}</label>
                             <select class="form-control" name="payment_status">
-                                    <option value="pending">{{__('Pending')}}</option>
-                                    <option value="complete">{{__('Complete')}}</option>
+                                <option value="complete">{{__('Complete')}}</option>
+                                <option value="pending">{{__('Pending')}}</option>
                             </select>
                             <small class="text-primary">{{__('You can set payment status pending or complete from here')}}</small>
                         </div>

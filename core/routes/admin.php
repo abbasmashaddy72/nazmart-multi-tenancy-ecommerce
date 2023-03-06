@@ -170,6 +170,14 @@ Route::group(['middleware' => ['auth:admin','adminglobalVariable', 'set_lang'],'
 
 
     /* ------------------------------------------
+    Text Highlight Settings ROUTES
+    -------------------------------------------- */
+    Route::controller(GeneralSettingsController::class)->name('landlord.')->prefix('landlord')->group(function (){
+        Route::get('/highlight','highlight')->name('admin.highlight');
+        Route::post('/highlight/update','highlight_update')->name('admin.highlight.update');
+    });
+
+    /* ------------------------------------------
     Breadcrumb Settings ROUTES
     -------------------------------------------- */
     Route::controller(GeneralSettingsController::class)->name('landlord.')->prefix('landlord')->group(function (){

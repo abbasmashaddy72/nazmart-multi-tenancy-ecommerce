@@ -165,7 +165,7 @@ class OrderManageController extends Controller
             'subject' => 'required|string',
             'message' => 'required|string',
         ]);
-        $subject = str_replace('{site}', get_static_option('site_' . get_default_language() . '_title'), $request->subject);
+        $subject = str_replace('{site}', get_static_option('site_title'), $request->subject);
         $data = [
             'name' => $request->name,
             'message' => $request->message,

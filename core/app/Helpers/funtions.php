@@ -411,7 +411,7 @@ function get_modified_title($title)
 
         $highlighted_word = explode('{/h}', $text[1])[0];
 
-        $highlighted_text = '<span class="section-shape">' . $highlighted_word . '</span>';
+        $highlighted_text = '<span class="section-shape title-shape">' . $highlighted_word . '</span>';
         return $final_title = '<h2 class="title">' . str_replace('{h}' . $highlighted_word . '{/h}', $highlighted_text, $title) . '</h2>';
 
     } else {

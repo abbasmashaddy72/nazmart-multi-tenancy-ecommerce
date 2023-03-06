@@ -347,7 +347,14 @@ class SidebarMenuHelper
             'icon' => 'mdi mdi-folder-outline',
         ]);
 
-        $menu_instance->add_menu_item('Breadcrumb-settings-all', [
+        $menu_instance->add_menu_item('highlight-settings-all', [
+            'route' => 'landlord.admin.highlight',
+            'label' => __('Text Highlight Settings'),
+            'parent' => 'appearance-settings-menu-items',
+            'permissions' => ['highlight-settings'],
+        ]);
+
+        $menu_instance->add_menu_item('breadcrumb-settings-all', [
             'route' => 'landlord.admin.breadcrumb',
             'label' => __('Breadcrumb Settings'),
             'parent' => 'appearance-settings-menu-items',
@@ -1099,7 +1106,7 @@ class SidebarMenuHelper
             'route' => '#',
             'label' => __('Products'),
             'parent' => null,
-            'permissions' => ['product-list', 'product-create', 'product-edit', 'product-delete', 'product-settings'],
+            'permissions' => ['product-list', 'product-create', 'product-edit', 'product-delete', 'product-settings', 'product-reviews'],
             'icon' => 'mdi mdi-shopping',
         ]);
 
@@ -1115,6 +1122,13 @@ class SidebarMenuHelper
             'label' => __('Add New Product'),
             'parent' => 'product-settings-menu-items',
             'permissions' => ['product-create'],
+        ]);
+
+        $menu_instance->add_menu_item('product-reviews-menu-items', [
+            'route' => 'tenant.admin.product.review',
+            'label' => __('Review and Rating List'),
+            'parent' => 'product-settings-menu-items',
+            'permissions' => ['product-reviews'],
         ]);
     }
 

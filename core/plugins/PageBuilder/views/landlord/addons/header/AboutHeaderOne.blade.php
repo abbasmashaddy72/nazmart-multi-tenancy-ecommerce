@@ -5,7 +5,7 @@
 
         $highlighted_word = explode('{/h}', $text[1])[0];
 
-        $highlighted_text = '<span class="title-shapes">'. $highlighted_word .'</span>';
+        $highlighted_text = '<span class="title-shapes title-shape">'. $highlighted_word .'</span>';
         $final_title = '<h2 class="about-contents-title">'.str_replace('{h}'.$highlighted_word.'{/h}', $highlighted_text, $data['title']).'</h2>';
     } else {
         $final_title = '<h2 class="about-contents-title">'. $data['title'] .'</h2>';

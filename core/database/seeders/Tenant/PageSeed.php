@@ -49,9 +49,9 @@ class PageSeed extends Seeder
         // Uploading page layout
         if (session()->get('theme'))
         {
-            $file_name = session()->get('theme').'/home-layout.json';
+            $file_name = session()->get('theme').'/assets/page_layout/home-layout.json';
         } else {
-            $file_name = 'hexfashion/home-layout.json';
+            $file_name = 'hexfashion/assets/page_layout/home-layout.json';
         }
         $this->upload_layout($file_name, $page_data->id);
 
@@ -85,7 +85,7 @@ class PageSeed extends Seeder
         $page_data_2->metainfo()->create($Metas_2);
 
         // Uploading page layout
-        $file_name = 'hexfashion/about-layout.json';
+        $file_name = 'hexfashion/assets/page_layout/about-layout.json';
         $this->upload_layout($file_name, $page_data_2->id);
 
         $page_data_5 = new Page();
@@ -117,7 +117,7 @@ class PageSeed extends Seeder
         $page_data_5->metainfo()->create($Metas_5);
 
         // Uploading page layout
-        $file_name = 'hexfashion/contact-layout.json';
+        $file_name = 'hexfashion/assets/page_layout/contact-layout.json';
         $this->upload_layout($file_name, $page_data_5->id);
 
 
@@ -184,7 +184,7 @@ class PageSeed extends Seeder
     {
         DB::beginTransaction();
         try {
-            $file_contents = json_decode(file_get_contents('assets/tenant/seeder_files/page-layouts/'.$file));
+            $file_contents = json_decode(file_get_contents('core/resources/views/themes/'.$file));
 
             $contentArr = [];
             if (current($file_contents)->addon_page_type == 'dynamic_page')
