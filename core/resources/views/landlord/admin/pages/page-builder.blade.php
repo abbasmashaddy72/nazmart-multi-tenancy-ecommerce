@@ -6,6 +6,23 @@
     <x-pagebuilder::css/>
     <link rel="stylesheet" href="{{global_asset('assets/common/css/fontawesome-iconpicker.min.css')}}">
     <link href="{{ global_asset('assets/landlord/admin/css/nice-select.css') }}" rel="stylesheet">
+
+    <style>
+        .attachment-preview {
+            overflow: hidden;
+        }
+        .attachment-preview .thumbnail .centered {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: translate(50%, 50%);
+            width: 100%;
+            height: 100%;
+        }
+        .attachment-preview .thumbnail .centered img {
+            object-fit: contain;
+        }
+    </style>
 @endsection
 @section('content')
     @php

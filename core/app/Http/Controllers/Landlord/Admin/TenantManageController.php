@@ -353,8 +353,42 @@ class TenantManageController extends Controller
 
                 $payment_details = PaymentLogs::findOrFail($old_tenant_log->id);
             }
+            else {
+
+                $package_start_date = $tenant->start_date;
+                $new_package_expire_date = $tenant->expire_date;
+
+                $user = User::find($request->subs_user_id);
+                $payment_log = PaymentLogs::create([
+                    'custom_fields' =>  '',
+                    'attachments' =>  '',
+                    'email' => $user->email,
+                    'name' => $user->name,
+                    'package_name' => $package->title,
+                    'package_price' => $package->price,
+                    'package_gateway' => null,
+                    'package_id' => $package->id,
+                    'user_id' => $user->id,
+                    'tenant_id' => $tenant->id,
+                    'status' => 'pending',
+                    'payment_status' => $request->payment_status,
+                    'renew_status' => 0,
+                    'is_renew' => 0,
+                    'track' => Str::random(10) . Str::random(10),
+                    'start_date' => $package_start_date,
+                    'expire_date' => $new_package_expire_date
+                ]);
+
+                DB::table('tenants')->where('id', $tenant->id)->update([
+                    'renew_status' => 0,
+                    'is_renew' => 0,
+                    'start_date' => $package_start_date,
+                    'expire_date' => $new_package_expire_date
+                ]);
+
+                $payment_details = PaymentLogs::findOrFail($payment_log->id);
+            }
         } else {
-            
            try{
                 event(new TenantRegisterEvent($user, $subdomain, get_static_option('default_theme')));
             }catch(\Exception $e){

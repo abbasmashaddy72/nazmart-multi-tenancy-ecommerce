@@ -24,6 +24,7 @@
                         <th>{{__('User ID')}}</th>
                         <th>{{__('User Name')}}</th>
                         <th>{{__('Issue Type')}}</th>
+                        <th>{{__('Description')}}</th>
                         <th>{{__('Domain')}}</th>
                         <th>{{__('Domain Status')}}</th>
                         <th>{{__('Action')}}</th>
@@ -35,6 +36,7 @@
                                 <td>{{$data->tenant?->payment_log?->user?->id}}</td>
                                 <td>{{$data->tenant?->payment_log?->user?->name}}</td>
                                 <td>{{ ucfirst($data->issue_type) }}</td>
+                                <td>{{ $data->description }}</td>
                                 <td>{{ $data->tenant_id  }}</td>
                                 <td>{{ \App\Enums\DomainCreateStatusEnum::getText($data->domain_create_status)  }}</td>
 
@@ -52,13 +54,11 @@
                                     >
                                        <i class="mdi mdi-eye"></i>
                                     </a>
-                                    
+
                                     @if($data->domain_create_status == 0)
-                                    
                                      <form action="{{route('landlord.admin.failed.domain.generate')}}" method="post" enctype="multipart/form-data">
-                                       
                                         @csrf
-                                        
+
                                          <input type="hidden" name="id" value="{{$data->id}}">
                                         <button type="submit"class="btn btn-info btn-sm mt-2">{{__('Generate')}}</button>
                                     </form>
@@ -74,7 +74,7 @@
     </div>
 
     <x-media-upload.markup/>
-    
+
         <div class="modal fade" id="view_details_website_issues" aria-hidden="true">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
@@ -105,7 +105,7 @@
 @section('scripts')
     <x-media-upload.js/>
     <x-datatable.js/>
-    
+
         <script>
         $(document).ready(function(){
 

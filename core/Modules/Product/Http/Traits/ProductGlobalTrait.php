@@ -526,9 +526,10 @@ trait ProductGlobalTrait {
                 'twitter_description' => $product?->metaData?->tw_description,
                 'twitter_image' => $product?->metaData?->tw_image,
             ];
+
+            $newProduct->metaData()->create(["metainfoable_id" => $id],$this->prepareMetaData($metaData));
         }
 
-        $newProduct->metaData()->create(["metainfoable_id" => $id],$this->prepareMetaData($metaData));
         $this->createdByUpdatedBy($id);
 
         $data["sku"] = create_slug(optional($product->inventory)->sku, 'ProductInventory', true, 'Product', 'sku');

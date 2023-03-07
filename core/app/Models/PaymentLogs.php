@@ -50,5 +50,4 @@ class PaymentLogs extends Model
    protected $casts = [
        'expire_date' => 'datetime',
    ];
-
 }

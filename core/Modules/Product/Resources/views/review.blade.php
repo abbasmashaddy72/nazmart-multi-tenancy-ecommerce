@@ -6,7 +6,14 @@
 @section('style')
     <style>
         .product_image{
-            width: 100%;
+            max-width: 100px;
+        }
+        .star{
+            color: gray;
+            font-size: 20px;
+        }
+        .star.checked{
+            color: orange;
         }
     </style>
 @endsection
@@ -26,11 +33,6 @@
                         <div class="load-ajax-data"></div>
                         <thead class="head-bg">
                         <tr>
-                            <th class="check-all-rows p-3">
-                                <div class="mark-all-checkbox text-center">
-                                    <input type="checkbox" class="all-checkbox">
-                                </div>
-                            </th>
                             <th> {{__("ID")}} </th>
                             <th> {{__("Image")}} </th>
                             <th> {{__("Product")}} </th>
@@ -43,10 +45,6 @@
                         <tbody>
                         @forelse($review_list as $review)
                             <tr>
-                                <td data-label="Check All">
-                                    <x-bulk-delete-checkbox :id="$review->id"/>
-                                </td>
-
                                 <td>
                                     <span class="quantity-number">{{$review->id}}</span>
                                 </td>
@@ -65,10 +63,19 @@
 
                                 <td>
                                     <span>{{$review->rating.' '.__('Star')}}</span>
+                                    {!! render_star($review->rating, 'mt-2') !!}
                                 </td>
 
                                 <td>
                                     <span>{{$review->review_text}}</span>
+                                </td>
+
+                                <td>
+                                    <span>
+                                        <a class="btn btn-info btn-sm view-btn" href="{{route('tenant.shop.product.details', $review?->product->slug)}}">
+                                            <i class="mdi mdi-eye"></i>
+                                        </a>
+                                    </span>
                                 </td>
                             </tr>
                         @empty

@@ -398,6 +398,27 @@ function render_product_star_rating_markup_with_count($product_object): string
             </div>';
 }
 
+function render_star($rating, $class = '')
+{
+    $markup = '<div class="'.$class.'">';
+    if (!empty($rating))
+    {
+        for ($i=0; $i<$rating; $i++)
+        {
+            $markup .= '<span class="star mdi mdi-star checked"></span>';
+        }
+
+        // maximum rating always 5
+        for ($i=0; $i<5-$rating; $i++)
+        {
+            $markup .= '<span class="star mdi mdi-star"></span>';
+        }
+    }
+    $markup .= '</div>';
+
+    return $markup;
+}
+
 function get_footer_copyright_text()
 {
     $footer_copyright_text = get_static_option('site_footer_copyright_text');
