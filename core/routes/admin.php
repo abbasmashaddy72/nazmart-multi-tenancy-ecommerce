@@ -86,7 +86,6 @@ Route::group(['middleware' => ['auth:admin','adminglobalVariable', 'set_lang'],'
     Route::controller(\App\Http\Controllers\Landlord\Admin\TenantExceptionController::class)->name('landlord.')->prefix('website-issues')->group(function (){
         Route::get('/','website_issues')->name('admin.tenant.website.issues');
         Route::post('/','generate_domain')->name('admin.failed.domain.generate');
-
     });
 
 

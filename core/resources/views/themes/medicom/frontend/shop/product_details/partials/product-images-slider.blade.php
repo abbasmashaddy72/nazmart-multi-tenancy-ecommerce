@@ -26,7 +26,7 @@
              data-asNavFor=".shop-details-top-slider" data-focusOnSelect="true" data-infinite="true"
              data-swipeToslide="true" data-slidesToShow="5" data-dots="false"
              data-autoplaySpeed="3000" data-autoplay="true"
-             data-responsive='[{"breakpoint": 1600,"settings": {"slidesToShow": 4}},{"breakpoint": 1400,"settings": {"slidesToShow": 4}},{"breakpoint": 1200,"settings": {"slidesToShow": 3,"arrows": false,"dots": false}},{"breakpoint": 992,"settings": {"slidesToShow": 4,"arrows": false,"dots": false}},{"breakpoint": 768,"settings": {"slidesToShow": 3} },{"breakpoint": 480,"settings": {"slidesToShow": 2} }]'>
+             data-responsive='[{"breakpoint": 1600,"settings": {"slidesToShow": 4}},{"breakpoint": 1400,"settings": {"slidesToShow": 4}},{"breakpoint": 1200,"settings": {"slidesToShow": 3,"arrows": false,"dots": false}},{"breakpoint": 992,"settings": {"slidesToShow": 5,"arrows": false,"dots": false}},{"breakpoint": 768,"settings": {"slidesToShow": 4} },{"breakpoint": 576,"settings": {"slidesToShow": 4} },{"breakpoint": 480,"settings": {"slidesToShow": 3} }]'>
             @foreach($image_array as $imageId)
                 @php
                     $image = get_attachment_image_by_id($imageId);

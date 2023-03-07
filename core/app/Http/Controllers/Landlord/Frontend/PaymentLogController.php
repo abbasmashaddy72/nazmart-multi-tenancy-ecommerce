@@ -17,6 +17,7 @@ use App\Models\PaymentGateway;
 use App\Models\PaymentLogs;
 use App\Models\PricePlan;
 use App\Models\Tenant;
+use App\Models\TenantException;
 use App\Models\User;
 use App\Models\ZeroPricePlanHistory;
 use Illuminate\Http\Request;
@@ -67,7 +68,7 @@ class PaymentLogController extends Controller
         }
 
         $selected_payment_gateway = 'nullable';
-        if ($request->selected_payment_gateway)
+        if ($request->selected_payment_gateway && $request->selected_payment_gateway != 'manual_payment')
         {
             $zero_price_condition = 'nullable';
             $selected_payment_gateway = 'required';
@@ -328,6 +329,18 @@ class PaymentLogController extends Controller
         } catch (\Exception $exception) {
             DB::rollBack(); // Rollback all the actions
             return back()->with('msg', 'Something went wrong');
+        }
+
+        if(!isset($this->payment_details))
+        {
+            TenantException::create([
+                'tenant_id' => $is_tenant->id,
+                'issue_type' => 'Payment log creation unsuccessful',
+                'description' => 'Payment log creation unsuccessful but tenant and domain created',
+                'domain_create_status' => 1,
+                'seen_status' => 0
+            ]);
+            return back()->with(['msg' => __('Your shop creation was done incorrectly. Please contact admin or create a new shop'), 'type' => 'danger']);
         }
 
         if ($request->selected_payment_gateway === 'manual_payment')

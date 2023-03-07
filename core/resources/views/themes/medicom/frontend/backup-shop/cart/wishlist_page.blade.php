@@ -15,7 +15,6 @@
             <div class="cart-area padding-top-75 padding-bottom-100">
                 <div class="container container-one">
                     <div class="row">
-                        @dd(5656655)
                         @include('tenant.frontend.shop.cart.partials.cart_left_contents')
 
                         @include('tenant.frontend.shop.cart.partials.cart_right_contents')

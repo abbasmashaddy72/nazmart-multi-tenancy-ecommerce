@@ -147,7 +147,7 @@
 
         <!-- Shop Details area end -->
     <section class="shop-details-area padding-top-100 padding-bottom-50">
-        <div class="container container-one">
+        <div class="container">
             <div class="row">
                 @include(include_theme_path('shop.product_details.partials.product-images-slider'))
                 <div class="col-lg-6">

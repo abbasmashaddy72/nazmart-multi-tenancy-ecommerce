@@ -6,6 +6,7 @@ namespace App\Helpers;
 
 use App\Models\PaymentLogs;
 use App\Models\PricePlan;
+use App\Models\TenantException;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use function __;
@@ -731,7 +732,7 @@ class SidebarMenuHelper
             }
         }
 
-        $this->tenant_mobile_app_settings_menus($menu_instance);
+//        $this->tenant_mobile_app_settings_menus($menu_instance);
 
         $this->tenant_appearance_settings_menus($menu_instance);
 

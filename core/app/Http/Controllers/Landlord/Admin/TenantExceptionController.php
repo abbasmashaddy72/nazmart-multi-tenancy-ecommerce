@@ -26,7 +26,7 @@ class TenantExceptionController extends Controller
 
     public function website_issues()
     {
-        $all_issues = TenantException::where(['domain_create_status'=> 0, 'seen_status' => 0])->get();
+        $all_issues = TenantException::where(['domain_create_status'=> 1, 'seen_status' => 0])->get();
         return view('landlord.admin.user-website-issues.all-issues', compact('all_issues'));
     }
 
@@ -44,7 +44,7 @@ class TenantExceptionController extends Controller
         if(is_null($payment_log)){
             return response()->danger(__('tenant payment log not found'));
         }
-        
+
         $payment_data = [];
         $payment_data['order_id'] = $payment_log->id;
         LandlordPricePlanAndTenantCreate::update_tenant($payment_data); //tenant table user_id update and expired date update

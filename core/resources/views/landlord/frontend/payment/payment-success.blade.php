@@ -1,12 +1,23 @@
 @extends('landlord.frontend.frontend-page-master')
 @section('title')
-
     {{__('Payment Success For:')}} {{$payment_details->package_name}}
 @endsection
 @section('page-title')
    {{$payment_details->package_name}}
 @endsection
+
+@section('style')
+    <style>
+        .store-icon{
+            font-size: 20px;
+        }
+    </style>
+@endsection
+
 @section('content')
+    @php
+        $site_domain = DB::table('domains')->where('tenant_id', $payment_details->tenant_id)->first();
+    @endphp
 
     <div class="error-page-content" data-padding-bottom="100">
         <div class="container">
@@ -38,6 +49,10 @@
                             </li>
                             <li class="text-capitalize"><strong>{{__('Payment Status:')}}</strong> {{$payment_details->payment_status}}</li>
                             <li><strong>{{__('Transaction ID:')}}</strong> {{$payment_details->transaction_id}}</li>
+
+                            @if(!empty($site_domain))
+                                <li><strong>{{__('Shop URL:')}}</strong> <a href="{{tenant_url_with_protocol($site_domain->domain)}}" target="_blank">{{$site_domain->domain}}</a></li>
+                            @endif
                         </ul>
                     </div>
                     <div class="single-billing-items mt-4">
@@ -49,6 +64,10 @@
                     </div>
                     <div class="btn-wrapper mt-5">
                         <a href="{{route('landlord.homepage')}}" class="cmn-btn cmn-btn-bg-1 ">{{__('Back To Home')}}</a>
+
+                        @if(!empty($site_domain))
+                            <a href="{{tenant_url_with_protocol($site_domain->domain)}}" class="cmn-btn cmn-btn-bg-4" target="_blank">{{__('Open Shop')}} <i class="store-icon las la-store-alt"></i></a>
+                        @endif
                     </div>
                 </div>
                 <div class="col-lg-4">

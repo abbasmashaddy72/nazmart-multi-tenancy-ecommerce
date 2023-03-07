@@ -32,7 +32,6 @@
 
                 <div class="row g-4">
                     @foreach(getAllThemeDataForAdmin() as $theme)
-                        @break($loop->iteration > 2)
                         @php
                             $theme_slug = $theme->slug;
                             $theme_data = getIndividualThemeDetails($theme_slug);

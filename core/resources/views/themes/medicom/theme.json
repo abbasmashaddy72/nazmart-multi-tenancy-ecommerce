@@ -12,7 +12,7 @@
     ],
     "headerHook":[
         {
-            "style":["medicom"],
+            "style":["medicom", "custom_frontend"],
             "script":[],
             "blade":[]
         }

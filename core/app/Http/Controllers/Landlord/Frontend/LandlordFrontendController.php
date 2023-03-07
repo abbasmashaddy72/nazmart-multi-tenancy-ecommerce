@@ -485,7 +485,7 @@ class LandlordFrontendController extends Controller
                     $has_trial = true;
                 }
             }
-            if($has_trial == true){
+            if($has_trial){
                 return response()->json([
                     'msg' => __('Your trial limit is over! Please purchase a plan to continue').'<br>'.'<small>'.__('You can make trial once only..!').'</small>',
                     'type' => 'danger'
