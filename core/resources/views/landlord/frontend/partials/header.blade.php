@@ -11,6 +11,7 @@
     {!! JsonLd::generate() !!}
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="canonical" href="{{canonical_url()}}" />
 
     {!! load_google_fonts() !!}
     {!! render_favicon_by_id(get_static_option('site_favicon')) !!}
