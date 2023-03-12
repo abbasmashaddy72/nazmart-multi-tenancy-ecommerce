@@ -13,8 +13,8 @@ use Modules\Product\Entities\Product;
 
 class FeaturedProductController extends Controller
 {
-    public function index(){
-        $product = MobileFeaturedProductService::get_product();
+    public function index($limit = 4){
+        $product = MobileFeaturedProductService::get_product($limit);
 
         return MobileFeatureProductResource::collection($product);
     }

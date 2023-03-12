@@ -4,6 +4,9 @@ namespace Modules\MobileApp\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Tenant\Frontend\TenantFrontendController;
+use App\Http\Requests\CheckoutFormRequest;
+use App\Http\Services\CheckoutToPaymentService;
+use App\Http\Services\ProductCheckoutService;
 use App\Models\OrderProducts;
 use App\Models\ProductOrder;
 use App\Models\ProductReviews;
@@ -13,6 +16,9 @@ use Modules\Attributes\Entities\Category;
 use Modules\Attributes\Entities\Color;
 use Modules\Attributes\Entities\Size;
 use Modules\Attributes\Entities\Unit;
+use Modules\CountryManage\Entities\Country;
+use Modules\CountryManage\Entities\State;
+use Modules\CouponManage\Entities\ProductCoupon;
 use Modules\MobileApp\Http\Resources\Api\MobileFeatureProductResource;
 use App\Http\Resources\ProductResource;
 use Modules\Product\Entities\Product;
@@ -26,6 +32,7 @@ use Modules\Product\Entities\SaleDetails;
 use Illuminate\Http\Request;
 use Modules\MobileApp\Http\Services\Api\ApiProductServices;
 use Modules\Product\Services\Web\FrontendProductServices;
+use Modules\ShippingModule\Entities\ShippingMethod;
 
 class ProductController extends Controller
 {
@@ -353,5 +360,54 @@ class ProductController extends Controller
             'maximum_available_price',
             'item_style',
         ));
+    }
+
+    public function productCoupon()
+    {
+        $coupon = ProductCoupon::where('status', 'publish')->get();
+        return response()->json(["coupon" => $coupon]);
+    }
+
+    public function shippingCharge()
+    {
+        $shipping_method = ShippingMethod::with('zone')->get();
+
+        foreach ($shipping_method as $method)
+        {
+            $country_name = [];
+            $state_names = [];
+
+            $country = json_decode($method?->zone?->region?->country);
+            $states = json_decode($method?->zone?->region?->state);
+
+            $country_name = Country::select('id', 'name', 'status')->find($country);
+            foreach ($states as $each_state)
+            {
+                $state_names[] = State::select('id', 'name', 'status')->find($each_state);
+            }
+
+            $method->zone->region->country = $country_name;
+            $method->zone->region->state = $state_names;
+        }
+
+
+        return response()->json(['shipping_charge' => $shipping_method]);
+    }
+
+    public function checkout(CheckoutFormRequest $request)
+    {
+        $validated_data = $request->validated();
+        $validated_data['checkout_type'] = $validated_data['cash_on_delivery'] === 'on' ? 'cod' : 'digital';
+
+        $checkout_service = new ProductCheckoutService();
+        $user = $checkout_service->getOrCreateUser($validated_data);
+        $order_log_id = $checkout_service->createOrder($validated_data, $user);
+
+        // Checking shipping method is selected
+        if(!$order_log_id) {
+            return back()->withErrors(['error' => 'Please select a shipping method']);
+        }
+
+        return CheckoutToPaymentService::checkoutToGateway(compact('order_log_id', 'validated_data')); // Sending multiple data compacting together in one array
     }
 }

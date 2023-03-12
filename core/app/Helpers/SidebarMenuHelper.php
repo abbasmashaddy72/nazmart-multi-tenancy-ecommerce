@@ -732,7 +732,7 @@ class SidebarMenuHelper
             }
         }
 
-//        $this->tenant_mobile_app_settings_menus($menu_instance);
+        $this->tenant_mobile_app_settings_menus($menu_instance);
 
         $this->tenant_appearance_settings_menus($menu_instance);
 
@@ -1288,6 +1288,13 @@ class SidebarMenuHelper
         $menu_instance->add_menu_item('mobile-intro-all', [
             'route' => 'tenant.admin.mobile.intro.all',
             'label' => __('Mobile Intro'),
+            'parent' => 'mobile-app-settings-menu-items',
+            'permissions' => null,
+        ]);
+
+        $menu_instance->add_menu_item('featured-product-all', [
+            'route' => 'tenant.admin.featured.product.all',
+            'label' => __('Featured Product'),
             'parent' => 'mobile-app-settings-menu-items',
             'permissions' => null,
         ]);

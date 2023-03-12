@@ -4,6 +4,7 @@ namespace Modules\MobileApp\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Page;
+use App\Models\PaymentGateway;
 use Illuminate\Http\Request;
 
 class MobileController extends Controller
@@ -28,5 +29,11 @@ class MobileController extends Controller
 
         return response()->json(["symbol" => site_currency_symbol(),"currencyPosition" => get_static_option('site_currency_symbol_position'),
             "rtl" => $is_rtl_on_or_not]);
+    }
+
+    public function paymentMethodList()
+    {
+        $payment_gateways = PaymentGateway::where('status', 1)->select('id', 'name', 'image', 'description')->get();
+        return response()->json(['data' => $payment_gateways]);
     }
 }

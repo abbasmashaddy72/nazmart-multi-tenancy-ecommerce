@@ -1359,6 +1359,12 @@ function get_time_difference($time_type, $to)
     return $difference;
 }
 
+function wrap_by_paragraph($text, $double_break = false)
+{
+    $break = $double_break ? '<br>' : '';
+    return '<p>'.$text.'</p>'.$break;
+}
+
 function load_google_fonts($theme_number = '')
 {
     //google fonts link;

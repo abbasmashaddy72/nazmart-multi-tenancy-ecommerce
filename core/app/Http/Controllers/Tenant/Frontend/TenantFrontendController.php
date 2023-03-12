@@ -1385,7 +1385,7 @@ class TenantFrontendController extends Controller
             return to_route('tenant.user.home');
         }
 
-        return themeView('user.email-verify');
+        return view('tenant.frontend.user.email-verify');
     }
 
     public function tenant_logout()
@@ -1396,7 +1396,7 @@ class TenantFrontendController extends Controller
 
     public function showUserForgetPasswordForm()
     {
-        return themeView('user.forget-password');
+        return view('tenant.frontend.user.forget-password');
     }
 
     public function sendUserForgetPasswordMail(Request $request)
@@ -1516,7 +1516,7 @@ class TenantFrontendController extends Controller
         if (empty(get_static_option('user_email_verify_status'))) {
             return redirect()->route('tenant.user.home');
         }
-        return themeView('user.email-verify');
+        return view('tenant.frontend.user.email-verify');
     }
 
     public function check_verify_user_email(Request $request)

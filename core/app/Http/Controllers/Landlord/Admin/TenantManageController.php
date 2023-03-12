@@ -222,7 +222,7 @@ class TenantManageController extends Controller
 
     public function tenant_domain_delete($tenant_id)
     {
-        //old domain = same = tenant id //
+        // old domain = same = tenant id //
 
         $tenant = Tenant::findOrFail($tenant_id);
         $user_id = $tenant->user_id;
@@ -234,7 +234,9 @@ class TenantManageController extends Controller
 
         if(!empty($tenant)){
             $tenant->domains()->delete();
-            $tenant->delete();
+            try {
+                $tenant->delete();
+            } catch (\Exception $exception) {}
         }
         if(\File::exists($path) && is_dir($path)){
             File::deleteDirectory($path);
@@ -476,11 +478,22 @@ class TenantManageController extends Controller
             'id' => 'required|integer'
         ]);
 
-        User::find($data['id'])->update([
+        $user = User::find($data['id']);
+        $user->update([
             'email_verified' => 1,
             'email_verified_at' => now()
         ]);
 
-        return back()->with(FlashMsg::explain('success', __('User Email is Verified')));
+        $message = wrap_by_paragraph(__('Hello').' '.$user->name, true);
+        $message .= wrap_by_paragraph(__('Your user account is verified by admin'));
+        $subject = __('Account verification');
+
+        try {
+            Mail::to($user->email)->send(new BasicMail($message, $subject));
+        }catch (\Exception $ex){
+            return response()->danger(ResponseMessage::delete($ex->getMessage()));
+        }
+
+        return back()->with(FlashMsg::explain('success', $user->name .' '. __('user account is verified')));
     }
 }
