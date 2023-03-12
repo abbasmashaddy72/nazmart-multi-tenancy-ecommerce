@@ -120,6 +120,12 @@ class PaymentLogController extends Controller
                 return back()->with(FlashMsg::explain('danger', __('Sorry, You can not use this subdomain')));
             }
 
+            $auth_user = Auth::guard('web')->user();
+            if (!empty(get_static_option('user_email_verify_status')) && !$auth_user->email_verified)
+            {
+                return back()->with(FlashMsg::explain('danger', __('Please verify your account, Visit user dashboard for verification')));
+            }
+
             $sub = $request->custom_subdomain;
             $check_type = false;
             for ($i=0; $i<strlen($sub); $i++)

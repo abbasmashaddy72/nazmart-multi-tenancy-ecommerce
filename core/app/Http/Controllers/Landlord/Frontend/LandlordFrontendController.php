@@ -456,7 +456,7 @@ class LandlordFrontendController extends Controller
                 'type' => 'danger'
             ]);
         }
-        if ($user->email_verified == 0)
+        if (!empty(get_static_option('user_email_verify_status')) && !$user->email_verified)
         {
             return response()->json([
                 'msg' => __('Please verify your account, Visit user dashboard for verification'),

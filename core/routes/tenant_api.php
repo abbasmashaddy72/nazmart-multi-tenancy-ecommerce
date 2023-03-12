@@ -79,7 +79,7 @@ Route::middleware([
 
 // Product Route
 // Fetch feature product
-        Route::get("featured/product", [FeaturedProductController::class,'index']);
+        Route::get("featured/product/{limit?}", [FeaturedProductController::class,'index']);
         Route::get("campaign/product/{id?}", [FeaturedProductController::class,'campaign']);
         Route::get("campaign", [CampaignController::class,'index']); // done
         Route::get("product", [ProductController::class,'search'])->name("api.product.search");
@@ -93,6 +93,14 @@ Route::middleware([
         Route::get('site_currency_symbol', [MobileController::class, 'site_currency_symbol']);
         Route::get('/language',[LanguageController::class,'languageInfo']);
         Route::post('/translate-string',[LanguageController::class,'translateString']);
+
+        Route::get('/coupon',[ProductController::class,'productCoupon']);
+        Route::get('/shipping-charge',[ProductController::class,'shippingCharge']);
+
+        Route::get('/payment-method-list',[MobileController::class,'paymentMethodList']);
+
+        Route::get('/checkout',[ProductController::class,'checkout']);
+
         /*
          * todo:: all type of products route ends
          * */

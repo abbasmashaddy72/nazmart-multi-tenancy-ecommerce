@@ -8,6 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="canonical" href="{{canonical_url()}}" />
 
     @php
         $theme_slug = \App\Facades\ThemeDataFacade::getSelectedThemeSlug();

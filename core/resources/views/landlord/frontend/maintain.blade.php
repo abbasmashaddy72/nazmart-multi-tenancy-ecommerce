@@ -135,7 +135,7 @@
         }
 
         .logo-wrap .maintenance_logo{
-            width: 100%;
+            width: 200px;
         }
 
         @media screen and (max-width: 991px) {
@@ -224,10 +224,10 @@
 </div>
 
 
-<script src="{{asset('assets/landlord/frontend/js/jquery.min.js')}}"></script>
-<script src="{{asset('assets/frontend/js/jquery-migrate-3.4.0.min.js')}}"></script>
-<script src="{{asset('assets/frontend/js/bootstrap.bundle.min.js')}}"></script>
-<script src="{{asset('assets/common/js/countdown.jquery.js')}}"></script>
+<script src="{{global_asset('assets/landlord/frontend/js/jquery-3.6.1.min.js')}}"></script>
+<script src="{{global_asset('assets/landlord/frontend/js/jquery-migrate-3.4.0.min.js')}}"></script>
+<script src="{{global_asset('assets/landlord/frontend/js/bootstrap.bundle.min.js')}}"></script>
+<script src="{{global_asset('assets/common/js/countdown.jquery.js')}}"></script>
 
 @php
     $file_name = 'assets/landlord/frontend/js/dynamic-script.js';
