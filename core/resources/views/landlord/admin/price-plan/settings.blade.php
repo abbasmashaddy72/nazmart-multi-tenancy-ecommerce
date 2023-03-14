@@ -65,12 +65,12 @@
 
                             <div class="form-group">
                                 @php
-                                    $languages = \App\Models\Language::all();
+                                    $languages = ['en_GB' => 'English (UK)', 'ar' => 'العربية'];
                                 @endphp
                                 <label for="default-language">{{__('Default Languages')}}</label>
                                 <select name="default_language" id="default-language" class="form-control">
-                                    @foreach($languages as $language)
-                                        <option value="{{$language->slug}}" {{get_static_option_central('default_language') == $language->slug ? 'selected' : ''}}>{{ $language->name }}</option>
+                                    @foreach($languages as $index => $language)
+                                        <option value="{{$index}}" {{get_static_option_central('default_language') == $index ? 'selected' : ''}}>{{ $language }}</option>
                                     @endforeach
                                 </select>
                             </div>

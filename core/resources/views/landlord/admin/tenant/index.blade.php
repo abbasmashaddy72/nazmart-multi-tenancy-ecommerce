@@ -227,7 +227,7 @@
     <x-datatable.js/>
     <x-summernote.js/>
     <x-custom-js.landloard-unique-subdomain-check :name="'custom_subdomain'"/>
-    //subdomain check
+    {{--subdomain check--}}
 
     <script>
         $(document).ready(function(){

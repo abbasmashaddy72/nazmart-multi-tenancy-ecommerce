@@ -1322,7 +1322,6 @@ function get_user_name_by_id($id)
 
 function set_seo_data($request)
 {
-
     $request_data = [
         'meta_title' => SEOMeta::setTitle($request->meta_title),
         'meta_description' => SEOMeta::setDescription($request->meta_description),

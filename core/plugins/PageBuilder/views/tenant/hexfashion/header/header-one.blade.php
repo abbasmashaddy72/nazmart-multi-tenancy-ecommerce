@@ -13,7 +13,7 @@
                 <div class="banner-content-wrapper">
                     <div class="global-slick-init dot-style-one dot-color-two banner-dots dot-absolute"
                          data-infinite="true" data-arrows="true" data-dots="true" data-autoplaySpeed="3000"
-                         data-autoplay="true">
+                         data-autoplay="true" data-rtl="{{get_user_lang_direction() == 1 ? 'true' : 'false'}}">
                         @foreach($data['repeater_data']['title_'] as $key => $value)
                             @php
                                 $title = \App\Helpers\SanitizeInput::esc_html($value) ?? '';

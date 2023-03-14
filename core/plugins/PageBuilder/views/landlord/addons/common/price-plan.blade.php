@@ -6,9 +6,9 @@
         $highlighted_word = explode('{/h}', $text[1])[0];
 
         $highlighted_text = '<span class="section-shape title-shape">'. $highlighted_word .'</span>';
-        $final_title = '<h2 class="title">'.str_replace('{h}'.$highlighted_word.'{/h}', $highlighted_text, $data['title']).'</h2>';
+        $final_title = '<h1 class="title">'.str_replace('{h}'.$highlighted_word.'{/h}', $highlighted_text, $data['title']).'</h1>';
     } else {
-        $final_title = '<h2 class="title">'. $data['title'] .'</h2>';
+        $final_title = '<h1 class="title">'. $data['title'] .'</h1>';
     }
 @endphp
 
@@ -73,12 +73,16 @@
                      $id = 'lifetime';
                       $period = __('/lt');
                 }
+
+                $content_center_class = count($plan_items) <= 3 ? 'justify-content-center' : '';
             @endphp
 
             <div class="tab-content-item {{$active}}" id="tab-{{$id}}">
-                <div class="row mt-4">
+                <div class="row {{$content_center_class}} mt-4">
                     @foreach($plan_items as $key => $price_plan_item)
-                        @php $featured_condition = $key == 1 ? 'active' : '' @endphp
+                        @php
+                            $featured_condition = $key == 1 ? 'active' : '';
+                        @endphp
 
                         <div class="col-lg-4 col-md-6 mt-4">
                             <div class="single-price radius-10 {{$featured_condition}}">

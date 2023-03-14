@@ -5,12 +5,14 @@ namespace Modules\MobileApp\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Tenant\Frontend\TenantFrontendController;
 use App\Http\Requests\CheckoutFormRequest;
+use App\Http\Services\CheckoutCouponService;
 use App\Http\Services\CheckoutToPaymentService;
 use App\Http\Services\ProductCheckoutService;
 use App\Models\OrderProducts;
 use App\Models\ProductOrder;
 use App\Models\ProductReviews;
 use App\Models\StaticOption;
+use Gloudemans\Shoppingcart\Facades\Cart;
 use Modules\Attributes\Entities\Brand;
 use Modules\Attributes\Entities\Category;
 use Modules\Attributes\Entities\Color;
@@ -19,8 +21,9 @@ use Modules\Attributes\Entities\Unit;
 use Modules\CountryManage\Entities\Country;
 use Modules\CountryManage\Entities\State;
 use Modules\CouponManage\Entities\ProductCoupon;
+use Modules\MobileApp\Http\Requests\Api\MobileCheckoutFormRequest;
 use Modules\MobileApp\Http\Resources\Api\MobileFeatureProductResource;
-use App\Http\Resources\ProductResource;
+use Modules\MobileApp\Http\Services\Api\MobileCheckoutServices;
 use Modules\Product\Entities\Product;
 use Modules\Product\Entities\ProductAttribute;
 use Modules\Product\Entities\ProductCategory;
@@ -28,11 +31,14 @@ use Modules\Product\Entities\ProductShippingReturnPolicy;
 use Modules\Product\Entities\ProductTag;
 use Modules\Product\Entities\ProductUnit;
 use Modules\Product\Entities\ProductUom;
-use Modules\Product\Entities\SaleDetails;
 use Illuminate\Http\Request;
 use Modules\MobileApp\Http\Services\Api\ApiProductServices;
 use Modules\Product\Services\Web\FrontendProductServices;
 use Modules\ShippingModule\Entities\ShippingMethod;
+use Modules\ShippingModule\Entities\Zone;
+use Modules\ShippingModule\Entities\ZoneRegion;
+use Modules\TaxModule\Entities\CountryTax;
+use Modules\TaxModule\Entities\StateTax;
 
 class ProductController extends Controller
 {
@@ -362,44 +368,82 @@ class ProductController extends Controller
         ));
     }
 
-    public function productCoupon()
+    public function productCoupon(Request $request)
     {
-        $coupon = ProductCoupon::where('status', 'publish')->get();
-        return response()->json(["coupon" => $coupon]);
+        $request->validate([
+            'coupon' => 'required',
+            'total_amount' => 'required|numeric',
+            'ids' => 'required'
+        ]);
+
+        $discounted_price = CheckoutCouponService::calculateCoupon($request, $request->total_amount, $request->ids, 'DISCOUNT');
+
+        return response()->json(["discounted_price" => $discounted_price]);
     }
 
-    public function shippingCharge()
+    public function shippingCharge(Request $request)
     {
-        $shipping_method = ShippingMethod::with('zone')->get();
+        $request->validate([
+            'country' => 'required',
+            'state' => 'nullable'
+        ]);
+        $product_tax = $this->get_product_shipping_tax($request);
 
-        foreach ($shipping_method as $method)
-        {
-            $country_name = [];
-            $state_names = [];
+        $shipping_zones = ZoneRegion::whereJsonContains('country', $request->country)->get();
 
-            $country = json_decode($method?->zone?->region?->country);
-            $states = json_decode($method?->zone?->region?->state);
-
-            $country_name = Country::select('id', 'name', 'status')->find($country);
-            foreach ($states as $each_state)
-            {
-                $state_names[] = State::select('id', 'name', 'status')->find($each_state);
-            }
-
-            $method->zone->region->country = $country_name;
-            $method->zone->region->state = $state_names;
+        $zone_ids = [];
+        foreach ($shipping_zones ?? [] as $zone) {
+            $zone_ids[] = $zone->zone_id;
         }
 
+        $shipping_methods = ShippingMethod::whereIn('zone_id', $zone_ids)
+            ->orWhere('is_default', 1)->get();
+        $default_shipping = $shipping_methods->where('is_default', 1)->first();
 
-        return response()->json(['shipping_charge' => $shipping_method]);
+
+        return response()->json([
+            'shipping_tax' => $product_tax,
+            'shipping_options' => $shipping_methods,
+            'default_shipping_options' => $default_shipping
+        ]);
     }
 
-    public function checkout(CheckoutFormRequest $request)
+    private function get_product_shipping_tax($request)
+    {
+        $product_tax = 0;
+        $country_tax = CountryTax::where('country_id', $request->country)->select('id', 'tax_percentage')->first();
+
+        if ($request->state && $request->country) {
+            $product_tax = StateTax::where(['country_id' => $request->country, 'state_id' => $request->state])
+                ->select('id', 'tax_percentage')->first();
+
+            if (!empty($product_tax)) {
+                $product_tax = $product_tax->toArray()['tax_percentage'];
+            } else {
+                if (!empty($country_tax))
+                {
+                    $product_tax = $country_tax->toArray()['tax_percentage'];
+                }
+            }
+        } else {
+            $product_tax = $country_tax->toArray()['tax_percentage'];
+        }
+
+        return $product_tax;
+    }
+
+    public function checkout(MobileCheckoutFormRequest $request)
     {
         $validated_data = $request->validated();
-        $validated_data['checkout_type'] = $validated_data['cash_on_delivery'] === 'on' ? 'cod' : 'digital';
 
-        $checkout_service = new ProductCheckoutService();
+        if (array_key_exists('cash_on_delivery', $validated_data))
+        {
+            $validated_data['checkout_type'] = $validated_data['cash_on_delivery'] === 'on' ? 'cod' : 'digital';
+        } else {
+            $validated_data['checkout_type'] = 'digital';
+        }
+
+        $checkout_service = new MobileCheckoutServices();
         $user = $checkout_service->getOrCreateUser($validated_data);
         $order_log_id = $checkout_service->createOrder($validated_data, $user);
 
@@ -408,6 +452,9 @@ class ProductController extends Controller
             return back()->withErrors(['error' => 'Please select a shipping method']);
         }
 
-        return CheckoutToPaymentService::checkoutToGateway(compact('order_log_id', 'validated_data')); // Sending multiple data compacting together in one array
+        return response()->json([
+            'order_id' => $order_log_id,
+            'order_details' => ProductOrder::find($order_log_id)
+        ]);
     }
 }

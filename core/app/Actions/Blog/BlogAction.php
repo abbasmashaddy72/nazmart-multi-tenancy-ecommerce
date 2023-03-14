@@ -86,7 +86,7 @@ class BlogAction
         $blog_update->save();
 
 
-        $blog_update->metainfo()->update([
+        $blog_update->metainfo()->updateOrCreate(["metainfoable_id" => $blog_update->id], [
             'title' => SanitizeInput::esc_html($request->meta_title),
             'description' => SanitizeInput::esc_html($request->meta_description),
             'image' => $request->meta_image,

@@ -117,13 +117,13 @@ Version: 1.0.0
   right: 0px;
   bottom: 0;
   top: 0px;
-  z-index: 0;
+  z-index: -1;
 }
 .banner-shpes img:nth-child(2) {
   position: absolute;
   left: 0;
   top: 20%;
-  z-index: 0;
+  z-index: -1;
   -webkit-animation: 12s floating_long linear infinite;
   animation: 12s floating_long linear infinite;
 }
@@ -131,7 +131,7 @@ Version: 1.0.0
   position: absolute;
   right: 0;
   top: 50%;
-  z-index: 0;
+  z-index: -1;
   -webkit-animation: 10s floating_long linear infinite;
   animation: 10s floating_long linear infinite;
 }

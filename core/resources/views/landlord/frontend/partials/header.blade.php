@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    {!! SEOMeta::generate() !!}
+    @if(!empty(SEOMeta::generate()))
+        {!! SEOMeta::generate() !!}
+    @else
+        <title>@yield('page-title')</title>
+    @endif
+
     {!! OpenGraph::generate() !!}
     {!! Twitter::generate() !!}
     {!! JsonLd::generate() !!}
@@ -16,18 +21,18 @@
     {!! load_google_fonts() !!}
     {!! render_favicon_by_id(get_static_option('site_favicon')) !!}
 
-    <title>
-        @if(!request()->routeIs('landlord.homepage'))
-            @yield('title')
-            -
-            {{get_static_option('site_title')}}
-        @else
-            {{get_static_option('site_title')}}
-            @if(!empty(get_static_option('site_tag_line')))
-                - {{get_static_option('site_tag_line')}}
-            @endif
-        @endif
-    </title>
+{{--    <title>--}}
+{{--        @if(!request()->routeIs('landlord.homepage'))--}}
+{{--            @yield('title')--}}
+{{--            ---}}
+{{--            {{get_static_option('site_title')}}--}}
+{{--        @else--}}
+{{--            {{get_static_option('site_title')}}--}}
+{{--            @if(!empty(get_static_option('site_tag_line')))--}}
+{{--                - {{get_static_option('site_tag_line')}}--}}
+{{--            @endif--}}
+{{--        @endif--}}
+{{--    </title>--}}
 
     <link rel="stylesheet" href="{{global_asset('assets/landlord/frontend/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{asset('assets/landlord/frontend/css/animate.css')}}">

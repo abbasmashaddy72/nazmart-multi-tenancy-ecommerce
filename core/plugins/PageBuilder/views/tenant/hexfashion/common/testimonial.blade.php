@@ -23,7 +23,8 @@
             <div class="col-lg-8 mt-4">
                 <div class="feedback-slide-right">
                     <div class="global-slick-init feedback-right-slider nav-style-one slider-inner-margin" data-asNavFor=".feedback-left-slide" data-infinite="true" data-arrows="false" data-dots="false" data-slidesToShow="2" data-swipeToSlide="true" data-autoplay="true"
-                         data-autoplaySpeed="2500" data-prevArrow='<div class="prev-icon"><i class="las la-angle-left"></i></div>' data-nextArrow='<div class="next-icon"><i class="las la-angle-right"></i></div>' data-responsive='[{"breakpoint": 1800,"settings": {"slidesToShow": 2}},{"breakpoint": 1400,"settings": {"slidesToShow": 2}},{"breakpoint": 1200,"settings": {"slidesToShow": 1}},{"breakpoint": 992,"settings": {"slidesToShow": 2}},{"breakpoint": 768,"settings": {"slidesToShow": 1}},{"breakpoint": 576, "settings": {"slidesToShow": 1} }]'>
+                         data-autoplaySpeed="2500" data-prevArrow='<div class="prev-icon"><i class="las la-angle-left"></i></div>' data-nextArrow='<div class="next-icon"><i class="las la-angle-right"></i></div>' data-responsive='[{"breakpoint": 1800,"settings": {"slidesToShow": 2}},{"breakpoint": 1400,"settings": {"slidesToShow": 2}},{"breakpoint": 1200,"settings": {"slidesToShow": 1}},{"breakpoint": 992,"settings": {"slidesToShow": 2}},{"breakpoint": 768,"settings": {"slidesToShow": 1}},{"breakpoint": 576, "settings": {"slidesToShow": 1} }]'
+                         data-rtl="{{get_user_lang_direction() == 1 ? 'true' : 'false'}}">
                         @foreach($data['testimonial'] ?? [] as $item)
                             @php
                                 $image = get_attachment_image_by_id($item->image);

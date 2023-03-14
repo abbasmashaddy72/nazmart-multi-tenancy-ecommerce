@@ -16,6 +16,7 @@ use Plugins\PageBuilder\Addons\Landlord\Common\HowItWorks;
 use Plugins\PageBuilder\Addons\Landlord\Common\Newsletter;
 use Plugins\PageBuilder\Addons\Landlord\Common\NumberCounter;
 use Plugins\PageBuilder\Addons\Landlord\Common\PricePlan;
+use Plugins\PageBuilder\Addons\Landlord\Common\RawHTML;
 use Plugins\PageBuilder\Addons\Landlord\Common\TemplateDesign;
 use Plugins\PageBuilder\Addons\Landlord\Common\Themes;
 use Plugins\PageBuilder\Addons\Landlord\Common\WhyChooseUs;
@@ -55,7 +56,8 @@ class PageBuilderSetup
         {
             $theme = tenant()->theme_slug;
 
-            //Tenant Register
+            // Tenant Register
+
             if ($theme == 'hexfashion')
             {
                 // Theme Hexfashion
@@ -109,6 +111,16 @@ class PageBuilderSetup
                 ];
             }
 
+            // Global addons for all theme
+            $globalAddons = [
+                RawHTML::class
+            ];
+
+            foreach ($globalAddons as $globalItem)
+            {
+                array_push($addons, $globalItem);
+            }
+
             // Third party custom addons
             $customAddons = (new ModuleMetaData())->getPageBuilderAddonList();
         } else {
@@ -130,6 +142,7 @@ class PageBuilderSetup
                 AboutHeaderStyleOne::class,
                 ContactCards::class,
                 BlogStyleOne::class,
+                RawHTML::class
             ];
         }
 

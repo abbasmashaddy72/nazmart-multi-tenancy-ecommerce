@@ -403,7 +403,7 @@
 
 @section('scripts')
     <script src="{{global_asset('assets/common/js/toastr.min.js')}}"></script>
-    <x-custom-js.landloard-unique-subdomain-check :name="'custom_subdomain'"/> //subdomain check
+    <x-custom-js.landloard-unique-subdomain-check :name="'custom_subdomain'"/> {{--subdomain check--}}
 
     <script>
         (function ($) {

@@ -7,7 +7,8 @@
                      <div class="global-slick-init recent-slider nav-style-one" data-infinite="true" data-arrows="true"
                           data-dots="false" data-swipeToSlide="true" data-autoplay="true" data-autoplaySpeed="6000"
                           data-prevArrow='<div class="prev-icon"><i class="las la-angle-left"></i></div>'
-                          data-nextArrow='<div class="next-icon"><i class="las la-angle-right"></i></div>'>
+                          data-nextArrow='<div class="next-icon"><i class="las la-angle-right"></i></div>'
+                          data-rtl="{{get_user_lang_direction() == 1 ? 'true' : 'false'}}">
                          @foreach($data['repeater_data']['title_'] as $key => $value)
                              @php
                                  $title = \App\Helpers\SanitizeInput::esc_html($value) ?? '';
