@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use function GuzzleHttp\Promise\all;
 
 class PagesController extends Controller
 {
@@ -147,7 +148,7 @@ class PagesController extends Controller
         $page_data->breadcrumb = is_null( $request->breadcrumb) ? 0 : 1;
         $page_data->save();
 
-        $page_data->metainfo()->update([
+        $meta_data = [
             'title' => SanitizeInput::esc_html($request->meta_title),
             'description' => SanitizeInput::esc_html($request->meta_description),
             'image' => $request->meta_image,
@@ -159,8 +160,9 @@ class PagesController extends Controller
             'fb_image' => $request->fb_image,
             'fb_title' => SanitizeInput::esc_html($request->meta_fb_title),
             'fb_description' => SanitizeInput::esc_html($request->meta_fb_description),
+        ];
 
-        ]);
+        $page_data->metainfo()->updateOrCreate(["metainfoable_id" => $page_data->id] ,$meta_data);
 
         return response()->success(ResponseMessage::SettingsSaved());
     }

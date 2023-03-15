@@ -186,6 +186,9 @@ class PricePlanController extends Controller
 
     public function update_price_plan_settings(Request $request)
     {
+        $languages = ['en_GB' => 'English (UK)', 'ar' => 'العربية'];
+        abort_if(!array_key_exists($request->default_language, $languages), 403);
+
         $request->validate([
             'package_expire_notify_mail_days'=> 'required|array',
             'package_expire_notify_mail_days.*'=> 'required|max:7',

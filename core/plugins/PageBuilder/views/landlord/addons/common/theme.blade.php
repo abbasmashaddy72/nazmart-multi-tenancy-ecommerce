@@ -6,9 +6,9 @@
         $highlighted_word = explode('{/h}', $text[1])[0];
 
         $highlighted_text = '<span class="section-shape title-shape">'. $highlighted_word .'</span>';
-        $final_title = '<h2 class="title">'.str_replace('{h}'.$highlighted_word.'{/h}', $highlighted_text, $data['title']).'</h2>';
+        $final_title = '<h1 class="title">'.str_replace('{h}'.$highlighted_word.'{/h}', $highlighted_text, $data['title']).'</h1>';
     } else {
-        $final_title = '<h2 class="title">'. $data['title'] .'</h2>';
+        $final_title = '<h1 class="title">'. $data['title'] .'</h1>';
     }
 @endphp
 
@@ -58,27 +58,49 @@
             @endforeach
 
             @if(get_static_option('up_coming_themes_frontend'))
-                @foreach(range(4, 12) as $item)
-                    <div class="col-lg-4 col-sm-6 mt-4">
-                        <div class="single-themes">
-                            <div class="single-themes-thumb coming_soon">
-                                <a href="javascript:void(0)">
-                                    <img class="rounded" src="{{get_theme_image('theme-'.$item)}}" alt="">
-                                </a>
-                                <div class="coming-soon-theme">{{__('Coming Soon')}}</div>
-                            </div>
-                            <div class="single-themes-content mt-3">
-                                <div class="single-themes-content-flex">
-                                    <h3 class="single-themes-content-title">
-                                        {{__('Theme')}} {{$item}}
-                                    </h3>
-                                    <a href="javascript:void(0)" class="single-themes-content-title-icon">
-                                        <i class="las la-arrow-right"></i>
-                                    </a>
+                @foreach(range(3, 12) as $item)
+                    @if($item == 3)
+                            <div class="col-lg-4 col-sm-6 mt-4">
+                                <div class="single-themes">
+                                    <div class="single-themes-thumb">
+                                        <a href="http://zamila.nazmart.net">
+                                            <img class="rounded" src="{{global_asset('assets/img/theme/th-zamila.jpg')}}" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="single-themes-content mt-3">
+                                        <div class="single-themes-content-flex">
+                                            <h3 class="single-themes-content-title">
+                                                {{__('Zamila - Arabic Version')}}
+                                            </h3>
+                                            <a href="javascript:void(0)" class="single-themes-content-title-icon">
+                                                <i class="las la-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        @else
+                            <div class="col-lg-4 col-sm-6 mt-4">
+                                <div class="single-themes">
+                                    <div class="single-themes-thumb coming_soon">
+                                        <a href="javascript:void(0)">
+                                            <img class="rounded" src="{{get_theme_image('theme-'.$item)}}" alt="">
+                                        </a>
+                                        <div class="coming-soon-theme">{{__('Coming Soon')}}</div>
+                                    </div>
+                                    <div class="single-themes-content mt-3">
+                                        <div class="single-themes-content-flex">
+                                            <h3 class="single-themes-content-title">
+                                                {{__('Theme')}} {{$item}}
+                                            </h3>
+                                            <a href="javascript:void(0)" class="single-themes-content-title-icon">
+                                                <i class="las la-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    @endif
                 @endforeach
             @endif
         </div>

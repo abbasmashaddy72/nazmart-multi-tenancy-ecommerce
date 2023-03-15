@@ -49,7 +49,7 @@
         flatpickr('#maintenance_date', {
             altInput: true,
             altFormat: "F j, Y",
-            dateFormat: "Y-m-d H:i",
+            dateFormat: "Y-m-d H:i"
         });
     </script>
 @endsection

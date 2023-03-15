@@ -39,9 +39,9 @@
                                     $highlighted_word = explode('{/h}', $text[1])[0];
 
                                     $highlighted_text = '<span class="banner-content-title-shape title-shape">'. $highlighted_word .'</span>';
-                                    $final_title = '<h2 class="banner-content-title">'.str_replace('{h}'.$highlighted_word.'{/h}', $highlighted_text, $data['title']).'</h2>';
+                                    $final_title = '<h1 class="banner-content-title">'.str_replace('{h}'.$highlighted_word.'{/h}', $highlighted_text, $data['title']).'</h1>';
                                 } else {
-                                    $final_title = '<h2 class="banner-content-title">'. $data['title'] .'</h2>';
+                                    $final_title = '<h1 class="banner-content-title">'. $data['title'] .'</h1>';
                                 }
                         @endphp
 

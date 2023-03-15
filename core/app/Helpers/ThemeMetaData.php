@@ -86,7 +86,7 @@ class ThemeMetaData
     public function getFooterHookCssFiles()
     {
         $file_name = [];
-        $footerHook = $this->getHeaderHook();
+        $footerHook = $this->getFooterHook();
         if (!empty($footerHook) && property_exists($footerHook, 'style'))
         {
             foreach ($footerHook->style as $item)

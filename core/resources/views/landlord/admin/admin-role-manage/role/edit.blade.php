@@ -28,7 +28,7 @@
                                 @foreach($permissions as $permission)
                                     <div class="col-lg-2 col-md-2">
                                         <div class="form-group">
-                                            <label ><strong>{{ucfirst(str_replace('-',' ',$permission->name))}}</strong></label>
+                                            <label ><strong>{{__(ucfirst(str_replace('-',' ',$permission->name)))}}</strong></label>
                                             <label class="switch role">
                                                 <input type="checkbox" name="permission[]" @if(in_array($permission->id,$rolePermissions)) checked @endif value="{{$permission->id}}" >
                                                 <span class="slider onff"></span>

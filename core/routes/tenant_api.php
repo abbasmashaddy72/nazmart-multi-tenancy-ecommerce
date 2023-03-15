@@ -94,12 +94,10 @@ Route::middleware([
         Route::get('/language',[LanguageController::class,'languageInfo']);
         Route::post('/translate-string',[LanguageController::class,'translateString']);
 
-        Route::get('/coupon',[ProductController::class,'productCoupon']);
-        Route::get('/shipping-charge',[ProductController::class,'shippingCharge']);
+        Route::post('/coupon',[ProductController::class,'productCoupon']);
+        Route::post('/shipping-charge',[ProductController::class,'shippingCharge']);
 
-        Route::get('/payment-method-list',[MobileController::class,'paymentMethodList']);
-
-        Route::get('/checkout',[ProductController::class,'checkout']);
+        Route::post('/checkout',[ProductController::class,'checkout']);
 
         /*
          * todo:: all type of products route ends

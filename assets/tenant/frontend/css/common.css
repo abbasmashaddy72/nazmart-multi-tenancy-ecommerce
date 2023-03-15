@@ -6647,7 +6647,7 @@ textarea {
   z-index: 5;
   visibility: hidden;
   opacity: 0;
-  background-image: url(../../../img/loading-cart.gif);
+  /*background-image: url(../../../img/loading-cart.gif);*/
   background-repeat: no-repeat;
   background-position: center;
 }
