@@ -88,10 +88,10 @@
                                         <a href="javascript:void(0)"> <i class="las la-wallet"></i> {{__('My Wallet')}} </a>
                                         <ul class="sub-menu">
                                             <li class="list {{request()->routeIs('landlord.user.wallet.history') ? 'selected' : '' }}">
-                                                <a class="@if(request()->routeIs('landlord.user.wallet.history')) active-submenu @endif" href="{{route('landlord.user.wallet.history')}}">My Wallet</a>
+                                                <a class="@if(request()->routeIs('landlord.user.wallet.history')) active-submenu @endif" href="{{route('landlord.user.wallet.history')}}">{{__('My Wallet')}}</a>
                                             </li>
                                             <li class="list {{request()->routeIs('landlord.user.wallet.settings') ? 'selected' : '' }}">
-                                                <a class="@if(request()->routeIs('landlord.user.wallet.settings')) active-submenu @endif" href="{{route('landlord.user.wallet.settings')}}">Settings</a>
+                                                <a class="@if(request()->routeIs('landlord.user.wallet.settings')) active-submenu @endif" href="{{route('landlord.user.wallet.settings')}}">{{__('Settings')}}</a>
                                             </li>
                                         </ul>
                                     </li>

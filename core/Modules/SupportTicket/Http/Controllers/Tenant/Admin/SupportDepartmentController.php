@@ -63,7 +63,7 @@ class SupportDepartmentController extends Controller
 
     public function delete(Request $request,$id){
         SupportDepartment::find($id)->delete();
-        return response()->danger(ResponseMessage::delete('Service Deleted'));
+        return response()->danger(ResponseMessage::delete(__('Service Deleted')));
     }
     public function bulk_action(Request $request){
         SupportDepartment::whereIn('id',$request->ids)->delete();

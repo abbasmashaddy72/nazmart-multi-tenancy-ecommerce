@@ -117,7 +117,7 @@ class WidgetBuilderSetup
     public static function render_admin_sidebar_item($sidebar){
         $markup = '<div class="card">
                     <div class="card-header widget-area-header">
-                        <h4 class="header-title">'.ucfirst(str_replace('_',' ',$sidebar)).' '.__('Widgets Area').'</h4>
+                        <h4 class="header-title">'.__(ucfirst(str_replace('_',' ',$sidebar)).' '.__('Widgets Area')).'</h4>
                         <span class="widget-area-expand"><i class="las la-angle-down"></i></span>
                     </div>
                     <div class="card-body widget-area-body hide">

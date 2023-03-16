@@ -1438,7 +1438,7 @@ class TenantFrontendController extends Controller
 
     public function showUserResetPasswordForm($username, $token)
     {
-        return themeView('user.reset-password')->with([
+        return view('tenant.frontend.user.reset-password')->with([
             'username' => $username,
             'token' => $token
         ]);

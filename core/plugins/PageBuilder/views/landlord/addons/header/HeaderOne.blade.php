@@ -6,17 +6,6 @@
     $button_icon=   $data['button_icon'];
     $padding_top =  $data['padding_top'];
     $padding_bottom =  $data['padding_bottom'];
-
-    if(!empty($title)){
-        $ex = explode(' ' ,$title) ;
-        if (count($ex) > 1)
-            {
-                $first_three_word =  $ex[0]. ' '. $ex[1]. ' ' .$ex[2];
-                $third_word = $ex[3] . ' ' .$ex[4];
-                $remaining_last = array_slice($ex,5) ;
-                $implode_last = implode(' ', $remaining_last);
-            }
-    }
 @endphp
 
 <div class="banner-area banner-padding section-bg-1" data-padding-top="{{$padding_top}}"

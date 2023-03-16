@@ -80,9 +80,9 @@
 
                                             <div>
                                                 @if($data->payment_status == 'complete')
-                                                    <span class="alert alert-success text-capitalize">{{$data->payment_status}}</span>
+                                                    <span class="alert alert-success text-capitalize">{{__($data->payment_status)}}</span>
                                                 @else
-                                                    <span class="alert alert-warning text-capitalize">{{$data->payment_status ?? __('Pending')}}</span>
+                                                    <span class="alert alert-warning text-capitalize">{{$data->payment_status ? __($data->payment_status) : __('Pending')}}</span>
                                                 @endif
 
                                                 @if($data->payment_status == 'pending')
@@ -102,15 +102,15 @@
                                         </td>
                                         <td>
                                             @if($data->status == 'pending')
-                                            <span class="alert alert-warning text-capitalize">{{$data->status}}</span>
+                                            <span class="alert alert-warning text-capitalize">{{__($data->status)}}</span>
                                             @elseif($data->status == 'cancel')
-                                                <span class="alert alert-danger text-capitalize">{{$data->status}}</span>
+                                                <span class="alert alert-danger text-capitalize">{{__($data->status)}}</span>
                                             @elseif($data->status == 'in_progress')
-                                                <span class="alert alert-info text-capitalize">{{str_replace('_', ' ',ucwords($data->status))}}</span>
+                                                <span class="alert alert-info text-capitalize">{{__(str_replace('_', ' ', $data->status))}}</span>
                                             @elseif($data->status == 'trial')
-                                                <span class="alert alert-primary text-capitalize">{{$data->status}}</span>
+                                                <span class="alert alert-primary text-capitalize">{{__($data->status)}}</span>
                                             @else
-                                                <span class="alert alert-success text-capitalize">{{$data->status}}</span>
+                                                <span class="alert alert-success text-capitalize">{{__($data->status)}}</span>
                                             @endif
                                         </td>
 

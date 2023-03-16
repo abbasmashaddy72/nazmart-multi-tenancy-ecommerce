@@ -84,9 +84,9 @@
                                        <td><strong>{{ucwords(str_replace('_',' ',$data->package_gateway))}}</strong></td>
                                        <td>
                                            @if($data->status == 'pending')
-                                               <span class="alert alert-warning text-capitalize">{{$data->status}}</span>
+                                               <span class="alert alert-warning text-capitalize">{{__($data->status)}}</span>
                                            @else
-                                               <span class="alert alert-success text-capitalize">{{$data->status}}</span>
+                                               <span class="alert alert-success text-capitalize">{{__($data->status)}}</span>
                                            @endif
                                        </td>
                                        <td>{{$data->transaction_id}}</td>

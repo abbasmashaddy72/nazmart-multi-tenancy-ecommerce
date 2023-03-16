@@ -40,7 +40,7 @@
                             </div>
                             <div class="col-md-6 d-flex justify-content-end">
                                 <div>
-                                    <button class="btn btn-sm btn-info text-white py-2" data-bs-toggle="modal" data-bs-target="#new_subscribe_model">Add New Subscribe</button>
+                                    <button class="btn btn-sm btn-info text-white py-2" data-bs-toggle="modal" data-bs-target="#new_subscribe_model">{{__('Add New Subscriber')}}</button>
                                 </div>
                             </div>
                         </div>

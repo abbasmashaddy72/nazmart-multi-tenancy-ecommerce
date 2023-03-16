@@ -1,12 +1,15 @@
 @extends('tenant.frontend.frontend-page-master')
-@section('site-title')
+
+@section('title')
     {{__('Reset Password')}}
 @endsection
+
 @section('page-title')
     {{__('Reset Password')}}
 @endsection
+
 @section('content')
-    <section class="login-page-wrapper" data-padding-bottom="100">
+    <section class="login-page-wrapper" data-padding-bottom="100" data-padding-top="100">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-6">
