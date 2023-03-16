@@ -402,7 +402,7 @@ class ProductController extends Controller
 
 
         return response()->json([
-            'shipping_tax' => $product_tax,
+            'tax' => $product_tax,
             'shipping_options' => $shipping_methods,
             'default_shipping_options' => $default_shipping
         ]);
@@ -455,6 +455,25 @@ class ProductController extends Controller
         return response()->json([
             'order_id' => $order_log_id,
             'order_details' => ProductOrder::find($order_log_id)
+        ]);
+    }
+
+    public function paymentUpdate(Request $request)
+    {
+        $validated = $request->validate([
+            'order_id' => 'required',
+            'status' => 'required'
+        ]);
+
+        $order = ProductOrder::find($validated['order_id']);
+        if (!empty($order) && $order->payment_status == 'pending')
+        {
+            $order->payment_status = $validated['status'] == 1 ? 'success' : 'pending';
+        }
+
+        return response()->json([
+            'success' => true,
+            'msg' => __('Order Status Updated Successfully')
         ]);
     }
 }

@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Modules\MobileApp\Http\Services\Api\UserServices;
 use Modules\Product\Entities\ProductSellInfo;
+use Modules\RefundModule\Entities\RefundChat;
+use Modules\RefundModule\Entities\RefundChatMessage;
 use Modules\RefundModule\Entities\RefundProduct;
 use Modules\ShippingModule\Entities\ShippingAddress;
 use Modules\ShippingModule\Http\Requests\StoreShippingAddressRequest;
@@ -658,5 +660,106 @@ class UserController extends Controller
         $user_id = auth('sanctum')->user()->id;
 
         return RefundProduct::with('user', 'product')->where('user_id', $user_id)->paginate(10)->withQueryString();
+    }
+
+    public function refund_create_ticket(Request $request)
+    {
+        $user_info = auth('sanctum')->user()->id;
+        $request->validate([
+            'title' => 'required|string|max:191',
+            'subject' => 'required|string|max:191',
+            'description' => 'required|string'
+        ], [
+            'title.required' => __('title required'),
+            'subject.required' => __('subject required'),
+            'priority.required' => __('priority required'),
+            'description.required' => __('description required'),
+        ]);
+
+        $ticket = RefundChat::create([
+            'title' => $request->title,
+            'via' => 'app',
+            'operating_system' => null,
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'description' => $request->description,
+            'subject' => $request->subject,
+            'status' => 'open',
+            'user_id' => $user_info,
+            'admin_id' => null,
+        ]);
+
+        $msg = get_static_option('support_ticket_success_message') ?? __('Thanks for contact us, we will reply soon');
+
+        return response()->json(["msg" => $msg, "ticket" => $ticket]);
+    }
+
+    public function refund_get_all_tickets()
+    {
+        $user_id = auth('sanctum')->user()->id;
+
+        return RefundChat::where('user_id', $user_id)->paginate(10)->withQueryString();
+    }
+
+    public function refund_single_ticket($id)
+    {
+        $user_id = auth('sanctum')->user()->id;
+
+        $ticket_details = RefundChat::where('user_id', $user_id)
+            ->where("id", $id)
+            ->first();
+
+        $all_messages = RefundChatMessage::where(['refund_chat_id' => $id])->get()->transform(function ($item) {
+            $item->attachment = !empty($item->attachment) ? global_asset('assets/uploads/refund_chat/' . $item->attachment) : null;
+
+            return $item;
+        });
+
+        return response()->json(["ticket_details" => $ticket_details, "all_messages" => $all_messages]);
+    }
+
+    public function refund_fetch_support_chat($refund_ticket_id)
+    {
+        $all_messages = RefundChatMessage::where(['refund_chat_id' => $refund_ticket_id])->get()->transform(function ($item) {
+            $item->attachment = !empty($item->attachment) ? global_asset('assets/uploads/refund_chat/' . $item->attachment) : null;
+
+            return $item;
+        });
+
+        return response()->json($all_messages);
+    }
+
+    public function refund_send_support_chat(Request $request, $ticket_id)
+    {
+        $request->validate([
+            'user_type' => 'required|string|max:191',
+            'message' => 'required',
+            'send_notify_mail' => 'nullable|string',
+            'file' => 'nullable|mimes:zip,jpg,jpeg,png,gif',
+        ]);
+
+        $user_id = auth('sanctum')->user()->id;
+
+        $ticket_info = RefundChatMessage::create([
+            'refund_chat_id' => $ticket_id,
+            'user_id' => $user_id,
+            'type' => $request->user_type,
+            'message' => $request->message,
+            'notify' => $request->send_notify_mail ? 'on' : 'off',
+            'attachment' => null,
+        ]);
+
+        if ($request->hasFile('file')) {
+            $uploaded_file = $request->file;
+            $file_extension = $uploaded_file->getClientOriginalExtension();
+            $file_name = pathinfo($uploaded_file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file_extension;
+            $uploaded_file->move('assets/uploads/refund_chat', $file_name);
+            $ticket_info->attachment = $file_name;
+            $ticket_info->save();
+        }
+
+        $ticket = $ticket_info->toArray();
+        $ticket["attachment"] = empty($ticket["attachment"]) ? null : global_asset('assets/uploads/refund_chat/' . $ticket["attachment"]);
+
+        return response()->json($ticket);
     }
 }

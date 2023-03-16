@@ -53,7 +53,7 @@
                                 <td>
                                         <ul>
                                     @foreach($fields as $k => $vl)
-                                            <li style="list-style-type: none"><strong>{{$k}}:</strong> {{$vl}}</li>
+                                            <li style="list-style-type: none"><strong>{{$k}}:</strong> {{Str::words($vl, 20)}}</li>
                                      @endforeach
                                         </ul>
 
@@ -105,7 +105,7 @@
                             <li><strong>{{__('Phone :').' '}}</strong><span class="phone"></span></li>
                             <li><strong>{{__('Subject :').' '}}</strong><span class="subject"></span></li>
                             <li><strong>{{__('Message :').' '}}</strong><span class="message"></span></li>
-                            <li><strong>{{__('Attachement :').' '}}</strong><a class=" btn btn-info btn-sm attachement">{{__('Show')}}</a>
+                            <li><strong>{{__('Attachment :').' '}}</strong><a class=" btn btn-info btn-sm attachement">{{__('Show')}}</a>
                             <li><strong>{{__('Others :').' '}}</strong><span class="others"></span></li>
                         </ul>
                     </div>

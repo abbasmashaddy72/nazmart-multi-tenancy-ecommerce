@@ -91,7 +91,7 @@ class SupportTicketController extends Controller
 
     public function delete(Request $request,$id){
         SupportTicket::findOrFail($id)->delete();
-        return response()->danger(ResponseMessage::delete('Service Deleted'));
+        return response()->danger(ResponseMessage::delete(__('Service Deleted')));
     }
 
     public function view(Request $request,$id){
@@ -130,7 +130,7 @@ class SupportTicketController extends Controller
         //send mail to user
         event(new SupportMessage($ticket_info));
 
-        return response()->success(ResponseMessage::SettingsSaved('Message Sent'));
+        return response()->success(ResponseMessage::SettingsSaved(__('Message Sent')));
     }
 
     public function bulk_action(Request $request){
@@ -161,6 +161,6 @@ class SupportTicketController extends Controller
                 update_static_option($field,$request->$field);
             }
 
-        return response()->success(ResponseMessage::SettingsSaved('Item Saved Successfully..'));
+        return response()->success(ResponseMessage::SettingsSaved(__('Item Saved Successfully..')));
     }
 }

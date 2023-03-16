@@ -63,7 +63,7 @@
                             <div class="col-lg-4 col-sm-6 mt-4">
                                 <div class="single-themes">
                                     <div class="single-themes-thumb">
-                                        <a href="http://zamila.nazmart.net">
+                                        <a href="http://zamila.nazmart.net" target="_blank">
                                             <img class="rounded" src="{{global_asset('assets/img/theme/th-zamila.jpg')}}" alt="">
                                         </a>
                                     </div>

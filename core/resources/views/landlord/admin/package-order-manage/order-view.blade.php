@@ -1,5 +1,7 @@
 @extends(route_prefix().'admin.admin-master')
-@section('title') {{__('Order Details')}} @endsection
+@section('title')
+    {{__('Order Details')}}
+@endsection
 @section('style')
     <x-media-upload.css/>
 @endsection
@@ -17,7 +19,8 @@
                                 <h4 class="header-title mb-4">{{__('Order Details')}}</h4>
                             </div>
                             <div class="right-wrapper">
-                                <x-link-with-popover url="{{route(route_prefix().'admin.package.order.manage.all')}}" class="info">{{__('All Orders')}}</x-link-with-popover>
+                                <x-link-with-popover url="{{route(route_prefix().'admin.package.order.manage.all')}}"
+                                                     class="info">{{__('All Orders')}}</x-link-with-popover>
                             </div>
                         </div>
                         <div class="table-wrap table-responsive">
@@ -40,12 +43,14 @@
 
                                         <div class="parent d-flex justify-content-start">
                                             <strong class="text-dark ">{{__('Package Price :')}}</strong>
-                                            <span class="text-primary mx-2">{{amount_with_currency_symbol($order->package_price)}}</span><br><br>
+                                            <span
+                                                class="text-primary mx-2">{{amount_with_currency_symbol($order->package_price)}}</span><br><br>
                                         </div>
 
                                         <div class="parent d-flex justify-content-start">
                                             <strong class="text-dark ">{{__('Payment Gateway :')}}</strong>
-                                            <span class="text-primary mx-2 text-capitalize">{{str_replace('_',' ',$order->package_gateway)}}</span><br><br>
+                                            <span
+                                                class="text-primary mx-2 text-capitalize">{{str_replace('_',' ',$order->package_gateway)}}</span><br><br>
                                         </div>
 
                                         <div class="parent d-flex justify-content-start">
@@ -65,7 +70,8 @@
 
                                         <div class="parent d-flex justify-content-start">
                                             <strong class="text-dark ">{{__('Order Date :')}}</strong>
-                                            <span class="text-primary mx-2">{{date_format($order->created_at,'d M Y')}}</span><br><br>
+                                            <span
+                                                class="text-primary mx-2">{{date_format($order->created_at,'d M Y')}}</span><br><br>
                                         </div>
 
                                         @if(!empty($all_custom_fields))
@@ -79,22 +85,33 @@
                                         @endif
 
                                         @if($order->status != 'trial')
-                                            <div class="parent d-flex justify-content-start">
-                                                <strong class="text-dark ">{{__('Attachment :')}}</strong>
-                                                <span class="text-primary mx-2">
-                                                    <a href="{{global_asset('assets/landlord/uploads/payment_attachments/'.$order->attachments)}}" target="_blank">
-                                                        <img class="rounded" src="{{global_asset('assets/landlord/uploads/payment_attachments/'.$order->attachments)}}" alt="" style="width: 100px;height: 50px">
-                                                    </a>
-                                                </span><br><br>
-                                            </div>
+                                            @php
+                                                $attachments = 'assets/landlord/uploads/payment_attachments/'.$order->attachments;
+                                            @endphp
+
+                                            @if(!is_dir($attachments) && file_exists($attachments))
+                                                <div class="parent d-flex justify-content-start">
+                                                    <strong class="text-dark ">{{__('Attachment :')}}</strong>
+                                                    <span class="text-primary mx-2">
+                                                        <a href="{{global_asset($attachments)}}"
+                                                           target="_blank">
+                                                            <img class="rounded"
+                                                                 src="{{global_asset($attachments)}}"
+                                                                 alt="" style="width: 100px;height: 50px">
+                                                        </a>
+                                                    </span><br><br>
+                                                </div>
+                                            @endif
                                         @endif
                                     </td>
 
                                     <td>
                                         @if($order->payment_status == 'complete')
-                                            <span class="alert alert-success text-capitalize">{{$order->payment_status}}</span>
+                                            <span
+                                                class="alert alert-success text-capitalize">{{__($order->payment_status)}}</span>
                                         @else
-                                            <span class="alert alert-warning text-capitalize">{{$order->payment_status ?? __('Pending')}}</span>
+                                            <span
+                                                class="alert alert-warning text-capitalize">{{$order->payment_status ? __($order->payment_status) : __('Pending')}}</span>
                                         @endif
                                     </td>
                                 </tr>

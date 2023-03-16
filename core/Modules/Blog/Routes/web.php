@@ -33,7 +33,7 @@ Route::group(['prefix'=>'admin-home'],function() {
     });
 
     //BACKEND BLOG CATEGORY AREA
-    Route::controller(Landlord\Admin\BlogCategoryController::class)->prefix('landlord-blog-category')->name('landlord.')->middleware(['adminglobalVariable','auth:admin'])->group(function(){
+    Route::controller(Landlord\Admin\BlogCategoryController::class)->prefix('landlord-blog-category')->name('landlord.')->middleware(['adminglobalVariable','auth:admin', 'set_lang'])->group(function(){
         Route::get('/','index')->name('admin.blog.category');
         Route::post('/store','new_category')->name('admin.blog.category.store');
         Route::post('/update','update_category')->name('admin.blog.category.update');

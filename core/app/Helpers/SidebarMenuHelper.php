@@ -325,7 +325,7 @@ class SidebarMenuHelper
 
         $menu_instance->add_menu_item('form-builder-settings-all', [
             'route' => 'landlord.admin.form.builder.all',
-            'label' => __('Custom From Builder'),
+            'label' => __('Custom Form Builder'),
             'parent' => 'form-builder-settings-menu-items',
             'permissions' => ['form-builder'],
         ]);

@@ -98,6 +98,7 @@ Route::middleware([
         Route::post('/shipping-charge',[ProductController::class,'shippingCharge']);
 
         Route::post('/checkout',[ProductController::class,'checkout']);
+        Route::post('/update-payment',[ProductController::class,'paymentUpdate']);
 
         /*
          * todo:: all type of products route ends
@@ -130,6 +131,14 @@ Route::middleware([
             Route::post('ticket/create',[UserController::class,'createTicket']);
             Route::post('ticket/priority-change', [UserController::class,'priority_change']);
             Route::post('ticket/status-change', [UserController::class,'status_change']);
+
+            /* Refund ticket */
+            Route::get("refund-ticket",[UserController::class,"refund_get_all_tickets"]);
+            Route::get("refund-ticket/{id}",[UserController::class,"refund_single_ticket"]);
+            Route::get("refund-ticket/chat/{ticket_id}",[UserController::class,"refund_fetch_support_chat"]);
+            Route::post("refund-ticket/chat/send/{ticket_id}",[UserController::class,"refund_send_support_chat"]);
+            Route::post('refund-ticket/message-send',[UserController::class,'refund_sendMessage']);
+            Route::post('refund-ticket/create',[UserController::class,'refund_create_ticket']);
 
             /* Order list */
             Route::get('order', [UserController::class, 'all_order_list']);
