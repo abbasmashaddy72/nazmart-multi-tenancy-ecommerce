@@ -68,6 +68,21 @@ class ThemeMetaData
         return $file_name;
     }
 
+    public function getHeaderHookRtlCssFiles()
+    {
+        $file_name = [];
+        $headerHook = $this->getHeaderHook();
+        if (!empty($headerHook) && property_exists($headerHook, 'rtl_style'))
+        {
+            foreach ($headerHook->rtl_style as $item)
+            {
+                $file_name[] = $item;
+            }
+        }
+
+        return $file_name;
+    }
+
     public function getHeaderHookJsFiles()
     {
         $file_name = [];

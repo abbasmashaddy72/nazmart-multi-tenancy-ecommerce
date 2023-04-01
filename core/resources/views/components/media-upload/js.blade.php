@@ -54,7 +54,7 @@ $file_load_more_route = route($route_name.'.admin.upload.media.file.loadmore');
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     confirmButtonText: '{{__('Yes, Delete It')}}',
-                    cancelButtonText: '{{__('Delete')}}'
+                    cancelButtonText: '{{__('Cancel')}}'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         deleteImage();

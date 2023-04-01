@@ -17,6 +17,7 @@ class PaymentLogs extends Model
     ];
 
     protected static $recordEvents = ['updated','created','deleted'];
+    protected $casts = ['expire_date' => 'datetime'];
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -46,8 +47,4 @@ class PaymentLogs extends Model
     {
         return $this->belongsTo(\Stancl\Tenancy\Database\Models\Domain::class, 'tenant_id', 'tenant_id');
     }
-
-   protected $casts = [
-       'expire_date' => 'datetime',
-   ];
 }

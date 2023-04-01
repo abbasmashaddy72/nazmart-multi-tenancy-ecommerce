@@ -39,7 +39,7 @@ class CheckoutFormRequest extends FormRequest
                 $arr = [
                     'name' => "required",
                     'phone' => "required|max:17",
-                    'email' => "required|email|unique:users,email",
+                    'email' => "required|email",
                     'country' => "required|numeric",
                     'state' => "required|numeric",
                     'city' => "required",

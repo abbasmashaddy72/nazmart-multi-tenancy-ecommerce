@@ -43,7 +43,8 @@ trait ProductGlobalTrait {
         }else if ($queryType == 'api'){
             $all_products = Product::query()->with('campaign_sold_product','category','subCategory','childCategory','campaign_product', 'inventory','badge','uom')
                 ->withAvg("reviews", "rating")
-                ->withCount("reviews");
+                ->withCount("reviews")
+                ->where('status_id', 1);
         }
 
         // search product name

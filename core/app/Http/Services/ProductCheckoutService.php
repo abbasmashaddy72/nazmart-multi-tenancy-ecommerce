@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Modules\Attributes\Entities\Category;
 use Modules\CountryManage\Entities\Country;
 use Modules\CountryManage\Entities\State;
+use Modules\CouponManage\Entities\ProductCoupon;
 use Modules\Product\Entities\Product;
 use Modules\Product\Entities\ProductCategory;
 use Modules\Product\Entities\ProductChildCategory;
@@ -218,6 +219,14 @@ class ProductCheckoutService
         $extra_note = $validated_data['message'];
         $cart_data = json_encode(Cart::content()->toArray());
 
+        $coupon = [];
+        if (!empty($validated_data['used_coupon']))
+        {
+            $coupon['coupon'] = ProductCoupon::where('code', $validated_data['used_coupon'])->first();
+            $coupon['coupon_code'] = $coupon['coupon']->code;
+            $coupon['coupon_discount'] = $coupon['coupon']->discount;
+        }
+
         $order_id = ProductOrder::create([
             'user_id' => $user['id'] ?? null,
             'name' => $user['name'],
@@ -228,6 +237,8 @@ class ProductCheckoutService
             'city' => $user['city'],
             'address' => $user['address'],
             'message' => $extra_note,
+            'coupon' => !empty($coupon) ? $coupon['coupon_code'] : '',
+            'coupon_discounted' => !empty($coupon) ? $coupon['coupon_discount'] : '',
             'total_amount' => $finalPriceDetails,
             'payment_gateway' => $payment_gateway,
             'status' => 'pending',

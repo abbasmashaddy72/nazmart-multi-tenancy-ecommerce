@@ -17,6 +17,7 @@ use Modules\Blog\Entities\BlogCategory;
 class LanguagesController extends Controller
 {
     const BASE_PATH = 'landlord.admin.languages.';
+    public bool $allow_method = false;
 
     public function __construct()
     {
@@ -26,6 +27,16 @@ class LanguagesController extends Controller
         $this->middleware('permission:language-edit', ['only' => ['backend_edit_words', 'frontend_edit_words', 'update_words', 'update', 'add_new_string', 'clone']]);
         $this->middleware('permission:language-delete', ['only' => ['delete']]);
     }
+
+    public function __destruct()
+    {
+        if ($this->allow_method)
+        {
+            $language = Language::select('name', 'slug', 'status', 'direction')->get();
+            update_static_option_central('central_language', json_encode($language));
+        }
+    }
+
     public function index()
     {
         $all_lang = Language::all();
@@ -41,7 +52,7 @@ class LanguagesController extends Controller
             'status' => 'required|string:max:191',
         ]);
 
-        Language::create([
+        $language = Language::create([
             'name' => $request->name,
             'direction' => $request->direction,
             'slug' => $request->slug,
@@ -50,13 +61,14 @@ class LanguagesController extends Controller
         ]);
 
         //generate admin panel string
-        if (!tenant())
+        if (!tenant() && !file_exists(resource_path('lang/') . $request->slug . '.json'))
         {
             $backend_default_lang_data = file_get_contents(resource_path('lang/') . 'default.json');
             file_put_contents(resource_path('lang/') . $request->slug . '.json', $backend_default_lang_data);
         }
 
         \Cache::forget('lang_key');
+        $this->allow_method = true;
 
         return redirect()->back()->with([
             'msg' => __('New Language Added Success...'),
@@ -129,6 +141,7 @@ class LanguagesController extends Controller
             'status' => $request->status,
             'slug' => $request->slug
         ]);
+
         $backend_lang_file_path = resource_path('lang/') . $request->slug . '.json';
         $frontend_lang_file_path = resource_path('lang/') . $request->slug . '.json';
         if (!file_exists($backend_lang_file_path)) {
@@ -136,6 +149,7 @@ class LanguagesController extends Controller
         }
 
         \Cache::forget('lang_key');
+        $this->allow_method = true;
 
         return redirect()->back()->with([
             'msg' => __('Language Update Success...'),
@@ -145,7 +159,6 @@ class LanguagesController extends Controller
 
     public function delete(Request $request, $id)
     {
-
         $lang = Language::find($id);
 
         if (!tenant())
@@ -158,6 +171,7 @@ class LanguagesController extends Controller
         $lang->delete();
 
         \Cache::forget('lang_key');
+        $this->allow_method = true;
 
         return redirect()->back()->with([
             'msg' => __('Language Delete Success...'),

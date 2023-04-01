@@ -368,7 +368,7 @@ function render_star_rating_markup($rating): string
 function render_product_star_rating_markup_with_count($product_object): string
 {
     $sum = 0;
-    $product_review = $product_object->reviews;
+    $product_review = $product_object->reviews ?? [];
     $product_count = count($product_review) < 1 ? 1 : count($product_review);
 
     if ($product_count >= 1) {
@@ -650,7 +650,7 @@ function addQuotes($str)
 
 function site_title()
 {
-    return get_static_option('site_' . \App\Facades\GlobalLanguage::default_slug() . '_title');
+    return get_static_option('site_title');
 }
 
 function site_global_email()
@@ -1224,7 +1224,10 @@ function amount_with_currency_symbol($amount, $text = false)
     $decimal_status = get_static_option('currency_amount_type_status');
     $decimal_or_integer_condition =  !empty($decimal_status) ? 2 : 0;
 
-    $amount = number_format((float)$amount, $decimal_or_integer_condition, '.', ',');
+    $thousand_separator = get_static_option('site_custom_currency_thousand_separator') ?? ',';
+    $decimal_separator = get_static_option('site_custom_currency_decimal_separator') ?? '.';
+
+    $amount = number_format((float)$amount, $decimal_or_integer_condition, $decimal_separator, $thousand_separator);
     $position = get_static_option('site_currency_symbol_position');
     $symbol = site_currency_symbol($text);
     $return_val = $symbol . $amount;

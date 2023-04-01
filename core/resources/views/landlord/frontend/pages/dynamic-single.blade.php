@@ -35,4 +35,8 @@
     @else
         @include('landlord.frontend.partials.dynamic-content')
     @endif
+
+    @if(Auth::guard('admin')->user())
+        @include('tenant.frontend.partials.inpage-edit',['page_post' => $page_post])
+    @endif
 @endsection

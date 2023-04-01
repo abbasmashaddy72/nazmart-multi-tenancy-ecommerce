@@ -25,9 +25,9 @@
                                 <div class="row align-items-center flex-column-reverse flex-lg-row">
                                     <div class="col-lg-6">
                                         <div class="banner-image-content">
-                                            <h2 class="banner-image-content-title fw-500 mt-3">
+                                            <h1 class="banner-image-content-title fw-500 mt-3">
                                                 <a href="javascript:void(0)"> {{\App\Helpers\SanitizeInput::esc_html($title)}} </a>
-                                            </h2>
+                                            </h1>
                                             <p class="banner-image-content-para mt-3"> {{\App\Helpers\SanitizeInput::esc_html($subtitle)}} </p>
                                             <div class="btn-wrapper">
                                                 <a href="{{\App\Helpers\SanitizeInput::esc_url($button_url)}}"

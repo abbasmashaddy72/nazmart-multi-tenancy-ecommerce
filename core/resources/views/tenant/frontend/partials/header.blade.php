@@ -11,8 +11,9 @@
     <link rel="canonical" href="{{canonical_url()}}" />
 
     @php
-        $theme_slug = \App\Facades\ThemeDataFacade::getSelectedThemeSlug();
+        $theme_slug = getSelectedThemeSlug();
         $theme_header_css_files = \App\Facades\ThemeDataFacade::getHeaderHookCssFiles();
+        $theme_header_rtl_css_files = \App\Facades\ThemeDataFacade::getHeaderHookRtlCssFiles();
         $theme_header_js_files = \App\Facades\ThemeDataFacade::getHeaderHookJsFiles();
     @endphp
 
@@ -45,15 +46,17 @@
     <link rel="stylesheet" href="{{ global_asset('assets/common/css/toastr.css') }}">
     <link rel="stylesheet" href="{{global_asset('assets/common/css/loader-01.css')}}">
 
+    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/style.css')}}">
+    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/custom-style.css')}}">
+
     @foreach($theme_header_css_files ?? [] as $cssFile)
         <link rel="stylesheet" href="{{ loadCss($cssFile) }}" type="text/css" />
     @endforeach
 
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/style.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/custom-style.css')}}">
-
     @if(\App\Facades\GlobalLanguage::user_lang_dir() == 'rtl')
-        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/rtl.css')}}">
+        @foreach($theme_header_rtl_css_files ?? [] as $cssFile)
+            <link rel="stylesheet" href="{{ loadCss($cssFile) }}" type="text/css" />
+        @endforeach
     @endif
 
     @if(request()->routeIs('tenant.frontend.homepage'))
@@ -67,15 +70,12 @@
 
     @yield('style')
 
-    @if(\App\Enums\LanguageEnums::getdirection(get_user_lang_direction()) == 'rtl')
-        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/rtl.css')}}">
-    @endif
-
     @php
-        $file = file_exists('assets/tenant/frontend/css/'.tenant()->id.'/dynamic-style.css');
+        $tenant_id = !empty(tenant()) ? tenant()->id : '';
+        $file = file_exists('assets/tenant/frontend/css/'.$tenant_id.'/dynamic-style.css');
     @endphp
     @if($file)
-        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/'. tenant()->id .'/dynamic-style.css')}}">
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/'. $tenant_id .'/dynamic-style.css')}}">
     @endif
 
     @foreach($theme_header_js_files ?? [] as $jsFile)

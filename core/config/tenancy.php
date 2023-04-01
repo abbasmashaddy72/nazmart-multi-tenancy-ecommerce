@@ -187,6 +187,7 @@ return [
             tenant_module_migrations_file_path("ShippingModule"),
             tenant_module_migrations_file_path("RefundModule"),
             tenant_module_migrations_file_path("MobileApp"),
+            tenant_module_migrations_file_path("DigitalProduct")
         ],
         '--realpath' => true,
     ],

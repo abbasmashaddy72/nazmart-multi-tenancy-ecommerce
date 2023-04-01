@@ -27,7 +27,7 @@
                         <label for="item_size">{{ __('Item Size') }}</label>
                         {{--                        <select class="js-example-placeholder-multiple" multiple="multiple">--}}
                         <select name="item_size[]" class="form-control product-inventory-variant-select">
-                            <option>{{ __('Select Size') }}</option>
+                            <option value="">{{ __('Select Size') }}</option>
                             @foreach($sizes as $size)
                                 <option value="{{ $size->id }}"
                                         @if(isset($detail) && $detail->size == $size->id) selected @endif>{{ $size->name }}</option>
@@ -39,7 +39,7 @@
                     <div class="form-group">
                         <label for="item_color">{{ __('Item Color') }}</label>
                         <select name="item_color[]" class="form-control product-inventory-variant-select">
-                            <option>{{ __('Select Color') }}</option>
+                            <option value="">{{ __('Select Color') }}</option>
                             @foreach($colors as $color)
                                 <option value="{{ $color->id }}"
                                         @if(isset($detail) && $detail->color == $color->id) selected @endif>{{ $color->name }}</option>

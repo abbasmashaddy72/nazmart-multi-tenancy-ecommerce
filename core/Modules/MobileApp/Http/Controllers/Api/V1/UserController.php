@@ -64,6 +64,19 @@ class UserController extends Controller
         ]);
     }
 
+    public function username(Request $request)
+    {
+        $validated = $request->validate([
+            'username' => 'required'
+        ]);
+
+        $username = User::where('username', $validated['username'])->first();
+
+        return response()->json([
+            'username' => $validated['username'],
+            'msg' => empty($username) ? $validated['username'].' name is available' : $validated['username'].' name is already taken'
+        ]);
+    }
 
     //social login
     public function socialLogin(Request $request)

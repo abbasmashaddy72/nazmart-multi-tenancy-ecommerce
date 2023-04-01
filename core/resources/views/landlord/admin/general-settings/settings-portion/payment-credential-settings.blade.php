@@ -1,3 +1,7 @@
+@if(tenant())
+    <x-fields.switcher value="{{get_static_option('cash_on_delivery')}}" name="cash_on_delivery" label="{{__('Enable Cash On Delivery')}}" />
+@endif
+
 <div class="accordion-wrapper">
     <div id="accordion-payment">
         @foreach($all_gateway as $gateway)

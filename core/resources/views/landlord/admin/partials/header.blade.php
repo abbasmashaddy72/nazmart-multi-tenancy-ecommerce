@@ -7,9 +7,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>
             @if(!request()->routeIs('landlord.admin.home'))
-            @yield('title')  -
+                @yield('title')  -
             @endif
-            {{get_static_option('site_title',__('Xgenious'))}}
+            {{get_static_option('site_title', __('Xgenious'))}}
             @if(!empty(get_static_option('site_tag_line')))
                 - {{get_static_option('site_tag_line')}}
             @endif
@@ -40,7 +40,6 @@
     @if(\App\Enums\LanguageEnums::getdirection(get_user_lang_direction()) === 'rtl')
         <link href="{{ global_asset('assets/landlord/admin/css/rtl.css') }}" rel="stylesheet">
     @endif
-
 
     @yield('style')
 </head>

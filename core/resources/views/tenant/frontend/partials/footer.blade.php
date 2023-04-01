@@ -7,6 +7,10 @@
 @include('tenant.frontend.partials.widget-area')
 <!-- footer area end -->
 
+<!-- For Mobile nav start -->
+@include('tenant.frontend.partials.mobile-footer-menu')
+<!-- For Mobile nav end -->
+
 <!-- back to top area start -->
 @include('tenant.frontend.partials.backtop')
 <!-- back to top area end -->
@@ -76,10 +80,11 @@
 @endforeach
 
 @php
-    $file = file_exists('assets/tenant/frontend/js/'.tenant()->id.'/dynamic-script.js');
+    $tenant_id = !empty(tenant()) ? tenant()->id : '';
+    $file = file_exists('assets/tenant/frontend/js/'.$tenant_id.'/dynamic-script.js');
 @endphp
 @if($file)
-    <script src="{{global_asset('assets/tenant/frontend/js/'.tenant()->id.'/dynamic-script.js')}}"></script>
+    <script src="{{global_asset('assets/tenant/frontend/js/'.$tenant_id.'/dynamic-script.js')}}"></script>
 @endif
 
 <script>

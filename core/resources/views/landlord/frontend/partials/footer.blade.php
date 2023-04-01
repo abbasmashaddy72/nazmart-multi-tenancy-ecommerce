@@ -97,6 +97,17 @@
         }
     });
 </script>
+
+<script>
+    if (window.top != window.self) {
+        document.body.innerHTML += '<div class="external-website">' +
+            '<p class="external-website-para">You are using this website under an external iframe!!</p>' +
+            '<p  class="external-website-para mt-3">for a better experience, please browse directly instead of an external iframe.</p>' +
+            '<a href="'+window.self.location+'" target="_blank" class="external-website-btn mt-3">Browse Directly</a>' +
+            '</div>';
+    }
+</script>
+
     @yield('scripts')
 
     {!! get_static_option('site_third_party_tracking_code') !!}

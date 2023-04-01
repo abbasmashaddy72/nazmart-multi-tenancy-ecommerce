@@ -904,3 +904,65 @@ html body.stop-scroll {
         text-align: center;
     }
 }
+
+
+/* Mobile nav footer */
+@media (min-width: 300px) and (max-width: 991.98px) {
+    .footer-area.forMobile-nav {
+        padding-bottom: 75px;
+    }
+}
+
+.mobile-nav {
+    display: none;
+}
+
+@media (min-width: 300px) and (max-width: 991.98px) {
+    .mobile-nav {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #fff;
+        z-index: 99;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start;
+        -ms-flex-pack: distribute;
+        justify-content: space-around;
+        border-top: 1px solid #ddd;
+    }
+    .mobile-nav-link {
+        padding: 5px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        text-align: center;
+    }
+    .mobile-nav-icon {
+        font-size: 24px;
+        color: var(--heading-color);
+    }
+    .mobile-nav-title {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--heading-color);
+    }
+    .back-to-top.forMobile-nav{
+        bottom: 75px;
+    }
+}
+
+/*slick slider*/
+.global-slick-init .slick-track {
+    margin-left: unset;
+}

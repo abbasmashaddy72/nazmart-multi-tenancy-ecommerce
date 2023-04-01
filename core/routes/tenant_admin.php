@@ -414,6 +414,7 @@ Route::middleware([
 
         //Order settings route
         Route::match(['get', 'post'] ,'/order/settings', 'order_manage_settings')->name('admin.product.order.settings');
+        Route::match(['get', 'post'] ,'/invoice/settings', 'order_invoice_settings')->name('admin.product.invoice.settings');
     });
 
     /*------------------------------------------

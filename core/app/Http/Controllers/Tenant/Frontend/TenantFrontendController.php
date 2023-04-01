@@ -228,8 +228,6 @@ class TenantFrontendController extends Controller
         $create_arr = $request->all();
         $create_url = http_build_query($create_arr);
 
-
-        $product_object->url(route('tenant.shop') . '?' . $create_url);
         $product_object->url(route('tenant.shop') . '?' . $create_url);
 
         $links = $product_object->getUrlRange(1, $product_object->lastPage());
@@ -239,6 +237,7 @@ class TenantFrontendController extends Controller
 
         $grid = themeView("shop.partials.product-partials.grid-products", compact("products", "links", "current_page"))->render();
         $list = themeView("shop.partials.product-partials.list-products", compact("products", "links", "current_page"))->render();
+
         return response()->json(["list" => $list, "grid" => $grid, 'pagination' => $product_object]);
     }
 
@@ -291,7 +290,6 @@ class TenantFrontendController extends Controller
     {
         extract($this->productVariant($slug));
 
-
         $sub_category_arr = json_decode($product->sub_category_id, true);
 
         // related products
@@ -309,7 +307,6 @@ class TenantFrontendController extends Controller
             ->take(5)
             ->get();
 
-
         // sidebar data
         $all_category = ProductCategory::all();
         $all_units = ProductUom::all();
@@ -317,6 +314,7 @@ class TenantFrontendController extends Controller
         $min_price = request()->pr_min ? request()->pr_min : Product::query()->min('price');
         $max_price = request()->pr_max ? request()->pr_max : $maximum_available_price;
         $all_tags = ProductTag::all();
+        // todo:: now check product inventory set
 
         return themeView('shop.product_details.product-details', compact(
             'product',
@@ -403,8 +401,8 @@ class TenantFrontendController extends Controller
 
             $product_image = $product->image_id;
             if ($cart_data['product_variant']) {
-                $size_name = Size::find($cart_data['selected_size'])->name ?? '';
-                $color_name = Color::find($cart_data['selected_color'])->name ?? '';
+                $size_name = Size::find($cart_data['selected_size'] ?? 0)->name ?? '';
+                $color_name = Color::find($cart_data['selected_color'] ?? 0)->name ?? '';
 
                 $product_detail = ProductInventoryDetail::where("id", $cart_data['product_variant'])->first();
 
@@ -437,9 +435,10 @@ class TenantFrontendController extends Controller
                 'msg' => __('Item added to cart')
             ]);
         } catch (\Exception $exception) {
+
             return response()->json([
                 'type' => 'error',
-                'error_msg' => __('Something went wrong!')
+                'error_msg' => __('Something went wrong!'),
             ]);
         }
     }
@@ -1823,11 +1822,11 @@ HTML;
                 $single_inventory_item[$included_attribute_single['attribute_name']] = $included_attribute_single['attribute_value'];
 
 
-                if (optional($inventoryDetails->find($id))->productColor) {
+                if (!empty(optional($inventoryDetails->find($id))->productColor)) {
                     $single_inventory_item['Color'] = optional(optional($inventoryDetails->find($id))->productColor)->name;
                 }
 
-                if (optional($inventoryDetails->find($id))->productSize) {
+                if (!empty(optional($inventoryDetails->find($id))->productSize)) {
                     $single_inventory_item['Size'] = optional(optional($inventoryDetails->find($id))->productSize)->name;
                 }
             }
@@ -1865,12 +1864,14 @@ HTML;
 
                 $single_inventory_item = [];
 
-                if (optional($inventoryDetails->find($product_id))->color) {
-                    $single_inventory_item['Color'] = optional($inventory->productColor)->name;
+                if (!empty(optional($inventoryDetails->find($product_id))->color)) {
+                    // todo:: this line will check if color name is exist then store it on $singleInventoryItem['Color'] array
+                    optional($inventory->productColor)->name ? $single_inventory_item['Color'] = optional($inventory->productColor)->name : null;
                 }
 
-                if (optional($inventoryDetails->find($product_id))->size) {
-                    $single_inventory_item['Size'] = optional($inventory->productSize)->name;
+                if (!empty(optional($inventoryDetails->find($product_id))->size)) {
+                    // todo:: this line will check if size name is exist then store it on $singleInventoryItem['Size'] array
+                    optional($inventory->productSize)->name ? $single_inventory_item['Size'] = optional($inventory->productSize)->name : null;
                 }
 
                 $product_inventory_set[] = $single_inventory_item;

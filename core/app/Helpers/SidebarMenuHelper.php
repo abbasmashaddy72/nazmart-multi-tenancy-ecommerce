@@ -674,6 +674,7 @@ class SidebarMenuHelper
 
         $this->tenant_attribute_settings_menus($menu_instance);
         $this->tenant_product_settings_menus($menu_instance);
+        $this->tenant_digital_product_settings_menus($menu_instance);
 
         if (!empty($current_tenant_payment_data))
         {
@@ -758,7 +759,7 @@ class SidebarMenuHelper
             'permissions' => ['product-order-all-order', 'product-order-pending-order',
                 'product-progress-order', 'product-order-complete', 'product-order-success-page', 'product-order-cancel-page',
                 'product-order-page-manage', 'product-order-report', 'product-order-payment-logs', 'product-order-payment-report',
-                'product-order-manage-settings'
+                'product-order-manage-settings', 'product-order-invoice-settings'
             ],
             'icon' => 'mdi mdi-cart',
         ]);
@@ -785,6 +786,12 @@ class SidebarMenuHelper
             'label' => __('Order Settings'),
             'parent' => 'product-order-manage-settings',
             'permissions' => ['product-order-manage-settings'],
+        ]);
+        $menu_instance->add_menu_item('invoice-settings-order-settings', [
+            'route' => 'tenant.admin.product.invoice.settings',
+            'label' => __('Invoice Settings'),
+            'parent' => 'product-order-manage-settings',
+            'permissions' => ['product-order-invoice-settings'],
         ]);
     }
 
@@ -1131,6 +1138,47 @@ class SidebarMenuHelper
             'parent' => 'product-settings-menu-items',
             'permissions' => ['product-reviews'],
         ]);
+    }
+
+    private function tenant_digital_product_settings_menus(MenuWithPermission $menu_instance): void
+    {
+        $menu_instance->add_menu_item('digital-product-settings-menu-items', [
+            'route' => '#',
+            'label' => __('Digital Products'),
+            'parent' => null,
+            'permissions' => [
+                'digital-product-type-list', 'digital-product-list', 'digital-product-create', 'digital-product-edit', 'digital-product-delete', 'digital-product-settings', 'digital-product-reviews'
+            ],
+            'icon' => 'mdi mdi-shopping',
+        ]);
+
+        $menu_instance->add_menu_item('digital-product-type-settings-menu-items', [
+            'route' => 'tenant.admin.digital.product.type.all',
+            'label' => __('Product List Type'),
+            'parent' => 'digital-product-settings-menu-items',
+            'permissions' => ['digital-product-type-list'],
+        ]);
+
+        $menu_instance->add_menu_item('digital-product-category-settings-menu-items', [
+            'route' => 'tenant.admin.digital.product.category.all',
+            'label' => __('Category Manage'),
+            'parent' => 'digital-product-settings-menu-items',
+            'permissions' => ['digital-product-category-list'],
+        ]);
+
+//        $menu_instance->add_menu_item('product-create-menu-items', [
+//            'route' => 'tenant.admin.product.create',
+//            'label' => __('Add New Product'),
+//            'parent' => 'product-settings-menu-items',
+//            'permissions' => ['product-create'],
+//        ]);
+//
+//        $menu_instance->add_menu_item('product-reviews-menu-items', [
+//            'route' => 'tenant.admin.product.review',
+//            'label' => __('Review and Rating List'),
+//            'parent' => 'product-settings-menu-items',
+//            'permissions' => ['product-reviews'],
+//        ]);
     }
 
     private function tenant_campaign_settings_menus(MenuWithPermission $menu_instance): void

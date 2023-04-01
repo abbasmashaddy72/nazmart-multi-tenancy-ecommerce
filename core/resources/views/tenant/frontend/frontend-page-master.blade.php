@@ -9,7 +9,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="breadcrumb-contents center-text">
-                    <h2 class="breadcrumb-contents-title-two fw-500"> @yield('page-title') </h2>
+                    <h1 class="breadcrumb-contents-title-two fw-500"> @yield('page-title') </h1>
                     <ul class="breadcrumb-contents-list mt-2">
                         <li class="breadcrumb-contents-list-item"><a href="{{route('tenant.frontend.homepage')}}">{{__('Home')}}</a></li>
                         @if(Route::currentRouteName() === 'tenant.dynamic.page')

@@ -959,3 +959,37 @@
 .accordion-wrapper .card-header h5{
     color: #FFFFFF;
 }
+
+
+/*for Iframe warning*/
+.external-website {
+    position:fixed;
+    top:0;
+    width:100%;
+    z-index:9999999;
+    padding: 20px;
+    color:#721c25;
+    text-align:center;
+    background:#ffd3d8;
+}
+.external-website-para {
+    font-size:20px;
+    font-weight: 700;
+}
+.external-website-btn {
+    margin-top:30px;
+    color: #fff;
+    background-color: var(--main-color-one);
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    transition: all .3s;
+}
+.external-website-btn:hover {
+    color: #fff;
+    background-color: var(--heading-color);
+}
+.external-website-btn:focus {
+    color: #fff;
+}

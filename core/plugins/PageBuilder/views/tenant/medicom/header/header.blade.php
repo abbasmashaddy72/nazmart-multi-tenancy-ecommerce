@@ -27,9 +27,9 @@
                                      </div>
                                      <div class="col-lg-6">
                                          <div class="banner-image-content">
-                                             <h2 class="banner-image-content-title fw-400 mt-3">
+                                             <h1 class="banner-image-content-title fw-400 mt-3">
                                                  <a href="javascript:void(0)"> {!! get_tenant_highlighted_text($title, 'banner-image-content-title-span') !!} </a>
-                                             </h2>
+                                             </h1>
                                              <p class="banner-image-content-para mt-4"> {{$subtitle}} </p>
                                              <div class="btn-wrapper">
                                                  @if(!empty($button_url) && !empty($button_text))

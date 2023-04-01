@@ -21,6 +21,9 @@
 </div>
 
 <x-fields.input type="text" value="{{get_static_option('site_custom_currency_symbol')}}" name="site_custom_currency_symbol" label="{{__('Custom Currency Symbol')}}" info="{{__('If you don\'t have any custom symbol than leave this field empty as default')}}"/>
+<x-fields.input type="text" value="{{get_static_option('site_custom_currency_thousand_separator') ?? ','}}" name="site_custom_currency_thousand_separator" label="{{__('Currency Thousand Separator')}}"/>
+<x-fields.input type="text" value="{{get_static_option('site_custom_currency_decimal_separator') ?? '.'}}" name="site_custom_currency_decimal_separator" label="{{__('Currency Decimal Separator')}}"/>
+
 <x-fields.switcher value="{{get_static_option('currency_amount_type_status')}}" name="currency_amount_type_status" label="{{__('Yes/No Amount Decimal Mode')}}" />
 
 <div class="form-group">

@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static getHeaderHook
  * @method static getFooterHook
  * @method static getHeaderHookCssFiles
+ * @method static getHeaderHookRtlCssFiles
  * @method static getHeaderHookJsFiles
  * @method static getFooterHookCssFiles
  * @method static getFooterHookJsFiles

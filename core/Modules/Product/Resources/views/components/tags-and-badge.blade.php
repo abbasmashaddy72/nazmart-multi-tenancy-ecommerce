@@ -21,7 +21,7 @@
 
     <div class="general-info-form mt-0 mt-lg-4">
         <label class="dashboard-label color-light mb-2"> {{ __("Labels") }} </label>
-        <div class="d-flex gap-2">
+        <div class="badge-wrap gap-2">
             <input type="hidden" name="badge_id" value="{{ $singlebadge }}" id="badge_id_input"/>
             @foreach($badges as $badge)
                 <div class="badge-item d-flex {{ $badge->id === $singlebadge ? "active" : "" }}" data-badge-id="{{ $badge->id }}">

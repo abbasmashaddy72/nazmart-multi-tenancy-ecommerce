@@ -39,6 +39,7 @@ Route::middleware([
     Route::prefix("v1")->group(function () {
 
         Route::post('/register',[UserController::class,'register']);
+        Route::post('/username',[UserController::class,'username']);
         Route::post('/login',[UserController::class,'login']);
         Route::post('social/login',[UserController::class,'socialLogin']);
         Route::get('/country',[CountryController::class,'country']);
@@ -80,6 +81,7 @@ Route::middleware([
 // Product Route
 // Fetch feature product
         Route::get("featured/product/{limit?}", [FeaturedProductController::class,'index']);
+        Route::get("recent/product/{limit?}", [FeaturedProductController::class,'recent']);
         Route::get("campaign/product/{id?}", [FeaturedProductController::class,'campaign']);
         Route::get("campaign", [CampaignController::class,'index']); // done
         Route::get("product", [ProductController::class,'search'])->name("api.product.search");

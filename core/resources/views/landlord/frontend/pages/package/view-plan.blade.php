@@ -95,15 +95,6 @@
 
     <section class="order-service-page-content-area padding-100">
         <div class="container">
-{{--            @if(session()->get('trial-register'))--}}
-{{--                <div class="alert alert-success text-center mb-3">--}}
-{{--                    <p>{{session()->get('trial-register')}}</p>--}}
-{{--                </div>--}}
-
-{{--                @php--}}
-{{--                    session()->forget('trial-register')--}}
-{{--                @endphp--}}
-{{--            @endif--}}
             <div class="row justify-content-center">
                 <div class="col-xl-6 col-lg-8">
                     <div class="section-title margin-bottom-60">
@@ -259,6 +250,11 @@
                                 $theme_custom_name = get_static_option_central($theme_data['slug'].'_theme_name');
                                 $theme_custom_url = get_static_option_central($theme_data['slug'].'_theme_url');
                                 $theme_custom_image = get_static_option_central($theme_data['slug'].'_theme_image');
+
+                                if ($loop->first)
+                                {
+                                    $default_selected_theme = $theme_slug;
+                                }
                             @endphp
 
                             <div class="col-3" style="position: relative">
@@ -372,7 +368,7 @@
                             <form action="" class="mt-5" method="POST">
                                 <input type="hidden" name="user_id" id="user-id" value="{{$user->id}}">
                                 <input type="hidden" name="order_id" id="order-id" value="{{$order_details->id}}">
-                                <input type="hidden" name="theme_slug" id="theme-slug" value="{{get_static_option('default_theme')}}">
+                                <input type="hidden" name="theme_slug" id="theme-slug" value="{{$default_selected_theme}}">
 
                                 <div class="parent d-flex justify-content-end btn-wrapper">
                                     <button type="button" class="cmn-btn cmn-btn-bg-1 cmn-btn-small"

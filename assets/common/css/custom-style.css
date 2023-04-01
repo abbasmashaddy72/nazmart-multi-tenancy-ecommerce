@@ -33,6 +33,24 @@ body {
     background-position: bottom center;
 }
 
+.themePreview-btn {
+    border-color: inherit;
+    color: #00a300;
+    background-color: #d8ffd8;
+    display: inline-block;
+    padding: 5px 10px;
+    font-size: 15px;
+    font-weight: 500;
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    border-radius: 5px;
+}
+
+.themePreview-btn.inactivated {
+    background-color: #ffcdcd;
+    color: #FF0000FF;
+}
 
 /*linking */
 

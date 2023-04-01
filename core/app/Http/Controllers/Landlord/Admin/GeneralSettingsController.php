@@ -541,6 +541,9 @@ class GeneralSettingsController extends Controller
             'site_default_payment_gateway',
             'currency_amount_type_status',
             'site_custom_currency_symbol',
+            'site_custom_currency_thousand_separator',
+            'site_custom_currency_decimal_separator',
+            'cash_on_delivery'
         ];
 
         foreach ($save_data as $item) {
