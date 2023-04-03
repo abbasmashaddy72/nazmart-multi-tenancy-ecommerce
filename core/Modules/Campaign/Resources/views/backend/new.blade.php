@@ -38,18 +38,18 @@
                                                 <div class="card-body-inner mt-4">
                                                     <div class="form-group">
                                                         <label for="campaign_name">{{ __('Campaign Name') }}</label>
-                                                        <input type="text" class="form-control" id="campaign_name" name="campaign_name" placeholder="Campaign Name">
+                                                        <input type="text" class="form-control" id="campaign_name" name="campaign_name" placeholder="Campaign Name" value="{{old('campaign_name')}}">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="campaign_subtitle">{{ __('Campaign Subtitle') }}</label>
-                                                        <input type="text" class="form-control" id="campaign_subtitle" name="campaign_subtitle" placeholder="Campaign Subtitle">
+                                                        <input type="text" class="form-control" id="campaign_subtitle" name="campaign_subtitle" placeholder="Campaign Subtitle" value="{{old('campaign_subtitle')}}">
                                                     </div>
                                                     <x-fields.media-upload :title="__('Campaign Image')" :name="'image'" :dimentions="'1920x1080'"/>
                                                     <div class="form-group">
                                                         <label for="campaign_status">{{ __('Campaign Status') }}</label>
                                                         <select name="status" id="status" class="form-control">
-                                                            <option value="draft">{{ __('Draft') }}</option>
-                                                            <option value="publish">{{ __('Publish') }}</option>
+                                                            <option value="draft" {{old('status') == 'draft' ? 'selected' : ''}}>{{ __('Draft') }}</option>
+                                                            <option value="publish" {{old('status') == 'publish' ? 'selected' : ''}}>{{ __('Publish') }}</option>
                                                         </select>
                                                     </div>
                                                     <div class="form-group mt-5">
@@ -237,9 +237,13 @@
 
                 $('#add_product_btn').on('click', function () {
                     let product_repeater_container = $('#product_repeater_container');
+                    let newCampaignProduct = `@include("campaign::backend.add_new_campaign_product")`;
                     let from_date = undefined;
                     let to_date = undefined;
-                    let new_element = product_repeater_container.find('.card').last().clone();
+                    product_repeater_container.append(newCampaignProduct);
+                    let new_element = product_repeater_container.last();
+
+                    $('.default-card-wrapper').hide();
 
 
                     if ($('#set_fixed_date').is(':checked')) {

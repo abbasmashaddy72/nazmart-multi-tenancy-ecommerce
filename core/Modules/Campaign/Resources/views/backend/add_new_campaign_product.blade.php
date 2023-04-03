@@ -11,7 +11,7 @@
             <div class="form-group select_product">
                 <label for="product_id">{{ __('Select Product') }}</label>
                 <select name="product_id[]" id="product_id" class="form-control nice-select wide repeater_product_id">
-                    <option>Select Product</option>
+                    <option value="">{{ __("Select Product") }}</option>
                     @foreach ($all_products as $product)
                         <option value="{{ $product->id }}" data-price="{{ $product->price }}" data-sale_price="{{ $product->sale_price }}" data-stock="{{ optional($product->inventory)->stock_count ?? 0 }}">
                             {{ $product->name }}

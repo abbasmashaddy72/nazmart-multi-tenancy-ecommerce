@@ -1147,7 +1147,8 @@ class SidebarMenuHelper
             'label' => __('Digital Products'),
             'parent' => null,
             'permissions' => [
-                'digital-product-type-list', 'digital-product-list', 'digital-product-create', 'digital-product-edit', 'digital-product-delete', 'digital-product-settings', 'digital-product-reviews'
+                'digital-product-type-list', 'digital-product-list', 'digital-product-create', 'digital-product-edit', 'digital-product-delete', 'digital-product-settings', 'digital-product-reviews',
+                'digital-product-category-list', 'digital-product-subcategory-list', 'digital-product-childcategory-list'
             ],
             'icon' => 'mdi mdi-shopping',
         ]);
@@ -1164,6 +1165,20 @@ class SidebarMenuHelper
             'label' => __('Category Manage'),
             'parent' => 'digital-product-settings-menu-items',
             'permissions' => ['digital-product-category-list'],
+        ]);
+
+        $menu_instance->add_menu_item('digital-product-subcategory-settings-menu-items', [
+            'route' => 'tenant.admin.digital.product.subcategory.all',
+            'label' => __('Sub Category Manage'),
+            'parent' => 'digital-product-settings-menu-items',
+            'permissions' => ['digital-product-subcategory-list'],
+        ]);
+
+        $menu_instance->add_menu_item('digital-product-childcategory-settings-menu-items', [
+            'route' => 'tenant.admin.digital.product.childcategory.all',
+            'label' => __('Child Category Manage'),
+            'parent' => 'digital-product-settings-menu-items',
+            'permissions' => ['digital-product-childcategory-list'],
         ]);
 
 //        $menu_instance->add_menu_item('product-create-menu-items', [

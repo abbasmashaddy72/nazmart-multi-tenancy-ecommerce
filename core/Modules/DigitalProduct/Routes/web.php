@@ -40,6 +40,28 @@ Route::middleware([
         });
 
         /*-----------------------------------
+            DIGITAL PRODUCT SUBCATEGORY ROUTES
+        ------------------------------------*/
+        Route::group(['prefix' => 'sub-category', 'as' => 'admin.digital.product.subcategory.'], function () {
+            Route::get('/', 'DigitalProductSubCategoryController@index')->name('all');
+            Route::post('new', 'DigitalProductSubCategoryController@store')->name('new');
+            Route::post('update', 'DigitalProductSubCategoryController@update')->name('update');
+            Route::post('delete/{item}', 'DigitalProductSubCategoryController@destroy')->name('delete');
+        });
+
+        /*-----------------------------------
+            DIGITAL PRODUCT CHILD CATEGORY ROUTES
+        ------------------------------------*/
+        Route::group(['prefix' => 'child-category', 'as' => 'admin.digital.product.childcategory.'], function () {
+            Route::get('/', 'DigitalProductChildCategoryController@index')->name('all');
+            Route::post('new', 'DigitalProductChildCategoryController@store')->name('new');
+            Route::post('update', 'DigitalProductChildCategoryController@update')->name('update');
+            Route::post('delete/{item}', 'DigitalProductChildCategoryController@destroy')->name('delete');
+
+            Route::post('category-based-subcategory', 'DigitalProductChildCategoryController@categoryBasedSubcategory')->name('category.based.subcategory');
+        });
+
+        /*-----------------------------------
             METHOD ROUTES
         ------------------------------------*/
         Route::group(['prefix' => 'method', 'as' => 'admin.shipping.method.'], function () {

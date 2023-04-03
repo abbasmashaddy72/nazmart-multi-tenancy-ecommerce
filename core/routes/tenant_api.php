@@ -78,13 +78,14 @@ Route::middleware([
          * */
 
 
-// Product Route
-// Fetch feature product
+        // Product Route
+        // Fetch feature product
         Route::get("featured/product/{limit?}", [FeaturedProductController::class,'index']);
         Route::get("recent/product/{limit?}", [FeaturedProductController::class,'recent']);
         Route::get("campaign/product/{id?}", [FeaturedProductController::class,'campaign']);
         Route::get("campaign", [CampaignController::class,'index']); // done
         Route::get("product", [ProductController::class,'search'])->name("api.product.search");
+        Route::get('/search-items', [ProductController::class, 'searchItems']);
         Route::get("product/{id}", [ProductController::class,'productDetail']);
         Route::get("product/price-range", [ProductController::class,'priceRange']);
         Route::post("product-review", [ProductController::class,'storeReview']);

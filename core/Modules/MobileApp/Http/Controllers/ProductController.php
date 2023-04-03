@@ -349,23 +349,23 @@ class ProductController extends Controller
     public function searchItems(){
         return FrontendProductServices::shopPageSearchContent();
 
-        $min_price = Product::query()->min('sale_price');
-        $max_price = $maximum_available_price;
-        $item_style =['grid','list'];
-
-        return view('frontend.dynamic-redirect.product', compact(
-            'all_category',
-            'all_attributes',
-            'all_tags',
-            'all_colors',
-            'all_sizes',
-            'all_units',
-            'all_brands',
-            'min_price',
-            'max_price',
-            'maximum_available_price',
-            'item_style',
-        ));
+//        $min_price = Product::query()->min('sale_price');
+//        $max_price = $maximum_available_price;
+//        $item_style =['grid','list'];
+//
+//        return view('frontend.dynamic-redirect.product', compact(
+//            'all_category',
+//            'all_attributes',
+//            'all_tags',
+//            'all_colors',
+//            'all_sizes',
+//            'all_units',
+//            'all_brands',
+//            'min_price',
+//            'max_price',
+//            'maximum_available_price',
+//            'item_style',
+//        ));
     }
 
     public function productCoupon(Request $request)

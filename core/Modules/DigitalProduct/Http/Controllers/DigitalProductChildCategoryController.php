@@ -6,12 +6,12 @@ use App\Helpers\FlashMsg;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Mail;
 use Modules\DigitalProduct\Entities\DigitalCategories;
-use Modules\DigitalProduct\Entities\DigitalProductType;
+use Modules\DigitalProduct\Entities\DigitalChildCategories;
+use Modules\DigitalProduct\Entities\DigitalSubCategories;
+use function GuzzleHttp\Promise\all;
 
-class DigitalProductCategoryController extends Controller
+class DigitalProductChildCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,9 +19,10 @@ class DigitalProductCategoryController extends Controller
      */
     public function index()
     {
-        $all_category = DigitalCategories::all();
-        $all_product_type = DigitalProductType::all();
-        return view('digitalproduct::admin.category.all', compact('all_category', 'all_product_type'));
+        $all_category = DigitalCategories::where('status', 1)->select('id', 'name', 'slug')->get();
+        $all_subcategory = DigitalSubCategories::where('status', 1)->select('id', 'name', 'slug')->get();
+        $all_childcategory = DigitalChildCategories::all();
+        return view('digitalproduct::admin.child-category.all', compact('all_category', 'all_subcategory', 'all_childcategory'));
     }
 
     /**
@@ -42,23 +43,25 @@ class DigitalProductCategoryController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|max:255',
-            'slug' => 'nullable|max:255|unique:digital_categories,slug',
-            'type_id' => 'required|integer',
+            'slug' => 'nullable|max:255|unique:digital_child_categories,slug',
             'description' => 'required|max:255',
             'status_id' => 'required|boolean',
-            'image_id' => 'nullable|numeric'
+            'image_id' => 'nullable|numeric',
+            'category' => 'required|numeric|exists:digital_sub_categories,category_id',
+            'subcategory' => 'required|numeric|exists:digital_sub_categories,id',
         ]);
 
-        $digital_product_category = new DigitalCategories();
+        $digital_product_category = new DigitalChildCategories();
         $digital_product_category->name = $validatedData['name'];
         $digital_product_category->slug = \Str::slug($validatedData['slug']);
         $digital_product_category->description = $validatedData['description'];
-        $digital_product_category->digital_product_type = $validatedData['type_id'];
+        $digital_product_category->category_id = $validatedData['category'];
+        $digital_product_category->sub_category_id = $validatedData['subcategory'];
         $digital_product_category->status = $validatedData['status_id'];
         $digital_product_category->image_id = $validatedData['image_id'] ?? null;
         $digital_product_category->save();
 
-        return back()->with(FlashMsg::create_succeed(__('Product Category')));
+        return back()->with(FlashMsg::create_succeed(__('Product Child Category')));
     }
 
     /**
@@ -91,23 +94,25 @@ class DigitalProductCategoryController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|max:255',
-            'slug' => 'nullable|max:255|unique:digital_categories,slug,'.$request->id,
-            'type_id' => 'required|integer',
+            'slug' => 'nullable|max:255|unique:digital_child_categories,slug,'.$request->id,
             'description' => 'required|max:255',
             'status_id' => 'required|boolean',
-            'image_id' => 'nullable|numeric'
+            'image_id' => 'nullable|numeric',
+            'category' => 'required|numeric|exists:digital_sub_categories,category_id',
+            'subcategory' => 'required|numeric|exists:digital_sub_categories,id',
         ]);
 
-        $digital_product_category = DigitalCategories::find($request->id);
+        $digital_product_category = DigitalChildCategories::find($request->id);
         $digital_product_category->name = $validatedData['name'];
         $digital_product_category->slug = \Str::slug($validatedData['slug']);
         $digital_product_category->description = $validatedData['description'];
-        $digital_product_category->digital_product_type = $validatedData['type_id'];
+        $digital_product_category->category_id = $validatedData['category'];
+        $digital_product_category->sub_category_id = $validatedData['subcategory'];
         $digital_product_category->status = $validatedData['status_id'];
         $digital_product_category->image_id = $validatedData['image_id'] ?? null;
         $digital_product_category->save();
 
-        return back()->with(FlashMsg::update_succeed(__('Product Category')));
+        return back()->with(FlashMsg::update_succeed(__('Product Child Category')));
     }
 
     /**
@@ -117,9 +122,29 @@ class DigitalProductCategoryController extends Controller
      */
     public function destroy($id)
     {
-        $digital_product_category = DigitalCategories::findOrFail($id);
-        $digital_product_category->delete();
+        $digital_product_child_category = DigitalChildCategories::findOrFail($id);
+        $digital_product_child_category->delete();
 
-        return back()->with(FlashMsg::delete_succeed(__('Product Category')));
+        return back()->with(FlashMsg::delete_succeed(__('Product Child Category')));
+    }
+
+    public function categoryBasedSubcategory(Request $request)
+    {
+        $request->validate([
+            'category' => 'required'
+        ]);
+
+        $subcategories = DigitalSubCategories::where('category_id', $request->category)->get();
+
+        $markup = '';
+        foreach ($subcategories as $item)
+        {
+            $markup .= '<option value="'.$item->id.'">'.$item->name.'</option>';
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'markup' => $markup ?? ''
+        ]);
     }
 }

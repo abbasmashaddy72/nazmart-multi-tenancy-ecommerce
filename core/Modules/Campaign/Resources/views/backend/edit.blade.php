@@ -90,6 +90,7 @@
                                         </div>
                                     </div>
                                     <div class="col-xl-8 col-md-7">
+{{--                                        @dd($campaign->products)--}}
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div id="product_repeater_container">
@@ -328,11 +329,12 @@
 
                 $('#add_product_btn').on('click', function () {
                     let product_repeater_container = $('#product_repeater_container');
+                    let newCampaignProduct = `@include("campaign::backend.add_new_campaign_product")`;
                     let remove_button_selector = '.delete-campaign';
                     let from_date = undefined;
                     let to_date = undefined;
-                    let new_element = product_repeater_container.find('.card').last().clone();
-
+                    product_repeater_container.append(newCampaignProduct);
+                    let new_element = product_repeater_container.last();
                     if ($('#set_fixed_date').is(':checked')) {
                         from_date = $('#fixed_from_date').val();
                         to_date = $('#fixed_to_date').val();
