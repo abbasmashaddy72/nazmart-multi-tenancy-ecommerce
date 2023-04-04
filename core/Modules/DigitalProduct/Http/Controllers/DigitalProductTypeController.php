@@ -5,6 +5,7 @@ namespace Modules\DigitalProduct\Http\Controllers;
 use App\Enums\StatusEnums;
 use App\Helpers\FlashMsg;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\DigitalProduct\Entities\DigitalProductType;
@@ -132,6 +133,13 @@ class DigitalProductTypeController extends Controller
     {
         DigitalProductType::find($id)->delete();
         return back()->with(FlashMsg::delete_succeed(__('Digital Product Type')));
+    }
+
+    public function bulk_action(Request $request): JsonResponse
+    {
+        DigitalProductType::WhereIn('id', $request->ids)->delete();
+
+        return response()->json(['status' => 'ok']);
     }
 
     public function arrayValidation($array_to_check, $array_on_check)

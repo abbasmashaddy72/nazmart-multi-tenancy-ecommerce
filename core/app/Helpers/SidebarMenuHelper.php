@@ -1181,6 +1181,13 @@ class SidebarMenuHelper
             'permissions' => ['digital-product-childcategory-list'],
         ]);
 
+        $menu_instance->add_menu_item('digital-product-author-settings-menu-items', [
+            'route' => 'tenant.admin.digital.product.author.all',
+            'label' => __('Author Manage'),
+            'parent' => 'digital-product-settings-menu-items',
+            'permissions' => ['digital-product-author-list'],
+        ]);
+
 //        $menu_instance->add_menu_item('product-create-menu-items', [
 //            'route' => 'tenant.admin.product.create',
 //            'label' => __('Add New Product'),

@@ -4,6 +4,7 @@ namespace Modules\DigitalProduct\Http\Controllers;
 
 use App\Helpers\FlashMsg;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\DigitalProduct\Entities\DigitalCategories;
@@ -119,5 +120,12 @@ class DigitalProductSubCategoryController extends Controller
         $digital_product_category->delete();
 
         return back()->with(FlashMsg::delete_succeed(__('Product Sub Category')));
+    }
+
+    public function bulk_action(Request $request): JsonResponse
+    {
+        DigitalSubCategories::WhereIn('id', $request->ids)->delete();
+
+        return response()->json(['status' => 'ok']);
     }
 }

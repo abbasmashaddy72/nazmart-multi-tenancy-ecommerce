@@ -25,6 +25,7 @@ Route::middleware([
             Route::post('new', 'DigitalProductTypeController@store')->name('new');
             Route::post('update', 'DigitalProductTypeController@update')->name('update');
             Route::post('delete/{item}', 'DigitalProductTypeController@destroy')->name('delete');
+            Route::post('bulk-action', 'DigitalProductTypeController@bulk_action')->name('bulk.action');
 
             Route::post('type-based-extension', 'DigitalProductTypeController@typeBasedExtension')->name('extensions');
         });
@@ -37,6 +38,7 @@ Route::middleware([
             Route::post('new', 'DigitalProductCategoryController@store')->name('new');
             Route::post('update', 'DigitalProductCategoryController@update')->name('update');
             Route::post('delete/{item}', 'DigitalProductCategoryController@destroy')->name('delete');
+            Route::post('bulk-action', 'DigitalProductCategoryController@bulk_action')->name('bulk.action');
         });
 
         /*-----------------------------------
@@ -47,6 +49,7 @@ Route::middleware([
             Route::post('new', 'DigitalProductSubCategoryController@store')->name('new');
             Route::post('update', 'DigitalProductSubCategoryController@update')->name('update');
             Route::post('delete/{item}', 'DigitalProductSubCategoryController@destroy')->name('delete');
+            Route::post('bulk-action', 'DigitalProductSubCategoryController@bulk_action')->name('bulk.action');
         });
 
         /*-----------------------------------
@@ -57,8 +60,20 @@ Route::middleware([
             Route::post('new', 'DigitalProductChildCategoryController@store')->name('new');
             Route::post('update', 'DigitalProductChildCategoryController@update')->name('update');
             Route::post('delete/{item}', 'DigitalProductChildCategoryController@destroy')->name('delete');
+            Route::post('bulk-action', 'DigitalProductChildCategoryController@bulk_action')->name('bulk.action');
 
             Route::post('category-based-subcategory', 'DigitalProductChildCategoryController@categoryBasedSubcategory')->name('category.based.subcategory');
+        });
+
+        /*-----------------------------------
+            DIGITAL PRODUCT AUTHOR ROUTES
+        ------------------------------------*/
+        Route::group(['prefix' => 'author', 'as' => 'admin.digital.product.author.'], function () {
+            Route::get('/', 'DigitalAuthorController@index')->name('all');
+            Route::post('new', 'DigitalAuthorController@store')->name('new');
+            Route::post('update', 'DigitalAuthorController@update')->name('update');
+            Route::post('delete/{item}', 'DigitalAuthorController@destroy')->name('delete');
+            Route::post('bulk-action', 'DigitalAuthorController@bulk_action')->name('bulk.action');
         });
 
         /*-----------------------------------

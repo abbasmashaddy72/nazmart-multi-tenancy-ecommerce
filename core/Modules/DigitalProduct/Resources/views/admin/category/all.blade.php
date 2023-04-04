@@ -233,7 +233,7 @@
     <x-media-upload.js/>
     <x-table.btn.swal.js/>
     @can('product-category-delete')
-        <x-bulk-action.js :route="route('tenant.admin.product.category.bulk.action')"/>
+        <x-bulk-action.js :route="route('tenant.admin.digital.product.category.bulk.action')"/>
     @endcan
 
     <script>

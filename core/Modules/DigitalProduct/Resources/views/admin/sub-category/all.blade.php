@@ -25,7 +25,7 @@
                         <div class="header-wrap d-flex flex-wrap justify-content-between">
                             <h4 class="header-title mb-4">{{__('All Digital Products Categories')}}</h4>
                             <div class="div">
-                                @can('product-category-create')
+                                @can('digital-category-create')
                                     <a href="#"
                                        data-bs-toggle="modal"
                                        data-bs-target="#category_create_modal"
@@ -33,7 +33,7 @@
                                 @endcan
                             </div>
                         </div>
-                        @can('product-category-delete')
+                        @can('digital-category-delete')
                             <x-bulk-action.dropdown/>
                         @endcan
 
@@ -46,7 +46,6 @@
                                 <th>{{__('Category')}}</th>
                                 <th>{{__('Description')}}</th>
                                 <th>{{__('Image')}}</th>
-                                <th>{{__('Type')}}</th>
                                 <th>{{__('Status')}}</th>
                                 <th>{{__('Action')}}</th>
                                 </thead>
@@ -65,17 +64,16 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>{{$subcategory->product_type?->name}}</td>
                                         <td>
                                             {{\App\Enums\StatusEnums::getText($subcategory->status)}}
                                         </td>
                                         <td>
-                                            @can('product-category-delete')
+                                            @can('digital-category-delete')
                                                 <x-table.btn.swal.delete
                                                     :route="route('tenant.admin.digital.product.subcategory.delete', $subcategory->id)"/>
                                             @endcan
 
-                                            @can('product-category-edit')
+                                            @can('digital-category-edit')
                                                 @php
                                                     $image = get_attachment_image_by_id($subcategory->image_id, null, true);
                                                     $img_path = $image['img_url'];
@@ -109,7 +107,7 @@
         </div>
     </div>
 
-    @can('product-category-edit')
+    @can('digital-category-edit')
         <div class="modal fade" id="subcategory_edit_modal" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -169,7 +167,7 @@
         </div>
     @endcan
 
-    @can('product-category-create')
+    @can('digital-category-create')
         <div class="modal fade" id="category_create_modal" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -233,8 +231,8 @@
     <x-datatable.js/>
     <x-media-upload.js/>
     <x-table.btn.swal.js/>
-    @can('product-category-delete')
-        <x-bulk-action.js :route="route('tenant.admin.product.category.bulk.action')"/>
+    @can('digital-category-delete')
+        <x-bulk-action.js :route="route('tenant.admin.digital.product.subcategory.bulk.action')"/>
     @endcan
 
     <script>
@@ -267,7 +265,6 @@
                     modal.find('.media-upload-btn-wrapper input').val(imageid);
                     modal.find('.media-upload-btn-wrapper .media_upload_form_btn').text('Change Image');
                 }
-
             });
 
             $('#create-name , #create-slug').on('keyup', function () {

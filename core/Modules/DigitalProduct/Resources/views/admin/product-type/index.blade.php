@@ -41,6 +41,9 @@
             border-color: #ddd transparent transparent transparent;
             top: 25px;
         }
+        .attachment-preview .img-wrap img{
+            width: 150px;
+        }
     </style>
 @endsection
 
@@ -278,7 +281,7 @@
 @section('scripts')
     <script src="{{global_asset('assets/common/js/select2.min.js')}}"></script>
     <x-product::table.status-js/>
-    <x-product::table.bulk-action-js :url="route('tenant.admin.product.bulk.destroy')"/>
+    <x-product::table.bulk-action-js :url="route('tenant.admin.digital.product.type.bulk.action')"/>
     <x-table.btn.swal.js/>
     <x-media-upload.js/>
 
