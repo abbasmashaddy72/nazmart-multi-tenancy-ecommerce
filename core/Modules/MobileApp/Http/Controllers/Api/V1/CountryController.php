@@ -2,6 +2,7 @@
 
 namespace Modules\MobileApp\Http\Controllers\Api\V1;
 
+use FontLib\Table\Type\name;
 use Illuminate\Routing\Controller;
 use Modules\CountryManage\Entities\Country;
 use Modules\CountryManage\Entities\State;
@@ -13,7 +14,7 @@ class CountryController extends Controller
     */
     public function country()
     {
-        $country = Country::select('id', 'name')->orderBy('name', 'asc')->get();
+        $country = Country::select('id', 'name')->orderBy('name', 'asc')->paginate(10);
 
         return response()->json([
             'countries' => $country
@@ -31,11 +32,40 @@ class CountryController extends Controller
             ])->setStatusCode(422);
         }
 
-        $state = State::select('id', 'name','country_id')->where('country_id',$id)->orderBy('name', 'asc')->get();
+        $state = State::select('id', 'name','country_id')->where('country_id',$id)->orderBy('name', 'asc')->paginate(10);
 
         return response()->json([
             'state' => $state
         ]);
+    }
 
+    public function searchCountry($name)
+    {
+        if(empty($name)){
+            return response()->json([
+                'message' => __('provide a valid country name')
+            ])->setStatusCode(422);
+        }
+
+        $country = Country::where('name', 'LIKE', '%'.$name.'%')->select('id', 'name')->orderBy('name', 'asc')->paginate(10);
+
+        return response()->json([
+            'countries' => $country
+        ]);
+    }
+
+    public function searchState($name)
+    {
+        if(empty($name)){
+            return response()->json([
+                'message' => __('provide a valid state name')
+            ])->setStatusCode(422);
+        }
+
+        $state = State::where('name', 'LIKE', '%'.$name.'%')->select('id', 'name','country_id')->orderBy('name', 'asc')->paginate(10);
+
+        return response()->json([
+            'state' => $state
+        ]);
     }
 }

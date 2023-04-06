@@ -12,6 +12,9 @@ use Modules\DigitalProduct\Entities\DigitalCategories;
 
 class DigitalAuthorController extends Controller
 {
+    public function __construct(){
+        $this->middleware("auth:admin");
+    }
     /**
      * Display a listing of the resource.
      * @return Renderable
@@ -110,7 +113,7 @@ class DigitalAuthorController extends Controller
         $digital_author = DigitalAuthor::findOrFail($id);
         $digital_author->delete();
 
-        return back()->with(FlashMsg::delete_succeed(__('Product Category')));
+        return back()->with(FlashMsg::delete_succeed(__('Digital Author')));
     }
 
     public function bulk_action(Request $request): JsonResponse

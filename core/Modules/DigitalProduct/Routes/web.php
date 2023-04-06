@@ -2,6 +2,7 @@
 
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
+use Modules\DigitalProduct\Http\Controllers\CategoryBasedSubChildCategoryController;
 
 Route::middleware([
     'web',
@@ -13,10 +14,19 @@ Route::middleware([
     'tenantAdminPanelMailVerify',
     'set_lang'
 ])->prefix('admin-home')->name('tenant.')->group(function () {
-    /*-----------------------------------
-        SHIPPING ROUTES
-    ------------------------------------*/
     Route::group(['prefix' => 'digital-product'], function () {
+        /*-----------------------------------
+            DIGITAL PRODUCT ROUTES
+        ------------------------------------*/
+        Route::group(['as' => 'admin.digital.product.'], function () {
+            Route::get('/', 'DigitalProductController@index')->name('all');
+            Route::get('create', 'DigitalProductController@create')->name('create');
+            Route::post('new', 'DigitalProductController@store')->name('new');
+            Route::post('update', 'DigitalProductController@update')->name('update');
+            Route::post('delete/{item}', 'DigitalProductController@destroy')->name('delete');
+            Route::post('bulk-action', 'DigitalProductController@bulk_action')->name('bulk.action');
+        });
+
         /*-----------------------------------
             DIGITAL PRODUCT TYPE ROUTES
         ------------------------------------*/
@@ -77,6 +87,17 @@ Route::middleware([
         });
 
         /*-----------------------------------
+            DIGITAL PRODUCT TAX ROUTES
+        ------------------------------------*/
+        Route::group(['prefix' => 'tax', 'as' => 'admin.digital.product.tax.'], function () {
+            Route::get('/', 'DigitalTaxController@index')->name('all');
+            Route::post('new', 'DigitalTaxController@store')->name('new');
+            Route::post('update', 'DigitalTaxController@update')->name('update');
+            Route::post('delete/{item}', 'DigitalTaxController@destroy')->name('delete');
+            Route::post('bulk-action', 'DigitalTaxController@bulk_action')->name('bulk.action');
+        });
+
+        /*-----------------------------------
             METHOD ROUTES
         ------------------------------------*/
         Route::group(['prefix' => 'method', 'as' => 'admin.shipping.method.'], function () {
@@ -88,6 +109,18 @@ Route::middleware([
             Route::post('delete/{item}', 'ShippingMethodController@destroy')->name('delete');
             Route::post('bulk-action', 'ShippingMethodController@bulk_action')->name('bulk.action');
             Route::post('make-default', 'ShippingMethodController@makeDefault')->name('make.default');
+        });
+
+
+        /*==============================================
+                    Product Module Category Route
+        ==============================================*/
+        Route::prefix("category")->as("admin.digital.category.")->group(function (){
+            Route::controller(CategoryBasedSubChildCategoryController::class)->group(function (){
+                Route::post("category","getCategory")->name("all");
+                Route::post("sub-category","getSubCategory")->name("sub-category");
+                Route::post("child-category","getChildCategory")->name("child-category");
+            });
         });
     });
 });

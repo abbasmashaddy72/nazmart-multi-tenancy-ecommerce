@@ -1148,9 +1148,23 @@ class SidebarMenuHelper
             'parent' => null,
             'permissions' => [
                 'digital-product-type-list', 'digital-product-list', 'digital-product-create', 'digital-product-edit', 'digital-product-delete', 'digital-product-settings', 'digital-product-reviews',
-                'digital-product-category-list', 'digital-product-subcategory-list', 'digital-product-childcategory-list'
+                'digital-product-category-list', 'digital-product-subcategory-list', 'digital-product-childcategory-list', 'digital-product-tax-list'
             ],
             'icon' => 'mdi mdi-shopping',
+        ]);
+
+        $menu_instance->add_menu_item('digital-product-list-settings-menu-items', [
+            'route' => 'tenant.admin.digital.product.all',
+            'label' => __('All Product'),
+            'parent' => 'digital-product-settings-menu-items',
+            'permissions' => ['digital-product-list'],
+        ]);
+
+        $menu_instance->add_menu_item('digital-product-create-settings-menu-items', [
+            'route' => 'tenant.admin.digital.product.create',
+            'label' => __('Add New Product'),
+            'parent' => 'digital-product-settings-menu-items',
+            'permissions' => ['digital-product-create'],
         ]);
 
         $menu_instance->add_menu_item('digital-product-type-settings-menu-items', [
@@ -1186,6 +1200,13 @@ class SidebarMenuHelper
             'label' => __('Author Manage'),
             'parent' => 'digital-product-settings-menu-items',
             'permissions' => ['digital-product-author-list'],
+        ]);
+
+        $menu_instance->add_menu_item('digital-product-tax-settings-menu-items', [
+            'route' => 'tenant.admin.digital.product.tax.all',
+            'label' => __('Tax Manage'),
+            'parent' => 'digital-product-settings-menu-items',
+            'permissions' => ['digital-product-tax-list'],
         ]);
 
 //        $menu_instance->add_menu_item('product-create-menu-items', [
