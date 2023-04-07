@@ -85,6 +85,10 @@ class CheckoutToPaymentService
                 $custom_data['request'] = $data;
                 $custom_data['payment_details'] = $payment_details->toArray();
                 $custom_data['total'] = $amount_to_charge;
+                $custom_data['payment_type'] = "checkout";
+                $custom_data['payment_for'] = "tenant";
+                $custom_data['cancel_url'] = route(PaymentRouteEnum::CANCEL_ROUTE, random_int(111111,999999).$custom_data['payment_details']['id'].random_int(111111,999999));
+                $custom_data['success_url'] = route(PaymentRouteEnum::SUCCESS_ROUTE, random_int(111111,999999).$custom_data['payment_details']['id'].random_int(111111,999999));
 
                 $charge_customer_class_namespace = getChargeCustomerMethodNameByPaymentGatewayNameSpace($payment_gateway);
                 $charge_customer_method_name = getChargeCustomerMethodNameByPaymentGatewayName($payment_gateway);
