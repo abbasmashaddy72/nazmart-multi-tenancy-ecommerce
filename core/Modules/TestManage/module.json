@@ -42,7 +42,9 @@
         "paymentGateway": {
             "name": "AliPay",
             "slug": "alipay",
-            "tenant": false,
+            "tenant": true,
+            "show_admin_landlord": true,
+            "show_admin_tenant": true,
             "chargeCustomerMethodNameSpace": "Modules\\TestManage\\Http\\Controllers\\TestManageController",
             "chargeCustomerMethodName": "paymentGateway",
             "test_mode" : false,

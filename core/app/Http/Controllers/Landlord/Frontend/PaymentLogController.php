@@ -389,7 +389,6 @@ class PaymentLogController extends Controller
                 $custom_data['cancel_url'] = route(self::CANCEL_ROUTE, random_int(111111,999999).$this->payment_details['id'].random_int(111111,999999));
                 $custom_data['success_url'] = route(self::SUCCESS_ROUTE, random_int(111111,999999).$this->payment_details['id'].random_int(111111,999999));
 
-
                 $charge_customer_class_namespace = getChargeCustomerMethodNameByPaymentGatewayNameSpace($payment_gateway_name);
                 $charge_customer_method_name = getChargeCustomerMethodNameByPaymentGatewayName($payment_gateway_name);
 
@@ -662,7 +661,7 @@ class PaymentLogController extends Controller
             Mail::to($package_details->email)->send(new PlaceOrder($all_fields, $all_attachment, $package_details, 'user', 'regular'));
 
         } catch (\Exception $e) {
-            return redirect()->back()->with(['type' => 'danger', 'msg' => $e->getMessage()]);
+//            return redirect()->back()->with(['type' => 'danger', 'msg' => $e->getMessage()]);
         }
     }
 
