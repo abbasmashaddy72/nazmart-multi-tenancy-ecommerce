@@ -173,7 +173,8 @@
                 <h6 class="payment-label fw-500"> {{__('Select Payment Method')}} </h6>
                 <div class="payment-card mt-4">
 
-                    {!! render_payment_gateway_for_form() !!}
+{{--                    {!! render_payment_gateway_for_form() !!}--}}
+                    {!! (new \App\Helpers\PaymentGatewayRenderHelper())->renderPaymentGatewayForForm() !!}
 
                     <div class="form-group d-none manual_transaction_id">
                         <input type="text" name="trasaction_id" class="form-control "

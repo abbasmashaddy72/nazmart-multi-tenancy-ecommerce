@@ -180,8 +180,13 @@ class ModuleMetaData
             $currFolderName = pathinfo($dire, PATHINFO_BASENAME);
             $metaInformation = $this->getIndividualModuleMetaData($currFolderName);
 
+            //did not collect  meta info of the module which is disabled from module_status.json file
+            if(!array_key_exists($currFolderName,$modules_status_data)){
+                continue;
+            }
+
             if(
-                in_array($metaInformation->name,$modules_status_data)
+                array_key_exists($metaInformation->name,$modules_status_data)
                 && isset($modules_status_data[$metaInformation->name])
                 && $modules_status_data[$metaInformation->name] === false
             ){

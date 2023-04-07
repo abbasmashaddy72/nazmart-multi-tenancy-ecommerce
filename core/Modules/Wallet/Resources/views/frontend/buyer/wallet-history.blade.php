@@ -174,8 +174,14 @@
                                 <div class="single-checkbox">
                                     <div class="checkbox-inlines">
                                         <label class="checkbox-label" for="check2">
-                                            {!! render_payment_gateway_for_form() !!}
+{{--                                            {!! render_payment_gateway_for_form() !!}--}}
+                                            {!! (new \App\Helpers\PaymentGatewayRenderHelper())->renderPaymentGatewayForForm() !!}
                                         </label>
+                                    </div>
+
+                                    <div class="form-group d-none manual_transaction_id my-4">
+                                        <input type="text" name="trasaction_id" class="form-control "
+                                               placeholder="{{__('Transaction ID')}}">
                                     </div>
                                 </div>
                             </div>
