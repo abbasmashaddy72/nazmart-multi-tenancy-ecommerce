@@ -20,6 +20,7 @@ return new class extends Migration
             $table->tinyText("product_type");
             $table->unsignedBigInteger("image_id")->nullable();
             $table->boolean("status")->comment('active=1, inactive=0')->default(0);
+            $table->json('extensions');
             $table->timestamps();
             $table->softDeletes();
         });

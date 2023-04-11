@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddTimestampColumnToDigitalProductsTable extends Migration
+class AddStatusColumnToDigitalProductsTables extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddTimestampColumnToDigitalProductsTable extends Migration
     public function up()
     {
         Schema::table('digital_products', function (Blueprint $table) {
-            $table->timestamps();
+            $table->tinyInteger('status_id')->default(2)->after('image_id')->comment('1=active, 2=inactive');
         });
     }
 
@@ -26,8 +26,7 @@ class AddTimestampColumnToDigitalProductsTable extends Migration
     public function down()
     {
         Schema::table('digital_products', function (Blueprint $table) {
-            $table->dropColumn('created_at');
-            $table->dropColumn('updated_at');
+            $table->dropColumn('status_id');
         });
     }
 }

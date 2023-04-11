@@ -9,10 +9,10 @@ class AdminDigitalProductServices
 {
     use DigitalProductGlobalTrait;
 
-    public function store($data): string
+    public function store($data, $request): string
     {
-        /// store product
-        return $this->productStore($data);
+        // store product
+        return $this->productStore($data, $request);
     }
 
     public function update($data, $id){
@@ -20,7 +20,7 @@ class AdminDigitalProductServices
     }
 
     public function get_edit_product($id){
-        return $this->get_product("edit",$id);
+        return $this->get_product("edit", $id);
     }
 
     public function clone($id){
@@ -28,8 +28,7 @@ class AdminDigitalProductServices
     }
 
     public function delete(int $id)
-    {
-        CampaignSoldProduct::where('product_id', $id)->delete();
+    {;
         return $this->destroy($id);
     }
 

@@ -3,17 +3,17 @@
     {{__('Edit Product - '. $product->name)}}
 @endsection
 @section('style')
+    <link rel="stylesheet" href="{{ global_asset('assets/common/css/flatpickr.min.css') }}">
     <link rel="stylesheet" href="{{global_asset('assets/tenant/backend/css/bootstrap-taginput.css')}}">
+    <x-digitalproduct::product-file-uploader.css/>
     <x-media-upload.css/>
     <x-summernote.css/>
-    <x-product::variant-info.css/>
 @endsection
 @section('content')
     @php
         $subCat = $product?->subCategory?->id ?? null;
         $childCat = $product?->childCategory?->pluck("id")->toArray() ?? null;
-        $cat = $product?->category?->id ?? null;
-        $selectedDeliveryOption = $product?->delivery_option?->pluck("delivery_option_id")?->toArray() ?? [];
+        $cat = $product?->category?->id ?? null;;
     @endphp
     <div class="dashboard-top-contents">
         <div class="row">
@@ -26,7 +26,7 @@
                         <div class="dashboard-right-flex">
                             <div class="top-search-input">
                                 <a class="btn btn-info btn-sm px-4"
-                                   href="{{route('tenant.admin.product.all')}}">{{__('Back')}}</a>
+                                   href="{{route('tenant.admin.digital.product.all')}}">{{__('Back')}}</a>
                             </div>
                         </div>
                     </div>
@@ -49,121 +49,92 @@
                             <button class="nav-link" id="v-pills-price-tab" data-bs-toggle="pill"
                                     data-bs-target="#v-price-tab" type="button" role="tab" aria-controls="v-price-tab"
                                     aria-selected="false"><span
-                                    style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("Price") }}
+                                    style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("Price & Tax") }}
                             </button>
-                            <button class="nav-link" id="v-pills-images-tab" data-bs-toggle="pill"
+                            <button class="nav-link" id="v-pills-additional-tab" data-bs-toggle="pill"
+                                    data-bs-target="#v-additional-tab" type="button" role="tab"
+                                    aria-controls="v-additional-tab"
+                                    aria-selected="false"><span
+                                    style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("Additional Fields") }}
+                            </button>
+                            <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
+                                    data-bs-target="#v-categories-tab" type="button" role="tab"
+                                    aria-controls="v-categories-tab" aria-selected="false"><span
+                                    style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("Categories") }}
+                            </button>
+                            <button class="nav-link" id="v-pills-images-tab-tab" data-bs-toggle="pill"
                                     data-bs-target="#v-images-tab" type="button" role="tab" aria-controls="v-images-tab"
                                     aria-selected="false"><span
-                                    style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("Images") }}
-                            </button>
-                            <button class="nav-link" id="v-pills-inventory-tab" data-bs-toggle="pill"
-                                    data-bs-target="#v-inventory-tab" type="button" role="tab"
-                                    aria-controls="v-inventory-tab" aria-selected="false"><span
-                                    style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("Inventory") }}
+                                    style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("File & Images") }}
                             </button>
                             <button class="nav-link" id="v-pills-tags-and-label" data-bs-toggle="pill"
                                     data-bs-target="#v-tags-and-label" type="button" role="tab"
                                     aria-controls="v-tags-and-label" aria-selected="false"><span
                                     style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("Tags & Label") }}
                             </button>
-                            <button class="nav-link" id="v-pills-attributes-tab" data-bs-toggle="pill"
-                                    data-bs-target="#v-attributes-tab" type="button" role="tab"
-                                    aria-controls="v-attributes-tab" aria-selected="false"><span
-                                    style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("Attributes") }}
-                            </button>
-                            <button class="nav-link" id="v-pills-categories-tab" data-bs-toggle="pill"
-                                    data-bs-target="#v-categories-tab" type="button" role="tab"
-                                    aria-controls="v-categories-tab" aria-selected="false"><span
-                                    style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("Categories") }}
-                            </button>
-                            <button class="nav-link" id="v-pills-delivery-option-tab" data-bs-toggle="pill"
-                                    data-bs-target="#v-delivery-option-tab" type="button" role="tab"
-                                    aria-controls="v-delivery-option-tab" aria-selected="false"><span
-                                    style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("Delivery Option") }}
-                            </button>
                             <button class="nav-link" id="v-pills-meta-tag-tab" data-bs-toggle="pill"
                                     data-bs-target="#v-meta-tag-tab" type="button" role="tab"
                                     aria-controls="v-meta-tag-tab" aria-selected="false"><span
                                     style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("Product Meta") }}
                             </button>
-                            <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
-                                    data-bs-target="#v-settings-tab" type="button" role="tab"
-                                    aria-controls="v-settings-tab" aria-selected="false"><span
-                                    style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("Product Settings") }}
-                            </button>
                             <button class="nav-link" id="v-pills-policy-tab" data-bs-toggle="pill"
                                     data-bs-target="#v-policy-tab" type="button" role="tab"
                                     aria-controls="v-policy-tab" aria-selected="false"><span
-                                    style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("Shipping & Return Policy") }}
+                                    style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("Refund Policy") }}
                             </button>
                         </div>
                     </div>
                     <div class="col-xxl-10 col-xl-9 col-lg-12">
-                        <form data-request-route="{{ route("tenant.admin.product.edit", $product->id) }}" method="post"
+                        <form data-request-route="{{ route("tenant.admin.digital.product.update", $product->id) }}" method="post"
                               id="product-create-form">
                             @csrf
                             <input name="id" type="hidden" value="{{ $product?->id }}">
 
-                            <div class="form-button mb-4">
-                                <button class="btn-sm btn btn-info">{{ __("Save Changes") }}</button>
+                            <div class="form-button text-end mb-4">
+                                <button class="btn-sm btn btn-success">{{ __("Update Changes") }}</button>
                             </div>
 
                             <div class="tab-content margin-top-10" id="v-pills-tabContent">
                                 <div class="tab-pane fade show active" id="v-general-info-tab" role="tabpanel"
                                      aria-labelledby="v-general-info-tab">
-                                    <x-product::general-info :brands="$data['brands']" :product="$product"/>
+                                    <x-digitalproduct::general-info :product="$product"/>
                                 </div>
                                 <div class="tab-pane fade" id="v-price-tab" role="tabpanel"
                                      aria-labelledby="v-price-tab">
-                                    <x-product::product-price :product="$product"/>
+                                    <x-digitalproduct::product-price :product="$product" :taxes="$data['taxes']"/>
                                 </div>
-                                <div class="tab-pane fade" id="v-inventory-tab" role="tabpanel"
-                                     aria-labelledby="v-inventory-tab">
-                                    <x-product::product-inventory :units="$data['units']"
-                                                                  :inventory="$product?->inventory"
-                                                                  :uom="$product?->uom"/>
+                                <div class="tab-pane fade" id="v-additional-tab" role="tabpanel"
+                                     aria-labelledby="v-additional-tab">
+                                    <x-digitalproduct::product-additional-field :product="$product" :authors="$data['authors']"/>
                                 </div>
                                 <div class="tab-pane fade" id="v-images-tab" role="tabpanel"
                                      aria-labelledby="v-images-tab">
-                                    <x-product::product-image :product="$product"/>
+                                    <x-digitalproduct::product-image :product="$product"/>
                                 </div>
                                 <div class="tab-pane fade" id="v-tags-and-label" role="tabpanel"
                                      aria-labelledby="v-tags-and-label">
-                                    <x-product::tags-and-badge :badges="$data['badges']" :tag="$product?->tag"
+                                    <x-digitalproduct::tags-and-badge :badges="$data['badges']" :tag="$product?->tag"
                                                                :singlebadge="$product?->badge_id"/>
-                                </div>
-                                <div class="tab-pane fade" id="v-attributes-tab" role="tabpanel"
-                                     aria-labelledby="v-attributes-tab">
-                                    <x-product::product-attribute
-                                        :inventorydetails="$product?->inventory?->inventoryDetails"
-                                        :colors="$data['product_colors']"
-                                        :sizes="$data['product_sizes']"
-                                        :allAttributes="$data['all_attribute']"/>
                                 </div>
                                 <div class="tab-pane fade" id="v-categories-tab" role="tabpanel"
                                      aria-labelledby="v-categories-tab">
-                                    <x-product::categories :sub_categories="$sub_categories"
+                                    <x-digitalproduct::categories :sub_categories="$sub_categories"
                                                            :categories="$data['categories']"
                                                            :child_categories="$child_categories"
                                                            :selected_child_cat="$childCat" :selected_sub_cat="$subCat"
                                                            :selectedcat="$cat"/>
                                 </div>
-                                <div class="tab-pane fade" id="v-delivery-option-tab" role="tabpanel"
-                                     aria-labelledby="v-delivery-option-tab">
-                                    <x-product::delivery-option :selected_delivery_option="$selectedDeliveryOption"
-                                                                :deliveryOptions="$data['deliveryOptions']"/>
-                                </div>
                                 <div class="tab-pane fade" id="v-meta-tag-tab" role="tabpanel"
                                      aria-labelledby="v-meta-tag-tab">
-                                    <x-product::meta-seo :meta_data="$product->metaData"/>
+                                    <x-digitalproduct::meta-seo :meta_data="$product->metaData"/>
                                 </div>
                                 <div class="tab-pane fade" id="v-settings-tab" role="tabpanel"
                                      aria-labelledby="v-settings-tab">
-                                    <x-product::settings :product="$product"/>
+                                    <x-digitalproduct::settings :product="$product"/>
                                 </div>
                                 <div class="tab-pane fade" id="v-policy-tab" role="tabpanel"
                                      aria-labelledby="v-policy-tab">
-                                    <x-product::policy :product="$product"/>
+                                    <x-digitalproduct::policy :product="$product"/>
                                 </div>
                             </div>
                         </form>
@@ -176,11 +147,20 @@
         @section('scripts')
             <script src="{{ global_asset('assets/common/js/jquery-ui.min.js') }}" rel="stylesheet"></script>
             <script src="{{global_asset('assets/tenant/backend/js/bootstrap-taginput.min.js')}}"></script>
+            <script src="{{ global_asset('assets/common/js/flatpickr.js') }}"></script>
+
+            <x-digitalproduct::product-file-uploader.js/>
             <x-media-upload.js/>
             <x-summernote.js/>
 
             <script>
                 $(document).ready(function () {
+                    flatpickr(".flatpickr", {
+                        altInput: true,
+                        altFormat: "F j, Y",
+                        dateFormat: "Y-m-d",
+                    });
+
                     String.prototype.capitalize = String.prototype.capitalize || function () {
                         return this.charAt(0).toUpperCase() + this.slice(1);
                     }
@@ -197,6 +177,8 @@
                     $('.general-meta').addClass('active');
                     $('.general-meta-pane').addClass('show active');
 
+                    let file_name = '{{$product->file ?? ''}}';
+                    $('.kwt-file__msg').text(file_name);
 
                     $(document).on('click', '.add_item_attribute', function (e) {
                         let container = $(this).closest('.inventory_item');
@@ -258,12 +240,16 @@
                                 let nav_aria_name = $('.nav-link.active').attr('aria-controls');
                                 let changed_aria_name = nav_aria_name.replace('v-', '');
 
-                                toastr.success("Product updated Successfully");
-                                toastr.success("You are redirected to product list page");
+                                toastr.success(`{{__("Product updated Successfully")}}`);
+                                // toastr.success(`{{__("You are redirected to product list page")}}`);
                                 setTimeout(function () {
-                                    let url = '{{route("tenant.admin.product.edit", $product->id)}}';
+                                    let url = '{{route("tenant.admin.digital.product.edit", $product->id)}}';
+
+                                    // window.location.href = url + '/' + changed_aria_name;
                                     window.location.href = url + '/' + changed_aria_name;
                                 }, 1000)
+                            }  else if (!data.success) {
+                                toastr.error(data.msg);
                             }
                         }, function (xhr) {
                             ajax_toastr_error_message(xhr);
@@ -315,25 +301,39 @@
                         });
                     });
 
-                    $(document).on('click', '.repeater_button .add', function (e) {
-                        let inventory_item = `<x-product::variant-info.repeater :colors="$data['product_colors']" :sizes="$data['product_sizes']" :all-available-attributes="$data['all_attribute']" />`;
+                    $(document).on('click', '.custom-plus', function (){
+                        let custom_wrapper = $('.custom-additional-field-row');
 
-                        if (inventory_item_id < 1) {
-                            inventory_item_id = $('.inventory_items_container .inventory_item').length;
-                        }
+                        let option_name_text = '{{__("Option Name")}}';
+                        let option_name_value = '{{__("Option Value")}}';
+                        let custom_wrapper_option = `<div class="row custom-additional-field-row mt-4">
+                                                    <div class="col-5">
+                                                        <input type="text" class="form--control radius-10" value="" name="option_name[]"
+                                                               placeholder="${option_name_text}">
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <input type="text" class="form--control radius-10" value="" name="option_value[]"
+                                                               placeholder="${option_name_value}">
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <div class="custom-button d-flex gap-3">
+                                                            <a class="btn btn-info custom-plus" href="javascript:void(0)"><span class="mdi mdi-plus"></span></a>
+                                                            <a class="btn btn-danger custom-minus" href="javascript:void(0)"><span class="mdi mdi-minus"></span></a>
+                                                        </div>
+                                                    </div>
+                                                </div>`;
 
-                        $('.inventory_items_container').append(inventory_item);
-                        $('.inventory_items_container .inventory_item:last-child').data('id', inventory_item_id + 1);
+                        $(custom_wrapper.parent()).append(custom_wrapper_option);
                     });
 
-                    $(document).on('click', '.repeater_button .remove', function (e) {
-                        if($('.repeater_button .remove').length > 1){
-                            $(this).closest('.inventory_item').remove();
-                        }
-                    });
+                    $(document).on('click', '.custom-minus', function (){
+                        let custom_wrapper = $('.custom-additional-field-row');
 
-                    $(document).on('click', '.remove_details_attribute', function (e) {
-                        $(this).parent().parent().remove();
+                        console.log(custom_wrapper.length)
+                        if(custom_wrapper.length > 1)
+                        {
+                            $(this).closest('.row').remove();
+                        }
                     });
 
                     $(document).on('click', '.badge-item', function (e) {

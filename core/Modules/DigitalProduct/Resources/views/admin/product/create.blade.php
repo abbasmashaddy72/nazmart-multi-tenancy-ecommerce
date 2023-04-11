@@ -90,7 +90,7 @@
                         <div class="dashboard-right-flex">
                             <div class="top-search-input">
                                 <a class="btn btn-info btn-sm px-4"
-                                   href="{{route('tenant.admin.product.all')}}">{{__('Back')}}</a>
+                                   href="{{route('tenant.admin.digital.product.all')}}">{{__('Back')}}</a>
                             </div>
                         </div>
                     </div>
@@ -121,6 +121,11 @@
                                     aria-selected="false"><span
                                     style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("Additional Fields") }}
                             </button>
+                            <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
+                                    data-bs-target="#v-categories-tab" type="button" role="tab"
+                                    aria-controls="v-categories-tab" aria-selected="false"><span
+                                    style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("Categories") }}
+                            </button>
                             <button class="nav-link" id="v-pills-images-tab-tab" data-bs-toggle="pill"
                                     data-bs-target="#v-images-tab" type="button" role="tab" aria-controls="v-images-tab"
                                     aria-selected="false"><span
@@ -130,11 +135,6 @@
                                     data-bs-target="#v-tags-and-label" type="button" role="tab"
                                     aria-controls="v-tags-and-label" aria-selected="false"><span
                                     style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("Tags & Label") }}
-                            </button>
-                            <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
-                                    data-bs-target="#v-categories-tab" type="button" role="tab"
-                                    aria-controls="v-categories-tab" aria-selected="false"><span
-                                    style='font-size:15px; padding-right: 7px;'>&#9679;</span> {{ __("Categories") }}
                             </button>
                             <button class="nav-link" id="v-pills-meta-tag-tab" data-bs-toggle="pill"
                                     data-bs-target="#v-meta-tag-tab" type="button" role="tab"
@@ -170,6 +170,10 @@
                                              aria-labelledby="v-additional-tab">
                                             <x-digitalproduct::product-additional-field :authors="$data['authors']"/>
                                         </div>
+                                        <div class="tab-pane fade" id="v-categories-tab" role="tabpanel"
+                                             aria-labelledby="v-categories-tab">
+                                            <x-digitalproduct::categories :categories="$data['categories']"/>
+                                        </div>
                                         <div class="tab-pane fade" id="v-images-tab" role="tabpanel"
                                              aria-labelledby="v-images-tab">
                                             <x-digitalproduct::product-image/>
@@ -177,10 +181,6 @@
                                         <div class="tab-pane fade" id="v-tags-and-label" role="tabpanel"
                                              aria-labelledby="v-tags-and-label">
                                             <x-digitalproduct::tags-and-badge :badges="$data['badges']"/>
-                                        </div>
-                                        <div class="tab-pane fade" id="v-categories-tab" role="tabpanel"
-                                             aria-labelledby="v-categories-tab">
-                                            <x-digitalproduct::categories :categories="$data['categories']"/>
                                         </div>
                                         <div class="tab-pane fade" id="v-meta-tag-tab" role="tabpanel"
                                              aria-labelledby="v-meta-tag-tab">
@@ -271,7 +271,7 @@
                                 $("#product-create-form").trigger("reset");
                                 temp = false;
                                 setTimeout(function () {
-                                    window.location.href = "{{ route("tenant.admin.product.all") }}";
+                                    window.location.href = "{{ route("tenant.admin.digital.product.all") }}";
                                 }, 1000);
                             } else if (data.restricted) {
                                 toastr.error("{{__('Sorry you can not upload more products due to your product upload limit')}}");
@@ -279,6 +279,8 @@
                                 let nav_product = $('.product-limits-nav');
                                 nav_product.find('span').css({'color': 'red', 'font-weight': 'bold'});
                                 nav_product.effect("shake", {direction: "up left", times: 2, distance: 3}, 500);
+                            } else if (!data.success) {
+                                toastr.error(data.msg);
                             }
                         }, function (xhr) {
                             console.log(xhr)
@@ -446,6 +448,7 @@
 
 
                     function ajax_toastr_error_message(xhr) {
+                        console.log(xhr.responseJSON.errors)
                         $.each(xhr.responseJSON.errors, function (key, value) {
                             toastr.error((key.capitalize()).replace("-", " ").replace("_", " "), value);
                         });

@@ -45,7 +45,7 @@ class DigitalProductCategoryController extends Controller
             'name' => 'required|max:255',
             'slug' => 'nullable|max:255|unique:digital_categories,slug',
             'type_id' => 'required|integer',
-            'description' => 'required|max:255',
+            'description' => 'nullable|max:255',
             'status_id' => 'required|boolean',
             'image_id' => 'nullable|numeric'
         ]);
@@ -94,7 +94,7 @@ class DigitalProductCategoryController extends Controller
             'name' => 'required|max:255',
             'slug' => 'nullable|max:255|unique:digital_categories,slug,'.$request->id,
             'type_id' => 'required|integer',
-            'description' => 'required|max:255',
+            'description' => 'nullable|max:255',
             'status_id' => 'required|boolean',
             'image_id' => 'nullable|numeric'
         ]);

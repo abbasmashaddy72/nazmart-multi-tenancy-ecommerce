@@ -152,7 +152,7 @@ class BuyerWalletController extends Controller
                 $custom_data['payment_type'] = "deposit";
                 $custom_data['payment_for'] = "landlord";
                 $custom_data['cancel_url'] = route(self::CANCEL_ROUTE, random_int(111111,999999).$custom_data['payment_details']['id'].random_int(111111,999999));
-                $custom_data['success_url'] = route(\Route::currentRouteName());
+                $custom_data['success_url'] = route('landlord.user.wallet.history');
 
                 $charge_customer_class_namespace = getChargeCustomerMethodNameByPaymentGatewayNameSpace($payment_gateway);
                 $charge_customer_method_name = getChargeCustomerMethodNameByPaymentGatewayName($payment_gateway);

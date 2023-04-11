@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string("slug")->unique();
             $table->tinyText("description")->nullable();
             $table->unsignedBigInteger("image_id")->nullable();
+            $table->boolean('status')->comment('0=draft,1=published');
             $table->timestamps();
             $table->softDeletes();
         });

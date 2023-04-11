@@ -53,7 +53,7 @@
                 error:  (typeof errors !== "undefined" && typeof errors === "function") ? errors : () => { return ""; }
             });
         }
-        send_ajax_request("post", data, '{{ route('tenant.admin.product.update.status') }}', function () {
+        send_ajax_request("post", data, '{{ route('tenant.admin.digital.product.update.status') }}', function () {
             toastr.success("Request sent..");
         }, function (data) {
             ajax_toastr_success_message(data);

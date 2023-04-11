@@ -42,7 +42,7 @@ class DigitalProductSubCategoryController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'slug' => 'nullable|max:255|unique:digital_sub_categories,slug',
-            'description' => 'required|max:255',
+            'description' => 'nullable|max:255',
             'status_id' => 'required|boolean',
             'image_id' => 'nullable|numeric',
             'category' => 'required|numeric',
@@ -91,7 +91,7 @@ class DigitalProductSubCategoryController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'slug' => 'nullable|max:255|unique:digital_sub_categories,slug,'.$request->id,
-            'description' => 'required|max:255',
+            'description' => 'nullable|max:255',
             'status_id' => 'required|boolean',
             'image_id' => 'nullable|numeric',
             'category' => 'required|numeric',

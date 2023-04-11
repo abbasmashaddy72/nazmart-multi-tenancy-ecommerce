@@ -1,5 +1,10 @@
 <div class="image-product-wrapper">
-    <x-digitalproduct::product-file-uploader.markup/>
+    @if(!isset($product))
+        @php
+            $product = null;
+        @endphp
+    @endif
+    <x-digitalproduct::product-file-uploader.markup :file="$product"/>
 
     @if(isset($product))
         <x-fields.media-upload :id="$product->image_id" :title="__('Feature Image')" :name="'image_id'"

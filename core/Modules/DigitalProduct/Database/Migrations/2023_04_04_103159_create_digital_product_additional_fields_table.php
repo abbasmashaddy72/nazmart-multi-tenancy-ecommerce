@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('additional_fields', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id');
-            $table->foreign('product_id')->references('id')->on('digital_products');
             $table->unsignedBigInteger('badge_id')->nullable();
             $table->foreign('badge_id')->references('id')->on('badges');
             $table->integer('pages')->nullable();
@@ -29,7 +28,10 @@ return new class extends Migration
             $table->text('compatible_os')->nullable();
             $table->text('high_resolution')->nullable();
             $table->unsignedBigInteger('author_id')->nullable();
+            $table->timestamps();
+
             $table->foreign('author_id')->references('id')->on('digital_authors');
+            $table->foreign('product_id')->references('id')->on('digital_products')->cascadeOnDelete();
         });
 
         Schema::enableForeignKeyConstraints();

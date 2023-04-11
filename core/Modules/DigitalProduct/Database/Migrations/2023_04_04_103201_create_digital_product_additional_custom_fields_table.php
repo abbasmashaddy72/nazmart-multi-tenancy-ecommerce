@@ -16,9 +16,11 @@ return new class extends Migration
         Schema::create('additional_custom_fields', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('additional_field_id');
-            $table->foreign('additional_field_id')->references('id')->on('additional_fields');
             $table->text('option_name');
             $table->text('option_value');
+            $table->timestamps();
+
+            $table->foreign('additional_field_id')->references('id')->on('additional_fields')->cascadeOnDelete();
         });
 
         Schema::enableForeignKeyConstraints();

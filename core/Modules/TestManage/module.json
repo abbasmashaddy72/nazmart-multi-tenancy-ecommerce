@@ -17,7 +17,8 @@
                 {
                     "id" : "test-settings-menu",
                     "label": "Test Menu",
-                    "route": "tenant.admin .newsletter",
+                    "route": "tenant.admin.newsletter",
+                    "tenantRoute": "tenant.admin.newsletter",
                     "parent": null,
                     "permissions": ["general-settings-page-settings", "general-settings-site-identity"],
                     "icon": "mdi mdi-settings"

@@ -7,7 +7,7 @@ use Illuminate\Validation\Rule;
 use Modules\Attributes\Entities\Category;
 use Modules\DigitalProduct\Entities\DigitalCategories;
 
-class DigitalProductRequest extends FormRequest
+class DigitalProductUpdateRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -29,7 +29,7 @@ class DigitalProductRequest extends FormRequest
             "quantity" => "nullable",
             "accessibility" => "required",
             "tax" => "nullable",
-            "price" => $this->accessibility != "free" ? "required" : "nullable"."|numeric",
+            "price" => "required|numeric",
             "sale_price" => "nullable|numeric",
             "free_date" => "nullable|date",
             "promotional_date" => "nullable|date",
@@ -57,7 +57,7 @@ class DigitalProductRequest extends FormRequest
             "sub_category" => "nullable",
             "child_category" => "nullable",
 
-            "file" => "required",
+            "file" => "nullable",
 
             "general_title" => "nullable",
             "general_description" => "nullable",

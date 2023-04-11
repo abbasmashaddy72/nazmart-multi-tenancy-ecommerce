@@ -1,5 +1,6 @@
 <?php
 
+use Modules\Product\Http\Middleware\ProductLimitMiddleware;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use Modules\DigitalProduct\Http\Controllers\CategoryBasedSubChildCategoryController;
@@ -22,8 +23,11 @@ Route::middleware([
             Route::get('/', 'DigitalProductController@index')->name('all');
             Route::get('create', 'DigitalProductController@create')->name('create');
             Route::post('new', 'DigitalProductController@store')->name('new');
-            Route::post('update', 'DigitalProductController@update')->name('update');
-            Route::post('delete/{item}', 'DigitalProductController@destroy')->name('delete');
+            Route::get('edit/{id}/{aria_name?}', 'DigitalProductController@edit')->name('edit');
+            Route::post('update/{id}', 'DigitalProductController@update')->name('update');
+            Route::post("status-update","DigitalProductController@update_status")->name("update.status");
+            Route::get("clone/{id}", "DigitalProductController@clone")->name("clone")->middleware(ProductLimitMiddleware::class);
+            Route::get("destroy/{id}", "DigitalProductController@destroy")->name("destroy");
             Route::post('bulk-action', 'DigitalProductController@bulk_action')->name('bulk.action');
         });
 

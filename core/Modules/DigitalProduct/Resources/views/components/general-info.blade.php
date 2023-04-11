@@ -30,32 +30,32 @@
 
             <div class="dashboard-input mt-4">
                 <label class="dashboard-label color-light mb-2"> {{ __("Included files") }} <sup class="text-primary">{{__('Optional')}}</sup> </label>
-                <input type="text" class="form--control radius-10" id="included_file" value="{{ $product?->name ?? "" }}" name="included_file" placeholder="{{ __("Write included file names...") }}">
+                <input type="text" class="form--control radius-10" id="included_file" value="{{ $product?->included_files ?? "" }}" name="included_files" placeholder="{{ __("Write included file names...") }}">
             </div>
 
             <div class="dashboard-input mt-4">
                 <label class="dashboard-label color-light mb-2"> {{ __("Version") }} <sup class="text-primary">{{__('(Optional)')}}</sup> </label>
-                <input type="text" class="form--control radius-10" id="version" value="{{ $product?->name ?? "" }}" name="version" placeholder="{{ __("Write version number...") }}">
+                <input type="text" class="form--control radius-10" id="version" value="{{ $product?->version ?? "" }}" name="version" placeholder="{{ __("Write version number...") }}">
             </div>
 
             <div class="dashboard-input mt-4">
                 <label class="dashboard-label color-light mb-2"> {{ __("Release Date") }} <sup class="text-primary">{{__('(Optional)')}}</sup> </label>
-                <input type="date" class="form--control radius-10 flatpickr" id="release_date" value="{{ $product?->name ?? "" }}" name="release_date" placeholder="{{ __("Write release date...") }}">
+                <input type="date" class="form--control radius-10 flatpickr" id="release_date" value="{{ $product?->release_date ?? "" }}" name="release_date" placeholder="{{ __("Write release date...") }}">
             </div>
 
             <div class="dashboard-input mt-4">
                 <label class="dashboard-label color-light mb-2"> {{ __("Latest Update") }} <sup class="text-primary">{{__('(Optional)')}}</sup> </label>
-                <input type="date" class="form--control radius-10 flatpickr" id="latest_date" value="{{ $product?->name ?? "" }}" name="latest_date" placeholder="{{ __("Write latest update...") }}">
+                <input type="date" class="form--control radius-10 flatpickr" id="latest_date" value="{{ $product?->update_date ?? "" }}" name="update_date" placeholder="{{ __("Write latest update...") }}">
             </div>
 
             <div class="dashboard-input mt-4">
                 <label class="dashboard-label color-light mb-2"> {{ __("Preview Link") }} <sup class="text-primary">{{__('(Optional)')}}</sup> </label>
-                <input type="text" class="form--control radius-10" id="preview_link" value="{{ $product?->name ?? "" }}" name="preview_link" placeholder="{{ __("Write preview link...") }}">
+                <input type="text" class="form--control radius-10" id="preview_link" value="{{ $product?->preview_link ?? "" }}" name="preview_link" placeholder="{{ __("Write preview link...") }}">
             </div>
 
             <div class="dashboard-input mt-4">
                 <label class="dashboard-label color-light mb-2"> {{ __("Quantity") }} <sup class="text-primary">{{__('(Optional - If applicable)')}}</sup> </label>
-                <input type="text" class="form--control radius-10" id="quantity" value="{{ $product?->name ?? "" }}" name="quantity" placeholder="{{ __("Write quantity...") }}">
+                <input type="text" class="form--control radius-10" id="quantity" value="{{ $product?->quantity ?? "" }}" name="quantity" placeholder="{{ __("Write quantity...") }}">
             </div>
         </form>
     </div>

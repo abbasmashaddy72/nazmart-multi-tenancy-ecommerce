@@ -16,8 +16,10 @@ return new class extends Migration
         Schema::create('digital_product_downloads', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id');
-            $table->foreign('product_id')->references('id')->on('digital_products');
             $table->integer('download_count');
+            $table->timestamps();
+
+            $table->foreign('product_id')->references('id')->on('digital_products')->cascadeOnDelete();
         });
 
         Schema::enableForeignKeyConstraints();

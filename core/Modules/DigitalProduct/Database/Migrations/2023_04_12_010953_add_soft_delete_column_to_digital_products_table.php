@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddTimestampColumnToDigitalProductTaxesTable extends Migration
+class AddSoftDeleteColumnToDigitalProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddTimestampColumnToDigitalProductTaxesTable extends Migration
      */
     public function up()
     {
-        Schema::table('digital_product_taxes', function (Blueprint $table) {
-            $table->timestamps();
+        Schema::table('digital_products', function (Blueprint $table) {
+            $table->softDeletes();
         });
     }
 
@@ -25,9 +25,8 @@ class AddTimestampColumnToDigitalProductTaxesTable extends Migration
      */
     public function down()
     {
-        Schema::table('digital_product_taxes', function (Blueprint $table) {
-            $table->dropColumn('created_at');
-            $table->dropColumn('updated_at');
+        Schema::table('digital_products', function (Blueprint $table) {
+            $table->dropSoftDeletes();
         });
     }
 }

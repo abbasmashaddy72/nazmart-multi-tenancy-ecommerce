@@ -7,7 +7,16 @@ use App\Http\Services\CustomPaginationService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\File;
+use Modules\DigitalProduct\Entities\AdditionalCustomField;
+use Modules\DigitalProduct\Entities\AdditionalField;
 use Modules\DigitalProduct\Entities\DigitalProduct;
+use Modules\DigitalProduct\Entities\DigitalProductCategories;
+use Modules\DigitalProduct\Entities\DigitalProductChildCategories;
+use Modules\DigitalProduct\Entities\DigitalProductGallery;
+use Modules\DigitalProduct\Entities\DigitalProductRefundPolicies;
+use Modules\DigitalProduct\Entities\DigitalProductSubCategories;
+use Modules\DigitalProduct\Entities\DigitalProductTags;
 use Modules\Product\Entities\Product;
 use Modules\Product\Entities\ProductCategory;
 use Modules\Product\Entities\ProductChildCategory;
@@ -138,27 +147,27 @@ trait DigitalProductGlobalTrait {
             "slug" => Str::slug($data["slug"] ?? $data["name"]),
             "summary" => SanitizeInput::esc_html($data["summary"]),
             "description" => str_replace('script','',$data['description']),
-            "included_file" => SanitizeInput::esc_html($data['included_file']),
+            "included_files" => SanitizeInput::esc_html($data['included_files']),
             "version" => SanitizeInput::esc_html($data['version']),
             "release_date" => $data['release_date'],
-            "latest_date" => $data['latest_date'],
+            "update_date" => $data['update_date'],
             "preview_link" => SanitizeInput::esc_url($data['preview_link']),
             "quantity" => SanitizeInput::esc_html($data['quantity']),
             "accessibility" => SanitizeInput::esc_html($data['accessibility']),
-            "tax" => SanitizeInput::esc_html($data['tax']),
-            "price" => SanitizeInput::esc_html($data['price']),
-            "sale_price" => SanitizeInput::esc_html($data['sale_price']),
+            "tax" => !empty($data['tax']) ? SanitizeInput::esc_html($data['tax']) : null,
+            "regular_price" => SanitizeInput::esc_html($data['price']),
+            "sale_price" => !empty($data['sale_price']) ? SanitizeInput::esc_html($data['sale_price']) : null,
             "free_date" => $data['free_date'],
             "promotional_date" => $data['promotional_date'],
-            "promotional_price" => SanitizeInput::esc_html($data['promotional_price']),
-            "author" => SanitizeInput::esc_html($data['author']),
-            "page" => SanitizeInput::esc_html($data['page']),
-            "language" => SanitizeInput::esc_html($data['language']),
-            "format" => SanitizeInput::esc_html($data['format']),
-            "word" => SanitizeInput::esc_html($data['word']),
-            "tool_used" => SanitizeInput::esc_html($data['tool_used']),
+            "promotional_price" => !empty($data['promotional_price']) ? SanitizeInput::esc_html($data['promotional_price']) : null,
+            "author_id" => !empty($data['author_id']) ? SanitizeInput::esc_html($data['author_id']) : null,
+            "page" => !empty($data['page']) ? SanitizeInput::esc_html($data['page']) : null,
+            "language" => !empty($data['language']) ? SanitizeInput::esc_html($data['language']) : null,
+            "formats" => !empty($data['formats']) ? SanitizeInput::esc_html($data['formats']) :null,
+            "word" => !empty($data['word']) ? SanitizeInput::esc_html($data['word']) : null,
+            "tool_used" => !empty($data['tool_used']) ? SanitizeInput::esc_html($data['tool_used']) : null,
             "database_used" => SanitizeInput::esc_html($data['database_used']),
-            "compatible_browser" => SanitizeInput::esc_html($data['compatible_browser']),
+            "compatible_browsers" => SanitizeInput::esc_html($data['compatible_browsers']),
             "compatible_os" => SanitizeInput::esc_html($data['compatible_os']),
             "high_resolution" => SanitizeInput::esc_html($data['high_resolution']),
 
@@ -166,10 +175,12 @@ trait DigitalProductGlobalTrait {
             "option_value" => $data['option_value'],
 
             "tags" => $data["tags"],
+            "file" => $data["file"] ?? '',
             "image_id" => $data["image_id"],
             "product_gallery" => $data["product_gallery"],
             "badge_id" => $data["badge_id"],
-            "is_refundable" => !empty($data["is_refundable"])
+            "is_refundable" => !empty($data["is_refundable"]),
+            "refund_description" => !empty($data["policy_description"]) ? $data["policy_description"] : ''
         ];
     }
 
@@ -195,61 +206,6 @@ trait DigitalProductGlobalTrait {
         ];
     }
 
-    public function prepareProductInventoryDetailsAndInsert($data, $product_id, $inventory_id, $type="create"): bool
-    {
-        if($type == "update"){
-            // get all product inventory detail id
-            $prd_in_detail = ProductInventoryDetail::where([
-                "product_id" => $product_id,
-                "product_inventory_id" => $inventory_id
-            ])->select("id")?->pluck("id")?->toArray();
-
-            // delete product inventory detail attribute
-            ProductInventoryDetailAttribute::where([
-                "product_id" => $product_id
-            ])->whereIn("inventory_details_id", $prd_in_detail)->delete();
-
-            // delete all product inventory detail
-            ProductInventoryDetail::where([
-                "product_id" => $product_id,
-                "product_inventory_id" => $inventory_id
-            ])->delete();
-        }
-
-        // count item stock for getting array length
-        $len = count($data["item_stock_count"] ?? []);
-        for($i = 0;$i < $len; $i++){
-            $arr = [
-                "product_id" => $product_id,
-                "product_inventory_id" => $inventory_id,
-                "color" => $data["item_color"][$i],
-                "size" => $data["item_size"][$i],
-                "hash" => "",
-                "additional_price" => $data["item_additional_price"][$i],
-                "add_cost" => $data["item_extra_cost"][$i],
-                "image" => $data["item_image"][$i],
-                "stock_count" => $data["item_stock_count"][$i],
-                "sold_count" => 0
-            ];
-
-            $productDetailId = ProductInventoryDetail::create($arr);
-
-            $detailAttr = [];
-            for($j = 0; $j < count($data["item_attribute_name"][$i] ?? []);$j++){
-                $detailAttr[] = [
-                    "product_id" => $product_id,
-                    "inventory_details_id" => $productDetailId->id,
-                    "attribute_name" => $data["item_attribute_name"][$i][$j] ?? "",
-                    "attribute_value" => $data["item_attribute_value"][$i][$j] ?? ""
-                ];
-            }
-
-            ProductInventoryDetailAttribute::insert($detailAttr);
-        }
-
-        return true;
-    }
-
     private function productCategoryData($data,$id,$arrKey = "category_id",$column = "category_id"): array
     {
         return [
@@ -261,27 +217,11 @@ trait DigitalProductGlobalTrait {
     private function childCategoryData($data, $id): array
     {
         $cl_category = [];
-        foreach ($data["child_category"] as $item) {
+        foreach ($data["child_category"] ?? [] as $item) {
             $cl_category[] = ["child_category_id" => $item, "product_id" => $id];
         }
 
         return $cl_category;
-    }
-
-    private function prepareDeliveryOptionData($data, $id): array
-    {
-        // explode string to array
-        $arr = [];
-        $exp_delivery_option = $this->separateStringToArray($data["delivery_option"], " , ") ?? [];
-
-        foreach($exp_delivery_option as $option){
-            $arr[] = [
-                "product_id" => $id,
-                "delivery_option_id" => $option
-            ];
-        }
-
-        return $arr;
     }
 
     private function prepareProductGalleryData($data, $id): array
@@ -309,24 +249,53 @@ trait DigitalProductGlobalTrait {
         foreach($galleries as $tag){
             $arr[] = [
                 "product_id" => $id,
-                "tag_name" => SanitizeInput::esc_html($tag)
+                "tag_name" => SanitizeInput::esc_html($tag),
+                "type" => "digital"
             ];
         }
 
         return $arr;
     }
 
-    private function prepareInventoryData($data, $id = null): array
+    private function prepareProductAdditionalFieldData($product, $id)
     {
-        $inventoryStockCount = $data["item_stock_count"];
-        $stock_count = array_sum($inventoryStockCount ?? []);
+        $arr = [];
+        $arr['product_id'] = $id;
+        $arr['badge_id'] = $product['badge_id'] ?? null;
+        $arr['pages'] = $product['page'] ?? null;
+        $arr['language'] = $product['language'] ?? null;
+        $arr['formats'] = $product['formats'] ?? null;
+        $arr['words'] = $product['word'] ?? null;
+        $arr['tool_used'] = $product['tool_used'] ?? null;
+        $arr['database_used'] = $product['database_used'] ?? null;
+        $arr['compatible_browsers'] = $product['compatible_browsers'] ?? null;
+        $arr['compatible_os'] = $product['compatible_os'] ?? null;
+        $arr['high_resolution'] = $product['high_resolution'] ?? null;
+        $arr['author_id'] = $product['author_id'] ?? null;
 
-        $arr = [
-            "sku" => SanitizeInput::esc_html($data["sku"]),
-            "stock_count" => $stock_count ? $stock_count : $data["quantity"],
-        ];
+        return $arr;
+    }
 
-        return $id ? $arr + ["product_id" => $id] : $arr;
+    private function prepareProductAdditionalCustomFieldData($product, $product_id, $additional_field_id)
+    {
+        $arr = [];
+        $option_name = $product['option_name'];
+        $option_value = $product['option_value'];
+
+        $i = 0;
+        foreach ($option_name ?? [] as $key => $name)
+        {
+            if (empty($name))
+            {
+                continue;
+            }
+            $arr[$i]['additional_field_id'] = $additional_field_id;
+            $arr[$i]['option_name'] = $name ?? null;
+            $arr[$i]['option_value'] = $option_value[$key] ?? null;
+            $i++;
+        }
+
+        return $arr;
     }
 
     private function separateStringToArray(string | null $string,string $separator = " , "): array|bool
@@ -394,18 +363,9 @@ trait DigitalProductGlobalTrait {
         );
     }
 
-    private function prepareUomData($data, $product_id): array
-    {
-        return [
-            "product_id" => $product_id,
-            "unit_id" => $data["unit_id"],
-            "quantity" => $data["uom"]
-        ];
-    }
-
     public function updateStatus($productId, $statusId): JsonResponse
     {
-        $product = Product::find($productId)->update(["status_id" => $statusId]);
+        $product = DigitalProduct::find($productId)->update(["status_id" => $statusId]);
         $this->createdByUpdatedBy($productId, "update");
 
         $response_status = $product ? ["success" => true, "msg" => __("Successfully updated status")] : ["success" => false,"msg" => __("Failed to update status")];
@@ -420,24 +380,32 @@ trait DigitalProductGlobalTrait {
      */
     public function insert_product_data(array $data, $id, $product): bool
     {
-        $inventory = ProductInventory::create($this->prepareInventoryData($data, $id));
-        $inventoryDetail = false;
+        $category = DigitalProductCategories::create($this->productCategoryData($product, $id));
 
-        if (!empty($product["item_stock_count"][0])) {
-            $inventoryDetail = $this->prepareProductInventoryDetailsAndInsert($data, $id, $inventory->id);
+        if (!empty($data['sub_category']))
+        {
+            $subcategory = DigitalProductSubCategories::create($this->productCategoryData($product, $id, "sub_category_id", "sub_category"));
         }
 
-        $category = ProductCategory::create($this->productCategoryData($product, $id));
-        $subcategory = ProductSubCategory::create($this->productCategoryData($product, $id, "sub_category_id", "sub_category"));
-        $childCategory = ProductChildCategory::insert($this->childCategoryData($product, $id));
-        $deliveryOptions = ProductDeliveryOption::insert($this->prepareDeliveryOptionData($product, $id));
-        $productGallery = ProductGallery::insert($this->prepareProductGalleryData($product, $id));
-        $productTag = ProductTag::insert($this->prepareProductTagData($product, $id));
-        $productUom = ProductUom::create($this->prepareUomData($data, $id));
+        if (!empty($data['child_category']))
+        {
+            $childCategory = DigitalProductChildCategories::insert($this->childCategoryData($product, $id));
+        }
 
-        $productPolicy = ProductShippingReturnPolicy::create([
+        $productGallery = DigitalProductGallery::insert($this->prepareProductGalleryData($product, $id));
+        $productTag = DigitalProductTags::insert($this->prepareProductTagData($product, $id));
+
+        $productAdditionalFiled = AdditionalField::insertGetId($this->prepareProductAdditionalFieldData($data, $id));
+
+        $productAdditionalCustomFiled = $this->prepareProductAdditionalCustomFieldData($data, $id, $productAdditionalFiled);
+        if (!empty($productAdditionalCustomFiled))
+        {
+            AdditionalCustomField::insert($productAdditionalCustomFiled);
+        }
+
+        $productPolicy = DigitalProductRefundPolicies::create([
             'product_id' => $id,
-            'shipping_return_description' => purify_html(str_replace(["<script>","</script>", 'script'],"",$data['policy_description']))
+            'refund_description' => purify_html(str_replace(["<script>","</script>", 'script'],"", $product['policy_description']))
         ]);
 
         return true;
@@ -445,9 +413,9 @@ trait DigitalProductGlobalTrait {
 
     protected function productInstance($type): Builder
     {
-        $product = Product::query();
+        $product = DigitalProduct::query();
         if($type == "edit"){
-            $product->with(["product_category","tag","uom","product_sub_category","product_child_category","inventory","delivery_option"]);
+            $product->with(["product_category","product_sub_category","product_child_category","tag","tax", "additionalFields", "additionalCustomFields"]);
         }elseif ($type == "single"){
             $product->with(["category","gallery_images","tag","uom","subCategory","childCategory","image","inventory","delivery_option"]);
         }elseif ($type == "list"){
@@ -465,25 +433,60 @@ trait DigitalProductGlobalTrait {
     {
         // get product instance
         $product = $this->productInstance($type);
-        return $product->with("brand")->where("id",$id)->first();
+        return $product->where("id",$id)->first();
     }
 
-    public function productStore($data){
+    private function storeProductFile($data)
+    {
+        $main_file = $data['file'];
+        $file_extension = $main_file->getClientOriginalExtension();
+        $file_new_name = time().'.'.$file_extension;
+
+        $folder_path = global_assets_path('assets/tenant/uploads/digital-product-file/'.tenant()->id);
+        $main_file->move($folder_path, $file_new_name);
+        return $file_new_name;
+    }
+
+    private function removeProductFile($fileName)
+    {
+        $file_path = global_assets_path('assets/tenant/uploads/digital-product-file/'.tenant()->id.'/'.$fileName);
+        if (!is_dir($file_path) && file_exists($file_path) && is_file($file_path))
+        {
+            unlink($file_path);
+        }
+
+        return true;
+    }
+
+    public function productStore($data, $request){
         $product_data = self::ProductData($data);
         $slug = $data['slug'] ?? $data['name'];
         $product_data['slug'] = create_slug(Str::slug($slug), 'DigitalProduct', true, 'DigitalProduct', 'slug');
-        $product = DigitalProduct::create($product_data);
-        dd($product);
+        $product_data['status_id'] = 1;
+        $product_data['regular_price'] = $product_data['accessibility'] == 'free' ? 0 : $product_data['regular_price'];
+
+        $main_file_name = $this->storeProductFile($data);
+        $product_data['file'] = $main_file_name;
+
+        \DB::beginTransaction();
+        try {
+            $product = DigitalProduct::create($product_data);
+            \DB::commit();
+        } catch (\Exception $e) {
+            $this->removeProductFile($main_file_name);
+            \DB::rollBack();
+        }
+
+
         $id = $product->id;
         $product->metaData()->updateOrCreate(["metainfoable_id" => $id],$this->prepareMetaData($data));
-        // store created by info in product created by table
-        $this->createdByUpdatedBy($id);
+
         return $this->insert_product_data($data, $id, $data);
     }
 
     public function productUpdate($data, $id){
         $product_data = self::ProductData($data);
-        $product = Product::find($id);
+        $product = DigitalProduct::find($id);
 
         if ($product->slug != $data['slug'])
         {
@@ -492,37 +495,54 @@ trait DigitalProductGlobalTrait {
             $product_data['slug'] = $slug;
         }
 
-        $product->update($product_data);
-        $product->metaData()->updateOrCreate(["metainfoable_id" => $id],$this->prepareMetaData($data));
-        $product?->inventory?->updateOrCreate(["product_id" => $id],$this->prepareInventoryData($data));
-        // updated by info in product created by table
-        $this->createdByUpdatedBy($id, "update");
-        // check item stock count is empty or not
-        $inventoryDetail = false;
-        if(!empty($data["item_stock_count"][0])){
-            $inventoryDetail = $this->prepareProductInventoryDetailsAndInsert($data, $id,$product?->inventory?->id,"update");
+        $main_file_name = !empty($product_data['file']) ? $this->storeProductFile($product_data) : $product->file;
+        $product_data['file'] = $main_file_name;
+
+        \DB::beginTransaction();
+        try {
+            $product->update($product_data);
+            \DB::commit();
+        } catch (\Exception $e) {
+            $this->removeProductFile($main_file_name);
+            \DB::rollBack();
         }
 
-        $category = $product?->product_category?->updateOrCreate(["product_id" => $id],$this->productCategoryData($data,$id));
-        $subcategory = $product?->product_sub_category?->updateOrCreate(["product_id" => $id],$this->productCategoryData($data,$id,"sub_category_id","sub_category"));
+        $product->metaData()->updateOrCreate(["metainfoable_id" => $id],$this->prepareMetaData($data));
+
+        $category = $product?->product_category?->updateOrCreate(["product_id" => $id], $this->productCategoryData($data,$id));
+
+        if (!empty($data['sub_category']))
+        {
+            $subcategory = $product?->product_sub_category?->updateOrCreate(["product_id" => $id], $this->productCategoryData($data,$id,"sub_category_id","sub_category"));
+        }
 
         // delete product child category
-        ProductChildCategory::where("product_id", $id)->delete();
-        ProductDeliveryOption::where("product_id", $id)->delete();
-        ProductGallery::where("product_id", $id)->delete();
-        ProductTag::where("product_id", $id)->delete();
+        DigitalProductChildCategories::where("product_id", $id)->delete();
+        DigitalProductGallery::where("product_id", $id)->delete();
+        DigitalProductTags::where("product_id", $id)->delete();
 
-        $product?->uom?->update($this->prepareUomData($data,$id));
-        $childCategory = ProductChildCategory::insert($this->childCategoryData($data, $id));
-        $deliveryOptions = ProductDeliveryOption::insert($this->prepareDeliveryOptionData($data,$id));
-        $productGallery = ProductGallery::insert($this->prepareProductGalleryData($data,$id));
-        $productTag = ProductTag::insert($this->prepareProductTagData($data,$id));
+        if (!empty($data['child_category']))
+        {
+            $childCategory = DigitalProductChildCategories::insert($this->childCategoryData($data, $id));
+        }
+        $productGallery = DigitalProductGallery::insert($this->prepareProductGalleryData($data,$id));
+        $productTag = DigitalProductTags::insert($this->prepareProductTagData($data,$id));
 
-        $productPolicy = ProductShippingReturnPolicy::updateOrCreate(
+        AdditionalField::where("product_id", $id)->delete();
+        $productAdditionalFiled = AdditionalField::insertGetId($this->prepareProductAdditionalFieldData($data, $id));
+
+        AdditionalCustomField::where("additional_field_id", $productAdditionalFiled)->delete();
+        $productAdditionalCustomFiled = $this->prepareProductAdditionalCustomFieldData($data, $id, $productAdditionalFiled);
+        if (!empty($productAdditionalCustomFiled))
+        {
+            AdditionalCustomField::insert($productAdditionalCustomFiled);
+        }
+
+        $productPolicy = DigitalProductRefundPolicies::updateOrCreate(
             ['product_id' => $id],
             [
                 'product_id' => $id,
-                'shipping_return_description' => str_replace('script','', $data['policy_description'])
+                'refund_description' => str_replace('script','', $product_data['refund_description'])
             ]);
 
         return true;
@@ -607,7 +627,7 @@ trait DigitalProductGlobalTrait {
     }
 
     protected function destroy($id){
-        return Product::find($id)->delete();
+        return DigitalProduct::find($id)->delete();
     }
 
     protected function trash_destroy($id){
@@ -650,20 +670,5 @@ trait DigitalProductGlobalTrait {
         } catch (\Exception $exception) { return false; }
 
         return (bool)$products;
-    }
-
-    public function updateInventory($data, $id){
-        $product = Product::find($id);
-
-        $product?->inventory?->updateOrCreate(["product_id" => $id],$this->prepareInventoryData($data));
-        // updated by info in product created by table
-        $this->createdByUpdatedBy($id, "update");
-        // check item stock count is empty or not
-        $inventoryDetail = false;
-        if(!empty($data["item_stock_count"][0])){
-            $inventoryDetail = $this->prepareProductInventoryDetailsAndInsert($data, $id,$product?->inventory?->id,"update");
-        }
-
-        return true;
     }
 }

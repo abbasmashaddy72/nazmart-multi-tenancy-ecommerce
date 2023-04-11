@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('name');
             $table->double('tax_percentage')->comment('tax amount in percent');
             $table->boolean('status')->comment('0=draft, 1=publish');
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();

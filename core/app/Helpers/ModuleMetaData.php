@@ -306,6 +306,11 @@ class ModuleMetaData
                 $menuItem = $this->getAdminMenuSettings($adminSettings);
                 if (!empty((array)$menuItem))
                 {
+                    //if it is tenant then load route param as tenant route param
+                    if (tenant()){
+                        current($menuItem)->route = current($menuItem)->tenantRoute;
+                    }
+
                     $menuList[] = $menuItem;
                 }
             }

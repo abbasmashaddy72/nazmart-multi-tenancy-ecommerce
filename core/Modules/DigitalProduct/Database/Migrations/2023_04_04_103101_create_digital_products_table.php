@@ -36,6 +36,7 @@ return new class extends Migration
             $table->timestamp('free_date')->nullable();
             $table->timestamp('promotional_date')->nullable();
             $table->double('promotional_price')->nullable();
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDigitalAuthorsTable extends Migration
+class CreateDigitalProductGalleriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateDigitalAuthorsTable extends Migration
      */
     public function up()
     {
-        Schema::create('digital_authors', function (Blueprint $table) {
+        Schema::create('digital_product_galleries', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('slug');
-            $table->boolean('status');
-            $table->unsignedBigInteger('image_id')->nullable();
+            $table->unsignedBigInteger("product_id");
+            $table->unsignedBigInteger("image_id");
+            $table->foreign("product_id")->references("id")->on("digital_products")->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreateDigitalAuthorsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('digital_authors');
+        Schema::dropIfExists('digital_product_galleries');
     }
 }

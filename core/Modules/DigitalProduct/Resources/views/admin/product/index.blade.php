@@ -1,6 +1,6 @@
 @extends('tenant.admin.admin-master')
 @section('title')
-    {{ __('All Product') }}
+    {{ __('All Digital Product') }}
 @endsection
 
 @section('style')
@@ -152,7 +152,7 @@
     </div>
 @endsection
 @section('scripts')
-    <x-product::table.status-js />
+    <x-digitalproduct::table.status-js />
     <x-product::table.bulk-action-js :url="route('tenant.admin.product.bulk.destroy')"/>
     <script>
         $(function (){
@@ -240,12 +240,13 @@
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
+                    confirmButtonText: `{{__('Yes, delete it!')}}`,
+                    cancelButtonText: `{{__('Cancel')}}`
                 }).then((result) => {
                     if (result.isConfirmed) {
                         send_ajax_request("GET",null,$(this).data("product-url"), () => {
                             // before send request
-                            toastr.warning("Request send please wait while");
+                            toastr.warning(`{{__("Request send please wait while")}}`);
                         }, (data) => {
                             Swal.fire(
                                 'Deleted!',

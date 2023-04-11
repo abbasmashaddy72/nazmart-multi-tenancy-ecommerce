@@ -20,6 +20,7 @@ return new class extends Migration
             $table->tinyText("description")->nullable();
             $table->unsignedBigInteger("digital_product_type")->nullable();
             $table->unsignedBigInteger("image_id")->nullable();
+            $table->boolean('status')->comment("0=draft,1=publish");
             $table->timestamps();
             $table->softDeletes();
         });

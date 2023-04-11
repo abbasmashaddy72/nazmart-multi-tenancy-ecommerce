@@ -9,90 +9,86 @@
         </th>
         <th> {{__("ID")}} </th>
         <th> {{__("Name")}} </th>
-        <th> {{__("Brand")}} </th>
+        <th> {{__("Type")}} </th>
         <th> {{__("Categories")}} </th>
-        <th> {{__("Stock Qty")}} </th>
+        <th> {{__("Price")}} </th>
         <th> {{__("Status")}} </th>
         <th> {{__("Actions")}} </th>
     </tr>
     </thead>
     <tbody>
-        @forelse($products['items'] as $product)
-            @php
-                // Inventory Warnings
-                $threshold_amount = get_static_option('stock_threshold_amount') ?? 5;
-                $stock_over = $product?->inventory?->stock_count <= $threshold_amount;
-            @endphp
+    @forelse($products['items'] as $product)
+        <tr class="table-cart-row">
+            <td data-label="Check All">
+                <x-bulk-delete-checkbox :id="$product->id"/>
+            </td>
 
-            <tr @class(['table-cart-row', 'out_of_stock' => $stock_over])>
-                <td data-label="Check All">
-                    <x-bulk-delete-checkbox :id="$product->id"/>
-                </td>
+            <td>
+                <span class="quantity-number">{{$product->id}}</span>
+            </td>
 
-                <td>
-                    <span class="quantity-number">{{$product->id}}</span>
-                </td>
-
-                <td class="product-name-info">
-                    <div class="d-flex gap-2">
-                        <div class="logo-brand">
-                            {!! render_image_markup_by_attachment_id($product->image_id) !!}
-                        </div>
-                        <div class="product-summary">
-                            <p class="font-weight-bold mb-1">{{ $product->name }}</p>
-                            <p>{{Str::words($product->summary, 5)}}</p>
-                        </div>
+            <td class="product-name-info">
+                <div class="d-flex gap-2">
+                    <div class="logo-brand">
+                        {!! render_image_markup_by_attachment_id($product->image_id) !!}
                     </div>
-                </td>
-
-                <td data-label="Image">
-                    <div class="d-flex gap-2">
-                        <div class="logo-brand product-brand">
-                            {!! render_image_markup_by_attachment_id($product?->brand?->image_id) !!}
-                        </div>
-                        <b class="">{{ $product?->brand?->name }}</b>
+                    <div class="product-summary">
+                        <p class="font-weight-bold mb-1">{{ $product->name }}</p>
+                        <p>{{Str::words($product->summary, 5)}}</p>
                     </div>
-                </td>
+                </div>
+            </td>
 
-                <td class="price-td" data-label="Name">
-                                            <span class="category-field">@if($product?->category?->name)
-                                                    <b> {{__('Category')}}:  </b>
-                                                @endif{{ $product?->category?->name }}</span> <br>
-                    <span class="category-field">@if($product?->subCategory?->name)
-                            <b> {{__('Sub Category')}}:  </b>
-                        @endif{{ $product?->subCategory?->name }} </span><br>
-                </td>
+            <td class="price-td" data-label="Type">
+                <span class="quantity-number"> {{ $product->productType()->name ?? '' }}</span>
+            </td>
 
-                <td class="price-td" data-label="Quantity">
-                    <span @class(['quantity-number', 'text-danger' => $stock_over])> {{ $product?->inventory?->stock_count }}</span>
-                </td>
+            <td class="price-td text-start" data-label="Name">
+                <span class="category-field">@if($product?->category?->name)
+                      <b> {{__('Category')}}:  </b>
+                      @endif{{ $product?->category?->name }}
+                </span> <br>
+                <span class="category-field">
+                    @if($product?->subCategory?->name)
+                      <b> {{__('Sub Category')}}:  </b>
+                    @endif{{ $product?->subCategory?->name }}
+                </span> <br>
+            </td>
 
-                <td data-label="Status">
-                    <x-product::table.status :statuses="$statuses" :statusId="$product?->status_id"
-                                             :id="$product->id"/>
-                </td>
+            <td class="price-td" data-label="Quantity">
+                <span class="quantity-number" )> {{ $product?->inventory?->stock_count }}</span>
+            </td>
 
-                <td data-label="Actions">
-                    <div class="action-icon">
-                        <a href="{{route('tenant.shop.product.details', $product->slug)}}" class="icon eye" target="_blank" title="View the product" data-bs-toggle="tooltip" data-bs-placement="top">
-                            <i class="las la-eye"></i>
-                        </a>
-                        <a href="{{ route("tenant.admin.product.edit", $product->id) }}"
-                           class="icon edit" title="Edit the product" data-bs-toggle="tooltip" data-bs-placement="top"> <i class="las la-pen-alt"></i> </a>
-                        <a href="{{ route("tenant.admin.product.clone", $product->id) }}"
-                           class="icon clone" title="Make duplicate" data-bs-toggle="tooltip" data-bs-placement="top"> <i class="las la-copy"></i> </a>
-                        <a data-product-url="{{ route("tenant.admin.product.destroy", $product->id) }}"
-                           href="javascript:void(0)" class="delete-row icon deleted" title="Delete the product" data-bs-toggle="tooltip" data-bs-placement="top">
-                            <i class="las la-trash-alt"></i>
-                        </a>
-                    </div>
-                </td>
-            </tr>
-        @empty
-            <tr>
-                <td colspan="7" class="text-warning text-center">{{__('No Product Available')}}</td>
-            </tr>
-        @endforelse
+            <td data-label="Status">
+                <x-product::table.status :statuses="$statuses" :statusId="$product?->status_id"
+                                         :id="$product->id"/>
+            </td>
+
+            <td data-label="Actions">
+                <div class="action-icon">
+                    <a href="{{route('tenant.shop.product.details', $product->slug)}}" class="icon eye" target="_blank"
+                       title="View the product" data-bs-toggle="tooltip" data-bs-placement="top">
+                        <i class="las la-eye"></i>
+                    </a>
+                    <a href="{{ route("tenant.admin.digital.product.edit", $product->id) }}"
+                       class="icon edit" title="Edit the product" data-bs-toggle="tooltip" data-bs-placement="top"> <i
+                            class="las la-pen-alt"></i> </a>
+                    <a href="{{ route("tenant.admin.digital.product.clone", $product->id) }}"
+                       class="icon clone" title="Make duplicate" data-bs-toggle="tooltip" data-bs-placement="top"> <i
+                            class="las la-copy"></i> </a>
+                    <a data-product-url="{{ route("tenant.admin.digital.product.destroy", $product->id) }}"
+                       href="javascript:void(0)" class="delete-row icon deleted" title="Delete the product"
+                       data-bs-toggle="tooltip" data-bs-placement="top">
+                        <i class="las la-trash-alt"></i>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    @empty
+        <tr>
+            <td colspan="7" class="text-warning text-center">{{__('No Product Available')}}</td>
+        </tr>
+    @endforelse
     </tbody>
 </table>
 
@@ -122,7 +118,9 @@
         <ul class="pagination-list">
             @foreach($products["links"] as $link)
                 @php if($loop->iteration == 1):  continue; endif @endphp
-                <li><a href="{{ $link }}" class="page-number {{ ($loop->iteration - 1) == $products["current_page"] ? "current" : "" }}">{{ $loop->iteration - 1 }}</a></li>
+                <li><a href="{{ $link }}"
+                       class="page-number {{ ($loop->iteration - 1) == $products["current_page"] ? "current" : "" }}">{{ $loop->iteration - 1 }}</a>
+                </li>
             @endforeach
         </ul>
     </div>
