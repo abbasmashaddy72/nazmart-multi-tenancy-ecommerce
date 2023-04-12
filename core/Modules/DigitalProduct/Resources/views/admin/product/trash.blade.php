@@ -1,6 +1,6 @@
 @extends('tenant.admin.admin-master')
 @section('title')
-    {{ __('Trashed Products') }}
+    {{ __('Trashed Digital Products') }}
 @endsection
 
 @section('style')
@@ -36,10 +36,10 @@
                         <h4 class="dashboard-common-title-two mb-4">{{__('Product Trash')}}</h4>
                         <div class="product-trash-right-wrap d-flex flex-wrap align-items-center gap-2">
                             <a href="javascript:void(0)" class="btn btn-danger btn-sm delete-all"
-                               data-product-delete-all-url="{{ route("tenant.admin.product.trash.empty") }}"> {{__('Empty Trash')}}</a>
+                               data-product-delete-all-url="{{ route("tenant.admin.digital.product.trash.empty") }}"> {{__('Empty Trash')}}</a>
                             <div class="btn-wrapper">
                                 <a class="btn btn-primary btn-sm"
-                                   href="{{route('tenant.admin.product.all')}}">{{__('Back')}}</a>
+                                   href="{{route('tenant.admin.digital.product.all')}}">{{__('Back')}}</a>
                             </div>
                         </div>
                     </div>
@@ -55,10 +55,11 @@
                                         <input type="checkbox" class="all-checkbox">
                                     </div>
                                 </th>
+                                <th> {{__("ID")}} </th>
                                 <th> {{__("Name")}} </th>
-                                <th> {{__("Brand")}} </th>
+                                <th> {{__("Type")}} </th>
                                 <th> {{__("Categories")}} </th>
-                                <th> {{__("Stock Qty")}} </th>
+                                <th> {{__("Price")}} </th>
                                 <th> {{__("Actions")}} </th>
                             </tr>
                             </thead>
@@ -67,6 +68,10 @@
                                 <tr class="table-cart-row">
                                     <td data-label="Check All">
                                         <x-bulk-delete-checkbox :id="$product->id"/>
+                                    </td>
+
+                                    <td>
+                                        <span> {{ $product->id }} </span>
                                     </td>
 
                                     <td class="product-name-info">
@@ -79,16 +84,11 @@
                                         </div>
                                     </td>
 
-                                    <td data-label="Image">
-                                        <div class="d-flex gap-2">
-                                            <div class="logo-brand product-brand">
-                                                {!! render_image_markup_by_attachment_id($product?->brand?->image_id) !!}
-                                            </div>
-                                            <b class="">{{ $product?->brand?->name }}</b>
-                                        </div>
+                                    <td class="price-td" data-label="Type">
+                                        <span class="quantity-number"> {{ $product->productType()->name ?? '' }}</span>
                                     </td>
 
-                                    <td class="price-td" data-label="Name">
+                                    <td class="price-td text-start" data-label="Name">
                                         @if($product?->category?->name)
                                             <b> {{__('Category')}}: </b>
                                         @endif{{ $product?->category?->name }} <br>
@@ -97,15 +97,34 @@
                                         @endif{{ $product?->subCategory?->name }} <br>
                                     </td>
 
-                                    <td class="price-td" data-label="Quantity">
-                                        <span class="quantity-number"> {{ $product?->inventory?->stock_count }}</span>
+                                    <td class="price-td" data-label="Price">
+                                        @php
+                                            $price = $product->regular_price;
+                                            $regular_price = null;
+                                            if (!empty($product->sale_price) && $product->sale_price > 0)
+                                            {
+                                                $price = $product->sale_price;
+                                                $regular_price = $product->regular_price;
+                                            }
+                                        @endphp
+
+                                        @if($price > 0)
+                                            <p class="quantity-number" )> {{ amount_with_currency_symbol($price) }}</p>
+
+                                            @if(!empty($regular_price))
+                                                <p class="text-small"><del>{{amount_with_currency_symbol($regular_price)}}</del></p>
+                                            @endif
+
+                                        @else
+                                            <p class="quantity-number text-success" )> {{ __('Free') }}</p>
+                                        @endif
                                     </td>
 
                                     <td data-label="Actions">
                                         <div class="action-icon">
-                                            <a href="{{ route("tenant.admin.product.trash.restore", $product->id) }}"
+                                            <a href="{{ route("tenant.admin.digital.product.trash.restore", $product->id) }}"
                                                class="product-restore btn btn-success btn-sm"> {{__('Restore')}} </a>
-                                            <a data-product-delete-url="{{ route("tenant.admin.product.trash.delete", $product->id) }}"
+                                            <a data-product-delete-url="{{ route("tenant.admin.digital.product.trash.delete", $product->id) }}"
                                                href="javascript:void(0)"
                                                class="product-delete btn btn-danger btn-sm"> {{__('Delete')}} </a>
                                         </div>
@@ -127,7 +146,7 @@
 @endsection
 
 @section('scripts')
-    <x-product::table.bulk-action-js :url="route('tenant.admin.product.trash.bulk.destroy')"/>
+    <x-product::table.bulk-action-js :url="route('tenant.admin.digital.product.trash.bulk.destroy')"/>
     <script>
         $(document).on("click", ".delete-all", function (e) {
             e.preventDefault();

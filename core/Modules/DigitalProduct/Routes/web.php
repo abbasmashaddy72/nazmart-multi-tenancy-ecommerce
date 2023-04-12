@@ -28,7 +28,16 @@ Route::middleware([
             Route::post("status-update","DigitalProductController@update_status")->name("update.status");
             Route::get("clone/{id}", "DigitalProductController@clone")->name("clone")->middleware(ProductLimitMiddleware::class);
             Route::get("destroy/{id}", "DigitalProductController@destroy")->name("destroy");
-            Route::post('bulk-action', 'DigitalProductController@bulk_action')->name('bulk.action');
+            Route::post("bulk/destroy", "DigitalProductController@bulk_destroy")->name("bulk.destroy");
+            Route::get("search","DigitalProductController@productSearch")->name("search");
+
+            Route::prefix('trash')->name('trash.')->group(function (){
+                Route::get('/', 'DigitalProductController@trash')->name('all');
+                Route::get('/restore/{id}', 'DigitalProductController@restore')->name('restore');
+                Route::get('/delete/{id}', 'DigitalProductController@trash_delete')->name('delete');
+                Route::post("/bulk/destroy", "DigitalProductController@trash_bulk_destroy")->name("bulk.destroy");
+                Route::post("/empty", "DigitalProductController@trash_empty")->name("empty");
+            });
         });
 
         /*-----------------------------------

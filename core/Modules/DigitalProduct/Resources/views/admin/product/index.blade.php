@@ -23,62 +23,32 @@
                         <button id="product-search-button" type="submit" class="btn btn-info btn-sm">{{__('Search')}}</button>
                     </div>
 
-                    <form id="product-search-form" class="row" action="{{ route("tenant.admin.product.search") }}" method="get">
+                    <form id="product-search-form" class="row" action="{{ route("tenant.admin.digital.product.search") }}" method="get">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="label-1" for="search-name">{{__('Name')}}</label>
                                 <input name="name" class="form--control input-height-1" id="search-name" value="{{ request()->name ?? old("name") }}" />
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="label-1" for="search-sku">{{__('SKU')}}</label>
-                                <input name="sku" class="form--control input-height-1" id="search-sku" value="{{ request()->sku ?? old("sku") }}" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="label-1" for="search-brand">{{__('Brand')}}</label>
-                                <input name="brand" class="form--control input-height-1" id="search-brand" value="{{ request()->brand ?? old("brand") }}" />
-                            </div>
-                        </div>
+
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="label-1" for="search-category">{{__('Category')}}</label>
                                 <input name="category" class="form--control input-height-1" id="search-category" value="{{ old("category") }}" />
                             </div>
                         </div>
+
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="label-1" for="search-sub_category">{{__('Sub Category')}}</label>
                                 <input name="sub_category" class="form--control input-height-1" id="search-brand" value="{{ old("sub_category") }}" />
                             </div>
                         </div>
+
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="label-1" for="search-category">{{__('Child Category')}}</label>
                                 <input name="child_category" class="form--control input-height-1" id="search-category" value="{{ old("child_category") }}" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="label-1" for="search-color">{{__('Color Name')}}</label>
-                                <input name="color" class="form--control input-height-1" id="search-color" value="{{ old("color") }}" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="label-1" for="search-size">{{__('Size Name')}}</label>
-                                <input name="size" class="form--control input-height-1" id="search-size" value="{{ old("size") }}" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="search-is_inventory_warn_able" class="checkbox-label-1"><input type="checkbox" name="is_inventory_warn_able" class="form--checkbox-1" id="search-is_inventory_warn_able" value="{{ old("is_inventory_warn_able") }}" /> {{__('Inventory Warning')}}</label>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="search-refundable" class="checkbox-label-1"> <input type="checkbox" name="refundable" class="form--checkbox-1" id="search-refundable" value="{{ old("refundable") }}" /> {{__('Refundable')}}</label>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -92,7 +62,7 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="label-1" for="search-to_price">{{__('TO Price')}}</label>
+                                        <label class="label-1" for="search-to_price">{{__('To Price')}}</label>
                                         <input name="to_price" class="form--control input-height-1" id="search-to_price" value="{{ old("to_price") }}" />
                                     </div>
                                 </div>
@@ -138,7 +108,7 @@
                                 </select>
                             </div>
                             <div class="btn-wrapper-trash">
-                                <a class="btn btn-danger btn-sm" href="{{route('tenant.admin.product.trash.all')}}">{{__('Trash')}}</a>
+                                <a class="btn btn-danger btn-sm" href="{{route('tenant.admin.digital.product.trash.all')}}">{{__('Trash')}}</a>
                             </div>
                             <a class="btn btn-info btn-sm" href="{{route('tenant.admin.digital.product.create')}}">{{__('Add New Product')}}</a>
                         </div>
@@ -153,7 +123,7 @@
 @endsection
 @section('scripts')
     <x-digitalproduct::table.status-js />
-    <x-product::table.bulk-action-js :url="route('tenant.admin.product.bulk.destroy')"/>
+    <x-product::table.bulk-action-js :url="route('tenant.admin.digital.product.bulk.destroy')"/>
     <script>
         $(function (){
             $("#search-date_range").flatpickr({

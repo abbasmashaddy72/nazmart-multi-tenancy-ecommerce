@@ -347,6 +347,20 @@
                         $('#media_upload_modal').modal('hide');
                     });
 
+                    $(document).on('change' ,'#accessibility', function (){
+                        let value = $(this).val();
+                        let tax_price_div = $('#tax-price-info');
+
+                        if(value === 'free')
+                        {
+                            tax_price_div.fadeOut();
+                            tax_price_div.find('select#tax').val('');
+                            tax_price_div.find('select').attr('selected', false);
+                            tax_price_div.find('input').val('');
+                        } else {
+                            tax_price_div.fadeIn();
+                        }
+                    });
 
                     function send_ajax_request(request_type, request_data, url, before_send, success_response, errors) {
                         $.ajax({

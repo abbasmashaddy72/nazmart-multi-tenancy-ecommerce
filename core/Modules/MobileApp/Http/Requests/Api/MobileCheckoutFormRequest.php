@@ -35,7 +35,7 @@ class MobileCheckoutFormRequest extends FormRequest
                 'shift_address' => "required"
             ];
         } else {
-            if (\Auth::guard('web')->user() == null) {
+            if (auth("sanctum")->user() == null) {
                 $arr = [
                     'name' => "required",
                     'phone' => "required|max:17",
@@ -54,7 +54,7 @@ class MobileCheckoutFormRequest extends FormRequest
                     $arr['create_password'] = 'required|same:create_password_confirmation|min:8';
                 }
             } else {
-                if(\Auth::guard('web')->user()->delivery_address == null)
+                if(auth("sanctum")->user()->delivery_address == null)
                 {
                     $arr = [
                         'name' => "required",

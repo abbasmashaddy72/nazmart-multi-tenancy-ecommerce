@@ -484,7 +484,7 @@
                 $('input[name=manual_trasaction_id]').val($(this).val());
             });
 
-            $(document).on('click', '.cash-on-delivery, .cash-on-delivery label', function (){
+            $(document).on('change', '.cash-on-delivery #cash', function (){
                 $('.payment-inlines').toggleClass('d-none');
                 $('input[name=manual_trasaction_id]').val('');
                 $('.payment_gateway_passing_clicking_name').val('');

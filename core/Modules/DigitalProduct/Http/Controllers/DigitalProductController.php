@@ -14,6 +14,7 @@ use Modules\Badge\Entities\Badge;
 use Modules\DigitalProduct\Entities\DigitalAuthor;
 use Modules\DigitalProduct\Entities\DigitalCategories;
 use Modules\DigitalProduct\Entities\DigitalChildCategories;
+use Modules\DigitalProduct\Entities\DigitalProduct;
 use Modules\DigitalProduct\Entities\DigitalProductTags;
 use Modules\DigitalProduct\Entities\DigitalSubCategories;
 use Modules\DigitalProduct\Entities\DigitalTax;
@@ -178,7 +179,7 @@ class DigitalProductController extends Controller
 
     public function clone($id)
     {
-        return (new AdminProductServices)->clone($id) ? back()->with(FlashMsg::clone_succeed('Product')) : back()->with(FlashMsg::clone_failed('Product'));
+        return (new AdminDigitalProductServices)->clone($id) ? back()->with(FlashMsg::clone_succeed('Product')) : back()->with(FlashMsg::clone_failed('Product'));
     }
 
     /**
@@ -198,30 +199,38 @@ class DigitalProductController extends Controller
 
     public function trash(): Renderable
     {
-        $products = Product::with('category','subCategory', 'childCategory')->onlyTrashed()->get();
-        return view('product::trash',compact("products"));
+        $products = DigitalProduct::with('category','subCategory', 'childCategory')->orderByDesc('id')->onlyTrashed()->get();
+        return view('digitalproduct::admin.product.trash',compact("products"));
     }
 
     public function restore($id)
     {
-        $restore = Product::onlyTrashed()->findOrFail($id)->restore();
+        $restore = DigitalProduct::onlyTrashed()->findOrFail($id)->restore();
         return back()->with($restore ? FlashMsg::restore_succeed('Trashed Product') : FlashMsg::restore_failed('Trashed Product'));
     }
 
     public function trash_delete($id)
     {
-        return (new AdminProductServices)->trash_delete($id) ? back()->with(FlashMsg::delete_succeed('Trashed Product')) : back()->with(FlashMsg::delete_failed('Trashed Product'));
+        return (new AdminDigitalProductServices)->trash_delete($id) ? back()->with(FlashMsg::delete_succeed('Trashed Product')) : back()->with(FlashMsg::delete_failed('Trashed Product'));
     }
 
     public function trash_bulk_destroy(Request $request)
     {
-        return response()->json((new AdminProductServices)->trash_bulk_delete_action($request->ids) ? ["success" => true] : ["success" => false]);
+        return response()->json((new AdminDigitalProductServices)->trash_bulk_delete_action($request->ids) ? ["success" => true] : ["success" => false]);
     }
 
     public function trash_empty(Request $request)
     {
         $ids = explode('|', $request->ids);
-        return response()->json((new AdminProductServices)->trash_bulk_delete_action($ids) ? ["success" => true] : ["success" => false]);
+        return response()->json((new AdminDigitalProductServices)->trash_bulk_delete_action($ids) ? ["success" => true] : ["success" => false]);
+    }
+
+    public function productSearch(Request $request): string
+    {
+        $products = AdminDigitalProductServices::productSearch($request);
+        $statuses = Status::all();
+
+        return view('digitalproduct::admin.product.search',compact("products","statuses"))->render();
     }
 
 //    private function validateType($data)

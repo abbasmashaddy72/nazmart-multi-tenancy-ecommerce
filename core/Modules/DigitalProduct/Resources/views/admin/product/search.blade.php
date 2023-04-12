@@ -55,8 +55,27 @@
                 </span> <br>
             </td>
 
-            <td class="price-td" data-label="Quantity">
-                <span class="quantity-number" )> {{ $product?->inventory?->stock_count }}</span>
+            <td class="price-td" data-label="Price">
+                @php
+                    $price = $product->regular_price;
+                    $regular_price = null;
+                    if (!empty($product->sale_price) && $product->sale_price > 0)
+                    {
+                        $price = $product->sale_price;
+                        $regular_price = $product->regular_price;
+                    }
+                @endphp
+
+                @if($price > 0)
+                    <p class="quantity-number" )> {{ amount_with_currency_symbol($price) }}</p>
+
+                    @if(!empty($regular_price))
+                        <p class="text-small"><del>{{amount_with_currency_symbol($regular_price)}}</del></p>
+                    @endif
+
+                @else
+                    <p class="quantity-number text-success" )> {{ __('Free') }}</p>
+                @endif
             </td>
 
             <td data-label="Status">

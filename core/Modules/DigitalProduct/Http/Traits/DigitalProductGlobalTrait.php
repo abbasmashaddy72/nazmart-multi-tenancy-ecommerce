@@ -13,6 +13,7 @@ use Modules\DigitalProduct\Entities\AdditionalField;
 use Modules\DigitalProduct\Entities\DigitalProduct;
 use Modules\DigitalProduct\Entities\DigitalProductCategories;
 use Modules\DigitalProduct\Entities\DigitalProductChildCategories;
+use Modules\DigitalProduct\Entities\DigitalProductDownload;
 use Modules\DigitalProduct\Entities\DigitalProductGallery;
 use Modules\DigitalProduct\Entities\DigitalProductRefundPolicies;
 use Modules\DigitalProduct\Entities\DigitalProductSubCategories;
@@ -92,14 +93,6 @@ trait DigitalProductGlobalTrait {
             $query->whereHas("inventory", function ($i_query) use ($request) {
                 $i_query->where("sku", "like", "%" . $request->sku . "%");
             });
-        })->when(!empty($request->delivery_option) && $request->has("delivery_option"), function ($query) use ($request) { // delivery option
-            $query->whereHas("productDeliveryOption", function ($i_query) use ($request) {
-                $i_query->where("title", "like", "%" . $request->delivery_option . "%");
-            });
-        })->when(!empty($request->refundable) && $request->has("refundable"), function ($query) use ($request) { // refundable
-            $query->where("is_refundable", 1);
-        })->when(!empty($request->inventory_warning) && $request->has("inventory_warning"), function ($query) use ($request) { // inventory warning
-            $query->where("is_inventory_warn_able", 1);
         })->when(!empty($request->from_price) && $request->has("from_price") && !empty($request->to_price) && $request->has("to_price"), function ($query) use ($request) { // price
             $query->whereBetween("sale_price", [$request->from_price, $request->to_price]);
         })->when($multiple_date[0] && $request->has("date_range"), function ($query) use ($request, $multiple_date) { // Order By
@@ -121,7 +114,7 @@ trait DigitalProductGlobalTrait {
         $current_query = request()->all();
         $create_query = http_build_query($current_query);
 
-        return CustomPaginationService::pagination_type($all_products, $display_item_count, "custom", route($route . ".product.search") . '?' . $create_query);
+        return CustomPaginationService::pagination_type($all_products, $display_item_count, "custom", route($route . ".digital.product.search") . '?' . $create_query);
     }
 
     private function is_date_range_multiple(): array
@@ -188,21 +181,43 @@ trait DigitalProductGlobalTrait {
     {
         return [
             "name"  => $data->name,
-            "slug" => create_slug(Str::slug($data->slug ?? $data->name), 'Product', true, 'Product', 'slug'),
+            "slug" => create_slug(Str::slug($data->slug ?? $data->name), 'DigitalProduct', true, 'DigitalProduct', 'slug'),
             "summary" => $data->summary,
             "description" => $data->description,
+            "included_files" => $data->included_files,
+            "version" => $data->version,
+            "release_date" => $data->release_date,
+            "update_date" => $data->update_date,
+            "preview_link" => $data->preview_link,
+            "quantity" => $data->quantity,
+            "accessibility" => $data->accessibility,
+            "tax" => $data->tax,
             "image_id" => $data->image_id,
+            "product_gallery" => $data->product_gallery,
             "price" => $data->price,
+            "regular_price" => $data->regular_price,
             "sale_price" => $data->sale_price,
-            "cost" => $data->cost,
+            "free_date" => $data->free_date,
+            "promotional_date" => $data->promotional_date,
+            "promotional_price" => $data->promotional_price,
+            "author_id" => $data->author_id,
+            "page" => $data->page,
+            "language" => $data->language,
+            "formats" => $data->formats,
+            "word" => $data->word,
+            "tool_used" => $data->tool_used,
+            "database_used" => $data->database_used,
+            "compatible_browsers" => $data->compatible_browsers,
+            "compatible_os" => $data->compatible_os,
+            "high_resolution" => $data->high_resolution,
+            "tags" => $data->tags,
             "badge_id" => $data->badge_id,
-            "brand_id" => $data->brand_id,
             "status_id" => 2,
             "product_type" => $this->product_type() ?? 2,
-            "min_purchase" => $data->min_purchase,
-            "max_purchase" => $data->max_purchase,
-            "is_inventory_warn_able" => $data->is_inventory_warn_able ? 1 : 2,
-            "is_refundable" => !empty($data->is_refundable)
+            "is_refundable" => !empty($data->is_refundable),
+            "refund_description" => $data->refund_description,
+
+            "file" => 'no file added',
         ];
     }
 
@@ -366,7 +381,6 @@ trait DigitalProductGlobalTrait {
     public function updateStatus($productId, $statusId): JsonResponse
     {
         $product = DigitalProduct::find($productId)->update(["status_id" => $statusId]);
-        $this->createdByUpdatedBy($productId, "update");
 
         $response_status = $product ? ["success" => true, "msg" => __("Successfully updated status")] : ["success" => false,"msg" => __("Failed to update status")];
         return response()->json($response_status)->setStatusCode(200);
@@ -491,11 +505,17 @@ trait DigitalProductGlobalTrait {
         if ($product->slug != $data['slug'])
         {
             $slug = $data['slug'] ?? $data['name'];
-            $slug = create_slug(Str::slug($slug), 'Product', true, 'Product', 'slug');
+            $slug = create_slug(Str::slug($slug), 'DigitalProduct', true, 'DigitalProduct', 'slug');
             $product_data['slug'] = $slug;
         }
 
-        $main_file_name = !empty($product_data['file']) ? $this->storeProductFile($product_data) : $product->file;
+        $main_file_name = $product->file;
+        if (!empty($product_data['file']))
+        {
+            $this->removeProductFile($product->file);
+            $main_file_name = $this->storeProductFile($product_data);
+        }
+
         $product_data['file'] = $main_file_name;
 
         \DB::beginTransaction();
@@ -551,12 +571,12 @@ trait DigitalProductGlobalTrait {
     public function productClone($id): bool
     {
         $data = array();
-        $product = Product::findOrFail($id);
-        dd($product);
+        $product = DigitalProduct::findOrFail($id);
         $product_data = self::CloneData($product);
 
         $newProduct = $product->create($product_data);
         $id = $newProduct->id;
+
 
         $metaData = [];
         if ($product?->metaData != null)
@@ -575,55 +595,46 @@ trait DigitalProductGlobalTrait {
             $newProduct->metaData()->create(["metainfoable_id" => $id],$this->prepareMetaData($metaData));
         }
 
-        $this->createdByUpdatedBy($id);
+        $data['category_id'] = optional($product->category)->id;
+        $data['sub_category'] = optional($product->subCategory)->id;
+        $data['child_category'] = optional($product->childCategory)->pluck('id');
 
-        $data["sku"] = create_slug(optional($product->inventory)->sku, 'ProductInventory', true, 'Product', 'sku');
-        $inventoryQuantity = $product?->inventory?->stock_count;
+        $product_gallery = optional($product->product_gallery)->pluck('image_id');
+        $data['product_gallery'] = !empty($product_gallery) ? implode('|', $product_gallery) : '';
 
-        $product->category_id = optional($product->category)->id;
-        $product->sub_category = optional($product->subCategory)->id;
-        $product->child_category = current(optional($product->childCategory)->pluck('id'));
+        $product_tags = optional($product->tag)->pluck('tag_name')->toArray();
+        $data['tags'] = !empty($product_tags) ? implode(',', $product_tags) : '';
 
-        $delivery_option = current(optional($product->delivery_option)->pluck('delivery_option_id'));
-        $product->delivery_option = implode(' , ', $delivery_option);
+        $data['badge_id'] = $product?->additionalFields?->badge_id;
+        $data['pages'] = $product?->additionalFields?->pages;
+        $data['language'] = $product?->additionalFields?->language;
+        $data['formats'] = $product?->additionalFields?->formats;
+        $data['words'] = $product?->additionalFields?->words;
+        $data['tool_used'] = $product?->additionalFields?->tool_used;
+        $data['database_used'] = $product?->additionalFields?->database_used;
+        $data['compatible_browsers'] = $product?->additionalFields?->compatible_browsers;
+        $data['compatible_os'] = $product?->additionalFields?->compatible_os;
+        $data['high_resolution'] = $product?->additionalFields?->high_resolution;
+        $data['author_id'] = $product?->additionalFields?->author_id;
 
-        $product_gallery = current(optional($product->product_gallery)->pluck('image_id'));
-        $product->product_gallery = implode('|', $product_gallery);
+        $customFields = $product?->additionalCustomFields;
 
-        $product_tags = current(optional($product->tag)->pluck('tag_name'));
-        $product->tags = implode(',', $product_tags);
-
-        $data["unit_id"] = optional($product->uom)->unit_id;
-        $data["uom"] = optional($product->uom)->quantity;
-
-        // product attributes
-        $data['item_stock_count'] = count(optional($product->inventory)->inventoryDetails);
-        $data['item_stock_count']= \Arr::wrap($data['item_stock_count']);
-        $quantity = null;
-        if ($data['item_stock_count'] > 0)
+        $index = 0;
+        $option_name = [];
+        $option_value = [];
+        foreach ($customFields as $field)
         {
-            $data['item_stock_count'] = array();
-            foreach (optional($product->inventory)->inventoryDetails ?? [] as $i => $details)
-            {
-                $data['item_color'][$i] = $details->color;
-                $data['item_size'][$i] = $details->size;
-                $data['item_additional_price'][$i] = $details->additional_price;
-                $data['item_extra_cost'][$i] = $details->add_cost;
-                $data['item_image'][$i] = $details->image;
-                $data['item_stock_count'][$i] = $details->stock_count;
-                $quantity += $details->stock_count;
-
-                foreach ($details->attribute ?? [] as $j => $attribute)
-                {
-                    $data['item_attribute_name'][$i][$j] = $attribute->attribute_name;
-                    $data['item_attribute_value'][$i][$j] = $attribute->attribute_value;
-                }
-            }
+            $option_name['option_name'][$index] = $field->option_name;
+            $option_value['option_value'][$index] = $field->option_value;
+            $index++;
         }
-        $data["quantity"] = !empty($quantity) ? $quantity : $inventoryQuantity;
-        $data['policy_description'] = $product?->return_policy?->shipping_return_description;
 
-        return $this->insert_product_data($data, $id, $product);
+        $data['option_name'] = current($option_name);
+        $data['option_value'] = current($option_value);
+
+        $data['policy_description'] = $product?->refund_policy?->refund_description;
+
+        return $this->insert_product_data($data, $id, $data);
     }
 
     protected function destroy($id){
@@ -631,17 +642,22 @@ trait DigitalProductGlobalTrait {
     }
 
     protected function trash_destroy($id){
-        $product = Product::onlyTrashed()->findOrFail($id);
-        ProductUom::where('product_id', $product->id)->delete();
-        ProductTag::where('product_id', $product->id)->delete();
-        ProductGallery::where('product_id', $product->id)->delete();
-        ProductDeliveryOption::where('product_id', $product->id)->delete();
-        ProductChildCategory::where('product_id', $product->id)->delete();
-        ProductSubCategory::where('product_id', $product->id)->delete();
-        ProductCategory::where('product_id', $product->id)->delete();
-        ProductInventoryDetailAttribute::where('product_id', $product->id)->delete();
-        ProductInventoryDetail::where('product_id', $product->id)->delete();
-        ProductInventory::where('product_id', $product->id)->delete();
+        $product = DigitalProduct::onlyTrashed()->findOrFail($id);
+        DigitalProductTags::where('product_id', $product->id)->delete();
+        DigitalProductGallery::where('product_id', $product->id)->delete();
+        DigitalProductChildCategories::where('product_id', $product->id)->delete();
+        DigitalProductSubCategories::where('product_id', $product->id)->delete();
+        DigitalProductCategories::where('product_id', $product->id)->delete();
+
+        $additional_field = AdditionalField::where('product_id', $product->id)->first();
+        if (!empty($additional_field))
+        {
+            AdditionalCustomField::where('additional_field_id', $additional_field->id)->delete();
+            $additional_field->delete();
+        }
+
+        DigitalProductDownload::where('product_id', $product->id)->delete();
+
         $product->forceDelete();
 
         return (bool)$product;
@@ -649,24 +665,34 @@ trait DigitalProductGlobalTrait {
 
     protected function bulk_delete($ids)
     {
-        $product = Product::whereIn('id' ,$ids)->delete();
+        $product = DigitalProduct::whereIn('id' ,$ids)->delete();
         return (bool)$product;
     }
 
     protected function trash_bulk_delete($ids)
     {
         try {
-            ProductUom::whereIn('product_id', $ids)->delete();
-            ProductTag::whereIn('product_id', $ids)->delete();
-            ProductGallery::whereIn('product_id', $ids)->delete();
-            ProductDeliveryOption::whereIn('product_id', $ids)->delete();
-            ProductChildCategory::whereIn('product_id', $ids)->delete();
-            ProductSubCategory::whereIn('product_id', $ids)->delete();
-            ProductCategory::whereIn('product_id', $ids)->delete();
-            ProductInventoryDetailAttribute::whereIn('product_id', $ids)->delete();
-            ProductInventoryDetail::whereIn('product_id', $ids)->delete();
-            ProductInventory::whereIn('product_id', $ids)->delete();
-            $products = Product::onlyTrashed()->whereIn('id',$ids)->forceDelete();
+            DigitalProductTags::whereIn('product_id', $ids)->delete();
+            DigitalProductGallery::whereIn('product_id', $ids)->delete();
+            DigitalProductChildCategories::whereIn('product_id', $ids)->delete();
+            DigitalProductSubCategories::whereIn('product_id', $ids)->delete();
+            DigitalProductCategories::whereIn('product_id', $ids)->delete();
+
+            $additional_field = AdditionalField::whereIn('product_id', $ids)->get();
+            if (!empty($additional_field))
+            {
+                $additional_field_ids = $additional_field->pluck('id');
+                if (!empty($additional_field_ids))
+                {
+                    AdditionalCustomField::whereIn('additional_field_id', $additional_field_ids)->delete();
+                }
+
+                AdditionalField::whereIn('product_id', $ids)->delete();
+            }
+
+            DigitalProductDownload::whereIn('product_id', $ids)->delete();
+
+            $products = DigitalProduct::onlyTrashed()->whereIn('id', $ids)->forceDelete();
         } catch (\Exception $exception) { return false; }
 
         return (bool)$products;

@@ -34,7 +34,6 @@ class AdminDigitalProductServices
 
     public function bulk_delete_action(array $ids)
     {
-        CampaignSoldProduct::whereIn('product_id', $ids)->delete();
         return $this->bulk_delete($ids);
     }
 

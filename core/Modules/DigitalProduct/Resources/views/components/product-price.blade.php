@@ -19,7 +19,7 @@
             </select>
         </div>
 
-        <div id="tax-price-info">
+        <div id="tax-price-info" style="{{$product?->accessibility == 'free' ? 'display:none' : ''}}">
             <div class="dashboard-input mt-4">
                 <label class="dashboard-label color-light mb-2"> {{ __("Tax") }} </label>
                 <select name="tax" id="tax" class="form-control">
