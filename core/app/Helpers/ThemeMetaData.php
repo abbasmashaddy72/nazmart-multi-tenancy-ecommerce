@@ -215,6 +215,26 @@ class ThemeMetaData
         return $allThemeData;
     }
 
+    public function getAllThemeSlug(){
+        $themeSlugArray = [];
+        $allThemeData = getAllThemeData();
+
+        $index = 0;
+        foreach ($allThemeData as $data){
+            if (property_exists($data, 'status') && $data->status)
+            {
+                if (property_exists($data,'slug')){
+                    if ($data->slug == 'default')
+                    {
+                        continue;
+                    }
+                    $themeSlugArray[$index++] = $data->slug;
+                }
+            }
+        }
+        return $themeSlugArray;
+    }
+
     public function getDefaultThemeData(){
         $allThemeData = [];
         $allDirectories = glob(base_path().'/resources/views/themes/*',GLOB_ONLYDIR);

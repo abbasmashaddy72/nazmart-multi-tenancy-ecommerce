@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static getSelectedThemeData
  * @method static getSelectedThemeSlug
  * @method static getAllThemeData
+ * @method static getAllThemeSlug
  *
  * @method static getAllThemeDataForAdmin
  * @method static getIndividualThemeData

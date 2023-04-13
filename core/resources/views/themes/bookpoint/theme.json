@@ -1,0 +1,38 @@
+{
+    "name": "BookPoint",
+    "slug": "bookpoint",
+    "description": "E-Book Theme",
+    "author": "Mazharul Islam Suzon",
+    "version": "1.0.0",
+    "status": true,
+    "screenshot": [
+        {
+            "primary": "primary.jpg"
+        }
+    ],
+    "headerHook": [
+        {
+            "style": [
+                "style"
+            ],
+            "rtl_style": [
+                "rtl"
+            ],
+            "script": [],
+            "blade": []
+        }
+    ],
+    "footerHook": [
+        {
+            "style": [],
+            "script": [
+                "EZView",
+                "imagesloaded.pkgd.min",
+                "isotope.pkgd.min",
+                "jquery.magnific-popup",
+                "main"
+            ],
+            "blade": []
+        }
+    ]
+}
