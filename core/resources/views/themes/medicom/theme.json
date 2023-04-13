@@ -20,14 +20,16 @@
 
             ],
             "script": [],
-            "blade": []
+            "blade": [],
+            "navbarArea": "navbar"
         }
     ],
     "footerHook": [
         {
             "style": [],
             "script": [],
-            "blade": []
+            "blade": [],
+            "widgetArea": "footer-medicom"
         }
     ]
 }

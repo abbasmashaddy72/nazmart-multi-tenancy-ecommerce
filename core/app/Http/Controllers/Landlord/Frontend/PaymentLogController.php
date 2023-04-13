@@ -307,6 +307,7 @@ class PaymentLogController extends Controller
 
                     $payment_details = PaymentLogs::findOrFail($payment_log_id);
                     $this->payment_details = $payment_details;
+
                 } else {
                     $old_tenant_log->update([
                         'email' => $email,

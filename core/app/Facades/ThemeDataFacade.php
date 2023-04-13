@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\Facade;
  * @method static getFooterHookJsFiles
  * @method static renderHeaderHookBladeFile
  * @method static renderFooterHookBladeFile
+ * @method static getFooterWidgetArea
+ * @method static getHeaderNavbarArea
  * @method static renderThemeView($view = '', $data = [])
  * @method static getAllThemeScreenshot($theme_slug)
  * @method static renderPrimaryThemeScreenshot($theme_slug)

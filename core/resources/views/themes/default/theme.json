@@ -15,14 +15,16 @@
         {
             "style" : ["main-css"],
             "script" : ["custom-header"],
-            "blade" : ["default-template"]
+            "blade" : ["default-template"],
+            "navbarArea": "navbar"
         }
     ],
     "footerHook" : [
         {
             "style" : ["custom-css"],
             "script" : ["custom-footer"],
-            "blade" : ["default-template"]
+            "blade" : ["default-template"],
+            "widgetArea": "footer-default"
         }
     ],
     "." : [

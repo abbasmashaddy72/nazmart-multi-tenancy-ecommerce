@@ -19,7 +19,8 @@
                 "rtl"
             ],
             "script": [],
-            "blade": []
+            "blade": [],
+            "navbarArea": "navbar"
         }
     ],
     "footerHook": [
@@ -32,7 +33,8 @@
                 "jquery.magnific-popup",
                 "main"
             ],
-            "blade": []
+            "blade": [],
+            "widgetArea": "widget-area"
         }
     ]
 }

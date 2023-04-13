@@ -163,6 +163,38 @@ class ThemeMetaData
         }
     }
 
+    public function getFooterWidgetArea()
+    {
+        $widget_area_file_name = '';
+        $footerHook = $this->getFooterHook();
+
+        if (!empty($footerHook) && property_exists($footerHook, 'widgetArea'))
+        {
+            if (!empty($footerHook->widgetArea))
+            {
+                $widget_area_file_name = $footerHook->widgetArea;
+            }
+        }
+
+        return $widget_area_file_name;
+    }
+
+    public function getHeaderNavbarArea()
+    {
+        $navbar_area_file_name = '';
+        $headerHook = $this->getHeaderHook();
+
+        if (!empty($headerHook) && property_exists($headerHook, 'navbarArea'))
+        {
+            if (!empty($headerHook->navbarArea))
+            {
+                $navbar_area_file_name = $headerHook->navbarArea;
+            }
+        }
+
+        return $navbar_area_file_name;
+    }
+
     /**
      * @param string $view
      * @param array $data

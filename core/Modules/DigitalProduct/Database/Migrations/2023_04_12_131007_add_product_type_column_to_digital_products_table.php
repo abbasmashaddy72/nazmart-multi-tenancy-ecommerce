@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddProductTypeColumnToDigitalProductsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -33,4 +33,4 @@ class AddProductTypeColumnToDigitalProductsTable extends Migration
             $table->dropColumn('product_type');
         });
     }
-}
+};

@@ -46,8 +46,7 @@
     <link rel="stylesheet" href="{{ global_asset('assets/common/css/toastr.css') }}">
     <link rel="stylesheet" href="{{global_asset('assets/common/css/loader-01.css')}}">
 
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/style.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/custom-style.css')}}">
+{{--    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/style.css')}}">--}}
 
     @foreach($theme_header_css_files ?? [] as $cssFile)
         <link rel="stylesheet" href="{{ loadCss($cssFile) }}" type="text/css" />
@@ -58,6 +57,8 @@
             <link rel="stylesheet" href="{{ loadCss($cssFile) }}" type="text/css" />
         @endforeach
     @endif
+
+    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/custom-style.css')}}">
 
     @if(request()->routeIs('tenant.frontend.homepage'))
         @include('tenant.frontend.partials.meta-data')
