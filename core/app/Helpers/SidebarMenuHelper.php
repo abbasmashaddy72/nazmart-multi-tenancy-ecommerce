@@ -438,8 +438,8 @@ class SidebarMenuHelper
             'parent' => null,
             'permissions' => ['general-settings-page-settings', 'general-settings-site-identity', 'general-settings-basic-settings', 'general-settings-color-settings',
                 'general-settings-typography-settings', 'general-settings-seo-settings', 'general-settings-payment-settings', 'general-settings-third-party-script-settings',
-                'general-settings-smtp-settings', 'general-settings-custom-css-settings', 'general-settings-custom-js-settings', 'general-settings-database-upgrade-settings',
-                'general-settings-cache-clear-settings', 'general-settings-license-settings'],
+                'general-settings-ssl-settings', 'general-settings-smtp-settings', 'general-settings-custom-css-settings', 'general-settings-custom-js-settings',
+                'general-settings-database-upgrade-settings', 'general-settings-cache-clear-settings', 'general-settings-license-settings'],
             'icon' => 'mdi mdi-settings',
         ]);
         $menu_instance->add_menu_item('general-settings-page-settings', [
@@ -496,6 +496,17 @@ class SidebarMenuHelper
             'parent' => 'general-settings-menu-items',
             'permissions' => ['general-settings-smtp-settings'],
         ]);
+
+        if (!tenant())
+        {
+            $menu_instance->add_menu_item('general-settings-ssl-settings', [
+                'route' => 'landlord.admin.general.ssl.settings',
+                'label' => __('SSL Settings'),
+                'parent' => 'general-settings-menu-items',
+                'permissions' => ['general-settings-ssl-settings'],
+            ]);
+        }
+
         $menu_instance->add_menu_item('general-settings-custom-css-settings', [
             'route' => 'landlord.admin.general.custom.css.settings',
             'label' => __('Custom CSS'),

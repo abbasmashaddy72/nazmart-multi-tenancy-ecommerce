@@ -23,10 +23,12 @@ use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use Modules\Attributes\Http\Controllers\BrandController;
 use Modules\Attributes\Http\Controllers\DeliveryOptionController;
 use Modules\Attributes\Http\Controllers\AttributesController;
+use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 
 Route::middleware([
     'web',
-    InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomain::class,
+    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'auth:admin',
     'set_lang',

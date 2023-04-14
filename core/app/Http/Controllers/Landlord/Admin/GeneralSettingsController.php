@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use App\Helpers\SanitizeInput;
+use Illuminate\Support\Facades\URL;
 
 class GeneralSettingsController extends Controller
 {
@@ -380,6 +381,18 @@ class GeneralSettingsController extends Controller
             'MAIL_FROM_ADDRESS' => $request->site_global_email
         ]);
         return response()->success(ResponseMessage::SettingsSaved());
+    }
+
+    public function ssl_settings()
+    {
+        return view(self::BASE_PATH . 'ssl-settings');
+    }
+
+    public function update_ssl_settings(Request $request)
+    {
+//        if (get_static_option('site_force_ssl_redirection') === 'on'){
+            URL::forceScheme('https');
+//        }
     }
 
     public function send_test_mail(Request $request)

@@ -9,6 +9,7 @@ use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Controllers\Tenant\Frontend\ShopCreationController;
 use App\Http\Controllers\Tenant\Frontend\TenantFrontendController;
 use App\Http\Controllers\Tenant\Frontend\CheckoutPaymentController;
+use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +26,8 @@ use App\Http\Controllers\Tenant\Frontend\CheckoutPaymentController;
 
 Route::middleware([
     'web',
-    InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomain::class,
+    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'tenant_glvar',
     'maintenance_mode',
@@ -151,7 +153,8 @@ Route::middleware([
 
 Route::group(['prefix' => 'product', 'as' => 'tenant.products.', 'middleware' =>[
     'web',
-    InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomain::class,
+    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'tenant_glvar',
     'maintenance_mode',

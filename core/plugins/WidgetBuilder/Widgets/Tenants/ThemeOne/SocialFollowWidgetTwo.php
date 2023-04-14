@@ -9,7 +9,7 @@ use Plugins\PageBuilder\Helpers\RepeaterField;
 use Plugins\WidgetBuilder\Traits\LanguageFallbackForWidgetBuilder;
 use Plugins\WidgetBuilder\WidgetBase;
 
-class SocialFollowWidget extends WidgetBase
+class SocialFollowWidgetTwo extends WidgetBase
 {
     use LanguageFallbackForWidgetBuilder;
 
@@ -31,16 +31,25 @@ class SocialFollowWidget extends WidgetBase
             'id' => 'footer_social_follow',
             'fields' => [
                 [
-                    'type' => RepeaterField::ICON_PICKER,
-                    'name' => 'repeater_icon',
-                    'label' => __('Icon')
+                    'type' => RepeaterField::TEXT,
+                    'name' => 'repeater_title',
+                    'label' => __('Title')
                 ],
-
+                [
+                    'type' => RepeaterField::TEXT,
+                    'name' => 'repeater_subtitle',
+                    'label' => __('Subtitle')
+                ],
                 [
                     'type' => RepeaterField::TEXT,
                     'name' => 'repeater_icon_url',
-                    'label' => __('Icon URL')
+                    'label' => __('URL')
                 ],
+                [
+                    'type' => RepeaterField::ICON_PICKER,
+                    'name' => 'repeater_icon',
+                    'label' => __('Icon')
+                ]
             ]
         ]);
 
@@ -64,21 +73,25 @@ class SocialFollowWidget extends WidgetBase
         $li_markup = '';
         foreach(current($repeater_data) as $key => $data)
         {
-            $li_markup .= '<li class="lists">
-                               <a class="facebook" href="'.SanitizeInput::esc_url($repeater_data['repeater_icon_url_'][$key]).'">
-                                    <i class="'.$repeater_data['repeater_icon_'][$key].'"></i>
-                               </a>
-                           </li>';
+            $li_markup .= '<div class="footer-contact-single">
+                                        <div class="footer-contact-flex">
+                                            <div class="footer-contact-icon">
+                                                <i class="'.$repeater_data['repeater_icon_'][$key].'"></i>
+                                            </div>
+                                            <div class="footer-contact-details">
+                                                <span class="footer-contact-details-subtitle"> '.(SanitizeInput::esc_html($repeater_data['repeater_title_'][$key]) ?? '').' </span>
+                                                <span class="footer-contact-details-item"><a href="'.SanitizeInput::esc_url($repeater_data['repeater_icon_url_'][$key]).'"> '.(SanitizeInput::esc_html($repeater_data['repeater_subtitle_'][$key]) ?? '').' </a></span>
+                                            </div>
+                                        </div>
+                                    </div>';
         }
 
         $top_margin = !empty($widget_title) ? 'mt-4' : '';
-        $markup .= '<div class="footer-widget widget center-text">
-                            <h4 class="widget-titile fw-500"> '.$widget_title.' </h4>
-                            <div class="footer-inner '.$top_margin.'">
-                                <div class="footer-socials">
-                                    <ul class="footer-social-list">
-                                        '.$li_markup.'
-                                    </ul>
+        $markup .= '<div class="footer-widget widget">
+                            <h4 class="widget-title fw-500"> '.$widget_title.' </h4>
+                            <div class="footer-inner mt-4">
+                                <div class="footer-contact">
+                                    '.$li_markup.'
                                 </div>
                             </div>
                         </div>';
@@ -94,7 +107,7 @@ class SocialFollowWidget extends WidgetBase
 
     public function widget_title()
     {
-        return __('Tenant Social Follow: HexFashion');
+        return __('Tenant Social Follow: BookPoint');
     }
 
 }

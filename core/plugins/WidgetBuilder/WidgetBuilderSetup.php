@@ -27,6 +27,7 @@ use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterBottomLinksWidget;
 use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterContact;
 use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterPaymentGatewaysWidget;
 use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\SocialFollowWidget;
+use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\SocialFollowWidgetTwo;
 use Plugins\WidgetBuilder\Widgets\TenantServiceCategoryWidget;
 use Plugins\WidgetBuilder\Widgets\TenantSidebarBannerWidget;
 
@@ -60,6 +61,7 @@ class WidgetBuilderSetup
             FooterPaymentGatewaysWidget::class,
             FooterPaymentGatewaysWidget::class,
             ShopFooterWidget::class,
+            SocialFollowWidgetTwo::class
         ];
 
         // Third party custom addons

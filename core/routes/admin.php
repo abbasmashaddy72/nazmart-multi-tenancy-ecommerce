@@ -360,6 +360,10 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::post('/smtp-settings','update_smtp_settings');
         Route::post('/send-test-mail','send_test_mail')->name('landlord.admin.general.smtp.settings.test.mail');
 
+        /* ssl Settings */
+        Route::get('/ssl-settings', 'ssl_settings')->name('landlord.admin.general.ssl.settings');
+        Route::post('/ssl-settings', 'update_ssl_settings');
+
         /* custom css Settings */
         Route::get('/custom-css-settings','custom_css_settings')->name('landlord.admin.general.custom.css.settings');
         Route::post('/custom-css-settings','update_custom_css_settings');

@@ -8,12 +8,14 @@ use App\Http\Controllers\Landlord\Admin\GeneralSettingsController;
 use Modules\Blog\Http\Controllers\Landlord\Admin\BlogTagController;
 use App\Http\Controllers\Tenant\Admin\OrderManageController;
 use App\Http\Controllers\Tenant\Admin\NewsletterController;
+use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 
 
 
 Route::middleware([
     'web',
-    InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomain::class,
+    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'auth:admin',
     'tenant_admin_glvar',

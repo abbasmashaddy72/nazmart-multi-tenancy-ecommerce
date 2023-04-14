@@ -18,6 +18,7 @@ class RedirectIfAuthenticated
         foreach ($guards as $guard) {
             if ( (\request()->path() === 'admin' || \request()->is('admin-home/*' ))) {
 
+
                 if (Auth::guard('admin')->check()){
                     return redirect('/admin-home');
                 }
