@@ -725,4 +725,58 @@ class GeneralSettingsController extends Controller
 
         return back()->with(FlashMsg::update_succeed('Highlight Text Shape Image'));
     }
+
+    public function gdpr_settings()
+    {
+        return view(self::BASE_PATH.'gdpr-settings');
+    }
+
+    public function update_gdpr_cookie_settings(Request $request)
+    {
+        $this->validate($request, [
+            'site_gdpr_cookie_enabled' => 'nullable|string|max:191',
+            'site_gdpr_cookie_expire' => 'required|string|max:191',
+            'site_gdpr_cookie_delay' => 'required|string|max:191',
+        ]);
+
+            $this->validate($request, [
+                "site_gdpr_cookie_title" => 'nullable|string',
+                "site_gdpr_cookie_message" => 'nullable|string',
+                "site_gdpr_cookie_more_info_label" => 'nullable|string',
+                "site_gdpr_cookie_more_info_link" => 'nullable|string',
+                "site_gdpr_cookie_accept_button_label" => 'nullable|string',
+                "site_gdpr_cookie_decline_button_label" => 'nullable|string',
+            ]);
+
+            $fields = [
+                "site_gdpr_cookie_title",
+                "site_gdpr_cookie_message",
+                "site_gdpr_cookie_more_info_label",
+                "site_gdpr_cookie_more_info_link",
+                "site_gdpr_cookie_accept_button_label",
+                "site_gdpr_cookie_decline_button_label",
+                "site_gdpr_cookie_manage_button_label",
+                "site_gdpr_cookie_manage_title",
+            ];
+
+            foreach ($fields as $field){
+                update_static_option($field, $request->$field);
+            }
+
+            $all_fields = [
+                'site_gdpr_cookie_manage_item_title',
+                'site_gdpr_cookie_manage_item_description',
+            ];
+
+            foreach ($all_fields as $field){
+                $value = $request->$field ?? [];
+                update_static_option($field,serialize($value));
+            }
+
+        update_static_option('site_gdpr_cookie_delay', $request->site_gdpr_cookie_delay);
+        update_static_option('site_gdpr_cookie_enabled', $request->site_gdpr_cookie_enabled);
+        update_static_option('site_gdpr_cookie_expire', $request->site_gdpr_cookie_expire);
+
+        return redirect()->back()->with(['msg' => __('GDPR Cookie Settings Updated..'), 'type' => 'success']);
+    }
 }

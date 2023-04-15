@@ -1964,7 +1964,8 @@ HTML;
             ->where('status_id', 1)
             ->where("name", "LIKE", "%" . $search . "%")
             ->orWhere("sale_price", $search)
-            ->take(5)
+            ->select('id','slug','name','price','sale_price','image_id')
+            ->take(20)
             ->get();
 
         $markup = '';
@@ -1975,7 +1976,7 @@ HTML;
             $data_sale_price = $data['sale_price'];
 
             $sale_price = $data_sale_price;
-            $deleted_price = $data_regular_price != null ? amount_with_currency_symbol($data_regular_price) : '';
+            $deleted_price = $data_regular_price != null ? float_amount_with_currency_symbol($data_regular_price) : '';
 
             $image = render_image_markup_by_attachment_id($item->image_id);
             $markup .= '<li class="product-suggestion-list-item">
@@ -1987,7 +1988,7 @@ HTML;
                                    </div>
                                     <div class="product-price mt-2">
                                           <div class="price-update-through">
-                                                <span class="flash-price fw-500"> ' . amount_with_currency_symbol($sale_price) . ' </span>
+                                                <span class="flash-price fw-500"> ' . float_amount_with_currency_symbol($sale_price) . ' </span>
                                                 <span class="flash-old-prices"> ' . $deleted_price . ' </span>
                                            </div>
                                     </div>

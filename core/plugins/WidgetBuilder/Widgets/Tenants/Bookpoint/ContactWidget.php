@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne;
+namespace Plugins\WidgetBuilder\Widgets\Tenants\Bookpoint;
 
 use App\Helpers\SanitizeInput;
 use Plugins\PageBuilder\Fields\Repeater;
@@ -9,7 +9,7 @@ use Plugins\PageBuilder\Helpers\RepeaterField;
 use Plugins\WidgetBuilder\Traits\LanguageFallbackForWidgetBuilder;
 use Plugins\WidgetBuilder\WidgetBase;
 
-class SocialFollowWidgetTwo extends WidgetBase
+class ContactWidget extends WidgetBase
 {
     use LanguageFallbackForWidgetBuilder;
 
@@ -107,7 +107,7 @@ class SocialFollowWidgetTwo extends WidgetBase
 
     public function widget_title()
     {
-        return __('Tenant Social Follow: BookPoint');
+        return __('Tenant Contact: BookPoint');
     }
 
 }

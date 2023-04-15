@@ -25,7 +25,6 @@ Route::middleware([
     'set_lang'
 ])->prefix('admin-home')->name('tenant.')->group(function () {
 
-
     /*----------------------------------------------------------------------------------------------------------------------------
     | BACKEND NEWSLETTER AREA
     |---------------------------------------------------------------------------------------------------------------------------*/
@@ -139,6 +138,7 @@ Route::middleware([
     ----------------------------*/
     Route::controller(\App\Http\Controllers\Tenant\Admin\TopbarController::class)->group(function () {
         Route::get('/topbar-settings', "index")->name('admin.topbar.settings');
+        Route::post('/topbar-settings', "update_topbar");
         Route::post('/topbar/new-social-item', 'new_social_item')->name('admin.new.social.item');
         Route::post('/topbar/update-social-item', 'update_social_item')->name('admin.update.social.item');
         Route::post('/topbar/delete-social-item/{id}', 'delete_social_item')->name('admin.delete.social.item');
@@ -475,6 +475,10 @@ Route::middleware([
         /* smtp Settings */
         Route::get('/email-settings', 'email_settings')->name('admin.general.email.settings');
         Route::post('/email-settings', 'update_email_settings');
+
+        //GDPR Settings
+        Route::get('/gdpr-settings', 'gdpr_settings')->name('admin.general.gdpr.settings');
+        Route::post('/gdpr-settings', 'update_gdpr_cookie_settings');
 
         /* custom css Settings */
         Route::get('/custom-css-settings', 'custom_css_settings')->name('admin.general.custom.css.settings');

@@ -179,6 +179,7 @@ require_once __DIR__ .'/tenant_admin.php';
 Route::middleware([
     'web',
     InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'tenant_glvar',
     'set_lang'

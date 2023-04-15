@@ -39,6 +39,7 @@
     <link rel="stylesheet" href="{{asset('assets/landlord/frontend/css/slick.css')}}">
     <link rel="stylesheet" href="{{asset('assets/landlord/frontend/css/nice-select.css')}}">
     <link rel="stylesheet" href="{{asset('assets/landlord/frontend/css/line-awesome.min.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/common/css/jquery.ihavecookies.css')}}">
     <link rel="stylesheet" href="{{asset('assets/landlord/frontend/css/odometer.css')}}">
     <link rel="stylesheet" href="{{asset('assets/landlord/frontend/css/common.css')}}">
     <link rel="stylesheet" href="{{global_asset('assets/common/css/loader-01.css')}}">

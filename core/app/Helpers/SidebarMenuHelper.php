@@ -357,7 +357,7 @@ class SidebarMenuHelper
             'route' => '#',
             'label' => __('Appearance Settings'),
             'parent' => null,
-            'permissions' => ['widget-builder'],
+            'permissions' => ['widget-builder', 'highlight-settings', 'breadcrumb-settings', 'menu-manage'],
             'icon' => 'mdi mdi-folder-outline',
         ]);
 
@@ -506,6 +506,13 @@ class SidebarMenuHelper
                 'permissions' => ['general-settings-ssl-settings'],
             ]);
         }
+
+        $menu_instance->add_menu_item('general-settings-gdpr-settings', [
+            'route' => 'landlord.admin.general.gdpr.settings',
+            'label' => __('GDPR Settings'),
+            'parent' => 'general-settings-menu-items',
+            'permissions' => ['general-settings-gdpr-settings'],
+        ]);
 
         $menu_instance->add_menu_item('general-settings-custom-css-settings', [
             'route' => 'landlord.admin.general.custom.css.settings',
@@ -1453,6 +1460,13 @@ class SidebarMenuHelper
             'permissions' => null,
         ]);
 
+        $menu_instance->add_menu_item('topbar-settings-all', [
+            'route' => 'tenant.admin.topbar.settings',
+            'label' => __('Topbar Settings'),
+            'parent' => 'appearance-settings-menu-items',
+            'permissions' => ['topbar-manage'],
+        ]);
+
         $menu_instance->add_menu_item('menu-settings-all', [
             'route' => 'tenant.admin.menu',
             'label' => __('Menu Manage'),
@@ -1554,6 +1568,12 @@ class SidebarMenuHelper
             'label' => __('Email Settings'),
             'parent' => 'general-settings-menu-items',
             'permissions' => ['general-settings-smtp-settings'],
+        ]);
+        $menu_instance->add_menu_item('general-settings-gdpr-settings', [
+            'route' => 'tenant.admin.general.gdpr.settings',
+            'label' => __('GDPR Settings'),
+            'parent' => 'general-settings-menu-items',
+            'permissions' => ['general-settings-gdpr-settings'],
         ]);
         $menu_instance->add_menu_item('general-settings-custom-css-settings', [
             'route' => 'tenant.admin.general.custom.css.settings',

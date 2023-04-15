@@ -38,6 +38,8 @@
 <script src="{{asset('assets/landlord/frontend/js/nouislider-8.5.1.min.js')}}"></script>
 <script src="{{asset('assets/landlord/frontend/js/main.js')}}"></script>
 
+@include('landlord.frontend.partials.gdpr-cookie')
+
 <script>
     $.ajaxSetup({
         headers: {

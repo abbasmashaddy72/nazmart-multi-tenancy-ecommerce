@@ -7,8 +7,8 @@ use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 
 Route::middleware([
     'web',
-//    InitializeTenancyByDomain::class,
-    InitializeTenancyByDomainCustomisedMiddleware::class,
+    InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'auth:admin',
     'tenant_admin_glvar',

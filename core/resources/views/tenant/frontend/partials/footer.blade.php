@@ -72,6 +72,8 @@
 <script src="{{global_asset('assets/common/js/star-rating.min.js')}}"></script>
 <script src="{{global_asset('assets/common/js/md5.js')}}"></script>
 
+@include('landlord.frontend.partials.gdpr-cookie')
+
 @php
     $theme_footer_js_files = \App\Facades\ThemeDataFacade::getFooterHookJsFiles();
 @endphp

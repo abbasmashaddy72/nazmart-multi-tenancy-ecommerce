@@ -18,6 +18,7 @@ use Modules\MobileApp\Http\Controllers\CampaignController;
 use Modules\MobileApp\Http\Controllers\FeaturedProductController;
 use Modules\MobileApp\Http\Controllers\MobileController;
 use Modules\MobileApp\Http\Controllers\ProductController;
+use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +34,8 @@ use Modules\MobileApp\Http\Controllers\ProductController;
 
 Route::middleware([
     'api',
-    InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomain::class,
+    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
 ])->prefix('api/tenant')->group(function () {
     Route::prefix("v1")->group(function () {
@@ -154,6 +156,7 @@ Route::middleware([
         });
     });
 });
+
 Route::fallback(function (){
    return response()->json(['msg' => __('page not found')],404);
 });

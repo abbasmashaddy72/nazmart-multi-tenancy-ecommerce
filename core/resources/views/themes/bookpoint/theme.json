@@ -31,7 +31,8 @@
                 "imagesloaded.pkgd.min",
                 "isotope.pkgd.min",
                 "jquery.magnific-popup",
-                "main"
+                "main",
+                "custom-script"
             ],
             "blade": [],
             "widgetArea": "widget-area"

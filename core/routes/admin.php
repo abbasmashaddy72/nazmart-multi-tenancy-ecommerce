@@ -347,6 +347,10 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::get('/seo-settings','seo_settings')->name('landlord.admin.general.seo.settings');
         Route::post('/seo-settings','update_seo_settings');
 
+        //GDPR Settings
+        Route::get('/gdpr-settings', 'gdpr_settings')->name('landlord.admin.general.gdpr.settings');
+        Route::post('/gdpr-settings', 'update_gdpr_cookie_settings');
+
         /* Payment Settings (Static) */
         Route::get('/payment-settings','payment_settings')->name('landlord.admin.general.payment.settings');
         Route::post('/payment-settings','update_payment_settings');

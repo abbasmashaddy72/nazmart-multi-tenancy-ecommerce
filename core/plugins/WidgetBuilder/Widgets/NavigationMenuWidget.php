@@ -35,7 +35,6 @@ class NavigationMenuWidget extends WidgetBase
 
             $output .= '<div class="form-group"><input type="text" name="widget_title_'. $lang->slug . '" class="form-control" placeholder="' . __('Widget Title') . '" value="'. purify_html($widget_title) .'"></div>';
 
-
             $output .= $this->admin_language_tab_content_end();
         }
         $output .= $this->admin_language_tab_end();
