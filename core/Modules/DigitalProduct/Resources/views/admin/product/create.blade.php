@@ -168,7 +168,7 @@
                                         </div>
                                         <div class="tab-pane fade" id="v-additional-tab" role="tabpanel"
                                              aria-labelledby="v-additional-tab">
-                                            <x-digitalproduct::product-additional-field :authors="$data['authors']"/>
+                                            <x-digitalproduct::product-additional-field :languages="$data['languages']" :authors="$data['authors']"/>
                                         </div>
                                         <div class="tab-pane fade" id="v-categories-tab" role="tabpanel"
                                              aria-labelledby="v-categories-tab">

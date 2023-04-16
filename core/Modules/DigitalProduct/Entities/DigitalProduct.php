@@ -85,6 +85,11 @@ class DigitalProduct extends Model
         return $this->hasOne(DigitalProductRefundPolicies::class, 'product_id', 'id');
     }
 
+    public function author(): HasOneThrough
+    {
+        return $this->hasOneThrough(DigitalAuthor::class, AdditionalField::class, 'author_id', 'id', 'id', 'product_id');
+    }
+
     protected static function newFactory()
     {
         return \Modules\DigitalProduct\Database\factories\DigitalProductFactory::new();

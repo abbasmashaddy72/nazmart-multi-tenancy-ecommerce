@@ -195,6 +195,22 @@ class ThemeMetaData
         return $navbar_area_file_name;
     }
 
+    public function getHeaderBreadcrumbArea()
+    {
+        $navbar_area_file_name = '';
+        $headerHook = $this->getHeaderHook();
+
+        if (!empty($headerHook) && property_exists($headerHook, 'breadcrumbArea'))
+        {
+            if (!empty($headerHook->breadcrumbArea))
+            {
+                $navbar_area_file_name = $headerHook->breadcrumbArea;
+            }
+        }
+
+        return $navbar_area_file_name;
+    }
+
     /**
      * @param string $view
      * @param array $data

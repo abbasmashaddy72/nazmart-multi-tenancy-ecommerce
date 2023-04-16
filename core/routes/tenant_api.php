@@ -124,6 +124,7 @@ Route::middleware([
                 Route::post('/',[UserController::class,'allTickets']);
                 Route::post('/{id}',[UserController::class,'viewTickets']);
             });
+            Route::post('account/delete/{id}', [UserController::class, 'deleteAccount']);
 
             /* Add shipping method */
             Route::get("/all-shipping-address",[UserController::class,"get_all_shipping_address"]);

@@ -775,4 +775,23 @@ class UserController extends Controller
 
         return response()->json($ticket);
     }
+
+    public function deleteAccount($id)
+    {
+        $user_id = auth('sanctum')->user()->id;
+        if ($user_id != $id)
+        {
+            return response()->json([
+                'message' => __('Something Went Wrong'),
+            ])->setStatusCode(422);
+        }
+
+        $user = User::find($user_id);
+        $user->tokens()->delete();
+        $user->delete();
+
+        return response()->json([
+            'msg' => __('Your account is deleted')
+        ]);
+    }
 }

@@ -1179,7 +1179,7 @@ class SidebarMenuHelper
             'parent' => null,
             'permissions' => [
                 'digital-product-type-list', 'digital-product-list', 'digital-product-create', 'digital-product-edit', 'digital-product-delete', 'digital-product-settings', 'digital-product-reviews',
-                'digital-product-category-list', 'digital-product-subcategory-list', 'digital-product-childcategory-list', 'digital-product-tax-list'
+                'digital-product-category-list', 'digital-product-subcategory-list', 'digital-product-childcategory-list', 'digital-product-tax-list', 'digital-product-language-list'
             ],
             'icon' => 'mdi mdi-shopping',
         ]);
@@ -1231,6 +1231,13 @@ class SidebarMenuHelper
             'label' => __('Author Manage'),
             'parent' => 'digital-product-settings-menu-items',
             'permissions' => ['digital-product-author-list'],
+        ]);
+
+        $menu_instance->add_menu_item('digital-product-language-settings-menu-items', [
+            'route' => 'tenant.admin.digital.product.language.all',
+            'label' => __('Language Manage'),
+            'parent' => 'digital-product-settings-menu-items',
+            'permissions' => ['digital-product-language-list'],
         ]);
 
         $menu_instance->add_menu_item('digital-product-tax-settings-menu-items', [

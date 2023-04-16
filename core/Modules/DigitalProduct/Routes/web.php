@@ -113,17 +113,14 @@ Route::middleware([
         });
 
         /*-----------------------------------
-            METHOD ROUTES
+            DIGITAL PRODUCT LANGUAGES ROUTES
         ------------------------------------*/
-        Route::group(['prefix' => 'method', 'as' => 'admin.shipping.method.'], function () {
-            Route::get('/', 'ShippingMethodController@index')->name('all');
-            Route::get('new', 'ShippingMethodController@create')->name('new');
-            Route::post('new', 'ShippingMethodController@store');
-            Route::get('edit/{item}', 'ShippingMethodController@edit')->name('edit');
-            Route::post('update', 'ShippingMethodController@update')->name('update');
-            Route::post('delete/{item}', 'ShippingMethodController@destroy')->name('delete');
-            Route::post('bulk-action', 'ShippingMethodController@bulk_action')->name('bulk.action');
-            Route::post('make-default', 'ShippingMethodController@makeDefault')->name('make.default');
+        Route::group(['prefix' => 'language', 'as' => 'admin.digital.product.language.'], function () {
+            Route::get('/', 'DigitalLanguageController@index')->name('all');
+            Route::post('new', 'DigitalLanguageController@store')->name('new');
+            Route::post('update', 'DigitalLanguageController@update')->name('update');
+            Route::post('delete/{item}', 'DigitalLanguageController@destroy')->name('delete');
+            Route::post('bulk-action', 'DigitalLanguageController@bulk_action')->name('bulk.action');
         });
 
 

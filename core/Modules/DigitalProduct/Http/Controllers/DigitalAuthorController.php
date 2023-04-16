@@ -88,7 +88,7 @@ class DigitalAuthorController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|max:255',
-            'slug' => 'nullable|max:255|unique:digital_categories,slug,'.$request->id,
+            'slug' => 'nullable|max:255|unique:digital_authors,slug,'.$request->id,
             'status_id' => 'required|boolean',
             'image_id' => 'nullable|numeric'
         ]);

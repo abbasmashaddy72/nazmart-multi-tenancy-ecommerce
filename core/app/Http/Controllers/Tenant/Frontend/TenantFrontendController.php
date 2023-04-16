@@ -41,6 +41,12 @@ use Artesaos\SEOTools\Traits\SEOTools as SEOToolsTrait;
 use Modules\Campaign\Entities\Campaign;
 use Modules\Campaign\Entities\CampaignSoldProduct;
 use Modules\CountryManage\Entities\State;
+use Modules\DigitalProduct\Entities\DigitalAuthor;
+use Modules\DigitalProduct\Entities\DigitalCategories;
+use Modules\DigitalProduct\Entities\DigitalLanguage;
+use Modules\DigitalProduct\Entities\DigitalProduct;
+use Modules\DigitalProduct\Entities\DigitalProductCategories;
+use Modules\DigitalProduct\Entities\DigitalProductTags;
 use Modules\Product\Entities\Product;
 use Modules\Product\Entities\ProductCategory;
 use Modules\Product\Entities\ProductChildCategory;
@@ -54,6 +60,7 @@ use Modules\ShippingModule\Entities\ShippingMethod;
 use Modules\ShippingModule\Entities\ZoneRegion;
 use Modules\TaxModule\Entities\CountryTax;
 use Modules\TaxModule\Entities\StateTax;
+use function GuzzleHttp\Promise\all;
 
 class TenantFrontendController extends Controller
 {
@@ -129,6 +136,43 @@ class TenantFrontendController extends Controller
                     'sizes',
                     'colors',
                     'tags'
+                ));
+            }
+        }
+
+        $digital_shop_page_slug = get_page_slug(get_static_option('digital_shop_page'), 'digital_shop_page');
+        if ($slug === $digital_shop_page_slug) {
+            if (tenant()) {
+                $product_object = DigitalProduct::where('status_id', 1)->latest()->paginate(12);
+                $categories = DigitalCategories::whereHas('product', function ($query) {
+                    $query->where('status_id', 1);
+                })->select('id', 'name', 'slug')->withCount('product')->get();
+                $authors = DigitalAuthor::where('status', 1)->get();
+                $languages = DigitalLanguage::where('status', 1)->get();
+                $tags = DigitalProductTags::select('tag_name')->distinct()->get();
+
+                $create_arr = request()->all();
+                $create_url = http_build_query($create_arr);
+
+                $product_object->url(route('tenant.digital.shop') . '?' . $create_url);
+                $product_object->url(route('tenant.digital.shop') . '?' . $create_url);
+
+                $links = $product_object->getUrlRange(1, $product_object->lastPage());
+                $current_page = $product_object->currentPage();
+
+                $products = $product_object->items();
+
+                $pagination = $product_object->withQueryString();
+                return themeView('digital-shop.all-products', compact(
+                    'page_post',
+                    'products',
+                    'links',
+                    'current_page',
+                    'pagination',
+                    'categories',
+                    'tags',
+                    'languages',
+                    'authors'
                 ));
             }
         }
@@ -1731,6 +1775,40 @@ HTML;
         }
 
         $markup = view('pagebuilder::tenant.medicom.product.partials.product_list_markup', compact('products'))->render();
+
+        return response()->json([
+            'markup' => $markup,
+            'category' => $request->category
+        ]);
+    }
+
+    public function product_by_category_ajax_bookpoint(Request $request)
+    {
+        (string)$markup = '';
+        $products = DigitalProduct::where('status_id', 1);
+
+        if ($request->category != 'all') {
+            $category_id = DigitalCategories::where('slug', $request->category)->firstOrFail();
+
+            $products_id = DigitalProductCategories::where('category_id', $category_id->id)->pluck('product_id')->toArray();
+            $products->whereIn('id', $products_id);
+
+            $products = $products->orderBy('id', 'desc')
+                ->select('id', 'name', 'slug', 'regular_price', 'sale_price', 'image_id', 'promotional_date', 'promotional_price')
+                ->take($request->limit ?? 8)
+                ->get();
+        } else {
+            $allId = explode(',', $request->allId);
+            $category_id = DigitalProductCategories::whereIn('category_id', $allId)->pluck('product_id')->toArray();
+
+            $products = $products->whereIn('id', $category_id)
+                ->orderBy('id', 'desc')
+                ->select('id', 'name', 'slug', 'regular_price', 'sale_price', 'image_id', 'promotional_date', 'promotional_price')
+                ->take($request->limit ?? 8)
+                ->get();
+        }
+
+        $markup = view('pagebuilder::tenant.bookpoint.product.partials.product_list_markup', compact('products'))->render();
 
         return response()->json([
             'markup' => $markup,

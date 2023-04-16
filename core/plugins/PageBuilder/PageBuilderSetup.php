@@ -23,6 +23,8 @@ use Plugins\PageBuilder\Addons\Landlord\Common\WhyChooseUs;
 use Plugins\PageBuilder\Addons\Landlord\Header\AboutHeaderStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\FeaturesStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\HeaderStyleOne;
+use Plugins\PageBuilder\Addons\Tenants\Bookpoint\Blog\RecentBlog;
+use Plugins\PageBuilder\Addons\Tenants\Bookpoint\Common\TopAuthor;
 use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Contact\ContactAreaOne;
 use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Contact\GoogleMap;
 use Plugins\PageBuilder\Addons\Tenants\Medicom\Header\Header;
@@ -109,6 +111,16 @@ class PageBuilderSetup
                     \Plugins\PageBuilder\Addons\Tenants\Medicom\Product\ProductTypeList::class,
                     \Plugins\PageBuilder\Addons\Tenants\Hexfashion\Common\Brand::class,
                     ContactAreaOne::class,
+                ];
+            } elseif($theme == 'bookpoint') {
+                $addons = [
+                    \Plugins\PageBuilder\Addons\Tenants\Bookpoint\Header\Header::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Bookpoint\Product\ProductTypeList::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Bookpoint\Common\CollectionCard::class,
+                    TopAuthor::class,
+                    RecentBlog::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Bookpoint\Common\Services::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Bookpoint\Product\FeaturedProductSlider::class
                 ];
             }
 

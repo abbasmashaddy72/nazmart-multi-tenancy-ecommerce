@@ -1,9 +1,9 @@
 @charset "UTF-8";
 /*
 Theme Name: Newspaper Magazine Bussiness
-Theme URI: 
-Author: 
-Author URI: 
+Theme URI:
+Author:
+Author URI:
 Description: Newspaper Magazine is a business website template
 Version: 1.0.0
 */
@@ -4064,7 +4064,7 @@ textarea {
   margin-top: -1px;
 }
 /*----------------------------------------------
-    # Nav bar 
+    # Nav bar
 ----------------------------------------------*/
 .mobile-logo {
   display: none;
@@ -11213,4 +11213,14 @@ textarea {
 
 .error-thumb img {
   margin: 0 auto;
+}
+
+.global-flex-card-thumb {
+    width: unset;
+    height: unset;
+    position: unset;
+    z-index: unset;
+    background-size: unset;
+    background-repeat: unset;
+    background-position: unset;
 }

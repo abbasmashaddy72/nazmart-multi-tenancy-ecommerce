@@ -19,8 +19,8 @@
                     <x-slot name="th">
                         <th>{{__('ID')}}</th>
                         <th>{{__('Name')}}</th>
+                        <th>{{__('Username')}}</th>
                         <th>{{__('Email')}}</th>
-                        <th>{{__('Plan')}}</th>
                         <th>{{__('Action')}}</th>
                     </x-slot>
                     <x-slot name="tr">
@@ -28,6 +28,7 @@
                            <tr>
                                <td>{{$user->id}}</td>
                                <td>{{$user->name}}</td>
+                               <td>{{$user->username}}</td>
                                <td>{{$user->email}}
                                    @if($user->email_verified === 0)
                                     <i class="text-danger mdi mdi-close-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="{{__('Email Not Verified')}}"></i>
@@ -35,7 +36,6 @@
                                     <i class="text-success mdi mdi-check-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="{{__('Email  Verified')}}"></i>
                                    @endif
                                </td>
-                               <td>show which plan user using</td>
                                <td>
                                    <x-delete-popover url="{{route('tenant.admin.user.delete',$user->id)}}" popover="{{__('Delete')}}"/>
                                    <x-link-with-popover url="{{route('tenant.admin.user.edit.profile',$user->id)}}" popover="{{__('Edit')}}">

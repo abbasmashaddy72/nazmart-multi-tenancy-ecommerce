@@ -73,6 +73,17 @@
                             @endif
 
                             @if(tenant())
+                                <div class="form-group mt-3">
+                                    <label for="site_logo">{{__('Digital Shop Page Display')}}</label>
+                                    <select name="digital_shop_page" class="form-control">
+                                        @foreach($all_home_pages as $page)
+                                            <option value="{{$page->id}}" @if($page->id == get_static_option('digital_shop_page')) selected @endif >{{$page->title}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
+
+                            @if(tenant())
                                 <div class="form-group  mt-3">
                                     <label for="site_logo">{{__('Order Track Page Display')}}</label>
                                     <select name="track_order" class="form-control">

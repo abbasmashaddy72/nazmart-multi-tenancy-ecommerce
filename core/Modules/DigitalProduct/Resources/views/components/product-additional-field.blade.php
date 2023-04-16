@@ -3,6 +3,10 @@
         $authors = [];
     }
 
+    if (!isset($languages)) {
+        $languages = [];
+    }
+
     if (!isset($product))
     {
         $product = null;
@@ -28,11 +32,15 @@
                        placeholder="{{ __("Enter page number...") }}">
             </div>
 
-        <div class="dashboard-input mt-4">
-            <label class="dashboard-label color-light mb-2"> {{ __("Language") }} <sup class="text-primary">{{__('(Optional)')}}</sup></label>
-            <input type="text" class="form--control radius-10" value="{{ $product?->additionalFields?->language }}" name="language"
-                   placeholder="{{ __("Enter written language...") }}">
-        </div>
+            <div class="dashboard-input mt-4">
+                <label class="dashboard-label color-light mb-2"> {{ __("Language") }} <sup class="text-primary">{{__('(Optional)')}}</sup></label>
+                <select name="language" id="tax" class="form-control">
+                    <option value="">{{__('Select a language')}}</option>
+                    @foreach($languages as $author)
+                        <option value="{{$author->id}}" {{$product?->additionalFields?->language == $author->id ? 'selected' : ''}}>{{$author->name}}</option>
+                    @endforeach
+                </select>
+            </div>
 
         <div class="dashboard-input mt-4">
             <label class="dashboard-label color-light mb-2"> {{ __("Formats") }} <sup class="text-primary">{{__('(Optional)')}}</sup></label>

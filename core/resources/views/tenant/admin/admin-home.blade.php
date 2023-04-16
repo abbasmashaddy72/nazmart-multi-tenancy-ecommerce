@@ -8,7 +8,9 @@
                 <div class="alert border-left border-primary text-white text-center bg-gradient-info">
                     <strong>{{__('Current Package :')}} </strong> {{$current_package->package_name}}
                     <span class="badge badge-warning text-dark">
-                        {{ \App\Enums\PricePlanTypEnums::getText(optional($current_package->package)->type ) }}
+                        @if(!is_null(optional($current_package->package)->type))
+                            {{ \App\Enums\PricePlanTypEnums::getText(optional($current_package->package)->type) }}
+                        @endif
                     </span>
 
                     @if(optional(tenant()->payment_log)->status == 'trial')

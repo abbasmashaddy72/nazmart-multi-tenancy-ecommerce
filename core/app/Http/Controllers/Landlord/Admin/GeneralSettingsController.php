@@ -59,12 +59,13 @@ class GeneralSettingsController extends Controller
             'pricing_plan' => 'nullable|string',
             'blog_page' => 'nullable|string',
             'shop_page' => 'nullable|string',
+            'digital_shop_page' => 'nullable|string',
             'track_order' => 'nullable|string',
             'terms_condition' => 'nullable|string',
             'privacy_policy' => 'nullable|string',
         ]);
         $fields = [
-            'home_page', 'pricing_plan', 'blog_page', 'shop_page', 'track_order', 'terms_condition', 'privacy_policy'
+            'home_page', 'pricing_plan', 'blog_page', 'shop_page', 'digital_shop_page', 'track_order', 'terms_condition', 'privacy_policy'
         ];
 
         foreach ($fields as $field) {

@@ -105,7 +105,7 @@
                                 </div>
                                 <div class="tab-pane fade" id="v-additional-tab" role="tabpanel"
                                      aria-labelledby="v-additional-tab">
-                                    <x-digitalproduct::product-additional-field :product="$product" :authors="$data['authors']"/>
+                                    <x-digitalproduct::product-additional-field :languages="$data['languages']" :product="$product" :authors="$data['authors']"/>
                                 </div>
                                 <div class="tab-pane fade" id="v-images-tab" role="tabpanel"
                                      aria-labelledby="v-images-tab">

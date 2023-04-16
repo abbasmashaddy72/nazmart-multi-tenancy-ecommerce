@@ -12,3 +12,8 @@ function getHeaderNavbarArea()
 {
     return ThemeDataFacade::getHeaderNavbarArea();
 }
+
+function getHeaderBreadcrumbArea()
+{
+    return ThemeDataFacade::getHeaderBreadcrumbArea();
+}

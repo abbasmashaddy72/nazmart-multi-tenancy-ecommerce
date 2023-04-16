@@ -14,6 +14,7 @@ use Modules\Badge\Entities\Badge;
 use Modules\DigitalProduct\Entities\DigitalAuthor;
 use Modules\DigitalProduct\Entities\DigitalCategories;
 use Modules\DigitalProduct\Entities\DigitalChildCategories;
+use Modules\DigitalProduct\Entities\DigitalLanguage;
 use Modules\DigitalProduct\Entities\DigitalProduct;
 use Modules\DigitalProduct\Entities\DigitalProductTags;
 use Modules\DigitalProduct\Entities\DigitalSubCategories;
@@ -50,7 +51,8 @@ class DigitalProductController extends Controller
             "badges" => Badge::where("status","active")->get(),
             "tags" => Tag::select("id", "tag_text as name")->get(),
             "categories" => DigitalCategories::where('status', 1)->select("id", "name")->get(),
-            "authors" => DigitalAuthor::where('status', 1)->select('id', 'name')->get()
+            "authors" => DigitalAuthor::where('status', 1)->select('id', 'name')->get(),
+            "languages" => DigitalLanguage::where('status', 1)->select('id', 'name')->get(),
         ];
 
         return view('digitalproduct::admin.product.create', compact('data'));
@@ -115,9 +117,10 @@ class DigitalProductController extends Controller
         $data = [
             "badges" => Badge::where("status","active")->get(),
             "tags" => Tag::select("id", "tag_text as name")->get(),
-            "categories" => DigitalCategories::select("id", "name")->get(),
-            "authors" => DigitalAuthor::select("id", "name")->get(),
+            "categories" => DigitalCategories::where('status', 1)->select("id", "name")->get(),
+            "authors" => DigitalAuthor::where('status', 1)->select("id", "name")->get(),
             "taxes" => DigitalTax::select("id", "name")->get(),
+            "languages" => DigitalLanguage::where('status', 1)->select('id', 'name')->get(),
             'aria_name' => $aria_name
         ];
 

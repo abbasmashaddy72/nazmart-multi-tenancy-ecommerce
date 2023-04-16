@@ -28,7 +28,7 @@
         ========================================
         */
         $(".product-suggestion-list, .contents-wrapper, .single-addto-cart-wrappers").niceScroll({});
-        /* 
+        /*
         ========================================
             Addto-Cart Click Close
         ========================================
@@ -37,7 +37,7 @@
             $(this).parent().hide(100);
         });
 
-        /* 
+        /*
         ========================================
             Navbar Toggler
         ========================================
@@ -50,7 +50,7 @@
             $(".show-nav-content").toggleClass("show");
         });
 
-        /* 
+        /*
         ========================================
             Show nav right content
         ========================================
@@ -75,21 +75,21 @@
             });
         });
 
-        /* 
+        /*
         ========================================
             Nice Select
         ========================================
         */
         $('.nice-select').niceSelect();
 
-        /* 
+        /*
         ========================================
             Lazy Load Js
         ========================================
         */
         $('.lazyloads').Lazy();
 
-        /* 
+        /*
         ========================================
             Click Active Class
         ========================================
@@ -99,7 +99,7 @@
             $(this).addClass('active');
         });
 
-        /* 
+        /*
         ========================================
             Click expand Slide Up Down
         ========================================
@@ -117,7 +117,7 @@
                 shopTitle.siblings('.single-shop-left-title').removeClass('open');
             }
         });
-        /* 
+        /*
         ========================================
             Shop Responsive Sidebar
         ========================================
@@ -131,7 +131,7 @@
             $('.shop-close-content').toggleClass('active');
         });
 
-        /* 
+        /*
         ========================================
             Accounts Responsive Sidebar
         ========================================
@@ -153,7 +153,7 @@
         */
         new WOW().init();
 
-        /* 
+        /*
         ========================================
             Initialize tooltips
         ========================================
@@ -162,7 +162,7 @@
         var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         });
-        /* 
+        /*
         ========================================
             Tab
         ========================================
@@ -177,7 +177,7 @@
             $("#" + tab_id).addClass('active');
         });
 
-        /* 
+        /*
         ========================================
             Product Quantity js
         ========================================
@@ -196,7 +196,7 @@
             }
         });
 
-        /* 
+        /*
         ========================================
             Table Cart Click Close
         ========================================
@@ -214,9 +214,9 @@
             $('.close-table-cart').parent().parent().show(500);
         });
 
-        /* 
+        /*
         ========================================
-            Payment Card Delivery 
+            Payment Card Delivery
         ========================================
         */
 
@@ -229,7 +229,7 @@
             $(this).removeClass("active");
         });
 
-        /* 
+        /*
         ========================================
             Click Open SignIn SignUp
         ========================================
@@ -255,7 +255,7 @@
         */
         var globalSlickInit = $('.global-slick-init');
         if (globalSlickInit.length > 0) {
-            //todo have to check slider item 
+            //todo have to check slider item
             $.each(globalSlickInit, function(index, value) {
                 if ($(this).children('div').length > 1) {
                     //todo configure slider settings object
@@ -335,38 +335,38 @@
             });
         }
 
-        /* 
+        /*
         ========================================
             Range Slider
         ========================================
         */
-        var i = document.querySelector(".ui-range-slider");
-        if (void 0 !== i && null !== i) {
-            var j = parseInt(i.parentNode.getAttribute("data-start-min"), 10),
-                k = parseInt(i.parentNode.getAttribute("data-start-max"), 10),
-                l = parseInt(i.parentNode.getAttribute("data-min"), 10),
-                m = parseInt(i.parentNode.getAttribute("data-max"), 10),
-                n = parseInt(i.parentNode.getAttribute("data-step"), 10),
-                o = document.querySelector(".ui-range-value-min span"),
-                p = document.querySelector(".ui-range-value-max span"),
-                q = document.querySelector(".ui-range-value-min input"),
-                r = document.querySelector(".ui-range-value-max input");
-            noUiSlider.create(i, {
-                start: [j, k],
-                connect: !0,
-                step: n,
+        // var i = document.querySelector(".ui-range-slider");
+        // if (void 0 !== i && null !== i) {
+        //     var j = parseInt(i.parentNode.getAttribute("data-start-min"), 10),
+        //         k = parseInt(i.parentNode.getAttribute("data-start-max"), 10),
+        //         l = parseInt(i.parentNode.getAttribute("data-min"), 10),
+        //         m = parseInt(i.parentNode.getAttribute("data-max"), 10),
+        //         n = parseInt(i.parentNode.getAttribute("data-step"), 10),
+        //         o = document.querySelector(".ui-range-value-min span"),
+        //         p = document.querySelector(".ui-range-value-max span"),
+        //         q = document.querySelector(".ui-range-value-min input"),
+        //         r = document.querySelector(".ui-range-value-max input");
+        //     noUiSlider.create(i, {
+        //         start: [j, k],
+        //         connect: !0,
+        //         step: n,
+        //
+        //         range: {
+        //             min: l,
+        //             max: m
+        //         }
+        //     }), i.noUiSlider.on("update", function(a, b) {
+        //         var c = a[b];
+        //         b ? (p.innerHTML = Math.round(c), r.value = Math.round(c)) : (o.innerHTML = Math.round(c), q.value = Math.round(c))
+        //     })
+        // }
 
-                range: {
-                    min: l,
-                    max: m
-                }
-            }), i.noUiSlider.on("update", function(a, b) {
-                var c = a[b];
-                b ? (p.innerHTML = Math.round(c), r.value = Math.round(c)) : (o.innerHTML = Math.round(c), q.value = Math.round(c))
-            })
-        }
-
-        /* 
+        /*
         ========================================
             Isotope
         ========================================
@@ -394,7 +394,7 @@
             });
         });
 
-        /* 
+        /*
         ========================================
             Password Show Hide On Click
         ========================================
@@ -410,7 +410,7 @@
             }
         });
 
-        /* 
+        /*
         ========================================
             back to top
         ========================================
@@ -422,7 +422,7 @@
         });
 
     });
-    /* 
+    /*
     ========================================
         back to top
     ========================================
@@ -437,7 +437,7 @@
         }
     });
 
-    /* 
+    /*
     ========================================
         Line ProgressBar Js
     ========================================

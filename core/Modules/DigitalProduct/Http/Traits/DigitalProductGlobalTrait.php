@@ -145,7 +145,7 @@ trait DigitalProductGlobalTrait {
             "release_date" => $data['release_date'],
             "update_date" => $data['update_date'],
             "preview_link" => SanitizeInput::esc_url($data['preview_link']),
-            "quantity" => SanitizeInput::esc_html($data['quantity']),
+            "quantity" => !empty($data['quantity']) ? SanitizeInput::esc_html($data['quantity']) : null,
             "accessibility" => SanitizeInput::esc_html($data['accessibility']),
             "tax" => !empty($data['tax']) ? SanitizeInput::esc_html($data['tax']) : null,
             "regular_price" => SanitizeInput::esc_html($data['price']),
@@ -171,7 +171,6 @@ trait DigitalProductGlobalTrait {
             "file" => $data["file"] ?? '',
             "image_id" => $data["image_id"],
             "product_gallery" => $data["product_gallery"],
-            "badge_id" => $data["badge_id"],
             "is_refundable" => !empty($data["is_refundable"]),
             "refund_description" => !empty($data["policy_description"]) ? $data["policy_description"] : ''
         ];
@@ -211,7 +210,6 @@ trait DigitalProductGlobalTrait {
             "compatible_os" => $data->compatible_os,
             "high_resolution" => $data->high_resolution,
             "tags" => $data->tags,
-            "badge_id" => $data->badge_id,
             "status_id" => 2,
             "product_type" => $this->product_type() ?? 2,
             "is_refundable" => !empty($data->is_refundable),
@@ -491,7 +489,6 @@ trait DigitalProductGlobalTrait {
             \DB::rollBack();
         }
 
-
         $id = $product->id;
         $product->metaData()->updateOrCreate(["metainfoable_id" => $id],$this->prepareMetaData($data));
 
@@ -629,8 +626,8 @@ trait DigitalProductGlobalTrait {
             $index++;
         }
 
-        $data['option_name'] = current($option_name);
-        $data['option_value'] = current($option_value);
+        $data['option_name'] = count($option_name) > 0 ? current($option_name) : [];
+        $data['option_value'] = count($option_value) > 0 ? current($option_value) : [];
 
         $data['policy_description'] = $product?->refund_policy?->refund_description;
 
