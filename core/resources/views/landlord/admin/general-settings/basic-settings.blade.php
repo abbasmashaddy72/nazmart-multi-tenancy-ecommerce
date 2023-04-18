@@ -28,9 +28,17 @@
                         <small class="form-text text-muted"></small>
                     </div>
 
+                    @if(!tenant())
+                        <x-fields.select name="mysql_database_engine" title="{{__('Mysql Database Engine')}}" info="{{__('By default it is null, if you have mysql database engine you can set here, unless leave this as (Null)')}}">
+                            <option value="null" {{ get_static_option('mysql_database_engine') == 'null' ? 'selected' : '' }}>{{__('NULL')}}</option>
+                            <option value="InnoDB" {{ get_static_option('mysql_database_engine') == 'InnoDB' ? 'selected' : '' }}>{{__('InnoDB')}}</option>
+                        </x-fields.select>
+                    @endif
+
 {{--                    <x-fields.switcher value="{{get_static_option('dark_mode_for_admin_panel')}}" name="dark_mode_for_admin_panel" label="{{__('Enable/Disable Dark Mode For Admin Panel')}}"/>--}}
                     <x-fields.switcher value="{{get_static_option('maintenance_mode')}}" name="maintenance_mode" label="{{__('Enable/Disable Maintenance Mode')}}"/>
 {{--                    <x-fields.switcher value="{{get_static_option('language_selector_status')}}" name="language_selector_status" label="{{__('Show/Hide Language Selector In Frontend')}}"/>--}}
+
                     @if(tenant())
                         <x-fields.switcher value="{{get_static_option('guest_order_system_status')}}" name="guest_order_system_status" label="{{__('Show/Hide Guest Order System')}}" info="{{__('if you keep it no, it will allow user to order without customer account.')}}"/>
                     @endif

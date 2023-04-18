@@ -136,6 +136,9 @@ class GeneralSettingsController extends Controller
             setEnvValue(['APP_TIMEZONE' => $timezone]);
         }
 
+        $request_engine = $request->mysql_database_engine;
+        setEnvValue(['DB_ENGINE' => $request_engine]);
+        update_static_option('mysql_database_engine', $request_engine);
 
         return response()->success(ResponseMessage::SettingsSaved());
     }

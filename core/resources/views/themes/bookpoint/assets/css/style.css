@@ -11291,3 +11291,7 @@ textarea {
     border-bottom: 1px solid #fff;
     display: block;
 }
+
+.topbar-logo img{
+    max-width: 160px;
+}
