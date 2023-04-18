@@ -112,7 +112,7 @@ class AboutStory extends PageBuilderBase
             'padding_bottom'=> $padding_bottom,
         ];
 
-        return self::renderView('tenant.theme_one.about.about_story',$data);
+        return self::renderView('tenant.furnito.about.about_story',$data);
     }
 
     public function enable(): bool

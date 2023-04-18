@@ -35,8 +35,8 @@
                                     {!! render_image_markup_by_attachment_id($product->image_id, 'product-image') !!}
                                 </a>
                             </div>
-                            <a href="javascript:void(0)" class="product-cart-btn cart-btn-absolute radius-5"> {{__('Add to Cart')}} </a>
-                            <a href="{{route('tenant.shop.product.details', $product->slug)}}" class="cart-details-btn cart-details-absolute radius-5"> {{__('View Details')}} </a>
+                            <a href="javascript:void(0)" class="product-cart-btn cart-btn-absolute radius-5 digital-add-to-cart-btn" data-product_id="{{ $product->id }}"> {{__('Add to Cart')}} </a>
+                            <a href="{{route('tenant.digital.shop.product.details', $product->slug)}}" class="cart-details-btn cart-details-absolute radius-5"> {{__('View Details')}} </a>
                             <div class="global-flex-card-contents">
                                 @if($discount > 0)
                                     <div class="global-badge">

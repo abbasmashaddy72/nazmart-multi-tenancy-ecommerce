@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tenant\Admin;
 
+use App\Enums\ProductTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Models\FormBuilder;
 use App\Models\Language;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Mail;
 use LaravelDaily\Invoices\Classes\InvoiceItem;
 use LaravelDaily\Invoices\Classes\Party;
 use LaravelDaily\Invoices\Invoice;
+use Modules\DigitalProduct\Entities\DigitalProductDownload;
 use Modules\Product\Entities\ProductInventory;
 use Modules\Product\Entities\ProductInventoryDetail;
 
@@ -92,6 +94,24 @@ class OrderManageController extends Controller
 
         if ($order_details->status === 'cancel') {
             $this->undostock($order_details);
+        }
+
+        foreach (json_decode($order_details->order_details) as $item)
+        {
+            if ($item->options->type == ProductTypeEnum::DIGITAL)
+            {
+                $product_download = DigitalProductDownload::where('product_id', $item->id)->first();
+                if (!empty($product_download))
+                {
+                    $product_download->increment('download_count', 1);
+                } else {
+                    DigitalProductDownload::create([
+                        'product_id' => $item->id,
+                        'user_id' => $order_details->user_id ?? null,
+                        'download_count' => 1
+                    ]);
+                }
+            }
         }
 
         $data['subject'] = __('Your order status has been changed');

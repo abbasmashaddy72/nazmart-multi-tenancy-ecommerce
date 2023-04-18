@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Actions\Payment\Tenant\PaymentGatewayIpn;
 use App\Enums\PaymentRouteEnum;
+use App\Enums\ProductTypeEnum;
 use App\Helpers\FlashMsg;
 use App\Helpers\Payment\PaymentGatewayCredential;
 use App\Mail\StockOutEmail;
@@ -13,6 +14,7 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Modules\Campaign\Entities\CampaignSoldProduct;
+use Modules\DigitalProduct\Entities\DigitalProductDownload;
 use Modules\Product\Entities\ProductInventory;
 use Modules\Product\Entities\ProductInventoryDetail;
 
@@ -69,13 +71,34 @@ class CheckoutToPaymentService
                     }
                 }
             }
-            $product_inventory = ProductInventory::where('product_id', $product->product_id)->first();
-            $product_inventory->decrement('stock_count', $product->quantity);
-            $product_inventory->sold_count = $product_inventory->sold_count == null ? 1 : $product_inventory->sold_count + $product->quantity;
-            $product_inventory->save();
+
+            if ($product->product_type == ProductTypeEnum::PHYSICAL)
+            {
+                $product_inventory = ProductInventory::where('product_id', $product->product_id)->first();
+                $product_inventory->decrement('stock_count', $product->quantity);
+                $product_inventory->sold_count = $product_inventory->sold_count == null ? 1 : $product_inventory->sold_count + $product->quantity;
+                $product_inventory->save();
+            }
         }
 
-        self::checkStock(); // Checking Stock for warning and email notification
+        if ($product->product_type == ProductTypeEnum::PHYSICAL)
+        {
+            self::checkStock(); // Checking Stock for warning and email notification
+        }
+
+        if ($product->product_type == ProductTypeEnum::PHYSICAL)
+        {
+            $product_download = DigitalProductDownload::where('product_id', $product->id)->first();
+            if (!empty($product_download))
+            {
+                $product_download->increament('download_count', 1);
+            } else {
+                DigitalProductDownload::create([
+                    'product_id' => $product->id,
+                    'download_count' => 1
+                ]);
+            }
+        }
 
         if ($payment_gateway != 'manual_payment'  && $checkout_type === 'digital') {
             $credential_function = 'get_' . $payment_gateway . '_credential';

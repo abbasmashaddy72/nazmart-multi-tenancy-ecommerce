@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers\Tenant\Frontend;
 
+use App\Enums\ProductTypeEnum;
 use App\Http\Controllers\Controller;
+use Gloudemans\Shoppingcart\Facades\Cart;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modules\DigitalProduct\Entities\DigitalProduct;
+use Modules\DigitalProduct\Entities\DigitalProductCategories;
+use Modules\DigitalProduct\Entities\DigitalProductReviews;
 
 class FrontendDigitalProductController extends Controller
 {
@@ -100,40 +105,152 @@ class FrontendDigitalProductController extends Controller
         return response()->json(["grid" => $grid, 'pagination' => $product_object]);
     }
 
-    public function shop_search(Request $request)
+    public function product_details($slug)
+    {
+        $product = DigitalProduct::with('category', 'tag', 'tax', 'additionalFields', 'additionalCustomFields', 'gallery_images', 'refund_policy')
+            ->where('slug', $slug)
+            ->where('status_id', 1)
+            ->first();
+
+
+        // related products
+        $product_category = $product?->category?->id;
+        $product_id = $product->id;
+        $related_products = DigitalProduct::where('status_id', 1)
+            ->whereIn('id', function ($query) use ($product_id, $product_category) {
+                $query->select('digital_product_categories.product_id')
+                    ->from(with(new DigitalProductCategories())->getTable())
+                    ->where('product_id', '!=', $product_id)
+                    ->where('category_id', '=', $product_category)
+                    ->get();
+            })
+            ->inRandomOrder()
+            ->take(3)
+            ->get();
+
+        $reviews = DigitalProductReviews::where('product_id', $product->id)->orderBy('id', 'desc')->take(5)->get();
+
+        return themeView('digital-shop.product_details.product-details', compact(
+            'product',
+            'related_products',
+            'reviews'
+        ));
+    }
+
+    public function product_review(Request $request)
     {
         $request->validate([
-            'search' => 'required'
+            'product_id' => 'required',
+            'rating' => 'required',
+            'review_text' => 'required|max:1000'
         ]);
 
-        $search = $request->search;
+        $user = \Auth::guard('web')->user();
+        $existing_record = DigitalProductReviews::where(['user_id' => $user->id, 'product_id' => $request->product_id])->select('id')->first();
 
-        $product_object = Product::with('badge', 'campaign_product')
-            ->where('status_id', 1)
-            ->where("name", "LIKE", "%" . $search . "%")
-            ->orWhere("sale_price", $search);
+        if (!$existing_record) {
+            $product_review = new DigitalProductReviews();
+            $product_review->user_id = $user->id;
+            $product_review->product_id = $request->product_id;
+            $product_review->rating = $request->rating;
+            $product_review->review_text = trim($request->review_text);
+            $product_review->save();
 
-        $product_object = $product_object->paginate(30)->withQueryString();
-
-        $create_arr = $request->all();
-        $create_url = http_build_query($create_arr);
-
-
-        $product_object->url(route('tenant.shop') . '?' . $create_url);
-        $product_object->url(route('tenant.shop') . '?' . $create_url);
-
-        $links = $product_object->getUrlRange(1, $product_object->lastPage());
-        $current_page = $product_object->currentPage();
-
-        $products = $product_object->items();
-
-        $grid = themeView("shop.partials.product-partials.grid-products", compact("products", "links", "current_page"))->render();
-        $list = themeView("shop.partials.product-partials.list-products", compact("products", "links", "current_page"))->render();
-
-        if ($request->ajax()) {
-            return response()->json(["list" => $list, "grid" => $grid, 'pagination' => $product_object]);
+            return response()->json(['type' => 'success', 'msg' => __('Your review is submitted')]);
         }
 
-        return themeView('shop.product-single-search', compact('product_object', 'search'));
+        return response()->json(['type' => 'danger', 'msg' => __('Your have already submitted review on this product')]);
+    }
+
+    public function render_reviews(Request $request)
+    {
+        $reviews = ProductReviews::with('user')->where('product_id', $request->product_id)->orderBy('created_at', 'desc')->take($request->items)->get();
+        $review_markup = themeView('tenant.frontend.shop.product_details.markup_for_controller.product_reviews', compact('reviews'))->render();
+
+        return response()->json([
+            'type' => 'success',
+            'markup' => $review_markup
+        ]);
+    }
+
+    const QUANTITY = 1;
+
+    public function add_to_cart(Request $request): JsonResponse
+    {
+        $request->validate([
+            'product_id' => 'required'
+        ]);
+        $cart_data = $request->all();
+
+        // check if the same product is added to cart before
+        $oldCart = Cart::content('default')->where('options.type', ProductTypeEnum::DIGITAL)->where('id', $cart_data['product_id']);
+        if (count($oldCart) > 0)
+        {
+            return response()->json([
+                'type' => 'warning',
+                'quantity_msg' => __('You have already added this product in the cart before!')
+            ]);
+        }
+
+        $product = DigitalProduct::findOrFail($cart_data['product_id']);
+
+        // check if the product has quantity attribute and quantity amount
+        if (!is_null($product->quantity)) {
+            $product_left = $product->quantity;
+            if ($product_left <= 1) {
+                return response()->json([
+                    'type' => 'warning',
+                    'quantity_msg' => __('Requested amount can not be cart. The product stock limit is over!')
+                ]);
+            }
+        }
+
+        try {
+            $regular_price = $product->regular_price;
+            $sale_price = $product->sale_price;
+
+            if (!is_null($product->promotional_date) && !is_null($product->promotional_price)) {
+                if ($product->promotional_date >= now()) {
+                    $sale_price = $product->promotional_price;
+                }
+            }
+
+            $price = $regular_price;
+            if (!is_null($sale_price) && $sale_price > 0) {
+                $price = $sale_price;
+            }
+
+            $taxed_price = 0.0;
+            if (!is_null($product->tax)) {
+                $tax = $product?->getTax?->tax_percentage;
+                $taxed_price = ($tax / $price) * 100;
+            }
+
+            // Final price
+            $final_price = $price + $taxed_price;
+
+            $category = $product?->category?->id;
+            $subcategory = $product?->subCategory?->id ?? null;
+
+            $options['used_categories'] = [
+                'category' => $category,
+                'subcategory' => $subcategory
+            ];
+            $options['type'] = ProductTypeEnum::DIGITAL;
+            $options['image'] = $product->image_id;
+
+            Cart::instance("default")->add(['id' => $cart_data['product_id'], 'name' => $product->name, 'qty' => self::QUANTITY, 'price' => $final_price, 'weight' => '0', 'options' => $options]);
+
+            return response()->json([
+                'type' => 'success',
+                'msg' => __('Item added to cart')
+            ]);
+        } catch (\Exception $exception) {
+
+            return response()->json([
+                'type' => 'error',
+                'error_msg' => __('Something went wrong!'),
+            ]);
+        }
     }
 }

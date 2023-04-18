@@ -45,8 +45,8 @@
                                     {!! render_image_markup_by_attachment_id($product->image_id, 'product-image') !!}
                                 </a>
                             </div>
-                            <a href="javascript:void(0)" class="product-cart-btn cart-btn-absolute radius-5 add-to-cart-btn" data-product_id="{{ $product->id }}"> {{__('Add to Cart')}} </a>
-                            <a href="{{route('tenant.shop.product.details', $product->slug)}}" class="cart-details-btn cart-details-absolute radius-5">{{__('View Details')}}</a>
+                            <a href="javascript:void(0)" class="product-cart-btn cart-btn-absolute radius-5 digital-add-to-cart-btn" data-product_id="{{ $product->id }}"> {{__('Add to Cart')}} </a>
+                            <a href="{{route('tenant.digital.shop.product.details', $product->slug)}}" class="cart-details-btn cart-details-absolute radius-5">{{__('View Details')}}</a>
                             <div class="global-flex-card-contents">
                                 @if($discount > 0)
                                     <div class="global-badge">
@@ -61,7 +61,7 @@
                                 @endif
 
                                 <h6 class="global-flex-card-contents-title">
-                                    <a href="{{route('tenant.shop.product.details', $product->slug)}}"> {{Str::words($product->name, 4)}} </a>
+                                    <a href="{{route('tenant.digital.shop.product.details', $product->slug)}}"> {{Str::words($product->name, 4)}} </a>
                                 </h6>
 
                                 <span class="global-flex-card-contents-subtitle mt-2"> {{$product->additionalFields?->author?->name}} </span>
@@ -103,7 +103,7 @@
                         allId: allId
                     },
                     beforeSend: function () {
-                        $('.loader').fadeIn(200);
+                        // $('.loader').fadeIn(200);
                     },
                     success: function (data) {
                         console.log(data)
@@ -115,7 +115,7 @@
                         markup_wrapper.hide();
                         markup_wrapper.html(data.markup);
                         markup_wrapper.fadeIn();
-                        $('.loader').fadeOut(200);
+                        // $('.loader').fadeOut(200);
                     },
                     error: function (data) {
                         console.log('error')

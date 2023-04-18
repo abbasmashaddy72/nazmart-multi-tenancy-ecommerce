@@ -25,6 +25,8 @@ class DigitalProduct extends Model
         'tax', 'file', 'regular_price', 'sale_price', 'free_date', 'promotional_date', 'promotional_price', 'badge_id'
     ];
 
+    protected $dates = ['release_date', 'update_date'];
+
     public function category() : HasOneThrough {
         return $this->hasOneThrough(DigitalCategories::class,DigitalProductCategories::class,'product_id','id','id','category_id');
     }
@@ -63,6 +65,11 @@ class DigitalProduct extends Model
     }
 
     public function tax(): HasOne
+    {
+        return $this->hasOne(DigitalTax::class, 'id', 'tax');
+    }
+
+    public function getTax(): HasOne
     {
         return $this->hasOne(DigitalTax::class, 'id', 'tax');
     }

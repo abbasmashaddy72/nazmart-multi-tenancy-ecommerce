@@ -351,6 +351,44 @@
 
         });
 
+        $(document).on('click', '.digital-add-to-cart-btn', function (e) {
+            e.preventDefault();
+
+            let product_id = $(this).data("product_id");
+
+            $.ajax({
+                url: '{{ route("tenant.digital.shop.product.add.to.cart.ajax") }}',
+                type: 'POST',
+                data: {
+                    product_id: product_id,
+                    _token: '{{ csrf_token() }}'
+                },
+                beforeSend: function () {
+
+                },
+                success: function (data) {
+                    if (data.quantity_msg)
+                    {
+                        toastr.warning(data.quantity_msg);
+                    }
+                    else if(data.error_msg)
+                    {
+                        toastr.error(data.error_msg);
+                    }
+                    else
+                    {
+                        toastr.success(data.msg, '{{__('Go to Cart')}}', '#', 60000);
+                        $('.track-icon-list').hide();
+                        $('.track-icon-list').load(location.href + " .track-icon-list");
+                        $('.track-icon-list').fadeIn();
+                    }
+                },
+                erorr: function (err) {
+                    toastr.error('{{ __("An error occurred") }}')
+                }
+            });
+        });
+
         function storeIntoSession(product_id) {
             let arrItem = [];
 

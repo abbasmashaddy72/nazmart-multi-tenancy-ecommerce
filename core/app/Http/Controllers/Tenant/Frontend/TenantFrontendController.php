@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tenant\Frontend;
 
+use App\Enums\ProductTypeEnum;
 use App\Facades\ThemeDataFacade;
 use App\Helpers\EmailHelpers\VerifyUserMailSend;
 use App\Helpers\ResponseMessage;
@@ -471,6 +472,7 @@ class TenantFrontendController extends Controller
                 'category' => $category,
                 'subcategory' => $subcategory
             ];
+            $options['type'] = ProductTypeEnum::PHYSICAL;
 
             Cart::instance("default")->add(['id' => $cart_data['product_id'], 'name' => $product->name, 'qty' => $cart_data['quantity'], 'price' => $final_sale_price, 'weight' => '0', 'options' => $options]);
 
@@ -738,8 +740,7 @@ class TenantFrontendController extends Controller
     public function wishlist_page()
     {
         $username = Auth::guard("web")->user();
-        if (empty($username))
-        {
+        if (empty($username)) {
             $cart_data = Cart::instance("wishlist")->content();
             $wishlist = true;
 
@@ -763,59 +764,62 @@ class TenantFrontendController extends Controller
         ]);
 
         $product_data = Cart::get($request->product_id);
-        $product_inventory = ProductInventory::where('product_id', $product_data->id)->first();
-        $product_inventory_details = ProductInventoryDetail::where('id', $request->variant_id)->first();
 
-        if ($product_inventory_details && $request->quantity > $product_inventory_details->stock_count) {
-            return response()->json([
-                'type' => 'warning',
-                'quantity_msg' => __('Requested quantity is not available. Only available quantity is added to cart')
-            ]);
-        } elseif ($product_inventory && $request->quantity > $product_inventory->stock_count) {
-            return response()->json([
-                'type' => 'warning',
-                'quantity_msg' => __('Requested quantity is not available. Only available quantity is added to cart')
-            ]);
-        }
+        if ($product_data->options->type == ProductTypeEnum::PHYSICAL) {
+            $product_inventory = ProductInventory::where('product_id', $product_data->id)->first();
+            $product_inventory_details = ProductInventoryDetail::where('id', $request->variant_id)->first();
 
-        $sold_count = CampaignSoldProduct::where('product_id', $product_data->id)->first();
-        $product = Product::where('id', $product_data->id)->first();
+            if ($product_inventory_details && $request->quantity > $product_inventory_details->stock_count) {
+                return response()->json([
+                    'type' => 'warning',
+                    'quantity_msg' => __('Requested quantity is not available. Only available quantity is added to cart')
+                ]);
+            } elseif ($product_inventory && $request->quantity > $product_inventory->stock_count) {
+                return response()->json([
+                    'type' => 'warning',
+                    'quantity_msg' => __('Requested quantity is not available. Only available quantity is added to cart')
+                ]);
+            }
 
-        $product_left = $sold_count !== null ? $product->campaign_product->units_for_sale - $sold_count->sold_count : null;
+            $sold_count = CampaignSoldProduct::where('product_id', $product_data->id)->first();
+            $product = Product::where('id', $product_data->id)->first();
 
-        // now we will check if product left is equal or bigger than quantity than we will check
-        if (!($request->quantity <= $product_left) && $sold_count) {
-            return response()->json([
-                'type' => 'warning',
-                'quantity_msg' => __('Requested amount can not be cart. Campaign product stock limit is over!')
-            ]);
-        }
+            $product_left = $sold_count !== null ? $product->campaign_product->units_for_sale - $sold_count->sold_count : null;
+
+            // now we will check if product left is equal or bigger than quantity than we will check
+            if (!($request->quantity <= $product_left) && $sold_count) {
+                return response()->json([
+                    'type' => 'warning',
+                    'quantity_msg' => __('Requested amount can not be cart. Campaign product stock limit is over!')
+                ]);
+            }
 
 
-        DB::beginTransaction();
-        try {
-            $rowId = $request->product_id;
-            $qty = max($request->quantity, 1);
+            DB::beginTransaction();
+            try {
+                $rowId = $request->product_id;
+                $qty = max($request->quantity, 1);
 
-            Cart::update($rowId, ['qty' => $qty]);
-            DB::commit();
+                Cart::update($rowId, ['qty' => $qty]);
+                DB::commit();
 
-            $cart_data = Cart::content();
-            $markup = themeView('shop.cart.markup_for_controller.cart_products', compact('cart_data'))->render();
-            $cart_price_markup = themeView('shop.cart.markup_for_controller.cart_price', compact('cart_data'))->render();
+                $cart_data = Cart::content();
+                $markup = themeView('shop.cart.markup_for_controller.cart_products', compact('cart_data'))->render();
+                $cart_price_markup = themeView('shop.cart.markup_for_controller.cart_price', compact('cart_data'))->render();
 
-            return response()->json([
-                'type' => 'success',
-                'msg' => __('Cart is updated'),
-                'markup' => $markup,
-                'cart_price_markup' => $cart_price_markup,
-            ]);
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            return response()->json([
-                'type' => 'error',
-                'error_msg' => __('Something went wrong!')
-            ]);
+                return response()->json([
+                    'type' => 'success',
+                    'msg' => __('Cart is updated'),
+                    'markup' => $markup,
+                    'cart_price_markup' => $cart_price_markup,
+                ]);
+            } catch (\Exception $exception) {
+                DB::rollBack();
+                return response()->json([
+                    'type' => 'error',
+                    'error_msg' => __('Something went wrong!')
+                ]);
+            }
         }
     }
 
@@ -1067,7 +1071,7 @@ class TenantFrontendController extends Controller
         if ($request->total < $selected_shipping_method?->options?->minimum_order_amount) {
             return response()->json([
                 'type' => 'error',
-                'msg' => __(sprintf('%s%s Minimum order amount needed.' ,site_currency_symbol(), $selected_shipping_method?->options?->minimum_order_amount))
+                'msg' => __(sprintf('%s%s Minimum order amount needed.', site_currency_symbol(), $selected_shipping_method?->options?->minimum_order_amount))
             ]);
         }
 
@@ -1180,8 +1184,7 @@ class TenantFrontendController extends Controller
             if (!empty($product_tax)) {
                 $product_tax = $product_tax->toArray()['tax_percentage'];
             } else {
-                if (!empty($country_tax))
-                {
+                if (!empty($country_tax)) {
                     $product_tax = $country_tax->toArray()['tax_percentage'];
                 }
             }
@@ -1337,8 +1340,8 @@ class TenantFrontendController extends Controller
             $title = __('Thanks');
             $description = __('We are really thankful to you for subscribe our newsletter');
 
-            $markup = '<div style="text-align: center;margin-top: 100px"><h2>'.$title.'</h2>';
-            $markup .= '<p>'.$description.'</p></div>';
+            $markup = '<div style="text-align: center;margin-top: 100px"><h2>' . $title . '</h2>';
+            $markup .= '<p>' . $description . '</p></div>';
         }
         return $markup;
     }
@@ -1423,8 +1426,7 @@ class TenantFrontendController extends Controller
             //handle error
         }
 
-        if (empty(get_static_option('user_email_verify_status')))
-        {
+        if (empty(get_static_option('user_email_verify_status'))) {
             return to_route('tenant.user.home');
         }
 
@@ -1454,7 +1456,7 @@ class TenantFrontendController extends Controller
             if (empty($existing_token)) {
                 DB::table('password_resets')->insert(['email' => $user_info->email, 'token' => $token_id]);
             }
-            $message = '<br>'.__('Here is you password reset link, If you did not request to reset your password just ignore this mail.') . '<br><br> <a class="btn" href="' . route('tenant.user.reset.password', ['user' => $user_info->username, 'token' => $token_id]) . '" style="color:white;background:gray;">' . __('Click Reset Password') . '</a>';
+            $message = '<br>' . __('Here is you password reset link, If you did not request to reset your password just ignore this mail.') . '<br><br> <a class="btn" href="' . route('tenant.user.reset.password', ['user' => $user_info->username, 'token' => $token_id]) . '" style="color:white;background:gray;">' . __('Click Reset Password') . '</a>';
             $data = [
                 'username' => $user_info->username,
                 'message' => $message
@@ -2014,11 +2016,10 @@ HTML;
         ]);
 
         $track = (object)[];
-        $order = ProductOrder::where('id', $validated['order_id'])->select('id','payment_status', 'status')->first();
-        if (!empty($order))
-        {
-            $status = '<strong>'.__('Your Payment Status:').'</strong>'.' '.$order->payment_status.'</br>';
-            $status .= '<strong>'.__('Your Order Status:').'</strong>'.' '.$order->status;
+        $order = ProductOrder::where('id', $validated['order_id'])->select('id', 'payment_status', 'status')->first();
+        if (!empty($order)) {
+            $status = '<strong>' . __('Your Payment Status:') . '</strong>' . ' ' . $order->payment_status . '</br>';
+            $status .= '<strong>' . __('Your Order Status:') . '</strong>' . ' ' . $order->status;
             $track->message = $status;
             $track->status = true;
         } else {
@@ -2042,7 +2043,7 @@ HTML;
             ->where('status_id', 1)
             ->where("name", "LIKE", "%" . $search . "%")
             ->orWhere("sale_price", $search)
-            ->select('id','slug','name','price','sale_price','image_id')
+            ->select('id', 'slug', 'name', 'price', 'sale_price', 'image_id')
             ->take(20)
             ->get();
 

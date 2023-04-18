@@ -925,6 +925,28 @@ function single_post_share($url, $title, $img_url)
     return $output;
 }
 
+function single_post_share_bookpoint($url, $title, $img_url)
+{
+    $output = '';
+    //get current page url
+    $encoded_url = urlencode($url);
+    //get current page title
+    $post_title = str_replace(' ', '%20', $title);
+
+    //all social share link generate
+    $facebook_share_link = 'https://www.facebook.com/sharer/sharer.php?u=' . $encoded_url . '&display=popup';
+    $twitter_share_link = 'https://twitter.com/intent/tweet?text=' . $post_title . '&amp;url=' . $encoded_url . '&amp;via=Crunchify';
+    $linkedin_share_link = 'https://www.linkedin.com/shareArticle?mini=true&url=' . $encoded_url . '&amp;title=' . $post_title;
+    $pinterest_share_link = 'https://pinterest.com/pin/create/button/?url=' . $encoded_url . '&amp;media=' . $img_url . '&amp;description=' . $post_title;
+
+    $output .= '<li class="single-blog-details-socials-list-item"><a class="single-blog-details-socials-list-item-link" target="_blank" href="' . $facebook_share_link . '"><i class="lab la-facebook-f"></i></a></li>';
+    $output .= '<li class="single-blog-details-socials-list-item"><a class="single-blog-details-socials-list-item-link" target="_blank" href="' . $twitter_share_link . '"><i class="lab la-twitter"></i></a></li>';
+    $output .= '<li class="single-blog-details-socials-list-item"><a class="single-blog-details-socials-list-item-link" target="_blank" href="' . $linkedin_share_link . '"><i class="lab la-linkedin-in"></i></a></li>';
+    $output .= '<li class="single-blog-details-socials-list-item"><a class="single-blog-details-socials-list-item-link" target="_blank" href="' . $pinterest_share_link . '"><i class="lab la-pinterest-p"></i></a></li>';
+
+    return $output;
+}
+
 //New Menu Functions
 function render_pages_list($lang = null)
 {

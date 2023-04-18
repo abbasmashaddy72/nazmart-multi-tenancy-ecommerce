@@ -13,7 +13,7 @@
             <div class="col-xxl-3 col-xl-4 col-lg-4 col-md-4 col-sm-6">
             <div class="global-card hover-overlay center-text bg-white book-filter-padding">
                 <div class="global-card-thumb">
-                    <a href="{{route('tenant.shop.product.details', $product->slug)}}">
+                    <a href="{{route('tenant.digital.shop.product.details', $product->slug)}}">
                         {!! render_image_markup_by_attachment_id($product->image_id, 'product-image') !!}
                     </a>
 
@@ -36,7 +36,7 @@
 
                 <div class="global-card-contents mt-3">
                     <h5 class="global-card-contents-title-two">
-                        <a href="{{route('tenant.shop.product.details', $product->slug)}}"> {{Str::words($product->name, 4)}} </a>
+                        <a href="{{route('tenant.digital.shop.product.details', $product->slug)}}"> {{Str::words($product->name, 4)}} </a>
                     </h5>
                     <span class="global-card-contents-subtitle mt-2"> {{$product->additionalFields?->author?->name}} </span>
                     <div class="price-update-through mt-3">

@@ -27,6 +27,11 @@ class AdditionalField extends Model
         return $this->hasOne(DigitalLanguage::class, 'id', 'language');
     }
 
+    public function getLanguage(): HasOne
+    {
+        return $this->hasOne(DigitalLanguage::class, 'id', 'language');
+    }
+
     public function badge(): HasOne
     {
         return $this->hasOne(Badge::class, 'id', 'badge_id');

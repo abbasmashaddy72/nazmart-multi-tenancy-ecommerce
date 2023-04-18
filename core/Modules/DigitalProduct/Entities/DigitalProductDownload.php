@@ -9,7 +9,7 @@ class DigitalProductDownload extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['product_id', 'download_count'];
+    protected $fillable = ['product_id', 'download_count', 'user_id'];
 
     protected static function newFactory()
     {

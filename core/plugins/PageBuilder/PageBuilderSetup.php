@@ -120,7 +120,14 @@ class PageBuilderSetup
                     TopAuthor::class,
                     RecentBlog::class,
                     \Plugins\PageBuilder\Addons\Tenants\Bookpoint\Common\Services::class,
-                    \Plugins\PageBuilder\Addons\Tenants\Bookpoint\Product\FeaturedProductSlider::class
+                    \Plugins\PageBuilder\Addons\Tenants\Bookpoint\Product\FeaturedProductSlider::class,
+
+                    //temporary addons
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutCounter::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutStory::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\Testimonial::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\Services::class,
+                    ContactAreaOne::class,
                 ];
             }
 

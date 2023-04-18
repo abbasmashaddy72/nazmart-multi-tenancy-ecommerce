@@ -26,7 +26,8 @@
                                     </a>
                                 </div>
                                 <div class="checkout-cart-img-contents">
-                                    <h6 class="checkout-cart-title"><a href="javascript:void(0)"> {{$data->name}} </a>
+                                    <h6 class="checkout-cart-title">
+                                        <a href="javascript:void(0)"> {{$data->name}} </a>
                                     </h6>
 
                                     <span class="name-subtitle d-block mt-2">
@@ -46,10 +47,23 @@
                                         @endif
                                     </span>
                                     <span class="product-items mt-0"> {{__('Quantity:')}} {{$data->qty}} </span>
+
+                                    @if($data?->options?->type == \App\Enums\ProductTypeEnum::DIGITAL)
+                                        @php
+                                            $digital_product = \Modules\DigitalProduct\Entities\DigitalProduct::find($data->id);
+                                        @endphp
+
+                                        @if(!is_null($digital_product->tax))
+                                            @php
+                                                $digital_tax = $digital_product?->getTax?->tax_percentage ?? 0;
+                                            @endphp
+                                            <span class="product-items mt-0"> {{__('Individual Tax:')}} {{$digital_tax}}% </span>
+                                        @endif
+                                    @endif
                                 </div>
                             </div>
                             <span
-                                class="checkout-cart-price color-heading fw-500"> {{amount_with_currency_symbol($data->price * $data->qty)}} </span>
+                                class="checkout-cart-price color-heading fw-500"> {{float_amount_with_currency_symbol($data->price)}} </span>
                         </div>
                     </div>
                 @endforeach
@@ -58,9 +72,14 @@
                 <ul class="coupon-contents-details-list coupon-border">
                     <li class="coupon-contents-details-list-item">
                         <h6 class="coupon-contents-details-list-item-title"> {{__('Sub Total')}} </h6> <span
-                            class="coupon-contents-details-list-item-price fw-500"> {{site_currency_symbol().Cart::subtotal()}} </span>
+                            class="coupon-contents-details-list-item-price fw-500"> {{float_amount_with_currency_symbol(Cart::subtotal(2,'.',''))}} </span>
                     </li>
                 </ul>
+
+                @php
+                    // physical product prices along with tax
+                    $physical_items = Cart::content('default')->where('options.type', \App\Enums\ProductTypeEnum::PHYSICAL);
+                @endphp
                 <div class="shipping_method_wrapper">
                     @php
                         $has_delivery_address = false;
@@ -89,73 +108,108 @@
                         }
                     @endphp
 
-                    @if($user != null)
-                        <ul class="coupon-contents-details-list coupon-border">
-                            <h6>{{__('Shipping')}}</h6>
-                            @foreach($shipping_methods ?? [] as $key => $method)
-                                @php
-                                    $is_default = false;
-                                    if ($key == 0)
-                                    {
-                                        $is_default = true;
-                                        $default_shipping = $method;
-                                    }
-                                @endphp
+                    @if(count($physical_items) > 0)
+                        @if($user != null)
+                            <ul class="coupon-contents-details-list coupon-border">
+                                <h6>{{__('Shipping')}}</h6>
+                                @foreach($shipping_methods ?? [] as $key => $method)
+                                    @php
+                                        $is_default = false;
+                                        if ($key == 0)
+                                        {
+                                            $is_default = true;
+                                            $default_shipping = $method;
+                                        }
+                                    @endphp
 
-                                <li class="coupon-contents-details-list-item" data-country="{{isset($country) ?? 0}}"
-                                    data-state="{{isset($state) ?? 0}}">
+                                    <li class="coupon-contents-details-list-item"
+                                        data-country="{{isset($country) ?? 0}}"
+                                        data-state="{{isset($state) ?? 0}}">
                                     <span class="coupon-radio-item">
                                         <input type="radio" class="shipping_methods"
                                                id="shipping-option-{{$method['id']}}"
                                                name="shipping_method" value="{{$method['id']}}">
                                         <label for="shipping-option-{{$method['id']}}">{{$method['name']}}</label>
                                     </span>
-                                    <span>{{amount_with_currency_symbol($method['options']['cost'])}}</span>
-                                </li>
-                            @endforeach
-                        </ul>
+                                        <span>{{amount_with_currency_symbol($method['options']['cost'])}}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
                     @endif
 
                     <div class="shipping_tax_total">
-                        <ul class="coupon-contents-details-list coupon-border">
-                            <li class="coupon-contents-details-list-item"><span> {{__('Tax (Incl)')}} </span>
-                                <span> {{$product_tax.'%'}} </span></li>
-                            <li class="coupon-contents-details-list-item coupon-price"><span> {{__('Coupon Discount (-)')}} </span>
-                                <span> {{amount_with_currency_symbol(0.00)}} </span></li>
-                            <li class="coupon-contents-details-list-item price-shipping">
-                                <span> {{__('Shipping Cost (+)')}} </span>
-                                <span> {{isset($is_default) && $is_default ? amount_with_currency_symbol($default_shipping['options']['cost']) : '--'}} </span>
-                            </li>
-                        </ul>
+                        @if(count($physical_items) > 0)
+                            <ul class="coupon-contents-details-list coupon-border">
+                                <li class="coupon-contents-details-list-item"><span> {{__('Tax (Incl)')}} </span>
+                                    <span> {{$product_tax.'%'}} </span></li>
+                                <li class="coupon-contents-details-list-item coupon-price">
+                                    <span> {{__('Coupon Discount (-)')}} </span>
+                                    <span> {{float_amount_with_currency_symbol(0.00)}} </span></li>
+                                <li class="coupon-contents-details-list-item price-shipping">
+                                    <span> {{__('Shipping Cost (+)')}} </span>
+                                    <span> {{isset($is_default) && $is_default ? amount_with_currency_symbol($default_shipping['options']['cost']) : '--'}} </span>
+                                </li>
+                            </ul>
+                        @endif
+
                         <ul class="coupon-contents-details-list coupon-border">
                             @php
-                                $subtotal = (double) Cart::subtotal(0, '', '');
-                                $taxed_price = ($subtotal * $product_tax) / 100;
+                                $physical_total = 0.0;
+                                $digital_total = 0.0;
 
-                                $shipping_tax = 0;
-                                if (Auth::guard('web')->check())
-                                {
-                                    if ($has_delivery_address)
+                                    if (count($physical_items) > 0)
                                     {
-                                        if(isset($default_shipping) && $default_shipping?->options?->tax_status)
+                                        $subtotal = 0.0;
+                                        foreach ($physical_items ?? [] as $item)
                                         {
-                                            $shipping_tax = ($default_shipping['options']['cost'] * $product_tax) / 100;
+                                            $subtotal += $item->price * $item->qty;
                                         }
-                                        $shipping = isset($is_default) && $is_default ? $default_shipping['options']['cost'] ?? 0 : 0;
-                                    } else {
-                                        $shipping = 0;
-                                    }
-                                } else {
-                                    $shipping = 0;
-                                }
+                                        $taxed_price = ($subtotal * $product_tax) / 100;
 
-                                $total = $subtotal + ($taxed_price + $shipping_tax) + $shipping;
+                                        $shipping_tax = 0;
+                                        if (Auth::guard('web')->check())
+                                        {
+                                            if ($has_delivery_address)
+                                            {
+                                                if(isset($default_shipping) && $default_shipping?->options?->tax_status)
+                                                {
+                                                    $shipping_tax = ($default_shipping['options']['cost'] * $product_tax) / 100;
+                                                }
+                                                $shipping = isset($is_default) && $is_default ? $default_shipping['options']['cost'] ?? 0 : 0;
+                                            } else {
+                                                $shipping = 0;
+                                            }
+                                        } else {
+                                            $shipping = 0;
+                                        }
+
+                                        $physical_total = $subtotal + ($taxed_price + $shipping_tax) + $shipping;
+                                    }
+
+                                    // digital product prices
+                                    $digital_items = Cart::content('default')->where('options.type', \App\Enums\ProductTypeEnum::DIGITAL);
+                                    if (count($digital_items) > 0){
+                                        $subtotal = 0.0;
+                                        foreach ($digital_items ?? [] as $item)
+                                        {
+                                            $digital_product = \Modules\DigitalProduct\Entities\DigitalProduct::find($item->id);
+                                            $taxed_price = 0.0;
+                                            if (!is_null($digital_product->tax))
+                                            {
+                                                $tax = $digital_product?->getTax?->tax_percentage;
+                                                $taxed_price = ($item->price * $tax) / 100;
+                                            }
+                                            $digital_total += $item->price + $taxed_price;
+                                        }
+                                    }
+
+                                    $total = $physical_total+$digital_total;
                             @endphp
                             <li class="coupon-contents-details-list-item price-total"
-                                data-total="{{$subtotal+$taxed_price}}" {{!isset($is_default) ? 'data-total='.$total.'' : ''}}
-                            ">
-                            <h6 class="coupon-title"> {{__('Total Amount')}} </h6> <span
-                                class="coupon-price fw-500 color-heading"> {{site_currency_symbol().$total}} </span>
+                                data-total="{{$total}}" {{!isset($is_default) ? 'data-total='.$total.'' : ''}}>
+                                <h6 class="coupon-title"> {{__('Total Amount')}} </h6> <span
+                                    class="coupon-price fw-500 color-heading"> {{float_amount_with_currency_symbol($total)}} </span>
                             </li>
                         </ul>
                     </div>
@@ -163,17 +217,16 @@
             </div>
 
             @if(!empty(get_static_option('cash_on_delivery')))
-            <div class="checkbox-inlines cash-on-delivery mt-2">
-                <input class="check-input" type="checkbox" id="cash">
-                <label class="checkbox-label" for="cash"> {{__('Cash On Delivery')}} </label>
-            </div>
+                <div class="checkbox-inlines cash-on-delivery mt-2">
+                    <input class="check-input" type="checkbox" id="cash">
+                    <label class="checkbox-label" for="cash"> {{__('Cash On Delivery')}} </label>
+                </div>
             @endif
 
             <div class="payment-inlines mt-4">
                 <h6 class="payment-label fw-500"> {{__('Select Payment Method')}} </h6>
                 <div class="payment-card mt-4">
 
-{{--                    {!! render_payment_gateway_for_form() !!} --}}
                     {!! (new \App\Helpers\PaymentGatewayRenderHelper())->renderPaymentGatewayForForm() !!}
 
                     <div class="form-group d-none manual_transaction_id">
@@ -187,9 +240,14 @@
             </div>
 
             <div class="checkbox-inlines mt-3">
+                @php
+                    $terms_condition = get_static_option('terms_condition');
+                    $terms_condition_url = get_page_slug($terms_condition);
+                @endphp
                 <input class="check-input" type="checkbox" id="agree">
                 <label class="checkbox-label" for="agree"> {{__('I have read and agree to the website')}} <a
-                        class="terms-condition" href="javascript:void(0)"> {{__('terms and conditions*')}} </a> </label>
+                        class="terms-condition"
+                        href="{{$terms_condition_url}}"> {{__('terms and conditions*')}} </a> </label>
             </div>
 
             <div class="btn-wrapper mt-3">
@@ -198,7 +256,8 @@
             </div>
 
             <div class="btn-wrapper mt-3">
-                <a href="{{route('tenant.shop.cart')}}" class="cmn-btn cmn-btn-outline-two w-100 radius-0"> {{__('Return to Cart')}} </a>
+                <a href="{{route('tenant.shop.cart')}}"
+                   class="cmn-btn cmn-btn-outline-two w-100 radius-0"> {{__('Return to Cart')}} </a>
             </div>
         </div>
     </div>

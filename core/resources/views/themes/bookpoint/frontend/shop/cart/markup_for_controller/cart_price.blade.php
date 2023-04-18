@@ -1,13 +1,13 @@
 @php
-    $subtotal = \Gloudemans\Shoppingcart\Facades\Cart::subtotal(2, '.', ',');
-    $total = \Gloudemans\Shoppingcart\Facades\Cart::priceTotal(2, '.', ',');
+    $subtotal = \Gloudemans\Shoppingcart\Facades\Cart::subtotal(2, '.', '');
+    $total = \Gloudemans\Shoppingcart\Facades\Cart::priceTotal(2, '.', '');
 @endphp
 
 <h4 class="coupon-contents-title"> {{__('Cart Total:')}} </h4>
 <div class="coupon-contents-details mt-4">
     <ul class="coupon-contents-details-list coupon-border">
         <li class="coupon-contents-details-list-item">
-            <h6 class="coupon-contents-details-list-item-title"> {{__('Sub Total')}} </h6> <span class="coupon-contents-details-list-item-price fw-500"> {{site_currency_symbol().$subtotal}} </span>
+            <h6 class="coupon-contents-details-list-item-title"> {{__('Sub Total')}} </h6> <span class="coupon-contents-details-list-item-price fw-500"> {{float_amount_with_currency_symbol($subtotal)}} </span>
         </li>
     </ul>
     <ul class="coupon-contents-details-list coupon-border">
@@ -15,7 +15,7 @@
     </ul>
     <ul class="coupon-contents-details-list coupon-border">
         <li class="coupon-contents-details-list-item">
-            <h6 class="coupon-title"> {{__('Total Amount')}} </h6> <span class="coupon-price fw-500 color-heading"> {{site_currency_symbol().$total}} </span>
+            <h6 class="coupon-title"> {{__('Total Amount')}} </h6> <span class="coupon-price fw-500 color-heading"> {{float_amount_with_currency_symbol($total)}} </span>
         </li>
     </ul>
     <div class="btn-wrapper mt-3">

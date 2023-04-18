@@ -96,27 +96,6 @@
     </style>
 @endsection
 
-{{--@section('content')--}}
-{{--    <!-- Shop area starts -->--}}
-{{--    <section class="shop-area padding-top-100 padding-bottom-50">--}}
-{{--        <div class="container-one">--}}
-{{--            <div class="shop-contents-wrapper">--}}
-{{--                @include(include_theme_path('shop.partials.shop-search'))--}}
-
-{{--                @include(include_theme_path('shop.partials.shop-sidebar-content'))--}}
-{{--                @include(include_theme_path('shop.partials.shop-grid-products'))--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </section>--}}
-{{--    <!-- Shop area end -->--}}
-
-{{--    <!-- Shop Details Modal area end -->--}}
-{{--    @include(include_theme_path('shop.partials.product-quick-view'))--}}
-{{--    <!-- Shop Details Modal area end -->--}}
-
-{{--    @include(include_theme_path('shop.partials.shop-footer'))--}}
-{{--@endsection--}}
-
 @section('content')
     <!-- Category Filter Book area starts -->
     @include(include_theme_path('digital-shop.partials.shop-topbar-content'))

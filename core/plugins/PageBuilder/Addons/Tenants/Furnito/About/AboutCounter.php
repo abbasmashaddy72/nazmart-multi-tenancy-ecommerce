@@ -76,7 +76,7 @@ class AboutCounter extends PageBuilderBase
             'section_class'=> $section_class,
         ];
 
-        return self::renderView('tenant.theme_one.about.number_counter',$data);
+        return self::renderView('tenant.furnito.about.number_counter',$data);
 
     }
 

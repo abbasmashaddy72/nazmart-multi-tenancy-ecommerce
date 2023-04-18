@@ -64,7 +64,12 @@ Route::middleware([
     Route::prefix('shop')->as('tenant.')->group(function (){
         Route::prefix('digital')->name('digital.')->group(function (){
             Route::get('/search', [FrontendDigitalProductController::class, 'shop_page'])->name('shop');
-            Route::get('/product/search', [FrontendDigitalProductController::class, 'shop_search'])->name('shop.search');
+            Route::get('/product/{slug}', [FrontendDigitalProductController::class, 'product_details'])->name('shop.product.details'); // Product Details
+
+            Route::post('/product/review', [FrontendDigitalProductController::class, 'product_review'])->name('shop.product.review'); // Product Review
+            Route::get('/product/review/more', [FrontendDigitalProductController::class, 'render_reviews'])->name('shop.product.review.more.ajax'); // Product Review Ajax
+
+            Route::post('/product/cart/add', [FrontendDigitalProductController::class, 'add_to_cart'])->name('shop.product.add.to.cart.ajax'); // Shop to Add to Cart
         });
 
         Route::get('/search', [TenantFrontendController::class, 'shop_page'])->name('shop');
@@ -259,6 +264,8 @@ Route::middleware([
         Route::post('/support-ticket/status-change', 'support_ticket_status_change')->name('user.dashboard.support.ticket.status.change');
         Route::post('/support-ticket/message', 'support_ticket_message')->name('user.dashboard.support.ticket.message');
         Route::get('/order-list/{id?}', 'order_list')->name('user.dashboard.package.order');
+        Route::get('/download-list/{id?}', 'download_list')->name('user.dashboard.download.list');
+        Route::get('/download/{slug}', 'download')->name('user.dashboard.download.file');
         Route::post('/package-order/cancel', 'package_order_cancel')->name('user.dashboard.package.order.cancel');
         Route::post('/package-user/generate-invoice', 'generate_package_invoice')->name('frontend.package.invoice.generate');
 
