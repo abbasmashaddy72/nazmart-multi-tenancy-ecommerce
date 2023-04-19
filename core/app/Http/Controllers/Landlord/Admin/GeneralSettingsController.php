@@ -394,9 +394,13 @@ class GeneralSettingsController extends Controller
 
     public function update_ssl_settings(Request $request)
     {
-//        if (get_static_option('site_force_ssl_redirection') === 'on'){
-            URL::forceScheme('https');
-//        }
+        $request->validate([
+            'site_force_ssl_redirection' => 'nullable'
+        ]);
+
+        update_static_option('site_force_ssl_redirection', $request->site_force_ssl_redirection);
+
+        return response()->success(ResponseMessage::SettingsSaved());
     }
 
     public function send_test_mail(Request $request)

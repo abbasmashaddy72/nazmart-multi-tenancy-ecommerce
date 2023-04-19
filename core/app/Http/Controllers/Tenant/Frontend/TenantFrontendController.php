@@ -1103,7 +1103,7 @@ class TenantFrontendController extends Controller
     {
         $all_cart_items = Cart::content();
         $products = Product::with("category", "subCategory", "childCategory")->whereIn('id', $all_cart_items?->pluck("id")?->toArray())->get();
-        $subtotal = Cart::subtotal();
+        $subtotal = Cart::subtotal(2,'.','');
 
         $coupon_amount_total = CheckoutCouponService::calculateCoupon($request, $subtotal, $products, 'DISCOUNT');
         if ($coupon_amount_total == 0) {

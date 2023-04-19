@@ -19,10 +19,10 @@
                         <p class="text-warning">
                             {{__('It will force your website to open with https')}}
                         </p>
-                        <form class="forms-sample" method="post" action="{{route('landlord.admin.general.smtp.settings')}}">
+                        <form class="forms-sample" method="post" action="{{route('landlord.admin.general.ssl.settings')}}">
                             @csrf
 
-                            <x-fields.switcher :name="'ssl_enable'" :label="'Enable SSL'"/>
+                            <x-fields.switcher :name="'site_force_ssl_redirection'" :label="'Enable SSL'" :value="get_static_option('site_force_ssl_redirection')"/>
 
                             <button type="submit" class="btn btn-gradient-primary me-2">{{__('Save Changes')}}</button>
                         </form>

@@ -103,10 +103,9 @@
                         allId: allId
                     },
                     beforeSend: function () {
-                        // $('.loader').fadeIn(200);
+                        $('.loader').fadeIn(200);
                     },
                     success: function (data) {
-                        console.log(data)
                         let tab = $('li.list[data-tab=' + data.category + ']');
                         let markup_wrapper = $('.markup_wrapper');
 
@@ -115,7 +114,7 @@
                         markup_wrapper.hide();
                         markup_wrapper.html(data.markup);
                         markup_wrapper.fadeIn();
-                        // $('.loader').fadeOut(200);
+                        $('.loader').fadeOut(200);
                     },
                     error: function (data) {
                         console.log('error')

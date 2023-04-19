@@ -91,7 +91,7 @@ class ThemeMetaData
         {
             foreach ($headerHook->script as $item)
             {
-                $file_name[] = $item.'.js';
+                $file_name[] = $item;
             }
         }
 
@@ -106,7 +106,7 @@ class ThemeMetaData
         {
             foreach ($footerHook->style as $item)
             {
-                $file_name[] = $item.'.css';
+                $file_name[] = $item;
             }
         }
 
@@ -120,7 +120,7 @@ class ThemeMetaData
         {
             foreach ($footerHook->script as $item)
             {
-                $file_name[] = $item.'.js';
+                $file_name[] = $item;
             }
         }
 

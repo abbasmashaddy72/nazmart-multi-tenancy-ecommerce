@@ -30,7 +30,6 @@
             "script": [
                 "EZView",
                 "imagesloaded.pkgd.min",
-                "isotope.pkgd.min",
                 "jquery.magnific-popup",
                 "main",
                 "custom-script"

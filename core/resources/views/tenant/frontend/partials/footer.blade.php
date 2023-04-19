@@ -81,6 +81,8 @@
     <script src="{{loadJs($jsFile)}}"></script>
 @endforeach
 
+<script src="{{global_asset('assets/tenant/frontend/js/digital-shop-common.js')}}"></script>
+
 @php
     $tenant_id = !empty(tenant()) ? tenant()->id : '';
     $file = file_exists('assets/tenant/frontend/js/'.$tenant_id.'/dynamic-script.js');
