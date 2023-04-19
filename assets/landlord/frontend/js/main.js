@@ -254,6 +254,9 @@
             $(this).addClass('active');
             $("#" + tab_id).addClass('active');
         });
+        $(document).on('click', '.multi-action-icon', function () {
+            $('.multi-action-inner').slideToggle(150);
+        })
 
         /*
         ========================================

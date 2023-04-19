@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -109,7 +110,7 @@ class TenancyServiceProvider extends ServiceProvider
 
         $this->makeTenancyMiddlewareHighestPriority();
         /* added custom */
-        Middleware\InitializeTenancyByDomain::$onFail = function ($exception, $request, $next) {
+        InitializeTenancyByDomainCustomisedMiddleware::$onFail = function ($exception, $request, $next) {
             //filter for api routes
             if($request->is('api/tenant/*')){
                 return response()->json(['msg' => __('tenant not found')],404);
@@ -145,7 +146,7 @@ class TenancyServiceProvider extends ServiceProvider
             // Even higher priority than the initialization middleware
             Middleware\PreventAccessFromCentralDomains::class,
 
-            Middleware\InitializeTenancyByDomain::class,
+            InitializeTenancyByDomainCustomisedMiddleware::class,
             Middleware\InitializeTenancyBySubdomain::class,
             Middleware\InitializeTenancyByDomainOrSubdomain::class,
             Middleware\InitializeTenancyByPath::class,

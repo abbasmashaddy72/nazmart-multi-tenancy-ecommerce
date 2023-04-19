@@ -35,13 +35,16 @@
                                     {!! render_image_markup_by_attachment_id($figure_image ?? '') !!}
                                 </div>
                                 <div class="banner-image-content">
-                                    <h2 class="banner-image-content-title fw-500 mt-3">
+                                    <h1 class="banner-image-content-title fw-500 mt-3">
                                         <a href="javascript:void(0)"> {!! get_tenant_highlighted_text($title) !!} </a>
-                                    </h2>
+                                    </h1>
                                     <p class="banner-image-content-para mt-3"> {{$subtitle}} </p>
-                                    <div class="btn-wrapper">
-                                        <a href="{{$button_url}}" class="cmn-btn cmn-btn-bg-2 radius-0 mt-4 mt-lg-5"> {{$button_text}} </a>
-                                    </div>
+
+                                    @if(!empty($button_url))
+                                        <div class="btn-wrapper">
+                                            <a href="{{$button_url}}" class="cmn-btn cmn-btn-bg-2 radius-0 mt-4 mt-lg-5"> {{$button_text}} </a>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach

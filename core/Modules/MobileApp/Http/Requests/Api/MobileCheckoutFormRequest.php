@@ -35,11 +35,11 @@ class MobileCheckoutFormRequest extends FormRequest
                 'shift_address' => "required"
             ];
         } else {
-            if (\Auth::guard('web')->user() == null) {
+            if (auth("sanctum")->user() == null) {
                 $arr = [
                     'name' => "required",
                     'phone' => "required|max:17",
-                    'email' => "required|email|unique:users,email",
+                    'email' => "required|email",
                     'country' => "required|numeric",
                     'state' => "required|numeric",
                     'city' => "required",
@@ -49,11 +49,12 @@ class MobileCheckoutFormRequest extends FormRequest
                 $arr['create_accounts_input'] = 'nullable';
                 if ($this->create_accounts_input != null)
                 {
+                    $arr['email'] = "required|email|unique:users,email";
                     $arr['create_username'] = 'required';
                     $arr['create_password'] = 'required|same:create_password_confirmation|min:8';
                 }
             } else {
-                if(\Auth::guard('web')->user()->delivery_address == null)
+                if(auth("sanctum")->user()->delivery_address == null)
                 {
                     $arr = [
                         'name' => "required",

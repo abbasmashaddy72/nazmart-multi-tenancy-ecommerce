@@ -18,6 +18,7 @@ use Modules\MobileApp\Http\Controllers\CampaignController;
 use Modules\MobileApp\Http\Controllers\FeaturedProductController;
 use Modules\MobileApp\Http\Controllers\MobileController;
 use Modules\MobileApp\Http\Controllers\ProductController;
+use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,16 +34,20 @@ use Modules\MobileApp\Http\Controllers\ProductController;
 
 Route::middleware([
     'api',
-    InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomain::class,
+    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
 ])->prefix('api/tenant')->group(function () {
     Route::prefix("v1")->group(function () {
 
         Route::post('/register',[UserController::class,'register']);
+        Route::post('/username',[UserController::class,'username']);
         Route::post('/login',[UserController::class,'login']);
         Route::post('social/login',[UserController::class,'socialLogin']);
         Route::get('/country',[CountryController::class,'country']);
         Route::get('/state/{country_id}',[CountryController::class,'stateByCountryId']);
+        Route::get('/search/country/{name}',[CountryController::class,'searchCountry']);
+        Route::get('/search/state/{name}',[CountryController::class,'searchState']);
         Route::post('/send-otp-in-mail',[UserController::class,'sendOTP']);
         Route::post('/otp-success',[UserController::class,'sendOTPSuccess']);
         Route::post('/reset-password',[UserController::class,'resetPassword']);
@@ -77,12 +82,14 @@ Route::middleware([
          * */
 
 
-// Product Route
-// Fetch feature product
+        // Product Route
+        // Fetch feature product
         Route::get("featured/product/{limit?}", [FeaturedProductController::class,'index']);
+        Route::get("recent/product/{limit?}", [FeaturedProductController::class,'recent']);
         Route::get("campaign/product/{id?}", [FeaturedProductController::class,'campaign']);
         Route::get("campaign", [CampaignController::class,'index']); // done
         Route::get("product", [ProductController::class,'search'])->name("api.product.search");
+        Route::get('/search-items', [ProductController::class, 'searchItems']);
         Route::get("product/{id}", [ProductController::class,'productDetail']);
         Route::get("product/price-range", [ProductController::class,'priceRange']);
         Route::post("product-review", [ProductController::class,'storeReview']);
@@ -117,6 +124,7 @@ Route::middleware([
                 Route::post('/',[UserController::class,'allTickets']);
                 Route::post('/{id}',[UserController::class,'viewTickets']);
             });
+            Route::post('account/delete/{id}', [UserController::class, 'deleteAccount']);
 
             /* Add shipping method */
             Route::get("/all-shipping-address",[UserController::class,"get_all_shipping_address"]);
@@ -149,6 +157,7 @@ Route::middleware([
         });
     });
 });
+
 Route::fallback(function (){
    return response()->json(['msg' => __('page not found')],404);
 });

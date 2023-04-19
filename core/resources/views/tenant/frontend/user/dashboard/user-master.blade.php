@@ -37,6 +37,10 @@
                                     <a href="{{route('tenant.user.dashboard.package.order')}}"> <i class="las la-tasks"></i> {{__('Order List')}} </a>
                                 </li>
 
+                                <li class="list @if(request()->routeIs('tenant.user.dashboard.download.list')) active @endif">
+                                    <a href="{{route('tenant.user.dashboard.download.list')}}"> <i class="las la-tasks"></i> {{__('Downloads')}} </a>
+                                </li>
+
                                 <li class="list @if(request()->routeIs('tenant.user.dashboard.package.order.refund')) active @endif">
                                     <a href="{{route('tenant.user.dashboard.package.order.refund')}}"> <i class="las la-tasks"></i> {{__('Refund Products')}} </a>
                                 </li>

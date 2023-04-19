@@ -2,6 +2,7 @@
 
 namespace Modules\ThemeManage\Http\Controllers;
 
+use App\Facades\ThemeDataFacade;
 use App\Models\Tenant;
 use App\Models\Themes;
 use Illuminate\Contracts\Support\Renderable;
@@ -18,9 +19,8 @@ class ThemeManageController extends Controller
      * @return Renderable
      */
     public function index()
-    {
-        $themes = Themes::where('status', 1)->get();
-        return view(self::BASE_PATH.'index', compact('themes'));
+    {;
+        return view(self::BASE_PATH.'index');
     }
     /**
      * Show the form for creating a new resource.
@@ -61,15 +61,16 @@ class ThemeManageController extends Controller
         return view('thememanage::edit');
     }
 
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Renderable
-     */
     public function update(Request $request, $slug)
     {
-        Themes::where('slug', $slug)->select('id')->firstOrFail();
+        $all_theme_slugs = ThemeDataFacade::getAllThemeSlug();
+
+        if (!in_array($slug, $all_theme_slugs))
+        {
+            return response()->json([
+                'status' => false
+            ]);
+        }
 
         DB::beginTransaction();
         try {

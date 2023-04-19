@@ -406,7 +406,7 @@ class LandlordFrontendController extends Controller
             'subdomain' => 'required|unique:tenants,id',
             'theme' => 'required',
         ],[
-            'theme.required' => 'No theme is selected.'
+            'theme.required' => __('No theme is selected.')
         ]);
 
         if ($request->subdomain != null) {

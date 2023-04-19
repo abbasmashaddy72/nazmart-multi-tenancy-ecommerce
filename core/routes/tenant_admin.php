@@ -8,12 +8,14 @@ use App\Http\Controllers\Landlord\Admin\GeneralSettingsController;
 use Modules\Blog\Http\Controllers\Landlord\Admin\BlogTagController;
 use App\Http\Controllers\Tenant\Admin\OrderManageController;
 use App\Http\Controllers\Tenant\Admin\NewsletterController;
+use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 
 
 
 Route::middleware([
     'web',
-    InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomain::class,
+    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'auth:admin',
     'tenant_admin_glvar',
@@ -22,7 +24,6 @@ Route::middleware([
     'tenant_status',
     'set_lang'
 ])->prefix('admin-home')->name('tenant.')->group(function () {
-
 
     /*----------------------------------------------------------------------------------------------------------------------------
     | BACKEND NEWSLETTER AREA
@@ -137,6 +138,7 @@ Route::middleware([
     ----------------------------*/
     Route::controller(\App\Http\Controllers\Tenant\Admin\TopbarController::class)->group(function () {
         Route::get('/topbar-settings', "index")->name('admin.topbar.settings');
+        Route::post('/topbar-settings', "update_topbar");
         Route::post('/topbar/new-social-item', 'new_social_item')->name('admin.new.social.item');
         Route::post('/topbar/update-social-item', 'update_social_item')->name('admin.update.social.item');
         Route::post('/topbar/delete-social-item/{id}', 'delete_social_item')->name('admin.delete.social.item');
@@ -414,6 +416,7 @@ Route::middleware([
 
         //Order settings route
         Route::match(['get', 'post'] ,'/order/settings', 'order_manage_settings')->name('admin.product.order.settings');
+        Route::match(['get', 'post'] ,'/invoice/settings', 'order_invoice_settings')->name('admin.product.invoice.settings');
     });
 
     /*------------------------------------------
@@ -472,6 +475,10 @@ Route::middleware([
         /* smtp Settings */
         Route::get('/email-settings', 'email_settings')->name('admin.general.email.settings');
         Route::post('/email-settings', 'update_email_settings');
+
+        //GDPR Settings
+        Route::get('/gdpr-settings', 'gdpr_settings')->name('admin.general.gdpr.settings');
+        Route::post('/gdpr-settings', 'update_gdpr_cookie_settings');
 
         /* custom css Settings */
         Route::get('/custom-css-settings', 'custom_css_settings')->name('admin.general.custom.css.settings');

@@ -18,7 +18,7 @@
                     <th scope="col">{{__('Action')}}</th>
                 </tr>
                 </thead>
-                <tbody>-----------------------------
+                <tbody>
                 @foreach($package_orders as $data)
                     <tr>
                         <td>
@@ -26,7 +26,7 @@
                                 <h5 class="title">{{$data->package_name}}</h5>
                                 <div class="div package_order_details_data">
                                     <small class="d-block"><strong>{{__('Order ID:')}}</strong> #{{$data->id}}</small>
-                                    <small class="d-block"><strong>{{__('Order Name:')}}</strong> {{$data->tenant_id.'.'.getenv('CENTRAL_DOMAIN')}}</small>
+                                    <small class="d-block"><strong>{{__('Order Name:')}}</strong> {{$data->tenant_id.'.'.env('CENTRAL_DOMAIN')}}</small>
                                     <small class="d-block"><strong>{{__('Package Price:')}}</strong> {{amount_with_currency_symbol($data->package_price)}}</small>
 
                                     <small class="d-block"><strong>{{__('Order Status:')}}</strong>
@@ -59,7 +59,6 @@
                         </td>
                         <td>
                             @if($data->payment_status != 'complete' && $data->status != 'cancel')
-
                                 <span class="alert_status_single alert alert-warning text-capitalize alert-sm">{{__($data->payment_status)}}</span>
                                 <a href="{{route(route_prefix().'frontend.order.confirm',$data->package_id)}}" class="btn btn-success btn-sm">{{__('Pay Now')}}</a>
                                 <form action="{{route(route_prefix().'user.dashboard.package.order.cancel')}}" method="post">
@@ -68,14 +67,23 @@
                                     <button type="submit" class="btn btn-danger btn-sm margin-top-10">{{__('Cancel')}}</button>
                                 </form>
                             @else
-                                <span class="alert_status_single alert alert-success text-capitalize alert-sm" style="display: inline-block">{{__($data->payment_status)}}</span>
+                                @php
+                                    $payment_status_color = match ($data->payment_status) {
+                                        'complete' => 'alert-success',
+                                        'pending' => 'alert-warning',
+                                        'cancel' => 'alert-danger'
+                                    }
+                                @endphp
+                                <span class="alert_status_single alert {{$payment_status_color}} text-capitalize alert-sm" style="display: inline-block">{{__($data->payment_status)}}</span>
                             @endif
                         </td>
 
                         <td>
-                            <div class="btn-wrapper">
-                                <a href="{{route(route_prefix().'frontend.order.confirm',$data->package_id)}}" class="cmn-btn btn-success cmn-btn-small text-white" target="_blank">{{__('Renew Now')}}</a>
-                            </div>
+                            @if($data->payment_status != 'complete')
+                                <div class="btn-wrapper">
+                                    <a href="{{route(route_prefix().'frontend.order.confirm',$data->package_id)}}" class="cmn-btn btn-success cmn-btn-small text-white" target="_blank">{{__('Renew Now')}}</a>
+                                </div>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

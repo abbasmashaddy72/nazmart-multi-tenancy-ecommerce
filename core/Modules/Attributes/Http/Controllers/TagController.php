@@ -33,7 +33,7 @@ class TagController extends Controller
      */
     public function index(): Factory|View|Application
     {
-        $all_tag = Tag::all();
+        $all_tag = Tag::orderByDesc('id')->get();
         return view(self::BASE_PATH.'tag.all-tag', compact('all_tag'));
     }
 

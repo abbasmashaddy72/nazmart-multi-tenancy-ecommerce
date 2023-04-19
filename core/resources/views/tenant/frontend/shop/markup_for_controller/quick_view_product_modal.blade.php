@@ -115,17 +115,14 @@
                     <a href="javascript:void(0)" class="add_to_cart_single_page cmn-btn cmn-btn-bg-heading radius-0 w-100 cart-loading">{{__('Add to Cart')}} </a>
                 </div>
                 <div class="btn-wrapper">
-                    <a href="javascript:void(0)" class="cmn-btn cmn-btn-bg-steam radius-0 w-100 cart-loading"> Buy
-                        Now </a>
+                    <a href="javascript:void(0)" class="cmn-btn cmn-btn-bg-steam radius-0 w-100 cart-loading"> {{__('Buy Now')}} </a>
                 </div>
             </div>
         </div>
         <div class="wishlist-compare mt-4">
             <div class="wishlist-compare-btn">
-                <a href="javascript:void(0)" class="btn-wishlist btn-details fw-500"> <i class="lar la-heart"></i> Add
-                    Wishlist </a>
-                <a href="compare.html" class="btn-wishlist btn-details fw-500"> <i class="las la-retweet"></i> Add
-                    Compare </a>
+                <a href="javascript:void(0)" class="btn-wishlist btn-details fw-500"> <i class="lar la-heart"></i> {{__('Add Wishlist')}} </a>
+                <a href="compare.html" class="btn-wishlist btn-details fw-500"> <i class="las la-retweet"></i> {{__('Add Compare')}} </a>
             </div>
             <div class="wishlist-share">
                 <a href="javascript:void(0)" class="share-icon fw-500">

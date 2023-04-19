@@ -368,7 +368,7 @@ function render_star_rating_markup($rating): string
 function render_product_star_rating_markup_with_count($product_object): string
 {
     $sum = 0;
-    $product_review = $product_object->reviews;
+    $product_review = $product_object->reviews ?? [];
     $product_count = count($product_review) < 1 ? 1 : count($product_review);
 
     if ($product_count >= 1) {
@@ -400,17 +400,14 @@ function render_product_star_rating_markup_with_count($product_object): string
 
 function render_star($rating, $class = '')
 {
-    $markup = '<div class="'.$class.'">';
-    if (!empty($rating))
-    {
-        for ($i=0; $i<$rating; $i++)
-        {
+    $markup = '<div class="' . $class . '">';
+    if (!empty($rating)) {
+        for ($i = 0; $i < $rating; $i++) {
             $markup .= '<span class="star mdi mdi-star checked"></span>';
         }
 
         // maximum rating always 5
-        for ($i=0; $i<5-$rating; $i++)
-        {
+        for ($i = 0; $i < 5 - $rating; $i++) {
             $markup .= '<span class="star mdi mdi-star"></span>';
         }
     }
@@ -447,7 +444,7 @@ function get_tenant_highlighted_text($title, $class = 'color-two')
 
         $highlighted_word = explode('{/h}', $text[1])[0];
 
-        $highlighted_text = '<span class="'.$class.'">' . $highlighted_word . '</span>';
+        $highlighted_text = '<span class="' . $class . '">' . $highlighted_word . '</span>';
         return str_replace('{h}' . $highlighted_word . '{/h}', $highlighted_text, $title);
     }
 
@@ -584,6 +581,33 @@ function get_product_dynamic_price($product_object)
     return $data;
 }
 
+function get_digital_product_dynamic_price($product_object)
+{
+    $is_expired = 0;
+    (double)$regular_price = $product_object->regular_price;
+    (double)$sale_price = $product_object->sale_price;
+    $discount = 0;
+
+    if (!is_null($product_object->promotional_date) && (!is_null($product_object->promotional_price) || $product_object->promotional_price >! 0)) {
+        $today_date = Carbon::now();
+        $end_date = \Carbon\Carbon::parse($product_object?->promotional_date);
+
+        if ($end_date->greaterThan($today_date)) {
+            (double)$sale_price = $product_object?->promotional_price;
+
+            $discount = 100 - round(($sale_price / $regular_price) * 100);
+            $is_expired = 1;
+        }
+    }
+
+    $data['sale_price'] = $sale_price;
+    $data['regular_price'] = $regular_price;
+    $data['discount'] = $discount;
+    $data['is_expired'] = $is_expired;
+
+    return $data;
+}
+
 function get_all_static_option($option_name)
 {
     $all_static_options = all_static_options();
@@ -650,7 +674,7 @@ function addQuotes($str)
 
 function site_title()
 {
-    return get_static_option('site_' . \App\Facades\GlobalLanguage::default_slug() . '_title');
+    return get_static_option('site_title');
 }
 
 function site_global_email()
@@ -897,6 +921,28 @@ function single_post_share($url, $title, $img_url)
     $output .= '<li><a class="twitter" target="_blank" href="' . $twitter_share_link . '"><i class="lab la-twitter"></i></a></li>';
     $output .= '<li><a class="linkedin" target="_blank" href="' . $linkedin_share_link . '"><i class="lab la-linkedin-in"></i></a></li>';
     $output .= '<li><a class="pinterest" target="_blank" href="' . $pinterest_share_link . '"><i class="lab la-pinterest-p"></i></a></li>';
+
+    return $output;
+}
+
+function single_post_share_bookpoint($url, $title, $img_url)
+{
+    $output = '';
+    //get current page url
+    $encoded_url = urlencode($url);
+    //get current page title
+    $post_title = str_replace(' ', '%20', $title);
+
+    //all social share link generate
+    $facebook_share_link = 'https://www.facebook.com/sharer/sharer.php?u=' . $encoded_url . '&display=popup';
+    $twitter_share_link = 'https://twitter.com/intent/tweet?text=' . $post_title . '&amp;url=' . $encoded_url . '&amp;via=Crunchify';
+    $linkedin_share_link = 'https://www.linkedin.com/shareArticle?mini=true&url=' . $encoded_url . '&amp;title=' . $post_title;
+    $pinterest_share_link = 'https://pinterest.com/pin/create/button/?url=' . $encoded_url . '&amp;media=' . $img_url . '&amp;description=' . $post_title;
+
+    $output .= '<li class="single-blog-details-socials-list-item"><a class="single-blog-details-socials-list-item-link" target="_blank" href="' . $facebook_share_link . '"><i class="lab la-facebook-f"></i></a></li>';
+    $output .= '<li class="single-blog-details-socials-list-item"><a class="single-blog-details-socials-list-item-link" target="_blank" href="' . $twitter_share_link . '"><i class="lab la-twitter"></i></a></li>';
+    $output .= '<li class="single-blog-details-socials-list-item"><a class="single-blog-details-socials-list-item-link" target="_blank" href="' . $linkedin_share_link . '"><i class="lab la-linkedin-in"></i></a></li>';
+    $output .= '<li class="single-blog-details-socials-list-item"><a class="single-blog-details-socials-list-item-link" target="_blank" href="' . $pinterest_share_link . '"><i class="lab la-pinterest-p"></i></a></li>';
 
     return $output;
 }
@@ -1177,7 +1223,7 @@ function site_currency_symbol($text = false)
 {
     //custom symbol
     $custom_symbol = get_static_option('site_custom_currency_symbol');
-    if(!empty($custom_symbol)){
+    if (!empty($custom_symbol)) {
         return $custom_symbol;
     }
 
@@ -1222,9 +1268,12 @@ function decodeProductAttributes($endcoded_attributes): array
 function amount_with_currency_symbol($amount, $text = false)
 {
     $decimal_status = get_static_option('currency_amount_type_status');
-    $decimal_or_integer_condition =  !empty($decimal_status) ? 2 : 0;
+    $decimal_or_integer_condition = !empty($decimal_status) ? 2 : 0;
 
-    $amount = number_format((float)$amount, $decimal_or_integer_condition, '.', ',');
+    $thousand_separator = get_static_option('site_custom_currency_thousand_separator') ?? ',';
+    $decimal_separator = get_static_option('site_custom_currency_decimal_separator') ?? '.';
+
+    $amount = number_format((float)$amount, $decimal_or_integer_condition, $decimal_separator, $thousand_separator);
     $position = get_static_option('site_currency_symbol_position');
     $symbol = site_currency_symbol($text);
     $return_val = $symbol . $amount;
@@ -1361,7 +1410,7 @@ function get_time_difference($time_type, $to)
 function wrap_by_paragraph($text, $double_break = false)
 {
     $break = $double_break ? '<br>' : '';
-    return '<p>'.$text.'</p>'.$break;
+    return '<p>' . $text . '</p>' . $break;
 }
 
 function load_google_fonts($theme_number = '')
@@ -1488,54 +1537,54 @@ if (!function_exists('include_theme_path')) {
     }
 }
 
-    function module_dir($moduleName)
-    {
-        return 'core/Modules/'.$moduleName.'/';
-    }
+function module_dir($moduleName)
+{
+    return 'core/Modules/' . $moduleName . '/';
+}
 
-    function get_module_view($moduleName, $fileName)
-    {
-        return strtolower($moduleName).'::payment-gateway-view.'.$fileName;
-    }
+function get_module_view($moduleName, $fileName)
+{
+    return strtolower($moduleName) . '::payment-gateway-view.' . $fileName;
+}
 
-    function theme_assets($file, $theme = ''): string
-    {
-        $name = \App\Facades\ThemeDataFacade::getSelectedThemeSlug();
-        return 'core/resources/views/themes/' . (empty($theme) ? $name : $theme) . '/assets/' . $file;
-    }
+function theme_assets($file, $theme = ''): string
+{
+    $name = \App\Facades\ThemeDataFacade::getSelectedThemeSlug();
+    return 'core/resources/views/themes/' . (empty($theme) ? $name : $theme) . '/assets/' . $file;
+}
 
-    function theme_screenshots($name): string
-    {
-        return 'core/resources/views/themes/' . $name . '/screenshot/';
-    }
-
-
-    function loadCss($file): string
-    {
-        return route('tenant.custom.css.file.url', $file);
-    }
+function theme_screenshots($name): string
+{
+    return 'core/resources/views/themes/' . $name . '/screenshot/';
+}
 
 
-    function loadJs($file): string
-    {
-        return route('tenant.custom.js.file.url', $file);
-    }
+function loadCss($file): string
+{
+    return route('tenant.custom.css.file.url', $file);
+}
 
-    function loadScreenshot($theme)
-    {
-        return route('theme.primary.screenshot', $theme);
-    }
 
-    /**
-     * @see themeView
-     * @param string $view
-     * @param array $data
-     * @return mixed
-     */
-    function themeView($view, $data = [])
-    {
-        return \App\Facades\ThemeDataFacade::renderThemeView($view, $data);
-    }
+function loadJs($file): string
+{
+    return route('tenant.custom.js.file.url', $file);
+}
+
+function loadScreenshot($theme)
+{
+    return route('theme.primary.screenshot', $theme);
+}
+
+/**
+ * @param string $view
+ * @param array $data
+ * @return mixed
+ * @see themeView
+ */
+function themeView($view, $data = [])
+{
+    return \App\Facades\ThemeDataFacade::renderThemeView($view, $data);
+}
 
 function getCampaignProductById($product_id): ?CampaignProduct
 {
@@ -1568,7 +1617,7 @@ function getPercentage($main_price, $lower_price): float|int
 
 function externalAddonImagepath($moduleName)
 {
-    return 'core/Modules/'.$moduleName.'/assets/addon-image/'; // 'assets/plugins/PageBuilder/images'
+    return 'core/Modules/' . $moduleName . '/assets/addon-image/'; // 'assets/plugins/PageBuilder/images'
 }
 
 function getSelectedThemeSlug()
@@ -1608,5 +1657,5 @@ function renderFooterHookBladeFile()
 
 function theme_custom_name($theme_data)
 {
-    return !empty(get_static_option_central($theme_data->slug.'_theme_name')) ? get_static_option_central($theme_data->slug.'_theme_name') : $theme_data->name;
+    return !empty(get_static_option_central($theme_data->slug . '_theme_name')) ? get_static_option_central($theme_data->slug . '_theme_name') : $theme_data->name;
 }

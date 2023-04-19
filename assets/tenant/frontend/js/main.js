@@ -63,7 +63,7 @@
 
         /* 
         ========================================
-            Addto-Cart Click Close
+            Add to-Cart Click Close
         ========================================
         */
         $(document).on('click', '.close-cart', function() {
@@ -262,6 +262,9 @@
                 contains.find('a').text(value);
             }
         });
+        $(document).on('click', '.multi-action-icon', function () {
+            $('.multi-action-inner').slideToggle(150);
+        })
         /* 
         ========================================
             Shop Responsive Sidebar
@@ -395,7 +398,7 @@
         if (globalSlickInit.length > 0) {
             //todo have to check slider item 
             $.each(globalSlickInit, function(index, value) {
-                if ($(this).children('div').length > 1) {
+                if ($(this).children('div').length > 0) {
                     //todo configure slider settings object
                     var sliderSettings = {};
                     var allData = $(this).data();
@@ -512,7 +515,6 @@
                 scrollTop: 0
             }, 700);
         });
-
     });
 
     /* 
@@ -520,15 +522,16 @@
         back to top
     ========================================
     */
-
+    var lastScrollTop = 0;
     $(window).on('scroll', function() {
-        //back to top show/hide
-        var ScrollTop = $('.back-to-top');
-        if ($(window).scrollTop() > 200) {
-            ScrollTop.fadeIn(10);
-        } else {
-            ScrollTop.fadeOut(10);
+        var scrollTop = $('.back-to-top');
+        var st = $(this).scrollTop();
+        if(st < lastScrollTop) {
+            scrollTop.fadeIn(100);
         }
+        else {
+            scrollTop.fadeOut(100);
+        }
+        lastScrollTop = st;
     });
-
 })(jQuery);

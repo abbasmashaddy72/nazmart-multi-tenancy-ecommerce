@@ -7,6 +7,10 @@
 @include('tenant.frontend.partials.widget-area')
 <!-- footer area end -->
 
+<!-- For Mobile nav start -->
+@include('tenant.frontend.partials.mobile-footer-menu')
+<!-- For Mobile nav end -->
+
 <!-- back to top area start -->
 @include('tenant.frontend.partials.backtop')
 <!-- back to top area end -->
@@ -68,6 +72,8 @@
 <script src="{{global_asset('assets/common/js/star-rating.min.js')}}"></script>
 <script src="{{global_asset('assets/common/js/md5.js')}}"></script>
 
+@include('landlord.frontend.partials.gdpr-cookie')
+
 @php
     $theme_footer_js_files = \App\Facades\ThemeDataFacade::getFooterHookJsFiles();
 @endphp
@@ -75,11 +81,14 @@
     <script src="{{loadJs($jsFile)}}"></script>
 @endforeach
 
+<script src="{{global_asset('assets/tenant/frontend/js/digital-shop-common.js')}}"></script>
+
 @php
-    $file = file_exists('assets/tenant/frontend/js/'.tenant()->id.'/dynamic-script.js');
+    $tenant_id = !empty(tenant()) ? tenant()->id : '';
+    $file = file_exists('assets/tenant/frontend/js/'.$tenant_id.'/dynamic-script.js');
 @endphp
 @if($file)
-    <script src="{{global_asset('assets/tenant/frontend/js/'.tenant()->id.'/dynamic-script.js')}}"></script>
+    <script src="{{global_asset('assets/tenant/frontend/js/'.$tenant_id.'/dynamic-script.js')}}"></script>
 @endif
 
 <script>
@@ -342,6 +351,44 @@
                 }
             });
 
+        });
+
+        $(document).on('click', '.digital-add-to-cart-btn', function (e) {
+            e.preventDefault();
+
+            let product_id = $(this).data("product_id");
+
+            $.ajax({
+                url: '{{ route("tenant.digital.shop.product.add.to.cart.ajax") }}',
+                type: 'POST',
+                data: {
+                    product_id: product_id,
+                    _token: '{{ csrf_token() }}'
+                },
+                beforeSend: function () {
+
+                },
+                success: function (data) {
+                    if (data.quantity_msg)
+                    {
+                        toastr.warning(data.quantity_msg);
+                    }
+                    else if(data.error_msg)
+                    {
+                        toastr.error(data.error_msg);
+                    }
+                    else
+                    {
+                        toastr.success(data.msg, '{{__('Go to Cart')}}', '#', 60000);
+                        $('.track-icon-list').hide();
+                        $('.track-icon-list').load(location.href + " .track-icon-list");
+                        $('.track-icon-list').fadeIn();
+                    }
+                },
+                erorr: function (err) {
+                    toastr.error('{{ __("An error occurred") }}')
+                }
+            });
         });
 
         function storeIntoSession(product_id) {

@@ -103,7 +103,7 @@
                                         <td>#{{$data->id}}</td>
                                         <td>{{$data->title}}</td>
 
-                                        <td>{{optional($data->department)->getTranslation('name',get_user_lang()) ?? __('anonymous')}}</td>
+                                        <td>{{optional($data->department)->name ?? __('anonymous')}}</td>
                                         <td>
                                             {{optional($data->user)->name ?? __('anonymous')}}
                                         </td>

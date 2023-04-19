@@ -9,16 +9,16 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="order-cancel-area">
-                        <h1 class="title">{{get_static_option('site_order_cancel_page_' . $user_select_lang_slug . '_title')}}</h1>
+                        <h1 class="title">{{get_static_option('site_order_cancel_page_title')}}</h1>
                         <h3 class="sub-title">
                             @php
-                                $subtitle = get_static_option('site_order_cancel_page_' . $user_select_lang_slug . '_subtitle');
+                                $subtitle = get_static_option('site_order_cancel_page_subtitle');
                                 $subtitle = str_replace('{pkname}',$order_details->package_name,$subtitle);
                             @endphp
                             {{$subtitle}}
                         </h3>
                         <p>
-                            {{get_static_option('site_order_cancel_page_' . $user_select_lang_slug . '_description')}}
+                            {{get_static_option('site_order_cancel_page_description')}}
                         </p>
                         <div class="btn-wrapper">
                             <a href="{{url('/')}}" class="boxed-btn">{{__('Back To Home')}}</a>

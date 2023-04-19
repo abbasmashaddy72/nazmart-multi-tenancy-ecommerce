@@ -11,17 +11,22 @@ use Illuminate\Support\Facades\Facade;
  * @method static getSelectedThemeData
  * @method static getSelectedThemeSlug
  * @method static getAllThemeData
+ * @method static getAllThemeSlug
  *
  * @method static getAllThemeDataForAdmin
  * @method static getIndividualThemeData
  * @method static getHeaderHook
  * @method static getFooterHook
  * @method static getHeaderHookCssFiles
+ * @method static getHeaderHookRtlCssFiles
  * @method static getHeaderHookJsFiles
  * @method static getFooterHookCssFiles
  * @method static getFooterHookJsFiles
  * @method static renderHeaderHookBladeFile
  * @method static renderFooterHookBladeFile
+ * @method static getFooterWidgetArea
+ * @method static getHeaderNavbarArea
+ * @method static getHeaderBreadcrumbArea
  * @method static renderThemeView($view = '', $data = [])
  * @method static getAllThemeScreenshot($theme_slug)
  * @method static renderPrimaryThemeScreenshot($theme_slug)

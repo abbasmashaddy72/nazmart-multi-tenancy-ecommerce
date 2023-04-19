@@ -42,10 +42,10 @@
 @section('scripts')
     <script>
         (function($){
-        "use strict";
-        $(document).ready(function () {
-            <x-btn.custom :id="'send'" :title="__('Sending')"/>
-        });
+            "use strict";
+            $(document).ready(function () {
+                <x-btn.custom :id="'send'" :title="__('Sending')"/>
+            });
         })(jQuery);
     </script>
 @endsection

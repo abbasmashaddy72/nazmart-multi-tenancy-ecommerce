@@ -1,27 +1,35 @@
 {
-    "name":"Medicom",
-    "slug":"medicom",
-    "description":"Pharmaceutical Theme",
-    "author":"Mazharul Islam Suzon",
-    "version":"1.0.0",
-    "status":true,
-    "screenshot":[
+    "name": "Medicom",
+    "slug": "medicom",
+    "description": "Pharmaceutical Theme",
+    "author": "Mazharul Islam Suzon",
+    "version": "1.0.0",
+    "status": true,
+    "screenshot": [
         {
-            "primary":"primary.jpg"
+            "primary": "primary.jpg"
         }
     ],
-    "headerHook":[
+    "headerHook": [
         {
-            "style":["medicom", "custom_frontend"],
-            "script":[],
-            "blade":[]
+            "style": [
+                "medicom",
+                "custom_frontend"
+            ],
+            "rtl_style": [
+
+            ],
+            "script": [],
+            "blade": [],
+            "navbarArea": "navbar"
         }
     ],
-    "footerHook":[
+    "footerHook": [
         {
-            "style":[],
-            "script":[],
-            "blade":[]
+            "style": [],
+            "script": [],
+            "blade": [],
+            "widgetArea": "footer-medicom"
         }
     ]
 }

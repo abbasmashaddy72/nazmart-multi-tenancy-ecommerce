@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use App\Helpers\SanitizeInput;
+use Illuminate\Support\Facades\URL;
 
 class GeneralSettingsController extends Controller
 {
@@ -58,12 +59,13 @@ class GeneralSettingsController extends Controller
             'pricing_plan' => 'nullable|string',
             'blog_page' => 'nullable|string',
             'shop_page' => 'nullable|string',
+            'digital_shop_page' => 'nullable|string',
             'track_order' => 'nullable|string',
             'terms_condition' => 'nullable|string',
             'privacy_policy' => 'nullable|string',
         ]);
         $fields = [
-            'home_page', 'pricing_plan', 'blog_page', 'shop_page', 'track_order', 'terms_condition', 'privacy_policy'
+            'home_page', 'pricing_plan', 'blog_page', 'shop_page', 'digital_shop_page', 'track_order', 'terms_condition', 'privacy_policy'
         ];
 
         foreach ($fields as $field) {
@@ -134,6 +136,9 @@ class GeneralSettingsController extends Controller
             setEnvValue(['APP_TIMEZONE' => $timezone]);
         }
 
+        $request_engine = $request->mysql_database_engine;
+        setEnvValue(['DB_ENGINE' => $request_engine]);
+        update_static_option('mysql_database_engine', $request_engine);
 
         return response()->success(ResponseMessage::SettingsSaved());
     }
@@ -382,6 +387,22 @@ class GeneralSettingsController extends Controller
         return response()->success(ResponseMessage::SettingsSaved());
     }
 
+    public function ssl_settings()
+    {
+        return view(self::BASE_PATH . 'ssl-settings');
+    }
+
+    public function update_ssl_settings(Request $request)
+    {
+        $request->validate([
+            'site_force_ssl_redirection' => 'nullable'
+        ]);
+
+        update_static_option('site_force_ssl_redirection', $request->site_force_ssl_redirection);
+
+        return response()->success(ResponseMessage::SettingsSaved());
+    }
+
     public function send_test_mail(Request $request)
     {
         $this->validate($request, [
@@ -541,6 +562,9 @@ class GeneralSettingsController extends Controller
             'site_default_payment_gateway',
             'currency_amount_type_status',
             'site_custom_currency_symbol',
+            'site_custom_currency_thousand_separator',
+            'site_custom_currency_decimal_separator',
+            'cash_on_delivery'
         ];
 
         foreach ($save_data as $item) {
@@ -708,5 +732,59 @@ class GeneralSettingsController extends Controller
         }
 
         return back()->with(FlashMsg::update_succeed('Highlight Text Shape Image'));
+    }
+
+    public function gdpr_settings()
+    {
+        return view(self::BASE_PATH.'gdpr-settings');
+    }
+
+    public function update_gdpr_cookie_settings(Request $request)
+    {
+        $this->validate($request, [
+            'site_gdpr_cookie_enabled' => 'nullable|string|max:191',
+            'site_gdpr_cookie_expire' => 'required|string|max:191',
+            'site_gdpr_cookie_delay' => 'required|string|max:191',
+        ]);
+
+            $this->validate($request, [
+                "site_gdpr_cookie_title" => 'nullable|string',
+                "site_gdpr_cookie_message" => 'nullable|string',
+                "site_gdpr_cookie_more_info_label" => 'nullable|string',
+                "site_gdpr_cookie_more_info_link" => 'nullable|string',
+                "site_gdpr_cookie_accept_button_label" => 'nullable|string',
+                "site_gdpr_cookie_decline_button_label" => 'nullable|string',
+            ]);
+
+            $fields = [
+                "site_gdpr_cookie_title",
+                "site_gdpr_cookie_message",
+                "site_gdpr_cookie_more_info_label",
+                "site_gdpr_cookie_more_info_link",
+                "site_gdpr_cookie_accept_button_label",
+                "site_gdpr_cookie_decline_button_label",
+                "site_gdpr_cookie_manage_button_label",
+                "site_gdpr_cookie_manage_title",
+            ];
+
+            foreach ($fields as $field){
+                update_static_option($field, $request->$field);
+            }
+
+            $all_fields = [
+                'site_gdpr_cookie_manage_item_title',
+                'site_gdpr_cookie_manage_item_description',
+            ];
+
+            foreach ($all_fields as $field){
+                $value = $request->$field ?? [];
+                update_static_option($field,serialize($value));
+            }
+
+        update_static_option('site_gdpr_cookie_delay', $request->site_gdpr_cookie_delay);
+        update_static_option('site_gdpr_cookie_enabled', $request->site_gdpr_cookie_enabled);
+        update_static_option('site_gdpr_cookie_expire', $request->site_gdpr_cookie_expire);
+
+        return redirect()->back()->with(['msg' => __('GDPR Cookie Settings Updated..'), 'type' => 'success']);
     }
 }

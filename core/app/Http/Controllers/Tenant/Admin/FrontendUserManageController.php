@@ -69,8 +69,18 @@ class FrontendUserManageController extends Controller
             'company' => SanitizeInput::esc_html($request->company),
         ]);
 
-        return response()->success(ResponseMessage::success(__('Tenant has been created successfully..!')));
+        try {
+            $sub =  __("Account created");
+            $msg = '<p>'.__('Hello').' '.$request->name.',</p>';
+            $msg .= '<p>'.__("Your user account is created successfully. Click below to continue browsing your account").'</p>';
+            $msg .= '<a href="'.url('/').'">'.__('Open').'</a>';
 
+            Mail::to(trim($request->email))->send(new BasicMail($msg,$sub));
+        }catch (\Exception $ex){
+            return response()->danger(ResponseMessage::delete($ex->getMessage()));
+        }
+
+        return response()->success(ResponseMessage::success(__('Tenant has been created successfully')));
     }
 
     public function edit_profile($id)
@@ -110,7 +120,7 @@ class FrontendUserManageController extends Controller
             'company' => SanitizeInput::esc_html($request->company),
         ]);
 
-        return response()->success(ResponseMessage::success(__('Tenant updated successfully..!')));
+        return response()->success(ResponseMessage::success(__('Tenant updated successfully')));
 
     }
 
@@ -119,7 +129,7 @@ class FrontendUserManageController extends Controller
         $user = User::find($id);
         $user->delete();
 
-        return response()->danger(ResponseMessage::delete(__('Tenant deleted successfully..!')));
+        return response()->danger(ResponseMessage::delete(__('Tenant deleted successfully')));
     }
 
     public function update_change_password(Request $request)
@@ -137,7 +147,7 @@ class FrontendUserManageController extends Controller
         $user = User::findOrFail($request->ch_user_id);
         $user->password = Hash::make($request->password);
         $user->save();
-        return response()->success(ResponseMessage::success(__('Password updated successfully..!')));
+        return response()->success(ResponseMessage::success(__('Password updated successfully')));
     }
 
 
@@ -158,7 +168,7 @@ class FrontendUserManageController extends Controller
             return response()->danger(ResponseMessage::delete($ex->getMessage()));
         }
 
-        return response()->success(ResponseMessage::success(__('Mail Send Successfully..!')));
+        return response()->success(ResponseMessage::success(__('Mail Send Successfully')));
     }
 
     public function resend_verify_mail(Request $request){
@@ -182,6 +192,6 @@ class FrontendUserManageController extends Controller
             return response()->danger(ResponseMessage::delete($ex->getMessage()));
         }
 
-        return response()->success(ResponseMessage::success(__('Email Verify Mail Send Successfully..!')));
+        return response()->success(ResponseMessage::success(__('Email Verify Mail Send Successfully')));
     }
 }

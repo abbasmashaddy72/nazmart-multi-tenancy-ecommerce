@@ -26,7 +26,7 @@ class MobileCheckoutServices
 {
     public function getOrCreateUser($validated_data): array
     {
-        $user = Auth::guard('web')->user();
+        $user = auth("sanctum")->user();
         if ($user == null || ($user != null && $user->delivery_address == null)) { // get non-logged in user or user with no billing address
             $name = $validated_data['name'];
             $email = trim(strtolower($validated_data['email']));

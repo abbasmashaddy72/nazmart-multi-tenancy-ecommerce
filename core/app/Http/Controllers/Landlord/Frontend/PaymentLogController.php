@@ -307,6 +307,7 @@ class PaymentLogController extends Controller
 
                     $payment_details = PaymentLogs::findOrFail($payment_log_id);
                     $this->payment_details = $payment_details;
+
                 } else {
                     $old_tenant_log->update([
                         'email' => $email,
@@ -384,6 +385,10 @@ class PaymentLogController extends Controller
                 $custom_data['request'] = $request;
                 $custom_data['payment_details'] = $this->payment_details->toArray();
                 $custom_data['total'] = $this->total;
+                $custom_data['payment_type'] = "price_plan";
+                $custom_data['payment_for'] = "landlord";
+                $custom_data['cancel_url'] = route(self::CANCEL_ROUTE, random_int(111111,999999).$this->payment_details['id'].random_int(111111,999999));
+                $custom_data['success_url'] = route(self::SUCCESS_ROUTE, random_int(111111,999999).$this->payment_details['id'].random_int(111111,999999));
 
                 $charge_customer_class_namespace = getChargeCustomerMethodNameByPaymentGatewayNameSpace($payment_gateway_name);
                 $charge_customer_method_name = getChargeCustomerMethodNameByPaymentGatewayName($payment_gateway_name);
@@ -657,7 +662,7 @@ class PaymentLogController extends Controller
             Mail::to($package_details->email)->send(new PlaceOrder($all_fields, $all_attachment, $package_details, 'user', 'regular'));
 
         } catch (\Exception $e) {
-            return redirect()->back()->with(['type' => 'danger', 'msg' => $e->getMessage()]);
+//            return redirect()->back()->with(['type' => 'danger', 'msg' => $e->getMessage()]);
         }
     }
 

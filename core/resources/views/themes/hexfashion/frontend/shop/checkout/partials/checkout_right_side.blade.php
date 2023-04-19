@@ -162,16 +162,19 @@
                 </div>
             </div>
 
-            <div class="checkbox-inlines cash-on-delivery mt-2">
-                <input class="check-input" type="checkbox" id="cash">
-                <label class="checkbox-label" for="cash"> {{__('Cash On Delivery')}} </label>
-            </div>
+            @if(!empty(get_static_option('cash_on_delivery')))
+                <div class="checkbox-inlines cash-on-delivery mt-2">
+                    <input class="check-input" type="checkbox" id="cash">
+                    <label class="checkbox-label" for="cash"> {{__('Cash On Delivery')}} </label>
+                </div>
+            @endif
 
             <div class="payment-inlines mt-4">
                 <h6 class="payment-label fw-500"> {{__('Select Payment Method')}} </h6>
                 <div class="payment-card mt-4">
 
-                    {!! render_payment_gateway_for_form() !!}
+{{--                    {!! render_payment_gateway_for_form() !!}--}}
+                    {!! (new \App\Helpers\PaymentGatewayRenderHelper())->renderPaymentGatewayForForm() !!}
 
                     <div class="form-group d-none manual_transaction_id">
                         <input type="text" name="trasaction_id" class="form-control "

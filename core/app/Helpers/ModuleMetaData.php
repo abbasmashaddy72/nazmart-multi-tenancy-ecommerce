@@ -170,10 +170,29 @@ class ModuleMetaData
     {
         $allModuleMeta = [];
         $allDirectories = glob(base_path() . '/Modules/*', GLOB_ONLYDIR);
+        $modules_status_data = [];
+        if (file_exists(base_path() ."/modules_statuses.json") && !is_dir(base_path() ."/modules_statuses.json")){
+            $modules_status_data = json_decode(file_get_contents(base_path() ."/modules_statuses.json"),true);
+        }
+
         foreach ($allDirectories as $dire) {
             //todo scan all the json file
             $currFolderName = pathinfo($dire, PATHINFO_BASENAME);
             $metaInformation = $this->getIndividualModuleMetaData($currFolderName);
+
+            //did not collect  meta info of the module which is disabled from module_status.json file
+            if(!array_key_exists($currFolderName,$modules_status_data)){
+                continue;
+            }
+
+            if(
+                array_key_exists($metaInformation->name,$modules_status_data)
+                && isset($modules_status_data[$metaInformation->name])
+                && $modules_status_data[$metaInformation->name] === false
+            ){
+                continue;
+            }
+
             if (property_exists($metaInformation, 'nazmartMetaData')) {
                 $allModuleMeta[$currFolderName] = $metaInformation->nazmartMetaData;
             }
@@ -278,9 +297,20 @@ class ModuleMetaData
             foreach ($allModuleMeta ?? [] as $metaData)
             {
                 $adminSettings = $this->getAdminSettings($metaData);
+                if (tenant() && property_exists($adminSettings,"show_admin_tenant") && $adminSettings->show_admin_tenant === false){
+                    continue;
+                }
+                if (!tenant() && property_exists($adminSettings,"show_admin_landlord") && $adminSettings->show_admin_landlord === false){
+                    continue;
+                }
                 $menuItem = $this->getAdminMenuSettings($adminSettings);
                 if (!empty((array)$menuItem))
                 {
+                    //if it is tenant then load route param as tenant route param
+                    if (tenant()){
+                        current($menuItem)->route = current($menuItem)->tenantRoute;
+                    }
+
                     $menuList[] = $menuItem;
                 }
             }

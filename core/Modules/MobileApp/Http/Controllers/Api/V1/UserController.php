@@ -64,6 +64,19 @@ class UserController extends Controller
         ]);
     }
 
+    public function username(Request $request)
+    {
+        $validated = $request->validate([
+            'username' => 'required'
+        ]);
+
+        $username = User::where('username', $validated['username'])->first();
+
+        return response()->json([
+            'username' => $validated['username'],
+            'msg' => empty($username) ? $validated['username'].' name is available' : $validated['username'].' name is already taken'
+        ]);
+    }
 
     //social login
     public function socialLogin(Request $request)
@@ -761,5 +774,24 @@ class UserController extends Controller
         $ticket["attachment"] = empty($ticket["attachment"]) ? null : global_asset('assets/uploads/refund_chat/' . $ticket["attachment"]);
 
         return response()->json($ticket);
+    }
+
+    public function deleteAccount($id)
+    {
+        $user_id = auth('sanctum')->user()->id;
+        if ($user_id != $id)
+        {
+            return response()->json([
+                'message' => __('Something Went Wrong'),
+            ])->setStatusCode(422);
+        }
+
+        $user = User::find($user_id);
+        $user->tokens()->delete();
+        $user->delete();
+
+        return response()->json([
+            'msg' => __('Your account is deleted')
+        ]);
     }
 }

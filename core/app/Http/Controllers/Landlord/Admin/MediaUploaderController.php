@@ -54,7 +54,6 @@ class MediaUploaderController extends Controller
             }
             $folder_path = global_assets_path('assets/'. $this->folderPrefix().'/uploads/media-uploader/'.$tenant_path);
 
-
             if (in_array($image_extenstion,['pdf','doc','docx','txt','svg','zip','csv','xlsx','xlsm','xlsb','xltx','pptx','pptm','ppt'])){
                 $request->file->move($folder_path, $image_db);
 

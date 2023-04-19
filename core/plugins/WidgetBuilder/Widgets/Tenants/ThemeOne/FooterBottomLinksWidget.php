@@ -53,18 +53,7 @@ class FooterBottomLinksWidget extends WidgetBase
         $widget_navbar = SanitizeInput::esc_url($widget_saved_values['navbar_link']) ?? '';
 
         $instance = Menu::findOrFail($widget_navbar);
-
-        $li_markup = '';
-        foreach (json_decode($instance->content) ?? [] as $item) {
-            if (empty(Page::find($item->pid)))
-            {
-                continue;
-            }
-
-            $li_markup .= '<li class="list">
-                              <a href="'. get_page_info($item->pid)->slug .'"> '. get_page_info($item->pid)->title .' </a>
-                          </li>';
-        }
+        $li_markup = render_frontend_menu($instance->id);
 
         $markup = $this->widget_column_start();
         $markup .= '<div class="footer-widget widget">
@@ -89,7 +78,7 @@ class FooterBottomLinksWidget extends WidgetBase
 
     public function widget_title()
     {
-        return __('Footer Bottom Links: TH-01');
+        return __('Footer Bottom Links: HexFashion');
     }
 
 }

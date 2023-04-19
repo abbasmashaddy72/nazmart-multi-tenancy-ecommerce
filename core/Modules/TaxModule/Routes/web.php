@@ -4,10 +4,12 @@ use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use Modules\TaxModule\Http\Controllers\Tenant\Admin\CountryTaxController;
 use Modules\TaxModule\Http\Controllers\Tenant\Admin\StateTaxController;
+use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 
 Route::middleware([
     'web',
-    InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomain::class,
+    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'auth:admin',
     'tenant_admin_glvar',

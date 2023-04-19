@@ -174,8 +174,23 @@
                                 <div class="single-checkbox">
                                     <div class="checkbox-inlines">
                                         <label class="checkbox-label" for="check2">
-                                            {!! render_payment_gateway_for_form() !!}
+{{--                                            {!! render_payment_gateway_for_form() !!}--}}
+                                            {!! (new \App\Helpers\PaymentGatewayRenderHelper())->renderPaymentGatewayForForm() !!}
                                         </label>
+                                    </div>
+
+                                    <div class="form-group single-input d-none manual_transaction_id mt-4">
+                                        @if(!empty($payment_gateways))
+                                            <p>{{json_decode($payment_gateways->credentials)->description ?? ''}}</p>
+                                        @endif
+
+                                        <input type="text" name="trasaction_id"
+                                               class="form-control form--control mt-2"
+                                               placeholder="{{__('Transaction ID')}}">
+
+                                        <input type="file" name="manual_payment_image"
+                                               class="form-control form--control mt-2"
+                                               placeholder="{{__('Transaction Attachment')}}" accept="image/*">
                                     </div>
                                 </div>
                             </div>

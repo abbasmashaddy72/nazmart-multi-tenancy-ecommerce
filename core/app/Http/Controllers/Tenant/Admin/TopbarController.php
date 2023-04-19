@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tenant\Admin;
 
+use App\Helpers\FlashMsg;
 use App\Helpers\SanitizeInput;
 use App\Http\Controllers\Controller;
 use App\Models\Language;
@@ -11,13 +12,23 @@ use Illuminate\Http\Request;
 class TopbarController extends Controller
 {
     public function index(){
-        $all_social_icons = TopbarInfo::all();
-        $all_language = Language::all();
+        $topbar_menu = get_static_option('topbar_menu');
         return view('tenant.admin.pages.topbar-settings')->with([
-            'all_social_icons' => $all_social_icons,
-            'all_languages' => $all_language,
+            'topbar_menu' => $topbar_menu,
         ]);
     }
+
+    public function update_topbar(Request $request)
+    {
+        $request->validate([
+            'topbar_menu' => 'required'
+        ]);
+
+        update_static_option('topbar_menu', $request->topbar_menu);
+
+        return redirect()->back()->with(FlashMsg::update_succeed(__('Topbar')));
+    }
+
     public function new_social_item(Request $request){
         $data = $this->validate($request,[
             'icon' => 'required|string',

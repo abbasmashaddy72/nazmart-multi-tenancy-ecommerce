@@ -177,6 +177,34 @@ class PageSeed extends Seeder
         $page_data_7->save();
         $page_data_7->metainfo()->create($Metas_7);
 
+        $page_data_8 = new Page();
+        $page_data_8->slug = Str::slug('digital-product');
+        $page_data_8->title = SanitizeInput::esc_html('Digital Product');
+        $page_data_8->page_content = __('Shop content');
+        $page_data_8->visibility = 0;
+        $page_data_8->status = 1;
+        $page_data_8->navbar_variant = '01';
+        $page_data_8->footer_variant = '01';
+        $page_data_8->page_builder = 0;
+        $page_data_8->breadcrumb = 1;
+
+        $Metas_8 = [
+            'title' => SanitizeInput::esc_html('Demo Meta Title'),
+            'description' => SanitizeInput::esc_html('Demo meta desc'),
+            'image' => null,
+            //twitter
+            'tw_image' => null,
+            'tw_title' => SanitizeInput::esc_html('tw title'),
+            'tw_description' => SanitizeInput::esc_html('tw desc'),
+            //facebook
+            'fb_image' => null,
+            'fb_title' =>  SanitizeInput::esc_html('fb title'),
+            'fb_description' =>  SanitizeInput::esc_html('fb desc'),
+        ];
+
+        $page_data_8->save();
+        $page_data_8->metainfo()->create($Metas_8);
+
         session()->forget('theme');
     }
 

@@ -6,6 +6,7 @@ use App\Models\StaticOption;
 use Database\Seeders\Tenant\AdminSeed;
 use Database\Seeders\Tenant\BlogSeed;
 use Database\Seeders\Tenant\BrandSeed;
+use Database\Seeders\Tenant\DigitalProductSeed;
 use Database\Seeders\Tenant\Footer\WidgetSeed;
 use Database\Seeders\Tenant\FormBuilderSeed;
 use Database\Seeders\Tenant\GeneralData;
@@ -41,6 +42,7 @@ class TenantDatabaseSeeder extends Seeder
             TestimonialSeed::class,
             BrandSeed::class,
             ProductSeed::class,
+            DigitalProductSeed::class,
 
             TenantModifySeeder::class,
             ThemeModifySeeder::class

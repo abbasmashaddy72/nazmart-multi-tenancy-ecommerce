@@ -347,6 +347,10 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::get('/seo-settings','seo_settings')->name('landlord.admin.general.seo.settings');
         Route::post('/seo-settings','update_seo_settings');
 
+        //GDPR Settings
+        Route::get('/gdpr-settings', 'gdpr_settings')->name('landlord.admin.general.gdpr.settings');
+        Route::post('/gdpr-settings', 'update_gdpr_cookie_settings');
+
         /* Payment Settings (Static) */
         Route::get('/payment-settings','payment_settings')->name('landlord.admin.general.payment.settings');
         Route::post('/payment-settings','update_payment_settings');
@@ -359,6 +363,10 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::get('/smtp-settings','smtp_settings')->name('landlord.admin.general.smtp.settings');
         Route::post('/smtp-settings','update_smtp_settings');
         Route::post('/send-test-mail','send_test_mail')->name('landlord.admin.general.smtp.settings.test.mail');
+
+        /* ssl Settings */
+        Route::get('/ssl-settings', 'ssl_settings')->name('landlord.admin.general.ssl.settings');
+        Route::post('/ssl-settings', 'update_ssl_settings');
 
         /* custom css Settings */
         Route::get('/custom-css-settings','custom_css_settings')->name('landlord.admin.general.custom.css.settings');

@@ -94,7 +94,7 @@ class SocialFollowWidget extends WidgetBase
 
     public function widget_title()
     {
-        return __('Tenant Social Follow: TH-01');
+        return __('Tenant Social Follow: HexFashion');
     }
 
 }

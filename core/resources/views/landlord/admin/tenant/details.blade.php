@@ -43,7 +43,7 @@
                                         {
                                             $li .= '<li class="mb-2">';
                                             $li .= '<span>'.++$i.'. </span>';
-                                            $li .= '<a href="'.tenant_url_with_protocol(optional($tenant->domain)->domain).'">'.$tenant->id . '.'. getenv('CENTRAL_DOMAIN').'</a>';
+                                            $li .= '<a href="'.tenant_url_with_protocol(optional($tenant->domain)->domain).'">'.$tenant->id . '.'. env('CENTRAL_DOMAIN').'</a>';
                                             $li .= '</li>';
                                         }
                                     $markup = '<ul>'.$li.'</ul>';
@@ -149,7 +149,7 @@
                                             </span>
                                         </td>
                                         <td>
-                                            <a href="{{tenant_url_with_protocol(optional($tenant->domain)->domain)}}" target="_blank">{{$tenant->id . '.'. getenv('CENTRAL_DOMAIN')}}</a>
+                                            <a href="{{tenant_url_with_protocol(optional($tenant->domain)->domain)}}" target="_blank">{{$tenant->id . '.'. env('CENTRAL_DOMAIN')}}</a>
                                         </td>
                                         <td>{{$tenant->renew_status ?? 0}}</td>
                                         <td>
