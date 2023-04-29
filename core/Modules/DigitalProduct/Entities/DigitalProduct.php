@@ -97,6 +97,19 @@ class DigitalProduct extends Model
         return $this->hasOneThrough(DigitalAuthor::class, AdditionalField::class, 'author_id', 'id', 'id', 'product_id');
     }
 
+    public function downloads(): HasMany
+    {
+        return $this->hasMany(DigitalProductDownload::class, 'product_id', 'id');
+    }
+
+    public function reviews(): HasMany {
+        return $this->hasMany(DigitalProductReviews::class, 'product_id', 'id');
+    }
+
+    public function ratings(){
+        return $this->reviews()->avg("rating");
+    }
+
     protected static function newFactory()
     {
         return \Modules\DigitalProduct\Database\factories\DigitalProductFactory::new();

@@ -41,6 +41,7 @@
 
                 {{isset($coupon) ? $discount : float_amount_with_currency_symbol(0.00)}}
         </span>
+
         </li>
         <li class="coupon-contents-details-list-item price-shipping">
             <span> {{__('Shipping Cost (+)')}} </span>

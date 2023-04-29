@@ -386,7 +386,7 @@ function render_product_star_rating_markup_with_count($product_object): string
     if ($sum > 0) {
         $rating_markup = '<div class="ratings">
                             <span class="hide-rating"></span>
-                            <span class="show-rating" style="width: ' . $star . '%' . '"></span>
+                            <span class="show-rating" style="width: ' . $star . '% !important' . '"></span>
                         </div>
                         <p>
                             <span class="total-ratings">(' . $product_count . ')</span>

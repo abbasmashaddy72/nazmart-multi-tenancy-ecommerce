@@ -66,6 +66,8 @@ Route::middleware([
             Route::get('/search', [FrontendDigitalProductController::class, 'shop_page'])->name('shop');
             Route::get('/product/{slug}', [FrontendDigitalProductController::class, 'product_details'])->name('shop.product.details'); // Product Details
 
+            Route::get('/type/{category_type?}/{slug}', [FrontendDigitalProductController::class, 'category_products'])->name('shop.category.products'); // Product Category / Subcategory / ChildCategory
+
             Route::post('/product/review', [FrontendDigitalProductController::class, 'product_review'])->name('shop.product.review'); // Product Review
             Route::get('/product/review/more', [FrontendDigitalProductController::class, 'render_reviews'])->name('shop.product.review.more.ajax'); // Product Review Ajax
 

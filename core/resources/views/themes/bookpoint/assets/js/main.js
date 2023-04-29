@@ -371,28 +371,28 @@
             Isotope
         ========================================
         */
-        $('.imageloaded').imagesLoaded(function() {
-            var $grid = $('.grid-category').isotope({
-                itemSelector: '.grid-item',
-                percentPosition: true,
-                masonry: {
-                    columnWidth: '.grid-item',
-                }
-            });
-
-            $('.filter-list .list.active').find('.check-input').prop('checked', true);
-
-            $(document).on('click', '.filter-list .list', function() {
-                var filterValue = $(this).attr('data-filter');
-                $grid.isotope({ filter: filterValue });
-                $(this).siblings().removeClass('active');
-                $(this).addClass('active');
-
-                $(this, '.filter-list .list.active').find('.check-input').prop('checked', true);
-                $(this).siblings().find('.check-input').prop('checked', false);
-
-            });
-        });
+        // $('.imageloaded').imagesLoaded(function() {
+        //     var $grid = $('.grid-category').isotope({
+        //         itemSelector: '.grid-item',
+        //         percentPosition: true,
+        //         masonry: {
+        //             columnWidth: '.grid-item',
+        //         }
+        //     });
+        //
+        //     $('.filter-list .list.active').find('.check-input').prop('checked', true);
+        //
+        //     $(document).on('click', '.filter-list .list', function() {
+        //         var filterValue = $(this).attr('data-filter');
+        //         $grid.isotope({ filter: filterValue });
+        //         $(this).siblings().removeClass('active');
+        //         $(this).addClass('active');
+        //
+        //         $(this, '.filter-list .list.active').find('.check-input').prop('checked', true);
+        //         $(this).siblings().find('.check-input').prop('checked', false);
+        //
+        //     });
+        // });
 
         /*
         ========================================
@@ -420,21 +420,6 @@
                 scrollTop: 0
             }, 700);
         });
-
-    });
-    /*
-    ========================================
-        back to top
-    ========================================
-    */
-    $(window).on('scroll', function() {
-        //back to top show/hide
-        var ScrollTop = $('.back-to-top');
-        if ($(window).scrollTop() > 200) {
-            ScrollTop.fadeIn(10);
-        } else {
-            ScrollTop.fadeOut(10);
-        }
     });
 
     /*

@@ -5,167 +5,81 @@
 @endsection
 
 @section('page-title')
-    {{ $category->name }}
-@endsection
-
-@section('style')
-    <style>
-        .discount-timer {
-            position: absolute;
-            bottom: 20px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            margin: 0 20px;
-            z-index: 95;
-        }
-        .discount-timer .global-timer .syotimer__body {
-            gap: 10px 15px;
-            -webkit-box-pack: justify;
-            -ms-flex-pack: justify;
-            justify-content: space-between;
-        }
-        @media (min-width: 1400px) and (max-width: 1599.98px) {
-            .discount-timer .global-timer .syotimer__body {
-                gap: 10px;
-            }
-        }
-        @media (min-width: 1200px) and (max-width: 1399.98px) {
-            .discount-timer .global-timer .syotimer__body {
-                gap: 10px;
-            }
-        }
-        @media (min-width: 992px) and (max-width: 1199.98px) {
-            .discount-timer .global-timer .syotimer__body {
-                gap: 10px;
-            }
-        }
-        @media (min-width: 300px) and (max-width: 991.98px) {
-            .discount-timer .global-timer .syotimer__body {
-                gap: 10px;
-            }
-        }
-        .discount-timer .global-timer .syotimer__body .syotimer-cell .syotimer-cell__value {
-            font-size: 32px;
-            line-height: 36px;
-        }
-        @media (min-width: 1400px) and (max-width: 1599.98px) {
-            .discount-timer .global-timer .syotimer__body .syotimer-cell .syotimer-cell__value {
-                font-size: 28px;
-            }
-        }
-        @media (min-width: 1200px) and (max-width: 1399.98px) {
-            .discount-timer .global-timer .syotimer__body .syotimer-cell .syotimer-cell__value {
-                font-size: 28px;
-            }
-        }
-        @media (min-width: 992px) and (max-width: 1199.98px) {
-            .discount-timer .global-timer .syotimer__body .syotimer-cell .syotimer-cell__value {
-                font-size: 28px;
-            }
-        }
-        @media (min-width: 300px) and (max-width: 991.98px) {
-            .discount-timer .global-timer .syotimer__body .syotimer-cell .syotimer-cell__value {
-                font-size: 28px;
-            }
-        }
-        .discount-timer .global-timer .syotimer__body .syotimer-cell .syotimer-cell__unit {
-            font-size: 18px;
-            line-height: 28px;
-        }
-        @media (min-width: 1400px) and (max-width: 1599.98px) {
-            .discount-timer .global-timer .syotimer__body .syotimer-cell .syotimer-cell__unit {
-                font-size: 16px;
-            }
-        }
-        @media (min-width: 1200px) and (max-width: 1399.98px) {
-            .discount-timer .global-timer .syotimer__body .syotimer-cell .syotimer-cell__unit {
-                font-size: 16px;
-            }
-        }
-        @media (min-width: 992px) and (max-width: 1199.98px) {
-            .discount-timer .global-timer .syotimer__body .syotimer-cell .syotimer-cell__unit {
-                font-size: 16px;
-            }
-        }
-        @media (min-width: 300px) and (max-width: 991.98px) {
-            .discount-timer .global-timer .syotimer__body .syotimer-cell .syotimer-cell__unit {
-                font-size: 16px;
-            }
-        }
-    </style>
+    {{ucfirst($type)}}: {{ $category->name }}
 @endsection
 
 @section('content')
-    <!-- Shop area starts -->
-    <section class="shop-area padding-top-100 padding-bottom-50">
-        <div class="container-one">
+    <!-- Book Filter area start -->
+    <div class="responsive-overlay"></div>
+    <section class="shop-area section-bg-2 padding-top-100 padding-bottom-100">
+        <div class="container custom-container-one">
             <div class="shop-contents-wrapper">
-                <div class="shop-grid-contents">
-                    <div class="grid-product-list">
-                        <div id="tab-grid2" class="tab-content-item active">
-                            <div class="row mt-4 gy-5">
-                                @foreach($products as $product)
-                                    @php
-                                        $data = get_product_dynamic_price($product);
-                                        $campaign_name = $data['campaign_name'];
-                                        $regular_price = $data['regular_price'];
-                                        $sale_price = $data['sale_price'];
-                                        $discount = $data['discount'];
-                                    @endphp
-
-                                    <div class="col-xxl-4 col-lg-6 col-sm-6">
-                                        <div class="global-card no-shadow radius-0 pb-0">
-                                            <div class="global-card-thumb">
-                                                <a href="{{route('tenant.shop.product.details', $product->slug)}}">
-                                                    {!! render_image_markup_by_attachment_id($product->image_id, '', 'grid') !!}
-                                                </a>
-                                                <div class="global-card-thumb-badge right-side">
-                                                    @if($discount != null)
-                                                        <span
-                                                            class="global-card-thumb-badge-box bg-color-two"> {{$discount}}% {{__('off')}} </span>
-                                                    @endif
-
-                                                    @if(!empty($product->badge))
-                                                        <span
-                                                            class="global-card-thumb-badge-box bg-color-new"> {{$product?->badge?->name}} </span>
-                                                    @endif
-                                                </div>
-
-                                                @include(include_theme_path('shop.partials.product-options'))
-                                            </div>
-
-                                            <div class="global-card-contents">
-                                                <div class="global-card-contents-flex">
-                                                    <h5 class="global-card-contents-title">
-                                                        <a href="javascript:void(0)"> {{Str::words($product->name, 4)}} </a>
-                                                    </h5>
-                                                    {!! render_product_star_rating_markup_with_count($product) !!}
-                                                </div>
-                                                <div class="price-update-through mt-3">
-                                                    <span class="flash-prices color-two"> {{amount_with_currency_symbol($sale_price)}} </span>
-                                                    <span
-                                                        class="flash-old-prices"> {{$regular_price != null ? amount_with_currency_symbol($regular_price) : ''}} </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
+                <div class="shop-icon">
+                    <div class="shop-icon-sidebar">
+                        <i class="las la-bars"></i>
                     </div>
                 </div>
+
+                <!-- Book grid area start -->
+                <div class="shop-grid-contents">
+                    <div class="row gy-4 gy-lg-5">
+                        @foreach($products as $product)
+                            @php
+                                $data_info = get_digital_product_dynamic_price($product);
+                                $regular_price = $data_info['regular_price'];
+                                $sale_price = $data_info['sale_price'];
+                                $discount = $data_info['discount'];
+
+                                $price = $sale_price > 0 ? $sale_price : $regular_price;
+                            @endphp
+
+                            <div class="col-xxl-3 col-xl-4 col-lg-4 col-md-4 col-sm-6">
+                                <div class="global-card hover-overlay center-text bg-white book-filter-padding">
+                                    <div class="global-card-thumb">
+                                        <a href="{{route('tenant.digital.shop.product.details', $product->slug)}}">
+                                            {!! render_image_markup_by_attachment_id($product->image_id, 'product-image') !!}
+                                        </a>
+
+                                        @if($discount > 0)
+                                            <div class="global-badge left-side">
+                                                <span class="global-badge-box"> {{$discount}}% {{__('off')}} </span>
+                                            </div>
+                                        @endif
+
+                                        @if(!empty($product->additionalFields?->badge_id))
+                                            <div class="global-badge left-side">
+                                                <span class="global-badge-box bg-new"> {{$product->additionalFields?->badge?->name}} </span>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <!-- Product options start -->
+                                    @include(include_theme_path('digital-shop.partials.product-options'))
+                                    <!-- Product options end -->
+
+                                    <div class="global-card-contents mt-3">
+                                        <h5 class="global-card-contents-title-two">
+                                            <a href="{{route('tenant.digital.shop.product.details', $product->slug)}}"> {{Str::words($product->name, 4)}} </a>
+                                        </h5>
+                                        <span class="global-card-contents-subtitle mt-2"> {{$product->additionalFields?->author?->name}} </span>
+                                        <div class="price-update-through mt-3">
+                                            <span class="flash-prices color-one"> {{float_amount_with_currency_symbol($price)}} </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+
+                        <div class="pagination mt-60">
+                            {!! $products->links() !!}
+                        </div>
+                    </div>
+                </div>
+                <!-- Book grid area end -->
             </div>
         </div>
     </section>
-    <!-- Shop area end -->
-
-    <!-- Shop Details Modal area end -->
-    @include(include_theme_path('shop.partials.product-quick-view'))
-    <!-- Shop Details Modal area end -->
-
-    @include(include_theme_path('shop.partials.shop-footer'))
+    <!-- Book Filter area end -->
 @endsection
 
 @section('scripts')

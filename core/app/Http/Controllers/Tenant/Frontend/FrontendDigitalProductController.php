@@ -7,9 +7,18 @@ use App\Http\Controllers\Controller;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Modules\DigitalProduct\Entities\AdditionalField;
+use Modules\DigitalProduct\Entities\DigitalAuthor;
+use Modules\DigitalProduct\Entities\DigitalCategories;
+use Modules\DigitalProduct\Entities\DigitalChildCategories;
+use Modules\DigitalProduct\Entities\DigitalLanguage;
 use Modules\DigitalProduct\Entities\DigitalProduct;
 use Modules\DigitalProduct\Entities\DigitalProductCategories;
+use Modules\DigitalProduct\Entities\DigitalProductChildCategories;
 use Modules\DigitalProduct\Entities\DigitalProductReviews;
+use Modules\DigitalProduct\Entities\DigitalProductSubCategories;
+use Modules\DigitalProduct\Entities\DigitalProductTags;
+use Modules\DigitalProduct\Entities\DigitalSubCategories;
 
 class FrontendDigitalProductController extends Controller
 {
@@ -107,11 +116,11 @@ class FrontendDigitalProductController extends Controller
 
     public function product_details($slug)
     {
-        $product = DigitalProduct::with('category', 'tag', 'tax', 'additionalFields', 'additionalCustomFields', 'gallery_images', 'refund_policy')
+        $product = DigitalProduct::with('category', 'tag', 'tax', 'additionalFields', 'additionalCustomFields', 'gallery_images', 'refund_policy', 'downloads')
+            ->withCount('downloads')
             ->where('slug', $slug)
             ->where('status_id', 1)
-            ->first();
-
+            ->firstOrFail();
 
         // related products
         $product_category = $product?->category?->id;
@@ -220,14 +229,15 @@ class FrontendDigitalProductController extends Controller
                 $price = $sale_price;
             }
 
-            $taxed_price = 0.0;
-            if (!is_null($product->tax)) {
-                $tax = $product?->getTax?->tax_percentage;
-                $taxed_price = ($tax / $price) * 100;
-            }
+//            $taxed_price = 0.0;
+//            if (!is_null($product->tax)) {
+//                $tax = $product?->getTax?->tax_percentage;
+//                $taxed_price = ($tax / $price) * 100;
+//            }
 
             // Final price
-            $final_price = $price + $taxed_price;
+//            $final_price = $price + $taxed_price;
+            $final_price = $price;
 
             $category = $product?->category?->id;
             $subcategory = $product?->subCategory?->id ?? null;
@@ -252,5 +262,37 @@ class FrontendDigitalProductController extends Controller
                 'error_msg' => __('Something went wrong!'),
             ]);
         }
+    }
+
+    public function category_products($category_type = null, $slug)
+    {
+        $type = ['author', 'language', 'category', 'subcategory', 'child-category', 'tag'];
+        abort_if(!in_array($category_type, $type), 404);
+
+        if ($category_type == 'author') {
+            $category = DigitalAuthor::where('slug', $slug)->select('id', 'name')->firstOrFail();
+            $products_id = AdditionalField::where('author_id', $category->id)->select('product_id')->pluck('product_id');
+        } elseif ($category_type == 'language') {
+            $category = DigitalLanguage::where('slug', $slug)->select('id', 'name')->firstOrFail();
+            $products_id = AdditionalField::where('language', $category->id)->select('product_id')->pluck('product_id');
+        } elseif ($category_type == 'category') {
+            $category = DigitalCategories::where('slug', $slug)->select('id', 'name')->firstOrFail();
+            $products_id = DigitalProductCategories::where('category_id', $category->id)->select('product_id')->pluck('product_id');
+        } elseif ($category_type == 'subcategory') {
+            $category = DigitalSubCategories::where('slug', $slug)->select('id', 'name')->firstOrFail();
+            $products_id = DigitalProductSubCategories::where('sub_category_id', $category->id)->select('product_id')->pluck('product_id');
+        } elseif($category_type == 'child-category') {
+            $category = DigitalChildCategories::where('slug', $slug)->select('id', 'name')->firstOrFail();
+            $products_id = DigitalProductChildCategories::where('child_category_id', $category->id)->select('product_id')->pluck('product_id');
+        } else {
+            $category = DigitalProductTags::where('tag_name', $slug)->select('id', 'tag_name as name')->firstOrFail();
+            $products_id = DigitalProductTags::where('tag_name', $slug)->select('product_id')->pluck('product_id');
+        }
+
+        $products = DigitalProduct::whereIn('id', $products_id)->paginate(12);
+
+        abort_if(empty($products), 403);
+
+        return themeView('digital-shop.single_pages.category', ['category' => $category, 'products' => $products, 'type' => $category_type]);
     }
 }

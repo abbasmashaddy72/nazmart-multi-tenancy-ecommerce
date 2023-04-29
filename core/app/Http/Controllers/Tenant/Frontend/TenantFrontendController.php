@@ -2043,9 +2043,21 @@ HTML;
             ->where('status_id', 1)
             ->where("name", "LIKE", "%" . $search . "%")
             ->orWhere("sale_price", $search)
-            ->select('id', 'slug', 'name', 'price', 'sale_price', 'image_id')
+            ->select('id', 'slug', 'name', 'price', 'sale_price', 'image_id','product_type')
             ->take(20)
-            ->get();
+            ->get()
+            ->toArray();
+
+        $digital_product_object = DigitalProduct::with('additionalFields')
+            ->where('status_id', 1)
+            ->where("name", "LIKE", "%" . $search . "%")
+            ->orWhere("sale_price", $search)
+            ->select('id', 'slug', 'name', 'regular_price as price', 'sale_price', 'image_id','product_type')
+            ->take(20)
+            ->get()
+            ->toArray();
+
+        $product_object = array_merge($product_object, $digital_product_object);
 
         $markup = '';
         foreach ($product_object as $item) {

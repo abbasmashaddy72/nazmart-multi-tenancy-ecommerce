@@ -1,8 +1,12 @@
 <div class="book-details-sidebar-content bg-white sidebar-content-padding">
-    <div class="book-details-sidebar-content-single single-sidebar-border">
-        <span class="book-details-sidebar-content-sub"> {{__('Author')}} </span>
-        <h4 class="book-details-sidebar-content-title"> {{$product->additionalFields?->author?->name}} </h4>
-    </div>
+    @if(!empty($product->additionalFields?->author))
+        <div class="book-details-sidebar-content-single single-sidebar-border">
+            <span class="book-details-sidebar-content-sub"> {{__('Author')}} </span>
+            <h4 class="book-details-sidebar-content-title">
+                <a href="{{route('tenant.digital.shop.category.products', ['author', $product?->additionalFields?->author?->slug])}}"> {{$product?->additionalFields?->author?->name}} </a>
+            </h4>
+        </div>
+    @endif
 
     @if(!empty($product->additionalFields?->pages))
         <div class="book-details-sidebar-content-single single-sidebar-border">
@@ -41,7 +45,9 @@
     @if(!empty($product->additionalFields?->language))
         <div class="book-details-sidebar-content-single single-sidebar-border">
             <span class="book-details-sidebar-content-sub"> {{__('Language')}} </span>
-            <h4 class="book-details-sidebar-content-title"> {{$product->additionalFields?->getLanguage?->name}} </h4>
+            <h4 class="book-details-sidebar-content-title">
+                <a href="{{route('tenant.digital.shop.category.products', ['language', $product->additionalFields?->getLanguage?->slug])}}">{{$product->additionalFields?->getLanguage?->name}}</a>
+            </h4>
         </div>
     @endif
 
