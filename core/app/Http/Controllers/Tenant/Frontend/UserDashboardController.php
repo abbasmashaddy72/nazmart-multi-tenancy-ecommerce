@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tenant\Frontend;
 
+use App\Actions\Tenant\ZipFileDownloader;
 use App\Events\SupportMessage;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ResponseMessage;
@@ -376,14 +377,30 @@ class UserDashboardController extends Controller
             return redirect()->back()->with(['msg' => __('You need to purchase the product first'), 'type' => 'warning']);
         }
 
-        $file_name = $product->slug.'-'.$product->file;
-        $file_path = global_assets_path('assets/tenant/uploads/digital-product-file/'.tenant()->id.'/'.$product->file);
-        $headers = ['Content-Type: file'];
-        if (file_exists($file_path)) {
-            return \Response::download($file_path, $file_name, $headers);
-        } else {
-            echo('File not found.');
-        }
+        $zipDownloader = new ZipFileDownloader();
+        return $zipDownloader->download($product);
+
+//        $zip_file_name = time().'.zip';
+//        $zip_file_location = global_assets_path('assets/tenant/uploads/digital-product-file/'.tenant()->id.'/'.$zip_file_name);
+//
+//        $zip = new \ZipArchive();
+//
+//        if ($zip->open($zip_file_location, \ZipArchive::CREATE) === TRUE)
+//        {
+//            $real_file_path = global_assets_path('assets/tenant/uploads/digital-product-file/'.tenant()->id.'/'.$product->file);
+//            $zip->addFile($real_file_path, $product->file);
+//            $zip->close();
+//        }
+//
+//        return response()->download($zip_file_location);
+
+
+//        $headers = ['Content-Type: file/zip'];
+//        if (file_exists($file_path)) {
+//            return \Response::download($file_path, $file_name, $headers);
+//        } else {
+//            echo('File not found.');
+//        }
     }
 
     public function generate_package_invoice(Request $request)

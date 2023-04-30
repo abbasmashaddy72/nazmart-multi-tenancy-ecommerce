@@ -7,6 +7,11 @@ function getAllExternalMenu()
     return ModuleDataFacade::getAllExternalMenu();
 }
 
+function getAllExternalPaymentGatewayMenu()
+{
+    return ModuleDataFacade::getAllExternalPaymentGatewayMenu();
+}
+
 function getExternalPaymentGateway()
 {
     return ModuleDataFacade::getExternalPaymentGateway();

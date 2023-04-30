@@ -23,6 +23,7 @@ use App\Http\Controllers\Landlord\Admin\MenuController;
 use App\Http\Controllers\Landlord\Admin\ThemeManageController;
 use Modules\SupportTicket\Http\Controllers\Landlord\Admin\SupportTicketController;
 use Modules\SupportTicket\Http\Controllers\Landlord\Admin\SupportDepartmentController;
+use App\Http\Controllers\Landlord\Admin\PaymentSettingsController;
 
 /* ------------------------------------------
      LANDLORD ADMIN ROUTES
@@ -388,6 +389,31 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::get('/license-settings','license_settings')->name('landlord.admin.general.license.settings');
         Route::post('/license-settings','update_license_settings');
 
+    });
+
+    Route::controller(PaymentSettingsController::class)->name('landlord.admin.payment.settings.')->prefix('payment-settings/payment')->group(function (){
+        Route::get('/paypal', 'paypal_settings')->name('paypal');
+        Route::get('/paytm', 'paytm_settings')->name('paytm');
+        Route::get('/stripe', 'stripe_settings')->name('stripe');
+        Route::get('/razorpay', 'razorpay_settings')->name('razorpay');
+        Route::get('/paystack', 'paystack_settings')->name('paystack');
+        Route::get('/mollie', 'mollie_settings')->name('mollie');
+        Route::get('/midtrans', 'midtrans_settings')->name('midtrans');
+        Route::get('/cashfree', 'cashfree_settings')->name('cashfree');
+        Route::get('/instamojo', 'instamojo_settings')->name('instamojo');
+        Route::get('/marcadopago', 'marcadopago_settings')->name('marcadopago');
+        Route::get('/zitopay', 'zitopay_settings')->name('zitopay');
+        Route::get('/squareup', 'squareup_settings')->name('squareup');
+        Route::get('/cinetpay', 'cinetpay_settings')->name('cinetpay');
+        Route::get('/paytabs', 'paytabs_settings')->name('paytabs');
+        Route::get('/billplz', 'billplz_settings')->name('billplz');
+        Route::get('/toyyibpay', 'toyyibpay_settings')->name('toyyibpay');
+        Route::get('/flutterwave', 'flutterwave_settings')->name('flutterwave');
+        Route::get('/payfast', 'payfast_settings')->name('payfast');
+        Route::get('/manual-payment', 'manual_payment_settings')->name('manual_payment');
+        Route::get('/cash-on-delivery', 'cod_settings')->name('cod');
+
+        Route::post('/update', 'update_payment_settings')->name('update');
     });
 
     /* ------------------------------------------

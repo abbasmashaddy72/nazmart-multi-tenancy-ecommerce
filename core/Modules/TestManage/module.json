@@ -51,7 +51,18 @@
             "test_mode" : false,
             "status" : true,
             "extraInfoMarkupBlade" : "ali_pay",
-            "logo_file" : "ali-pay.png"
+            "logo_file" : "ali-pay.png",
+            "admin_settings": {
+                "menu_item": [
+                    {
+                        "id" : "test-settings-menu-submenu",
+                        "label": "Test Sub Menu",
+                        "route": "tenant.admin.activity.log",
+                        "tenantRoute": "tenant.admin.newsletter",
+                        "permissions": ["general-settings-page-settings"]
+                    }
+                ]
+            }
         }
     }
 }

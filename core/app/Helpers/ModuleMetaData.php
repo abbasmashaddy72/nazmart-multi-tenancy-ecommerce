@@ -284,6 +284,12 @@ class ModuleMetaData
         return $addonNames;
     }
 
+    public function getAllExternalPaymentGatewayMenu()
+    {
+        $allExternalPaymentGateway = $this->getExternalPaymentGateway();
+        return $this->getEachMenu($allExternalPaymentGateway);
+    }
+
     public function getAllExternalMenu()
     {
         $allModuleMeta = $this->getAllMetaData();

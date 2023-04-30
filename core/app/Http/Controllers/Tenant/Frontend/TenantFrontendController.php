@@ -2050,7 +2050,7 @@ HTML;
 
         $digital_product_object = DigitalProduct::with('additionalFields')
             ->where('status_id', 1)
-            ->where("name", "LIKE", "%" . $search . "%")
+            ->where("name", "LIKE", "%" . htmlspecialchars(strip_tags($search)) . "%")
             ->orWhere("sale_price", $search)
             ->select('id', 'slug', 'name', 'regular_price as price', 'sale_price', 'image_id','product_type')
             ->take(20)

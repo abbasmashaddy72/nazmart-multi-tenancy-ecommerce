@@ -1031,6 +1031,13 @@ function get_user_lang_direction()
     return !empty(session()->get('lang')) ? $user_direction->direction : $default->direction;
 }
 
+function get_user_lang_bool_direction()
+{
+    $default = \App\Models\Language::where('default', 1)->first();
+    $user_direction = \App\Models\Language::where('slug', session()->get('lang'))->first();
+
+    return !empty(session()->get('lang')) ? ($user_direction->direction == 0 ? 'false' : 'true') : ($default->direction == 0 ? 'false' : 'true');
+}
 
 function get_language_name_by_slug($slug)
 {

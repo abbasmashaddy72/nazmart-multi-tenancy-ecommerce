@@ -249,7 +249,6 @@ class ProductCheckoutService
             $tax = 0.0;
             foreach ($products ?? [] as $product)
             {
-                dd($product);
                 $price = get_digital_product_dynamic_price($product);
                 $price = (!is_null($price['sale_price']) || $price['sale_price'] > 0) ? $price['sale_price'] : $price['regular_price'];
 
@@ -260,16 +259,11 @@ class ProductCheckoutService
                     $taxed_price = ($price * $tax) / 100;
                 }
                 $digital_subtotal += $price + $taxed_price;
-                dd($digital_subtotal);
             }
-
-            dd($digital_subtotal);
         }
 
         $subtotal += $digital_subtotal;
         $total['total'] += $digital_subtotal;
-
-        dd(521231231);
 
         $total['payment_meta'] = $this->payment_meta(compact('product_tax', 'shipping_cost', 'subtotal', 'total'));
 
