@@ -2041,12 +2041,11 @@ HTML;
 
         $product_object = Product::with('badge', 'campaign_product')
             ->where('status_id', 1)
-            ->where("name", "LIKE", "%" . $search . "%")
+            ->where("name", "LIKE", "%" . htmlspecialchars(strip_tags($search)) . "%")
             ->orWhere("sale_price", $search)
             ->select('id', 'slug', 'name', 'price', 'sale_price', 'image_id','product_type')
             ->take(20)
-            ->get()
-            ->toArray();
+            ->get();
 
         $digital_product_object = DigitalProduct::with('additionalFields')
             ->where('status_id', 1)
@@ -2054,13 +2053,14 @@ HTML;
             ->orWhere("sale_price", $search)
             ->select('id', 'slug', 'name', 'regular_price as price', 'sale_price', 'image_id','product_type')
             ->take(20)
-            ->get()
-            ->toArray();
+            ->get();
 
-        $product_object = array_merge($product_object, $digital_product_object);
+        $product_object = $product_object->merge($digital_product_object);
 
         $markup = '';
         foreach ($product_object as $item) {
+            $item = (object) $item;
+
             $data = get_product_dynamic_price($item);
             $campaign_name = $data['campaign_name'];
             $data_regular_price = $data['regular_price'];
@@ -2070,8 +2070,10 @@ HTML;
             $deleted_price = $data_regular_price != null ? float_amount_with_currency_symbol($data_regular_price) : '';
 
             $image = render_image_markup_by_attachment_id($item->image_id);
+
+            $route = $item->product_type == ProductTypeEnum::DIGITAL ? 'digital.shop' : 'shop';
             $markup .= '<li class="product-suggestion-list-item">
-                           <a href="' . route('tenant.shop.product.details', $item->slug) . '" class="product-suggestion-list-link">
+                           <a href="' . route('tenant.'.$route.'.product.details', $item->slug) . '" class="product-suggestion-list-link">
                               <div class="product-image">' . $image . '</div>
                               <div class="product-info">
                                    <div class="product-info-top">
