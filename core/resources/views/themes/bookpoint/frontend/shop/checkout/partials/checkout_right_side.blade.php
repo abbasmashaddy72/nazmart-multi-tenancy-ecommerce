@@ -131,7 +131,7 @@
                                                name="shipping_method" value="{{$method['id']}}">
                                         <label for="shipping-option-{{$method['id']}}">{{$method['name']}}</label>
                                     </span>
-                                        <span>{{amount_with_currency_symbol($method['options']['cost'])}}</span>
+                                        <span>{{float_amount_with_currency_symbol($method['options']['cost'])}}</span>
                                     </li>
                                 @endforeach
                             </ul>
@@ -148,7 +148,7 @@
                                     <span> {{float_amount_with_currency_symbol(0.00)}} </span></li>
                                 <li class="coupon-contents-details-list-item price-shipping">
                                     <span> {{__('Shipping Cost (+)')}} </span>
-                                    <span> {{isset($is_default) && $is_default ? amount_with_currency_symbol($default_shipping['options']['cost']) : '--'}} </span>
+                                    <span> {{isset($is_default) && $is_default ? float_amount_with_currency_symbol($default_shipping['options']['cost']) : '--'}} </span>
                                 </li>
                             </ul>
                         @endif

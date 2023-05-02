@@ -9,7 +9,7 @@
             <div class="col-lg-12">
                 <div class="global-slick-init recent-slider nav-style-one slider-inner-margin" data-appendArrows=".append-featured" data-infinite="true" data-arrows="true" data-dots="false" data-slidesToShow="3" data-swipeToSlide="true" data-autoplay="true" data-autoplaySpeed="2500"
                      data-prevArrow='<div class="prev-icon"><i class="las la-angle-left"></i></div>' data-nextArrow='<div class="next-icon"><i class="las la-angle-right"></i></div>' data-responsive='[{"breakpoint": 1400,"settings": {"slidesToShow": 2}},{"breakpoint": 1200,"settings": {"slidesToShow": 2}},{"breakpoint": 992,"settings": {"slidesToShow": 1}},{"breakpoint": 768, "settings": {"slidesToShow": 1} }]'
-                     data-rtl="{{get_user_lang_direction()}}">
+                     data-rtl="{{get_user_lang_bool_direction()}}">
                     @foreach($data['products'] ?? [] as $product)
                         @php
                             if ($loop->odd) {
@@ -32,7 +32,7 @@
                         <div class="global-flex-card hover-overlay featured-card-padding radius-10">
                             <div class="global-flex-card-thumb radius-5">
                                 <a href="{{route('tenant.shop.product.details', $product->slug)}}">
-                                    {!! render_image_markup_by_attachment_id($product->image_id, 'product-image') !!}
+                                    {!! render_image_markup_by_attachment_id($product->image_id, 'product-image radius-10') !!}
                                 </a>
                             </div>
                             <a href="javascript:void(0)" class="product-cart-btn cart-btn-absolute radius-5 digital-add-to-cart-btn" data-product_id="{{ $product->id }}"> {{__('Add to Cart')}} </a>

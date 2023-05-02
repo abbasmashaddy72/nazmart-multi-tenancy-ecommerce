@@ -81,6 +81,7 @@ class TopAuthor extends PageBuilderBase
         $data = [
             'padding_top' => $padding_top,
             'padding_bottom' => $padding_bottom,
+            'title' => $title,
             'authors' => $authors
         ];
 

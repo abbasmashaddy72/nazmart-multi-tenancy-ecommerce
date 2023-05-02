@@ -96,14 +96,14 @@ class MenuSeed extends Seeder
                     'id' => 1,
                     'ptype' => 'custom',
                     'pname' => 'Best Seller Books',
-                    'purl' => 'javascript:void(0)'
+                    'purl' => '#'
                 ),
             1 =>
                 array(
                     'id' => 2,
                     'ptype' => 'custom',
                     'pname' => 'Special Offer',
-                    'purl' => 'javascript:void(0)',
+                    'purl' => '#',
                 )
         );
 

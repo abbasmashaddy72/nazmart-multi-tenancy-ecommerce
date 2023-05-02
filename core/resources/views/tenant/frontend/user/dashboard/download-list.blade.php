@@ -26,9 +26,6 @@
                         <th>
                             {{__('File')}}
                         </th>
-                        <th>
-                            {{__('Action')}}
-                        </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -44,9 +41,6 @@
                             <td class="d-flex gap-2">
                                 {!! render_image_markup_by_attachment_id($product->image_id, 'product-img') !!}
                                 <p>{{ $product->name }}</p>
-                            </td>
-                            <td class="text-lowercase">
-                                {{$product->file}}
                             </td>
 
                             <td class="table-btn">

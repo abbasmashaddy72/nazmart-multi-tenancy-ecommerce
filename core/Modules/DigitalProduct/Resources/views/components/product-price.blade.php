@@ -15,7 +15,7 @@
             <label class="dashboard-label color-light mb-2"> {{ __("Accessibility") }} </label>
             <select name="accessibility" id="accessibility" class="form-control">
                 <option value="paid" {{$product?->accessibility == 'paid' ? 'selected' : ''}}>{{__('Paid')}}</option>
-                <option value="free" {{$product?->accessibility == 'free' ? 'selected' : ''}}>{{__('Free')}}</option>
+{{--                <option value="free" {{$product?->accessibility == 'free' ? 'selected' : ''}}>{{__('Free')}}</option>--}}
             </select>
         </div>
 

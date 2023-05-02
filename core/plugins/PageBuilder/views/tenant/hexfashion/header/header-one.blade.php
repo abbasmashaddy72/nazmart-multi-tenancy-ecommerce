@@ -1,6 +1,6 @@
     <div class="banner-area" data-padding-top="{{$data['padding_top']}}" data-padding-bottom="{{$data['padding_bottom']}}">
     <div class="banner-social-content">
-        @foreach($data['social_repeater']['social_media_name_'] as $key => $value)
+        @foreach($data['social_repeater']['social_media_name_'] ?? [] as $key => $value)
             <a href="{{$data['social_repeater']['social_media_url_'][$key]}}" class="item"> {{$value}} </a>
         @endforeach
     </div>
@@ -14,7 +14,7 @@
                     <div class="global-slick-init dot-style-one dot-color-two banner-dots dot-absolute"
                          data-infinite="true" data-arrows="true" data-dots="true" data-autoplaySpeed="3000"
                          data-autoplay="true" data-rtl="{{get_user_lang_direction() == 1 ? 'true' : 'false'}}">
-                        @foreach($data['repeater_data']['title_'] as $key => $value)
+                        @foreach($data['repeater_data']['title_'] ?? [] as $key => $value)
                             @php
                                 $title = \App\Helpers\SanitizeInput::esc_html($value) ?? '';
                                 $subtitle = \App\Helpers\SanitizeInput::esc_html($data['repeater_data']['subtitle_'][$key]) ?? '';
