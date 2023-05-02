@@ -287,7 +287,36 @@ class ModuleMetaData
     public function getAllExternalPaymentGatewayMenu()
     {
         $allExternalPaymentGateway = $this->getExternalPaymentGateway();
-        return $this->getEachMenu($allExternalPaymentGateway);
+        return $this->getEachPaymentMenu($allExternalPaymentGateway);
+    }
+
+    private function getEachPaymentMenu($allModuleMeta)
+    {
+        $menuList = [];
+        if (!empty($allModuleMeta)) {
+            foreach ($allModuleMeta ?? [] as $metaData)
+            {
+                $adminSettings = $this->getAdminSettings($metaData);
+                if (tenant() && property_exists($metaData,"show_admin_tenant") && $metaData->show_admin_tenant === false){
+                    continue;
+                }
+                if (!tenant() && property_exists($metaData,"show_admin_landlord") && $metaData->show_admin_landlord === false){
+                    continue;
+                }
+                $menuItem = $this->getAdminMenuSettings($adminSettings);
+                if (!empty((array)$menuItem))
+                {
+                    //if it is tenant then load route param as tenant route param
+                    if (tenant()){
+                        current($menuItem)->route = current($menuItem)->tenantRoute;
+                    }
+
+                    $menuList[] = $menuItem;
+                }
+            }
+        }
+
+        return $menuList;
     }
 
     public function getAllExternalMenu()
