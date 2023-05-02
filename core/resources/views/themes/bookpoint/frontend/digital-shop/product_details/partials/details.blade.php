@@ -21,9 +21,13 @@
         <div class="book-details-product-contents">
             {!! render_product_star_rating_markup_with_count($product) !!}
             <h2 class="book-details-product-contents-title mt-2"> {{$product->name}} </h2>
-            <span class="book-details-product-contents-subtitle mt-1">
-                <a href="{{route('tenant.digital.shop.category.products', ['author', $product?->additionalFields?->author?->slug])}}"> {{$product?->additionalFields?->author?->name}} </a>
-            </span>
+
+            @if(!empty($product?->additionalFields) && !empty($product?->additionalFields?->author))
+                <span class="book-details-product-contents-subtitle mt-1">
+                    <a href="{{route('tenant.digital.shop.category.products', ['author', $product?->additionalFields?->author?->slug])}}"> {{$product?->additionalFields?->author?->name}} </a>
+                </span>
+            @endif
+
             <div class="price-update-through mt-3">
                 @if($product->accessibility != 'free')
                     @if(!empty($sale_price) && $sale_price > 0)
@@ -57,15 +61,19 @@
                        target="_blank"> {{__('Preview')}} </a>
                 @endif
 
-                @php
-                    $user = auth('web')->user();
-                    $downloaded = \Modules\DigitalProduct\Entities\DigitalProductDownload::where(['user_id' => $user->id, 'product_id' => $product->id])->exists();
-                @endphp
+                @auth('web')
+                    @php
+                        $user = auth('web')->user();
+                        $downloaded = \Modules\DigitalProduct\Entities\DigitalProductDownload::where(['user_id' => $user->id, 'product_id' => $product->id])->exists();
+                    @endphp
+                @endauth
 
-                @if($downloaded)
-                        <a href="{{route('tenant.user.dashboard.download.file', $product->slug)}}" class="cmn-btn cmn-btn-bg-1 cmn-btn-small radius-0 mt-2"> {{__('Download')}} </a>
+                @if(isset($downloaded) && $downloaded)
+                    <a href="{{route('tenant.user.dashboard.download.file', $product->slug)}}"
+                       class="cmn-btn cmn-btn-bg-1 cmn-btn-small radius-0 mt-2"> {{__('Download')}} </a>
                 @else
-                    <a href="javascript:void(0)" class="cmn-btn cmn-btn-bg-1 cmn-btn-small radius-0 mt-2 add_to_cart_single_page"> {{__('Add to Cart')}} </a>
+                    <a href="javascript:void(0)"
+                       class="cmn-btn cmn-btn-bg-1 cmn-btn-small radius-0 mt-2 add_to_cart_single_page"> {{__('Add to Cart')}} </a>
                 @endif
             </div>
             <div class="book-details-product-contents-category mt-4 mt-xxl-5">
