@@ -35,6 +35,10 @@
                     <div class="product-summary">
                         <p class="font-weight-bold mb-1">{{ $product->name }}</p>
                         <p>{{Str::words($product->summary, 5)}}</p>
+
+                        @if($product->file == 'no file added')
+                            <small class="py-0 my-0 text-danger">{{__('No file added')}}</small>
+                        @endif
                     </div>
                 </div>
             </td>

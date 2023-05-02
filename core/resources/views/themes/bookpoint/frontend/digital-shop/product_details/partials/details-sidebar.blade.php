@@ -55,7 +55,7 @@
         <div class="book-details-sidebar-content-single single-sidebar-border">
             @foreach($product->additionalCustomFields ?? [] as $customFiled)
                 <span class="book-details-sidebar-content-sub"> {{$customFiled->option_name}} </span>
-                <h4 class="book-details-sidebar-content-title"> {{$customFiled->option_value}} </h4>
+                <h4 class="book-details-sidebar-content-title mb-3"> {{$customFiled->option_value}} </h4>
             @endforeach
         </div>
     @endif

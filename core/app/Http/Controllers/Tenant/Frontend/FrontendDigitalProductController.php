@@ -186,6 +186,14 @@ class FrontendDigitalProductController extends Controller
 
     public function add_to_cart(Request $request): JsonResponse
     {
+        if (!auth('web')->user())
+        {
+            return response()->json([
+                'type' => 'warning',
+                'quantity_msg' => __('Please login first to cart a digital product')
+            ]);
+        }
+
         $request->validate([
             'product_id' => 'required'
         ]);
@@ -229,14 +237,6 @@ class FrontendDigitalProductController extends Controller
                 $price = $sale_price;
             }
 
-//            $taxed_price = 0.0;
-//            if (!is_null($product->tax)) {
-//                $tax = $product?->getTax?->tax_percentage;
-//                $taxed_price = ($tax / $price) * 100;
-//            }
-
-            // Final price
-//            $final_price = $price + $taxed_price;
             $final_price = $price;
 
             $category = $product?->category?->id;

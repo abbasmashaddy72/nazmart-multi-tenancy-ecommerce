@@ -248,6 +248,7 @@ return [
         'JsonLdMulti'   => Artesaos\SEOTools\Facades\JsonLdMulti::class,
         // or
         'SEO' => Artesaos\SEOTools\Facades\SEOTools::class,
+        'Invoice' => LaravelDaily\Invoices\Facades\Invoice::class
     ],
 
 ];

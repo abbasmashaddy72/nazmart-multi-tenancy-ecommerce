@@ -56,7 +56,7 @@
                 "menu_item": [
                     {
                         "id" : "test-settings-menu-submenu",
-                        "label": "Test Sub Menu",
+                        "label": "Test Payment Menu",
                         "route": "tenant.admin.activity.log",
                         "tenantRoute": "tenant.admin.newsletter",
                         "permissions": ["general-settings-page-settings"]

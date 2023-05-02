@@ -2,6 +2,8 @@
 
 namespace App\Actions\Tenant;
 
+use App\Helpers\FlashMsg;
+
 class ZipFileDownloader
 {
     public string $zip_file_location;
@@ -21,8 +23,14 @@ class ZipFileDownloader
         if ($zip->open($zip_file_location, \ZipArchive::CREATE) === TRUE)
         {
             $real_file_path = global_assets_path('assets/tenant/uploads/digital-product-file/'.tenant()->id.'/'.$product->file);
-            $zip->addFile($real_file_path, $product->file);
-            $zip->close();
+
+            if (!is_dir($real_file_path) && file_exists($real_file_path) && is_file($real_file_path))
+            {
+                $zip->addFile($real_file_path, $product->file);
+                $zip->close();
+            } else {
+                return back()->with(FlashMsg::explain('error', 'No file exists'));
+            }
         }
 
         return response()->download($zip_file_location)->deleteFileAfterSend();
