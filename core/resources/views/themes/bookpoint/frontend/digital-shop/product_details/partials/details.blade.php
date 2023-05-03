@@ -55,7 +55,7 @@
             @endif
 
             <div class="btn-wrapper mt-4">
-                @if(!is_null($product->preview_link))
+                @if(!empty($product->preview_link))
                     <a href="{{$product->preview_link}}"
                        class="cmn-btn cmn-btn-outline-one cmn-btn-small color-one radius-0 mt-2 pdf_preview"
                        target="_blank"> {{__('Preview')}} </a>
