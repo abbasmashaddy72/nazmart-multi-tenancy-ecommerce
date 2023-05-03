@@ -54,7 +54,25 @@ function get_static_option_central($option_name, $default = null)
 
 function tenant_has_digital_product()
 {
-    return !empty(get_static_option_central('digital_shop_show'));
+    $digital_product = false;
+    if (tenant())
+    {
+        $plan_features = tenant()->payment_log->package->plan_features;
+        if (!empty($plan_features))
+        {
+            $features = $plan_features->pluck('feature_name');
+
+            if (!empty($features))
+            {
+                if (in_array('digital_product', $features->toArray()))
+                {
+                    $digital_product = true;
+                }
+            }
+        }
+    }
+
+    return $digital_product;
 }
 
 function get_user_lang()

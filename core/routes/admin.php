@@ -186,15 +186,6 @@ Route::group(['middleware' => ['auth:admin','adminglobalVariable', 'set_lang'],'
     });
 
 
-    /* ------------------------------------------
-    SHOP MANAGE SETTINGS ROUTES
-    -------------------------------------------- */
-    Route::controller(GeneralSettingsController::class)->name('landlord.')->prefix('landlord')->group(function (){
-        Route::get('/shop-manage','shop_settings')->name('admin.shop.settings');
-        Route::post('/shop-manage/update','shop_settings_update')->name('admin.shop.settings.update');
-    });
-
-
     /*==============================================
            FORM BUILDER ROUTES
     ==============================================*/
