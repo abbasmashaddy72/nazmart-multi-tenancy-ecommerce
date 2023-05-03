@@ -62,7 +62,7 @@ Route::middleware([
     Route::get('/campaign/{id}', [TenantFrontendController::class, 'campaign'])->name('tenant.campaign.index');
 
     Route::prefix('shop')->as('tenant.')->group(function (){
-        Route::prefix('digital')->name('digital.')->group(function (){
+        Route::middleware('redirect_if_no_digital_product')->prefix('digital')->name('digital.')->group(function (){
             Route::get('/search', [FrontendDigitalProductController::class, 'shop_page'])->name('shop');
             Route::get('/product/{slug}', [FrontendDigitalProductController::class, 'product_details'])->name('shop.product.details'); // Product Details
 

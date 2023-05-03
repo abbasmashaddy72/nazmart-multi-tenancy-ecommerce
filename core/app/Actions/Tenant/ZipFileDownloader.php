@@ -3,6 +3,7 @@
 namespace App\Actions\Tenant;
 
 use App\Helpers\FlashMsg;
+use Modules\DigitalProduct\Entities\DigitalProductDownload;
 
 class ZipFileDownloader
 {
@@ -32,6 +33,10 @@ class ZipFileDownloader
                 return back()->with(FlashMsg::explain('error', 'No file exists'));
             }
         }
+
+        $digital_download = DigitalProductDownload::where(['product_id' => $product->id, 'user_id' => auth('web')->user()->id])->first();
+        $digital_download->increment('download_count');
+        $digital_download->save();
 
         return response()->download($zip_file_location)->deleteFileAfterSend();
     }

@@ -142,7 +142,7 @@ class TenantFrontendController extends Controller
         }
 
         $digital_shop_page_slug = get_page_slug(get_static_option('digital_shop_page'), 'digital_shop_page');
-        if ($slug === $digital_shop_page_slug) {
+        if (tenant_has_digital_product() && $slug === $digital_shop_page_slug) {
             if (tenant()) {
                 $product_object = DigitalProduct::where('status_id', 1)->latest()->paginate(12);
                 $categories = DigitalCategories::whereHas('product', function ($query) {
