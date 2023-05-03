@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Tenant\Frontend;
 
 use App\Actions\Payment\Tenant\PaymentGatewayIpn;
+use App\Enums\ProductTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckoutFormRequest;
 use App\Http\Services\CheckoutToPaymentService;
@@ -33,6 +34,11 @@ class CheckoutPaymentController extends Controller
         $validated_data = $request->validated();
         $validated_data['checkout_type'] = $validated_data['cash_on_delivery'] === 'on' ? 'cod' : 'digital';
 
+        if ($this->terminateIfUnauthenticated())
+        {
+            return back()->withErrors('Your cart contains digital products. Please login first to purchase.');
+        }
+
         $checkout_service = new ProductCheckoutService();
         $user = $checkout_service->getOrCreateUser($validated_data);
         $order_log_id = $checkout_service->createOrder($validated_data, $user);
@@ -43,6 +49,17 @@ class CheckoutPaymentController extends Controller
         }
 
         return CheckoutToPaymentService::checkoutToGateway(compact('order_log_id', 'validated_data')); // Sending multiple data compacting together in one array
+    }
+
+    private function terminateIfUnauthenticated()
+    {
+        if (!\auth('web')->user())
+        {
+            $cartData = Cart::content('default')->where('options.type', ProductTypeEnum::DIGITAL);
+            return !empty($cartData);
+        }
+
+        return false;
     }
 
     public function paypal_ipn()

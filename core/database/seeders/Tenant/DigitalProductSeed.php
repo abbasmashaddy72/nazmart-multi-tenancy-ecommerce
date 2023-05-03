@@ -155,7 +155,7 @@ class DigitalProductSeed extends Seeder
         (24,'Malik Jacobs','malik-jacobs-7','Sunt magna ut adipis','Nemo qui blanditiis . Nemo qui blanditiis . Nemo qui blanditiis . Nemo qui blanditiis',2,477,1,'','',NULL,NULL,'',NULL,'paid',0,NULL,'no file added',200,150,NULL,NULL,NULL,'2023-04-17 01:17:56','2023-04-17 01:18:05',NULL),
         (25,'Kristen Grimes','laboris-vero-quis-do-1','Incidunt assumenda','Nemo qui blanditiis . Nemo qui blanditiis . Nemo qui blanditiis . Nemo qui blanditiis',2,478,1,'Officiis eos iure i','Et suscipit labore r',NULL,NULL,'Velitdoloresanimi',NULL,'paid',0,1,'no file added',200,150,NULL,'2023-10-28 00:00:00',100,'2023-04-17 01:17:58','2023-04-17 19:59:28',NULL),
         (26,'Lynn Cooper','pariatur-excepteur','Ullam ea possimus e','Qui facilis nisi qui.',2,489,1,'Esse sequi beatae l','Molestiae sint harum',NULL,NULL,'UteumconsequatCo',326,'free',0,NULL,'1681677870.jpg',0,NULL,NULL,NULL,NULL,'2023-04-17 02:44:30','2023-04-17 02:59:18','2023-04-17 02:59:18'),
-        (27,'Hayley Delaney','facere-sed-sunt-amet','Veritatis cillum rer','Iste vero deserunt i.',2,473,1,'Sunt ipsa qui exerc','Duis reprehenderit n','2023-04-17','2023-04-18','Quiarerumidnona',974,'free',0,NULL,'1681713297.jpg',0,NULL,NULL,NULL,NULL,'2023-04-17 12:34:57','2023-04-17 12:47:48',NULL)");
+        (27,'Hayley Delaney','facere-sed-sunt-amet','Veritatis cillum rer','Iste vero deserunt i.',2,473,1,'Sunt ipsa qui exerc','Duis reprehenderit n','2023-04-17','2023-04-18','Quiarerumidnona',974,'paid',0,NULL,'1681713297.jpg',200,NULL,NULL,NULL,NULL,'2023-04-17 12:34:57','2023-04-17 12:47:48',NULL)");
     }
 
     private function seedProductAdditionalFiled()
