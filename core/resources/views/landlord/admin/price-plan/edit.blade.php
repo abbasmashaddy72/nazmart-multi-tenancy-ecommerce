@@ -44,7 +44,8 @@
                 'blog' => __('blog'),
                 'storage' => __('storage'),
                 'inventory' => __('inventory'),
-                'campaign' => __('campaign')
+                'campaign' => __('campaign'),
+                'digital_product' => __('digital product'),
             ];
     @endphp
 

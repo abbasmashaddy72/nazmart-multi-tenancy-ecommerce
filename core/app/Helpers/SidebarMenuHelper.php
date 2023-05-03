@@ -39,7 +39,6 @@ class SidebarMenuHelper
         $this->price_plan_settings_menus($menu_instance);
         $this->order_manage_settings_menus($menu_instance);
         $this->wallet_manage_settings_menus($menu_instance);
-        $this->shop_manage_settings_menus($menu_instance);
         $this->custom_domain_settings_menus($menu_instance);
         $this->support_ticket_settings_menus($menu_instance);
         $this->newsletter_settings_menus($menu_instance);
@@ -783,29 +782,6 @@ class SidebarMenuHelper
             'parent' => 'wallet-manage-settings-menu-items',
             'permissions' => ['wallet-history'],
         ]);
-    }
-
-    private function shop_manage_settings_menus(MenuWithPermission $menu_instance): void
-    {
-        $menu_instance->add_menu_item('shop-manage-settings-menu-items', [
-            'route' => 'landlord.admin.shop.settings',
-            'label' => __('Shop Manage'),
-            'parent' => null,
-            'permissions' => ['digital-shop'],
-            'icon' => 'mdi mdi-store',
-        ]);
-//        $menu_instance->add_menu_item('wallet-manage-settings-list-menu-items', [
-//            'route' => 'landlord.admin.wallet.lists',
-//            'label' => __('All Wallet'),
-//            'parent' => 'wallet-manage-settings-menu-items',
-//            'permissions' => ['wallet-list'],
-//        ]);
-//        $menu_instance->add_menu_item('wallet-manage-settings-history-menu-items', [
-//            'route' => 'landlord.admin.wallet.history',
-//            'label' => __('Wallet History'),
-//            'parent' => 'wallet-manage-settings-menu-items',
-//            'permissions' => ['wallet-history'],
-//        ]);
     }
 
     private function users_website_issues_manage_menus(MenuWithPermission $menu_instance) : void
