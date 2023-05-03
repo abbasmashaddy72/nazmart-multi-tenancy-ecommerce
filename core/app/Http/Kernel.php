@@ -13,6 +13,7 @@ use App\Http\Middleware\SetLang;
 use App\Http\Middleware\Tenant\PackageAccessMiddleware;
 use App\Http\Middleware\Tenant\PackageExpireMiddleware;
 use App\Http\Middleware\Tenant\PageLimitMiddleware;
+use App\Http\Middleware\Tenant\RedirectIfNoDigitalProduct;
 use App\Http\Middleware\Tenant\TenantAccountStatus;
 use App\Http\Middleware\Tenant\TenantFeaturePermission;
 use App\Http\Middleware\Tenant\TenantUserMailVerifyMiddleware;
@@ -98,6 +99,7 @@ class Kernel extends HttpKernel
         'page_limit' => PageLimitMiddleware::class,
         'tenant_feature_permission' => TenantFeaturePermission::class,
         'tenant_status' => TenantAccountStatus::class,
-        'set_lang' => SetLang::class
+        'set_lang' => SetLang::class,
+        'redirect_if_no_digital_product' => RedirectIfNoDigitalProduct::class
     ];
 }

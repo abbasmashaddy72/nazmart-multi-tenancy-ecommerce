@@ -72,7 +72,7 @@
                                 </div>
                             @endif
 
-                            @if(tenant())
+                            @if(tenant() && tenant_has_digital_product())
                                 <div class="form-group mt-3">
                                     <label for="site_logo">{{__('Digital Shop Page Display')}}</label>
                                     <select name="digital_shop_page" class="form-control">

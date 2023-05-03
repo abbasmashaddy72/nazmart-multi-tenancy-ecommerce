@@ -716,6 +716,22 @@ class GeneralSettingsController extends Controller
         return back()->with(FlashMsg::update_succeed('breadcrumb'));
     }
 
+    public function shop_settings()
+    {
+        return view('landlord.admin.appearance-settings.shop-settings');
+    }
+
+    public function shop_settings_update(Request $request)
+    {
+        $request->validate([
+            'digital_shop_show' => 'nullable'
+        ]);
+
+        update_static_option_central('digital_shop_show', $request->digital_shop_show);
+
+        return back()->with(FlashMsg::update_succeed('digital shop'));
+    }
+
     public function highlight()
     {
         return view('landlord.admin.appearance-settings.highlight-settings');

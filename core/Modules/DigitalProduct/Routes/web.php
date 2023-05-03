@@ -15,7 +15,8 @@ Route::middleware([
     'tenant_admin_glvar',
     'package_expire',
     'tenantAdminPanelMailVerify',
-    'set_lang'
+    'set_lang',
+    'redirect_if_no_digital_product'
 ])->prefix('admin-home')->name('tenant.')->group(function () {
     Route::group(['prefix' => 'digital-product'], function () {
         /*-----------------------------------

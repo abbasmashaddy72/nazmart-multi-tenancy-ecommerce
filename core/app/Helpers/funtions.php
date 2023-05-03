@@ -52,6 +52,11 @@ function get_static_option_central($option_name, $default = null)
 }
 
 
+function tenant_has_digital_product()
+{
+    return !empty(get_static_option_central('digital_shop_show'));
+}
+
 function get_user_lang()
 {
     return $lang = \App\Facades\GlobalLanguage::user_lang_slug();
