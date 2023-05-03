@@ -368,6 +368,7 @@ class ModuleMetaData
     public function getAdminMenuSettings($adminSettings)
     {
         $menuItem = [];
+        $adminSettings = is_array($adminSettings) ? (object) $adminSettings : $adminSettings;
         if (property_exists($adminSettings, 'menu_item') && !empty($adminSettings->menu_item))
         {
             $menuItem = $adminSettings->menu_item;
