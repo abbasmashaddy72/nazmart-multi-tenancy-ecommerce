@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Modules\Wallet\Entities\Wallet;
 use Modules\Wallet\Entities\WalletSettings;
 use Modules\Wallet\Entities\WalletTenantList;
@@ -77,6 +78,7 @@ class PaymentLogController extends Controller
         $data = $request->validate([
             'name' => 'nullable|string|max:191',
             'email' => 'nullable|email|max:191',
+            'theme_slug' => ['required', Rule::in(getAllThemeSlug())],
             'package_id' => 'required|string',
             'payment_gateway' => ''.$zero_price_condition.'|string',
             'selected_payment_gateway' => ''.$selected_payment_gateway.'|string',
@@ -84,12 +86,12 @@ class PaymentLogController extends Controller
             'trasaction_attachment' => '' . $manual_transection_condition . '|mimes:jpeg,png,jpg,gif|max:2048',
             'subdomain' => "required_if:custom_subdomain,!=,null",
             'custom_subdomain' => "required_if:subdomain,==,custom_domain__dd",
-        ],
-            [
-                "custom_subdomain.required_if" => "Custom Sub Domain Required",
-                "trasaction_id" => "Transaction ID Required",
-                "trasaction_attachment" => "Transaction Attachment Required",
-            ]);
+        ], [
+            "custom_subdomain.required_if" => "Custom Sub Domain Required.",
+            "trasaction_id" => "Transaction ID Required.",
+            "trasaction_attachment" => "Transaction Attachment Required.",
+            "theme_slug.in" => "The selected theme is invalid."
+        ]);
 
         if ($request->custom_subdomain == null) {
             $request->validate([
@@ -247,6 +249,7 @@ class PaymentLogController extends Controller
                         'package_id' => $package_id,
                         'user_id' => auth()->guard('web')->user()->id ?? null,
                         'tenant_id' => $subdomain ?? null,
+                        'theme_slug' => $old_tenant_log->theme_slug,
                         'status' => 'pending',
                         'payment_status' => 'pending',
                         'renew_status' => is_null($old_tenant_log->renew_status) ? 1 : $old_tenant_log->renew_status + 1,
@@ -270,6 +273,7 @@ class PaymentLogController extends Controller
                         'package_id' => $package_id,
                         'user_id' => auth()->guard('web')->user()->id ?? null,
                         'tenant_id' => $subdomain ?? null,
+                        'theme_slug' => $old_tenant_log->theme_slug,
                         'status' => 'pending',
                         'payment_status' => 'pending',
                         'is_renew' => $old_tenant_log->renew_status != null ? 1 : 0,
@@ -295,6 +299,7 @@ class PaymentLogController extends Controller
                         'package_id' => $package_id,
                         'user_id' => auth()->guard('web')->user()->id ?? null,
                         'tenant_id' => $subdomain ?? null,
+                        'theme_slug' => $request->theme_slug,
                         'status' => 'pending',
                         'payment_status' => 'pending',
                         'is_renew' => 0,
@@ -678,7 +683,7 @@ class PaymentLogController extends Controller
         $tenant = Tenant::find($log->tenant_id);
 
         if (!empty($log) && $log->payment_status == 'complete' && is_null($tenant)) {
-            event(new TenantRegisterEvent($user, $log->tenant_id, get_static_option('default_theme')));
+            event(new TenantRegisterEvent($user, $log->tenant_id, $log->theme_slug));
             try {
                 $raw_pass = get_static_option_central('tenant_admin_default_password') ??'12345678';
                 $credential_password = $raw_pass;

@@ -17,3 +17,8 @@ function getHeaderBreadcrumbArea()
 {
     return ThemeDataFacade::getHeaderBreadcrumbArea();
 }
+
+function getAllThemeSlug()
+{
+    return ThemeDataFacade::getAllThemeSlug();
+}

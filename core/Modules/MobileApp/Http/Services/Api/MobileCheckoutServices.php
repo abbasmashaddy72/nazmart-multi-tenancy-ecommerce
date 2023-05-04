@@ -97,7 +97,7 @@ class MobileCheckoutServices
                 ];
             }
         } else { // get logged in user address with billing info
-            if ($validated_data['shift_another_address'] == 'on') {
+            if (array_key_exists('shift_another_address', $validated_data) && $validated_data['shift_another_address'] == 'on') {
                 $user = [
                     'id' => $user->id,
                     'name' => $validated_data['shift_name'],

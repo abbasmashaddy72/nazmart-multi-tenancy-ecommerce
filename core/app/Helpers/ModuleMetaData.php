@@ -297,6 +297,8 @@ class ModuleMetaData
             foreach ($allModuleMeta ?? [] as $metaData)
             {
                 $adminSettings = $this->getAdminSettings($metaData);
+                $adminSettings = is_array($adminSettings) ? (object) $adminSettings : $adminSettings;
+
                 if (tenant() && property_exists($metaData,"show_admin_tenant") && $metaData->show_admin_tenant === false){
                     continue;
                 }
@@ -307,8 +309,8 @@ class ModuleMetaData
                 if (!empty((array)$menuItem))
                 {
                     //if it is tenant then load route param as tenant route param
-                    if (tenant()){
-                        current($menuItem)->route = current($menuItem)->tenantRoute;
+                    if (tenant() && property_exists(current($menuItem),'tenantRoute')){
+                        current($menuItem)->route = current($menuItem)?->tenantRoute;
                     }
 
                     $menuList[] = $menuItem;
@@ -332,6 +334,7 @@ class ModuleMetaData
             foreach ($allModuleMeta ?? [] as $metaData)
             {
                 $adminSettings = $this->getAdminSettings($metaData);
+                $adminSettings = is_array($adminSettings) ? (object) $adminSettings : $adminSettings;
                 if (tenant() && property_exists($adminSettings,"show_admin_tenant") && $adminSettings->show_admin_tenant === false){
                     continue;
                 }
@@ -342,8 +345,8 @@ class ModuleMetaData
                 if (!empty((array)$menuItem))
                 {
                     //if it is tenant then load route param as tenant route param
-                    if (tenant()){
-                        current($menuItem)->route = current($menuItem)->tenantRoute;
+                    if (tenant() && property_exists(current($menuItem),'tenantRoute')){
+                        current($menuItem)->route = current($menuItem)?->tenantRoute;
                     }
 
                     $menuList[] = $menuItem;
