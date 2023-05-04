@@ -151,6 +151,33 @@
             line-height: 28px;
             padding-inline: 3px;
         }
+
+        .theme-wrapper-bg {
+            height: 200px;
+        }
+        .theme-wrapper {
+            border: 1px solid transparent;
+            outline: 1px solid transparent;
+            padding: 10px;
+        }
+        .selected_theme {
+            transition: 0.5s;
+            border-color: var(--main-color-one);
+            outline-color: var(--main-color-one);
+        }
+
+        .selected_text {
+            top: 0;
+            left: 11px;
+            background-color: var(--main-color-one);
+            padding: 10px;
+            position: absolute;
+            color: white;
+            transition: 0.3s;
+        }
+        .selected_text i {
+            font-size: 20px;
+        }
     </style>
 @endsection
 
@@ -245,6 +272,8 @@
                                     $name = auth()->guard('web')->check() ? auth()->guard('web')->user()->name : '';
                                     $email = auth()->guard('web')->check() ? auth()->guard('web')->user()->email : '';
                                 @endphp
+
+                                <input type="hidden" name="theme_slug" id="theme-slug">
                                 <input type="hidden" name="payment_gateway" value=""
                                        class="payment_gateway_passing_clicking_name">
                                 <input type="hidden" name="package_id" value="{{$order_details->id}}">
@@ -299,6 +328,37 @@
                                             </div>
 
                                             <div id="subdomain-wrap"></div>
+                                        </div>
+
+                                        <div class="row theme-row my-5">
+                                            @foreach(getAllThemeData() as $theme)
+                                                @php
+                                                    $theme_slug = $theme->slug;
+                                                    $theme_data = getIndividualThemeDetails($theme_slug);
+                                                    $theme_image = loadScreenshot($theme_slug);
+
+                                                    $theme_custom_name = get_static_option_central($theme_data['slug'].'_theme_name');
+                                                    $theme_custom_url = get_static_option_central($theme_data['slug'].'_theme_url');
+                                                    $theme_custom_image = get_static_option_central($theme_data['slug'].'_theme_image');
+
+                                                    if ($loop->first)
+                                                    {
+                                                        $default_selected_theme = $theme_slug;
+                                                    }
+                                                @endphp
+
+                                                <div class="col-3" style="position: relative">
+                                                    <div class="theme-wrapper {{$loop->first ? 'selected_theme' : ''}}"
+                                                         data-theme="{{$theme_data['slug']}}" data-name="{{!empty($theme_custom_name) ? $theme_custom_name : $theme_data['name']}}">
+                                                        <div class="theme-wrapper-bg" style="background-image: url({{ !empty($theme_custom_image) ? $theme_custom_image : $theme_image}})"></div>
+                                                        <h4 class="text-center mt-2">{{ !empty($theme_custom_name) ? $theme_custom_name : $theme_data['name']}}</h4>
+
+                                                        @if($loop->first)
+                                                            <h4 class="selected_text"><i class="las la-check-circle"></i></h4>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         </div>
 
                                         @if($order_details->price != 0)
@@ -528,12 +588,26 @@
                     }
                 });
 
-
                 $(document).on('click', '.order-btn', function () {
                     $('.loader').show();
                     $('.loader .loader_bottom_title').text('{{__('Your account is on its way. Why don’t you grab a coffee?')}}');
                     $(this).attr('disabled', true);
                     $('.order-form').trigger('submit');
+                });
+
+                $(document).on('click', '.theme-wrapper', function (e) {
+                    let el = $(this);
+                    let theme_slug = el.data('theme');
+
+                    $('.theme-wrapper').removeClass('selected_theme');
+                    el.addClass('selected_theme');
+
+                    let text = '<h4 class="selected_text"><i class="las la-check-circle"></i></h4>';
+                    $('.selected_text').remove();
+                    el.append(text);
+                    $('.selected_text').animate('bounce')
+
+                    $('input#theme-slug').val(theme_slug);
                 });
             });
         })(jQuery);

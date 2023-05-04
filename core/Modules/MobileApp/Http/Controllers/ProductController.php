@@ -330,17 +330,16 @@ class ProductController extends Controller
         }
 
         // ensure rating not inserted before
-        $user_rated_already = !! ProductRating::where('product_id', $request->id)->where('user_id', $user->id)->count();
+        $user_rated_already = !! ProductReviews::where('product_id', $request->id)->where('user_id', $user->id)->count();
         if ($user_rated_already) {
             return response()->json(['msg' => __('You have rated before')])->setStatusCode(422);
         }
 
-        $rating = ProductRating::create([
+        $rating = ProductReviews::create([
             'product_id' => $request->id,
             'user_id' => $user->id,
-            'status' => 1,
             'rating' => $request->rating,
-            'review_msg' => $request->comment,
+            'review_text' => $request->comment,
         ]);
 
         return response()->json(["success" => true,"data" => $rating]);
