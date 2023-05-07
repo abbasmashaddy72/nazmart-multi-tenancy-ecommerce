@@ -599,28 +599,6 @@ class GeneralSettingsController extends Controller
             update_static_option($item, SanitizeInput::esc_html($request->$item));
         }
 
-        $all_gateway = PaymentGateway::all();
-        foreach ($all_gateway as $gateway) {
-            // todo: if manual payament gatewya then save description into database
-            $image_name = $gateway->name . '_logo';
-            $status_name = $gateway->name . '_gateway';
-            $test_mode_name = $gateway->name . '_test_mode';
-
-            $credentials = !empty($gateway->credentials) ? json_decode($gateway->credentials) : [];
-            $update_credentials = [];
-            foreach ($credentials as $cred_name => $cred_val) {
-                $crd_req_name = $gateway->name . '_' . $cred_name;
-                $update_credentials[$cred_name] = $request->$crd_req_name;
-            }
-
-            PaymentGateway::where(['name' => $gateway->name])->update([
-                'image' => $request->$image_name,
-                'status' => isset($request->$status_name) ? 1 : 0,
-                'test_mode' => isset($request->$test_mode_name) ? 1 : 0,
-                'credentials' => json_encode($update_credentials)
-            ]);
-        }
-
         Artisan::call('cache:clear');
         return redirect()->back()->with([
             'msg' => __('Payment Settings Updated..'),

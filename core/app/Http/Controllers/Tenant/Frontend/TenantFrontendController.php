@@ -113,7 +113,7 @@ class TenantFrontendController extends Controller
                 })->select('id', 'name', 'slug')->withCount('product')->get();
                 $sizes = Size::whereHas('product_sizes')->select('id', 'name', 'size_code', 'slug')->get();
                 $colors = Color::select('id', 'name', 'color_code', 'slug')->get();
-                $tags = ProductTag::select('tag_name')->distinct()->get();
+                $tags = ProductTag::whereHas('product')->select('tag_name')->distinct()->get();
 
                 $create_arr = request()->all();
                 $create_url = http_build_query($create_arr);

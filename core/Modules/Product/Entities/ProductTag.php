@@ -10,7 +10,12 @@ class ProductTag extends Model
     use HasFactory;
 
     protected $fillable = ["product_id", "tag_name"];
-    
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id', 'id');
+    }
+
     protected static function newFactory()
     {
         return \Modules\Product\Database\factories\ProductTagFactory::new();
