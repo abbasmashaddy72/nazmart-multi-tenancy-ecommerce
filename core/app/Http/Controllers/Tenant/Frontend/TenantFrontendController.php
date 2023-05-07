@@ -2095,7 +2095,7 @@ HTML;
         }
     }
 
-    public function category_products($category_type = null, $slug)
+    public function category_products($slug, $category_type = null)
     {
         $type = ['category', 'subcategory', 'child-category'];
         abort_if(!in_array($category_type, $type), 404);

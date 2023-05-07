@@ -3,7 +3,7 @@
         <div class="book-details-sidebar-content-single single-sidebar-border">
             <span class="book-details-sidebar-content-sub"> {{__('Author')}} </span>
             <h4 class="book-details-sidebar-content-title">
-                <a href="{{route('tenant.digital.shop.category.products', ['author', $product?->additionalFields?->author?->slug])}}"> {{$product?->additionalFields?->author?->name}} </a>
+                <a href="{{route('tenant.digital.shop.category.products', [$product?->additionalFields?->author?->slug, 'author'])}}"> {{$product?->additionalFields?->author?->name}} </a>
             </h4>
         </div>
     @endif
@@ -46,7 +46,7 @@
         <div class="book-details-sidebar-content-single single-sidebar-border">
             <span class="book-details-sidebar-content-sub"> {{__('Language')}} </span>
             <h4 class="book-details-sidebar-content-title">
-                <a href="{{route('tenant.digital.shop.category.products', ['language', $product->additionalFields?->getLanguage?->slug])}}">{{$product->additionalFields?->getLanguage?->name}}</a>
+                <a href="{{route('tenant.digital.shop.category.products', [$product->additionalFields?->getLanguage?->slug, 'language'])}}">{{$product->additionalFields?->getLanguage?->name}}</a>
             </h4>
         </div>
     @endif

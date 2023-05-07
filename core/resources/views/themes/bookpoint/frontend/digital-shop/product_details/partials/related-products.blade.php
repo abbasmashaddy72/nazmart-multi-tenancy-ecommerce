@@ -44,7 +44,7 @@
                                     @if(!empty($product->additionalFields?->author))
                                         <span class="single-upcoming-contents-subtitle mt-2"> {{__('by')}}
                                             <span class="fw-500 color-light">
-                                                <a href="{{route('tenant.digital.shop.category.products', ['author', $product?->additionalFields?->author?->slug])}}"> {{$product?->additionalFields?->author?->name}} </a>
+                                                <a href="{{route('tenant.digital.shop.category.products', [$product?->additionalFields?->author?->slug, 'author'])}}"> {{$product?->additionalFields?->author?->name}} </a>
                                             </span>
                                         </span>
                                     @endif

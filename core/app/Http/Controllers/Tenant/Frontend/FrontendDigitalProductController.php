@@ -264,7 +264,7 @@ class FrontendDigitalProductController extends Controller
         }
     }
 
-    public function category_products($category_type = null, $slug)
+    public function category_products($slug, $category_type = null)
     {
         $type = ['author', 'language', 'category', 'subcategory', 'child-category', 'tag'];
         abort_if(!in_array($category_type, $type), 404);

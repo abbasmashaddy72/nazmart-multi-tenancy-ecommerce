@@ -24,7 +24,7 @@
 
             @if(!empty($product?->additionalFields) && !empty($product?->additionalFields?->author))
                 <span class="book-details-product-contents-subtitle mt-1">
-                    <a href="{{route('tenant.digital.shop.category.products', ['author', $product?->additionalFields?->author?->slug])}}"> {{$product?->additionalFields?->author?->name}} </a>
+                    <a href="{{route('tenant.digital.shop.category.products', [$product?->additionalFields?->author?->slug, 'author'])}}"> {{$product?->additionalFields?->author?->name}} </a>
                 </span>
             @endif
 
@@ -81,14 +81,14 @@
                     <li class="book-details-product-contents-category-list-item">
                         <span class="category-para"> {{__('Category:')}} </span>
                         <a class="fw-600 color-heading"
-                           href="{{route('tenant.digital.shop.category.products', ['category', $product?->category?->slug])}}"> {{$product?->category?->name}} </a>
+                           href="{{route('tenant.digital.shop.category.products', [$product?->category?->slug, 'category'])}}"> {{$product?->category?->name}} </a>
                     </li>
 
                     @if(!empty($product->subCategory))
                         <li class="book-details-product-contents-category-list-item">
                             <span class="category-para"> {{__('Subcategory:')}} </span>
                             <a class="fw-600 color-heading"
-                               href="{{route('tenant.digital.shop.category.products', ['subcategory', $product?->subCategory?->slug])}}"> {{$product?->subCategory?->name}} </a>
+                               href="{{route('tenant.digital.shop.category.products', [$product?->subCategory?->slug, 'subcategory'])}}"> {{$product?->subCategory?->name}} </a>
                         </li>
                     @endif
 
@@ -98,7 +98,7 @@
 
                             @foreach($product?->childCategory ?? [] as $child_category)
                                 <a class="fw-600 color-heading"
-                                   href="{{route('tenant.digital.shop.category.products', ['child-category', $child_category?->slug])}}"> {{$child_category->name}} </a>{{!$loop->last ? ',' : ''}}
+                                   href="{{route('tenant.digital.shop.category.products', [$child_category?->slug, 'child-category'])}}"> {{$child_category->name}} </a>{{!$loop->last ? ',' : ''}}
                             @endforeach
                         </li>
                     @endif
@@ -109,7 +109,7 @@
 
                             @foreach($product->tag ?? [] as $tag)
                                 <a class="fw-600 color-heading"
-                                   href="{{route('tenant.digital.shop.category.products', ['tag', $tag->tag_name])}}"> {{$tag->tag_name}} </a>{{!$loop->last ? ',' : ''}}
+                                   href="{{route('tenant.digital.shop.category.products', [$tag->tag_name, 'tag'])}}"> {{$tag->tag_name}} </a>{{!$loop->last ? ',' : ''}}
                             @endforeach
                         </li>
                     @endif

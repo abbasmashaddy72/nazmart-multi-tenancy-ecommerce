@@ -23,12 +23,39 @@
         .f_desc {
             height: 100px;
         }
-        small{
+
+        small {
             font-size: 12px;
             color: #b66dff;
         }
-        .price_plan_info{
+
+        .price_plan_info {
             cursor: pointer;
+        }
+
+        .payment-gateway-wrapper ul{
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .payment-gateway-wrapper ul li{
+            max-width: 100px;
+            cursor: pointer;
+            box-sizing: border-box;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            margin: 3px;
+            border: 1px solid #ddd;
+        }
+        .payment-gateway-wrapper ul li img-select{
+            margin-bottom: 0;
+        }
+        .img-select img{
+            max-width: 100%;
         }
     </style>
 
@@ -44,6 +71,7 @@
                 'inventory' => __('inventory'),
                 'campaign' => __('campaign'),
                 'digital_product' => __('digital product'),
+                'app_api' => __('App API')
             ];
     @endphp
     <div class="col-12 stretch-card">
@@ -67,11 +95,6 @@
                     <x-fields.input name="package_badge" label="{{__('Package Badge')}}"/>
                     <x-fields.textarea name="package_description" label="{{__('Package Description')}}"/>
 
-                    @if(tenant())
-                        <x-fields.textarea name="features" label="{{__('Features')}}"
-                                           info="{{__('separate new feature by new line, add {close} for (x) icon add {check} for check icon')}}"/>
-                    @endif
-
                     @if(!tenant())
                         <div class="form-group landlord_price_plan_feature">
                             <h4>{{__('Select Features')}}</h4>
@@ -88,6 +111,38 @@
                                         </li>
                                     @endforeach
                                 </ul>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group landlord_price_plan_themes">
+                            <h4>{{__('Select Themes')}}</h4>
+                            <div class="feature-section">
+                                <ul>
+                                    @php
+                                        $themes = getAllThemeSlug();
+                                    @endphp
+                                    @foreach($themes as $theme)
+                                        <li class="d-inline">
+                                            <input type="checkbox" name="themes[]"
+                                                   id="{{$theme}}" class="exampleCheck1" value="{{$theme}}"
+                                                   data-feature="{{$theme}}">
+                                            <label class="ml-1 text-capitalize" for="{{$theme}}">
+                                                {{$theme}}
+                                            </label>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group landlord_price_plan_payment_gateways">
+                            <h4>{{__('Select Payment Gateways')}}</h4>
+                            <div class="feature-section">
+                                @php
+                                    $replaceable_text = '<input type="hidden" name="selected_payment_gateway" value="paytm">';
+                                @endphp
+                                {!! str_replace($replaceable_text,'',render_payment_gateway_for_form()) !!}
                             </div>
                         </div>
 
@@ -165,7 +220,7 @@
         });
 
         $('.trial_date_box').hide();
-        $(document).on('change', 'input[name=has_trial]', function (e){
+        $(document).on('change', 'input[name=has_trial]', function (e) {
             let el = $(this).val();
 
             $('.trial_date_box').toggle(500);
