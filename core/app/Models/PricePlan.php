@@ -26,4 +26,14 @@ class PricePlan extends Model
     {
         return $this->hasMany(PlanFeature::class,'plan_id','id');
     }
+
+    public function plan_themes()
+    {
+        return $this->hasMany(PlanTheme::class,'plan_id','id');
+    }
+
+    public function plan_payment_gateways()
+    {
+        return $this->hasMany(PlanPaymentGateway::class,'plan_id','id');
+    }
 }

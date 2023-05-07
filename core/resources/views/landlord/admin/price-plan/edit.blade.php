@@ -28,8 +28,38 @@
             font-size: 12px;
             color: #b66dff;
         }
-        .price_plan_info{
+
+        .price_plan_info {
             cursor: pointer;
+        }
+
+        .payment-gateway-wrapper ul{
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            padding-left: 0;
+        }
+        .payment-gateway-wrapper ul li{
+            max-width: 100px;
+            cursor: pointer;
+            box-sizing: border-box;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            margin: 3px;
+            border: 1px solid #ddd;
+        }
+        .payment-gateway-wrapper ul li .img-select{
+            margin-bottom: 0
+        }
+        .img-select img{
+            max-width: 100%;
+        }
+
+        .payment-gateway-wrapper ul li.selected {
+            border: 2px solid red;
         }
     </style>
 
@@ -82,7 +112,7 @@
                     <x-fields.input name="package_badge" label="{{__('Package Badge')}}"
                                     value="{{$plan->package_badge}}"/>
                     <x-fields.textarea name="package_description" label="{{__('Package Description')}}"
-                                    value="{{$plan->description}}"/>
+                                       value="{{$plan->description}}"/>
 
                     @if(tenant())
                         <x-fields.textarea name="features" value="{{$plan->getTranslation('features',$lang_slug)}}"
@@ -100,8 +130,8 @@
                                             <input type="checkbox" name="features[]" id="{{$key}}" class="exampleCheck1"
                                                    value="{{$key}}" data-feature="{{$key}}"
 
-                                                @foreach($plan->plan_features as $feat_old)
-                                                    {{$feat_old->feature_name == $key ? 'checked' : ''}}
+                                            @foreach($plan->plan_features as $feat_old)
+                                                {{$feat_old->feature_name == $key ? 'checked' : ''}}
                                                 @endforeach
                                             >
                                             <label class="ml-1"
@@ -113,31 +143,77 @@
                         </div>
 
                         <div class="form-group page_permission_box">
-                            <label for="">{{__('Page Create Permission')}} <i class="mdi mdi-information-outline text-primary price_plan_info" data-bs-toggle="tooltip" data-bs-placement="top" title="{{__('Keep -1 for Unlimited')}}"></i></label>
+                            <label for="">{{__('Page Create Permission')}} <i
+                                    class="mdi mdi-information-outline text-primary price_plan_info"
+                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                    title="{{__('Keep -1 for Unlimited')}}"></i></label>
                             <input type="text" min="-1" class="form-control" name="page_permission_feature"
                                    value="{{$plan->page_permission_feature}}">
                             <small>{{__('Page limit')}}</small>
                         </div>
 
                         <div class="form-group blog_permission_box">
-                            <label for="">{{__('Blog Create Permission')}} <i class="mdi mdi-information-outline text-primary price_plan_info" data-bs-toggle="tooltip" data-bs-placement="top" title="{{__('Keep -1 for Unlimited')}}"></i></label>
+                            <label for="">{{__('Blog Create Permission')}} <i
+                                    class="mdi mdi-information-outline text-primary price_plan_info"
+                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                    title="{{__('Keep -1 for Unlimited')}}"></i></label>
                             <input type="text" min="-1" class="form-control" name="blog_permission_feature"
                                    value="{{$plan->blog_permission_feature}}">
                             <small>{{__('Blog limit')}}</small>
                         </div>
 
                         <div class="form-group product_permission_box">
-                            <label for="">{{__('Product Create Permission')}} <i class="mdi mdi-information-outline text-primary price_plan_info" data-bs-toggle="tooltip" data-bs-placement="top" title="{{__('Keep -1 for Unlimited')}}"></i></label>
+                            <label for="">{{__('Product Create Permission')}} <i
+                                    class="mdi mdi-information-outline text-primary price_plan_info"
+                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                    title="{{__('Keep -1 for Unlimited')}}"></i></label>
                             <input type="text" min="-1" class="form-control" name="product_permission_feature"
                                    value="{{$plan->product_permission_feature}}">
                             <small>{{__('Product limit')}}</small>
                         </div>
 
                         <div class="form-group storage_permission_box">
-                            <label for="">{{__('Storage Create Permission')}} <i class="mdi mdi-information-outline text-primary price_plan_info" data-bs-toggle="tooltip" data-bs-placement="top" title="{{__('Keep -1 for Unlimited')}}"></i></label>
+                            <label for="">{{__('Storage Create Permission')}} <i
+                                    class="mdi mdi-information-outline text-primary price_plan_info"
+                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                    title="{{__('Keep -1 for Unlimited')}}"></i></label>
                             <input type="text" min="-1" class="form-control" name="storage_permission_feature"
                                    value="{{$plan->storage_permission_feature}}">
                             <small>{{__('Storage limit (MB)')}}</small>
+                        </div>
+
+                        <div class="form-group landlord_price_plan_themes">
+                            <h4>{{__('Select Themes')}}</h4>
+                            <div class="feature-section">
+                                <ul>
+                                    @php
+                                        $themes = getAllThemeSlug();
+                                    @endphp
+                                    @foreach($themes as $theme)
+                                        <li class="d-inline">
+                                            <input type="checkbox" name="themes[]"
+                                                   id="{{$theme}}" class="exampleCheck1" value="{{$theme}}" data-feature="{{$theme}}"
+                                                @foreach($plan->plan_themes as $theme_old)
+                                                    {{$theme_old->theme_slug == $theme ? 'checked' : ''}}
+                                                @endforeach>
+                                            <label class="ml-1 text-capitalize" for="{{$theme}}">
+                                                {{$theme}}
+                                            </label>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group landlord_price_plan_payment_gateways">
+                            <h4>{{__('Select Payment Gateways')}}</h4>
+                            <div class="feature-section">
+                                @php
+                                    $replaceable_text = '<input type="hidden" name="selected_payment_gateway" value="paytm">';
+                                @endphp
+                                {!! str_replace($replaceable_text,'',render_payment_gateway_for_form()) !!}
+                                <input type="hidden" name="payment_gateways">
+                            </div>
                         </div>
 
                         <x-fields.select name="type" title="{{__('Type')}}">
@@ -316,7 +392,31 @@
                 }
 
             }
+        });
 
+        $(document).ready(function (){
+            let payment_gateway_item = $('.payment-gateway-wrapper ul li');
+            let selected_gateways = "{{ $plan_payment_gateways }}";
+            let selected_gateways_array = selected_gateways.split(',');
+
+            payment_gateway_item.removeClass('selected');
+            $.each(selected_gateways_array, function (key, value) {
+                $('.payment-gateway-wrapper ul li[data-gateway='+value+']').addClass('selected');
+            });
+
+            payment_gateway_item.on('click', function (e){
+                let gateways = '';
+
+                let el = $(this);
+                el.toggleClass('selected');
+
+                let all_payment_gateways = $('.payment-gateway-wrapper ul li.selected');
+                all_payment_gateways.each(function (index){
+                    gateways += $(this).data('gateway') + (all_payment_gateways.length-1 !== index ? ',' : '');
+                });
+
+                $("input[name='payment_gateways']").val(gateways);
+            });
         });
     </script>
     <x-repeater/>

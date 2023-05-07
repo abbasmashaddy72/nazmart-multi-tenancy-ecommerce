@@ -37,7 +37,7 @@
             list-style: none;
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            padding-left: 0;
         }
         .payment-gateway-wrapper ul li{
             max-width: 100px;
@@ -51,11 +51,15 @@
             margin: 3px;
             border: 1px solid #ddd;
         }
-        .payment-gateway-wrapper ul li img-select{
-            margin-bottom: 0;
+        .payment-gateway-wrapper ul li .img-select{
+            margin-bottom: 0
         }
         .img-select img{
             max-width: 100%;
+        }
+
+        .payment-gateway-wrapper ul li.selected {
+            border: 2px solid red;
         }
     </style>
 
@@ -114,6 +118,13 @@
                             </div>
                         </div>
 
+                        <div class="form-group page_permission_box"></div>
+
+                        <div class="form-group blog_permission_box"></div>
+
+                        <div class="form-group product_permission_box"></div>
+
+                        <div class="form-group storage_permission_box"></div>
 
                         <div class="form-group landlord_price_plan_themes">
                             <h4>{{__('Select Themes')}}</h4>
@@ -143,17 +154,9 @@
                                     $replaceable_text = '<input type="hidden" name="selected_payment_gateway" value="paytm">';
                                 @endphp
                                 {!! str_replace($replaceable_text,'',render_payment_gateway_for_form()) !!}
+                                <input type="hidden" name="payment_gateways">
                             </div>
                         </div>
-
-                        <div class="form-group page_permission_box"></div>
-
-                        <div class="form-group blog_permission_box"></div>
-
-                        <div class="form-group product_permission_box"></div>
-
-                        <div class="form-group storage_permission_box"></div>
-
 
                         <x-fields.select name="type" class="package_type" title="{{__('Type')}}">
                             <option value="">{{__('Select')}}</option>
@@ -300,6 +303,22 @@
             }
         });
 
+        $('.payment-gateway-wrapper ul li').removeClass('selected');
+        $(document).ready(function (){
+            $('.payment-gateway-wrapper ul li').on('click', function (e){
+                let gateways = '';
+
+                let el = $(this);
+                el.toggleClass('selected');
+
+                let all_payment_gateways = $('.payment-gateway-wrapper ul li.selected');
+                all_payment_gateways.each(function (index){
+                    gateways += $(this).data('gateway') + (all_payment_gateways.length-1 !== index ? ',' : '');
+                });
+
+                $("input[name='payment_gateways']").val(gateways);
+            });
+        });
     </script>
     <x-repeater/>
 @endsection
