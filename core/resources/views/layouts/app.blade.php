@@ -11,9 +11,9 @@
         @if(!request()->routeIs('landlord.admin.home'))
             @yield('title')  -
         @endif
-        {{get_static_option('site_'.\App\Facades\GlobalLanguage::user_lang_slug().'_title',__('Xgenious'))}}
-        @if(!empty(get_static_option('site_'.\App\Facades\GlobalLanguage::user_lang_slug().'_tag_line')))
-            - {{get_static_option('site_'.\App\Facades\GlobalLanguage::user_lang_slug().'_tag_line')}}
+        {{get_static_option('site_title',__('Xgenious'))}}
+        @if(!empty(get_static_option('site_tag_line')))
+            - {{get_static_option('site_tag_line')}}
         @endif
     </title>
 

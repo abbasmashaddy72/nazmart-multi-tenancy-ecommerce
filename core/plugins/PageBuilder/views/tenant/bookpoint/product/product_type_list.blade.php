@@ -18,10 +18,10 @@
                     @endphp
                     <ul class="category-grid-list filter-list store-tabs">
                         <li class="list active" data-limit="{{$data['product_limit']}}"
-                            data-tab="all" data-all-id="{{$allIds}}"> {{__('All')}} </li>
+                            data-tab="all" data-all-id="{{$allIds}}" data-sort_by="{{$data['sort_by']}}" data-sort_to="{{$data['sort_to']}}"> {{__('All')}} </li>
                         @foreach($data['categories'] as $category)
                             <li class="list" data-tab="{{$category->slug}}"
-                                data-limit="{{$data['product_limit']}}"> {{$category->name}} </li>
+                                data-limit="{{$data['product_limit']}}" data-sort_by="{{$data['sort_by']}}" data-sort_to="{{$data['sort_to']}}"> {{$category->name}} </li>
                         @endforeach
                     </ul>
                 </div>
@@ -93,6 +93,8 @@
                 let tab = el.data('tab');
                 let limit = el.data('limit');
                 let allId = el.data('all-id');
+                let sort_by = el.data('sort_by');
+                let sort_to = el.data('sort_to');
 
                 $.ajax({
                     type: 'GET',
@@ -100,7 +102,9 @@
                     data: {
                         category: tab,
                         limit: limit,
-                        allId: allId
+                        allId: allId,
+                        sort_by: sort_by,
+                        sort_to: sort_to
                     },
                     beforeSend: function () {
                         $('.loader').fadeIn(200);

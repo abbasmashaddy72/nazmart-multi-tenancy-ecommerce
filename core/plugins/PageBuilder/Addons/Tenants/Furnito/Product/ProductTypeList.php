@@ -8,6 +8,7 @@ use Modules\Product\Entities\Product;
 use Modules\Product\Entities\ProductCategory;
 use Plugins\PageBuilder\Fields\NiceSelect;
 use Plugins\PageBuilder\Fields\Number;
+use Plugins\PageBuilder\Fields\Select;
 use Plugins\PageBuilder\Fields\Text;
 use Plugins\PageBuilder\PageBuilderBase;
 
@@ -58,6 +59,26 @@ class ProductTypeList extends PageBuilderBase
             'info' => 'How many products will be shown under the selected category'
         ]);
 
+        $output .= Select::get([
+            'name' => 'sort_by',
+            'label' => __('Product Sort By'),
+            'options' => [
+                'id' => 'ID',
+                'created_at' => 'Created Date'
+            ],
+            'value' => $widget_saved_values['sort_by'] ?? null,
+        ]);
+
+        $output .= Select::get([
+            'name' => 'sort_to',
+            'label' => __('Product Sort To'),
+            'options' => [
+                'desc' => 'Descending',
+                'asc' => 'Ascending'
+            ],
+            'value' => $widget_saved_values['sort_to'] ?? null,
+        ]);
+
         $output .= Text::get([
             'name' => 'view_all_url',
             'label' => __('View All URL'),
@@ -81,6 +102,10 @@ class ProductTypeList extends PageBuilderBase
         $subtitle = SanitizeInput::esc_html($this->setting_item('subtitle') ?? '');
         $item_show = SanitizeInput::esc_html($this->setting_item('item_show') ?? '');
         $view_all_url = SanitizeInput::esc_html($this->setting_item('view_all_url') ?? '');
+
+        $sort_by = SanitizeInput::esc_html($this->setting_item('sort_by') ?? 'id');
+        $sort_to = SanitizeInput::esc_html($this->setting_item('sort_to') ?? 'desc');
+
         $padding_top = SanitizeInput::esc_html($this->setting_item('padding_top'));
         $padding_bottom = SanitizeInput::esc_html($this->setting_item('padding_bottom'));
 
@@ -95,9 +120,9 @@ class ProductTypeList extends PageBuilderBase
         }
 
         if(!empty($item_show)){
-            $products = $products->orderBy('id','desc')->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')->take($item_show)->get();
+            $products = $products->orderBy($sort_by, $sort_to)->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')->take($item_show)->get();
         }else{
-            $products = $products->orderBy('id', 'desc')->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')->take(6)->get();
+            $products = $products->orderBy($sort_by, $sort_to)->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')->take(6)->get();
         }
 
 
@@ -109,7 +134,9 @@ class ProductTypeList extends PageBuilderBase
             'view_all_url' => $view_all_url,
             'categories'=> $categories,
             'products'=> $products,
-            'product_limit' => $item_show ?? 6
+            'product_limit' => $item_show ?? 6,
+            'sort_by' => $sort_by,
+            'sort_to' => $sort_to
         ];
 
         return self::renderView('tenant.furnito.product.product_type_list',$data);
@@ -117,6 +144,6 @@ class ProductTypeList extends PageBuilderBase
 
     public function addon_title()
     {
-        return __('Theme 2: Product Type List(01)');
+        return __('Theme Furnito: Product Type List(01)');
     }
 }
