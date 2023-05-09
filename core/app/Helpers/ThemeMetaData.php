@@ -131,36 +131,46 @@ class ThemeMetaData
     {
         $headerHook = $this->getHeaderHook();
         $current_theme = $this->getSelectedThemeSlug();
+        $return_val = '';
 
         if (!empty($headerHook) && property_exists($headerHook, 'blade'))
         {
             if (count($headerHook->blade) > 0)
             {
-                $file_name = 'themes.'.$current_theme.'.headerHookTemplate.'.current($headerHook->blade);
-                if (\view()->exists($file_name))
-                {
-                    return \view($file_name);
+                foreach ($headerHook->blade as $bl){
+                    $file_name = 'themes.'.$current_theme.'.headerHookTemplate.'.$bl;
+                    if (\view()->exists($file_name))
+                    {
+                        $return_val .=\view($file_name)->render()."\n";
+                    }
                 }
             }
         }
+
+        return $return_val;
     }
 
     public function renderFooterHookBladeFile()
     {
         $footerHook = $this->getFooterHook();
         $current_theme = $this->getSelectedThemeSlug();
-
+        $return_val = '';
         if (!empty($footerHook) && property_exists($footerHook, 'blade'))
         {
             if (count($footerHook->blade) > 0)
             {
-                $file_name = 'themes.'.$current_theme.'.footerHookTemplate.'.current($footerHook->blade);
-                if (\view()->exists($file_name))
-                {
-                    return \view($file_name);
+                foreach ($footerHook->blade as $bl){
+                    $file_name = 'themes.'.$current_theme.'.footerHookTemplate.'.$bl;
+                    if (\view()->exists($file_name))
+                    {
+                        $return_val .=\view($file_name)->render()."\n";
+                    }
                 }
+
             }
         }
+
+        return $return_val;
     }
 
     public function getFooterWidgetArea()

@@ -9,7 +9,7 @@
 
 @section('section')
     @php
-        $central_domain = getenv('CENTRAL_DOMAIN');
+        $central_domain = env('CENTRAL_DOMAIN');
     @endphp
 <div class="parent">
     <div class="row">
@@ -37,14 +37,14 @@
                         <tr>
                             <td>{{__('CNAME Record')}}</td>
                             <td>www</td>
-                            <td>{{getenv('CENTRAL_DOMAIN')}}</td>
+                            <td>{{env('CENTRAL_DOMAIN')}}</td>
                             <td>{{__('Automatic')}}</td>
                         </tr>
 
                         <tr>
                             <td>{{__('CNAME Record')}}</td>
                             <td>@</td>
-                            <td>{{getenv('CENTRAL_DOMAIN')}}</td>
+                            <td>{{env('CENTRAL_DOMAIN')}}</td>
                             <td>{{__('Automatic')}}</td>
                         </tr>
 
@@ -88,7 +88,7 @@
                                         <tbody>
                                             @foreach($user_domain_infos->tenant_details ?? [] as $tenant)
                                                 <tr>
-                                                <td>{{$tenant->id . '.'. getenv('CENTRAL_DOMAIN')}}</td>
+                                                <td>{{$tenant->id . '.'. env('CENTRAL_DOMAIN')}}</td>
                                                 <td>{{optional($tenant->custom_domain)->custom_domain}}</td>
                                                 <td class="py-4">
                                                     @if(optional($tenant->custom_domain)->custom_domain_status == 'pending')

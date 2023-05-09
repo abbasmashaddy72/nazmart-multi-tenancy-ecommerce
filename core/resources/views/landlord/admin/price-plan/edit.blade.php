@@ -68,15 +68,7 @@
 @section('content')
 
     @php
-        $features = [
-                'products' => __('products'),
-                'pages' => __('pages'),
-                'blog' => __('blog'),
-                'storage' => __('storage'),
-                'inventory' => __('inventory'),
-                'campaign' => __('campaign'),
-                'digital_product' => __('digital product'),
-            ];
+        $features = price_plan_feature_list();
     @endphp
 
     <div class="col-12 stretch-card">
@@ -208,11 +200,24 @@
                         <div class="form-group landlord_price_plan_payment_gateways">
                             <h4>{{__('Select Payment Gateways')}}</h4>
                             <div class="feature-section">
+                                <style>
+                                    .select-all-theme{
+                                        width: 115px;
+                                    }
+                                    .select-all-theme .onff.slider:before{
+                                        content: "Select All";
+                                        width: 80px;
+                                    }
+                                    .select-all-theme input:checked + .onff.slider:before {
+                                        content: "Unselect" !important;
+                                    }
+                                </style>
+                                <x-fields.switcher class="select-all-theme" name="" label="" value=""/>
                                 @php
                                     $replaceable_text = '<input type="hidden" name="selected_payment_gateway" value="paytm">';
                                 @endphp
                                 {!! str_replace($replaceable_text,'',render_payment_gateway_for_form()) !!}
-                                <input type="hidden" name="payment_gateways">
+                                <input type="hidden" name="payment_gateways" value="{{$plan_payment_gateways}}">
                             </div>
                         </div>
 
@@ -298,7 +303,6 @@
 @endsection
 
 @section('scripts')
-
     <script>
         //Date Picker
         flatpickr('.date', {
@@ -398,11 +402,18 @@
             let payment_gateway_item = $('.payment-gateway-wrapper ul li');
             let selected_gateways = "{{ $plan_payment_gateways }}";
             let selected_gateways_array = selected_gateways.split(',');
+            if(selected_gateways_array.length === payment_gateway_item.length )
+            {
+                $('.select-all-theme input[type="checkbox"]').attr('checked', true)
+            }
 
             payment_gateway_item.removeClass('selected');
-            $.each(selected_gateways_array, function (key, value) {
-                $('.payment-gateway-wrapper ul li[data-gateway='+value+']').addClass('selected');
-            });
+            if (selected_gateways_array.length > 1)
+            {
+                $.each(selected_gateways_array, function (key, value) {
+                    $('.payment-gateway-wrapper ul li[data-gateway='+value+']').addClass('selected');
+                });
+            }
 
             payment_gateway_item.on('click', function (e){
                 let gateways = '';
@@ -414,6 +425,25 @@
                 all_payment_gateways.each(function (index){
                     gateways += $(this).data('gateway') + (all_payment_gateways.length-1 !== index ? ',' : '');
                 });
+
+                $("input[name='payment_gateways']").val(gateways);
+            });
+
+            $('.select-all-theme input[type="checkbox"]').on('change', function (){
+                let gateways = '';
+                let el = $(this);
+
+                payment_gateway_item.each(function (){
+                    $(this).removeClass('selected');
+                });
+
+                if(el.is(":checked"))
+                {
+                    payment_gateway_item.each(function (index){
+                        $(this).addClass('selected');
+                        gateways += $(this).data('gateway') + (payment_gateway_item.length-1 !== index ? ',' : '');
+                    });
+                }
 
                 $("input[name='payment_gateways']").val(gateways);
             });

@@ -67,16 +67,7 @@
 
 @section('content')
     @php
-        $features = [
-                'products' => __('products'),
-                'pages' => __('pages'),
-                'blog' => __('blog'),
-                'storage' => __('storage'),
-                'inventory' => __('inventory'),
-                'campaign' => __('campaign'),
-                'digital_product' => __('digital product'),
-                'app_api' => __('App API')
-            ];
+        $features = price_plan_feature_list();
     @endphp
     <div class="col-12 stretch-card">
         <div class="card">
@@ -110,7 +101,7 @@
                                                    id="{{$key}}" class="exampleCheck1" value="{{$key}}"
                                                    data-feature="{{$key}}">
                                             <label class="ml-1" for="{{$key}}">
-                                                {{__(str_replace('_', ' ', ucfirst($feat)))}}
+                                                {{__(str_replace('_', ' ', ucwords($feat)))}}
                                             </label>
                                         </li>
                                     @endforeach
@@ -150,6 +141,19 @@
                         <div class="form-group landlord_price_plan_payment_gateways">
                             <h4>{{__('Select Payment Gateways')}}</h4>
                             <div class="feature-section">
+                                <style>
+                                    .select-all-theme{
+                                        width: 115px;
+                                    }
+                                    .select-all-theme .onff.slider:before{
+                                        content: "Select All";
+                                        width: 80px;
+                                    }
+                                    .select-all-theme input:checked + .onff.slider:before {
+                                        content: "Unselect" !important;
+                                    }
+                                </style>
+                                <x-fields.switcher class="select-all-theme" name="" label="" value=""/>
                                 @php
                                     $replaceable_text = '<input type="hidden" name="selected_payment_gateway" value="paytm">';
                                 @endphp
@@ -303,9 +307,11 @@
             }
         });
 
-        $('.payment-gateway-wrapper ul li').removeClass('selected');
         $(document).ready(function (){
-            $('.payment-gateway-wrapper ul li').on('click', function (e){
+            let payment_gateway_item = $('.payment-gateway-wrapper ul li');
+            payment_gateway_item.removeClass('selected');
+
+            payment_gateway_item.on('click', function (e){
                 let gateways = '';
 
                 let el = $(this);
@@ -315,6 +321,26 @@
                 all_payment_gateways.each(function (index){
                     gateways += $(this).data('gateway') + (all_payment_gateways.length-1 !== index ? ',' : '');
                 });
+
+                $("input[name='payment_gateways']").val(gateways);
+            });
+
+            $('.select-all-theme input[type="checkbox"]').on('change', function (){
+                let gateways = '';
+                let el = $(this);
+
+                payment_gateway_item.each(function (){
+                    $(this).removeClass('selected');
+                });
+
+                if(el.is(":checked"))
+                {
+                    let all_payment_gateways = $('.payment-gateway-wrapper ul li.selected');
+                    payment_gateway_item.each(function (index){
+                        $(this).addClass('selected');
+                        gateways += $(this).data('gateway') + (payment_gateway_item.length-1 !== index ? ',' : '');
+                    });
+                }
 
                 $("input[name='payment_gateways']").val(gateways);
             });

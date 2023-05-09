@@ -58,7 +58,8 @@ class ProductTypeList extends PageBuilderBase
             'label' => __('Product Sort By'),
             'options' => [
                 'id' => 'ID',
-                'created_at' => 'Created Date'
+                'created_at' => 'Created Date',
+                'sale_price' => 'Price'
             ],
             'value' => $widget_saved_values['sort_by'] ?? null,
         ]);

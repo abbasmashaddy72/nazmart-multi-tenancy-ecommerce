@@ -118,8 +118,12 @@ class PricePlanController extends Controller
             }
 
             $payment_gateways = $request->payment_gateways;
-            $payment_gateways = explode(',', $payment_gateways);
+            $payment_gateways = array_filter(explode(',', $payment_gateways));
             foreach ($payment_gateways as $gateway) {
+                if (empty($gateway))
+                {
+                    continue;
+                }
                 PlanPaymentGateway::create([
                     'plan_id' => $price_plan->id,
                     'payment_gateway_name' => $gateway,
@@ -215,8 +219,12 @@ class PricePlanController extends Controller
 
             $price_plan->plan_payment_gateways()->delete();
             $payment_gateways = $request->payment_gateways;
-            $payment_gateways = explode(',', $payment_gateways);
+            $payment_gateways = array_filter(explode(',', $payment_gateways));
             foreach ($payment_gateways as $gateway) {
+                if (empty($gateway))
+                {
+                    continue;
+                }
                 PlanPaymentGateway::create([
                     'plan_id' => $price_plan->id,
                     'payment_gateway_name' => $gateway,

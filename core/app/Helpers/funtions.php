@@ -1689,3 +1689,8 @@ function theme_custom_name($theme_data)
 {
     return !empty(get_static_option_central($theme_data->slug . '_theme_name')) ? get_static_option_central($theme_data->slug . '_theme_name') : $theme_data->name;
 }
+
+function price_plan_feature_list()
+{
+    return \App\Enums\PricePlanTypEnums::getFeatureList();
+}
