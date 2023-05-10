@@ -148,9 +148,15 @@
                             @endphp
                             <label for="name">{{__('Select your domain')}}</label>
                             <select class="form-control" name="old_domain" id="">
-                                <option value="">Select a domain</option>
+                                <option value="">{{__('Select a domain')}}</option>
                                 @foreach($domain_list as $domain)
-                                    <option value="{{$domain->id}}">{{$domain->id}}</option>
+                                    @php
+                                        $tenant = \App\Models\Tenant::find($domain->id);
+                                    @endphp
+
+                                    @if(tenant_plan_sidebar_permission('custom_domain', $tenant))
+                                        <option value="{{$domain->id}}">{{$domain->id}}</option>
+                                   @endif
                                 @endforeach
                             </select>
                             <small>{{__('Select the domain which you want to change')}}</small>
@@ -167,6 +173,9 @@
                               The valid format will be exactly like this one - domain.tld, domain.tld or subdomain.domain.tld, subdomain.domain.tld'))}}
                         </div>
 
+                        <div class="alert alert-warning mt-3">
+                            <p>{{__("If you are unable to locate your subdomain in the list, it is possible that the custom domain feature may not be included in your subscription plan.")}}</p>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('Close')}}</button>

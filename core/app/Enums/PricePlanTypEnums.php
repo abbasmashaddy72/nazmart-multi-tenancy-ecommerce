@@ -32,6 +32,7 @@ class PricePlanTypEnums
             'digital_product' => __('digital product'),
             'custom_domain' => __('custom domain'),
             'newsletter' => __('newsletter'),
+            'testimonial' => __('testimonial'),
             'app_api' => __('app api')
         ];
     }

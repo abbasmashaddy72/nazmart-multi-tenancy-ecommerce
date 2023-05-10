@@ -30,7 +30,7 @@ Route::middleware([
     | BACKEND NEWSLETTER AREA
     |---------------------------------------------------------------------------------------------------------------------------*/
 
-    Route::controller(NewsletterController::class)->prefix('tenant-newsletter')->group(function (){
+    Route::controller(NewsletterController::class)->middleware(\App\Http\Middleware\Tenant\TenantCheckPermission::class)->prefix('tenant-newsletter')->group(function (){
         Route::get('/', 'index')->name('admin.newsletter');
         Route::post('/delete/{id}', 'delete')->name('admin.newsletter.delete');
         Route::post('/single', 'send_mail')->name('admin.newsletter.single.mail');
@@ -106,7 +106,7 @@ Route::middleware([
     /*----------------------------------------------------------------------------------------------------------------------------
     | CUSTOM DOMAIN MANAGE
     |----------------------------------------------------------------------------------------------------------------------------*/
-    Route::controller(\App\Http\Controllers\Tenant\Admin\CustomDomainController::class)->prefix('custom-domain')->group(function () {
+    Route::controller(\App\Http\Controllers\Tenant\Admin\CustomDomainController::class)->prefix('custom-domain')->middleware(\App\Http\Middleware\Tenant\TenantCheckPermission::class)->group(function () {
         Route::get('/custom-domain-request', 'custom_domain_request')->name('admin.custom.domain.requests');
         Route::post('/custom-domain-request', 'custom_domain_request_change');
     });
@@ -188,7 +188,7 @@ Route::middleware([
     /*----------------------------------------------------------------------------------------------------------------------------
     | TESTIMONIAL  ROUTES
     |----------------------------------------------------------------------------------------------------------------------------*/
-    Route::controller(\App\Http\Controllers\Landlord\Admin\TestimonialController::class)->prefix('testimonial')->group(function () {
+    Route::controller(\App\Http\Controllers\Landlord\Admin\TestimonialController::class)->middleware('tenant_feature_permission')->prefix('testimonial')->group(function () {
         Route::get('/all', 'index')->name('admin.testimonial');
         Route::post('/all', 'store');
         Route::post('/clone', 'clone')->name('admin.testimonial.clone');

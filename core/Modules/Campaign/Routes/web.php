@@ -16,7 +16,8 @@ Route::middleware([
     'package_expire',
     'set_lang',
     'tenantAdminPanelMailVerify',
-    'tenant_feature_permission'
+//    'tenant_feature_permission'
+    \App\Http\Middleware\Tenant\TenantCheckPermission::class
 ])->group(function () {
     Route::group(['as' => 'frontend.products.'], function () {
         /**--------------------------------

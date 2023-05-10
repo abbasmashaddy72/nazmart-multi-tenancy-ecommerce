@@ -1125,7 +1125,7 @@ class TenantFrontendController extends Controller
             return response()->json([
                 'type' => 'success',
                 'coupon_amount' => round($total, 2),
-                'coupon_price' => (double)$subtotal - $coupon_amount_total,
+                'coupon_price' => round((double)$subtotal - $coupon_amount_total, 2),
                 'msg' => __('Coupon applied successfully')
             ]);
         }

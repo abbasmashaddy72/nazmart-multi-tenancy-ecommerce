@@ -1694,3 +1694,27 @@ function price_plan_feature_list()
 {
     return \App\Enums\PricePlanTypEnums::getFeatureList();
 }
+
+function tenant_plan_sidebar_permission($permission_name, $tenant = null) // Plan based admin sidebar permission
+{
+    $inventory = false;
+
+    $tenant = !empty($tenant) ? $tenant : tenant();
+    $current_tenant_payment_data = $tenant->payment_log ?? [];
+
+    if (!empty($current_tenant_payment_data))
+    {
+        $package = $current_tenant_payment_data->package;
+        if (!empty($package))
+        {
+            $features = $package->plan_features->pluck('feature_name')->toArray();
+
+            if (in_array($permission_name, (array)$features))
+            {
+                $inventory = true;
+            }
+        }
+    }
+
+    return $inventory;
+}

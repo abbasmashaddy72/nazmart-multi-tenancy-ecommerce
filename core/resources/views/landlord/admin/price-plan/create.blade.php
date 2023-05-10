@@ -4,7 +4,6 @@
 @endsection
 
 @section('style')
-
     <style>
         .all-field-wrap .action-wrap {
             position: absolute;
