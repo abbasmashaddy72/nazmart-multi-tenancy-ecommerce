@@ -19,6 +19,7 @@ use Modules\MobileApp\Http\Controllers\FeaturedProductController;
 use Modules\MobileApp\Http\Controllers\MobileController;
 use Modules\MobileApp\Http\Controllers\ProductController;
 use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
+use App\Http\Middleware\Tenant\TenantMobileAppPermission;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,11 +36,11 @@ use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 Route::middleware([
     'api',
 //    InitializeTenancyByDomain::class,
+    TenantMobileAppPermission::class,
     InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
 ])->prefix('api/tenant')->group(function () {
     Route::prefix("v1")->group(function () {
-
         Route::post('/register',[UserController::class,'register']);
         Route::post('/username',[UserController::class,'username']);
         Route::post('/login',[UserController::class,'login']);
@@ -97,7 +98,7 @@ Route::middleware([
         Route::post('/subcategory/{id}',[ProductController::class,'singleProducts']);
         Route::get('/terms-and-condition-page', [MobileController::class, 'termsAndCondition']);
         Route::get('/privacy-policy-page', [MobileController::class, 'privacyPolicy']);
-        Route::get('site_currency_symbol', [MobileController::class, 'site_currency_symbol']);
+        Route::get('site-currency-symbol', [MobileController::class, 'site_currency_symbol']);
         Route::get('/language',[LanguageController::class,'languageInfo']);
         Route::post('/translate-string',[LanguageController::class,'translateString']);
 

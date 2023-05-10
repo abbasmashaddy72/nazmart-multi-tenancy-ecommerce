@@ -14,10 +14,10 @@
                     @endphp
                     <ul class="store-isotope-list filter-list store-tabs">
                         <li class="list active" data-limit="{{$data['product_limit']}}"
-                            data-tab="all" data-all-id="{{$allIds}}"> {{__('All')}} </li>
+                            data-tab="all" data-all-id="{{$allIds}}" data-sort_by="{{$data['sort_by']}}" data-sort_to="{{$data['sort_to']}}"> {{__('All')}} </li>
                         @foreach($data['categories'] as $category)
                             <li class="list" data-tab="{{$category->slug}}"
-                                data-limit="{{$data['product_limit']}}"> {{$category->name}} </li>
+                                data-limit="{{$data['product_limit']}}" data-sort_by="{{$data['sort_by']}}" data-sort_to="{{$data['sort_to']}}"> {{$category->name}} </li>
                         @endforeach
                     </ul>
                 </div>
@@ -49,7 +49,7 @@
                         </div>
                         <div class="global-card-contents">
                             <h5 class="global-card-contents-title">
-                                <a href="{{route('tenant.shop.product.details', $product->slug)}}"> {{Str::words($product->name, 4)}} </a>
+                                <a href="{{route('tenant.shop.product.details', $product->slug)}}"> {{Str::words($product->name, 15)}} </a>
                             </h5>
 
                             {!! render_product_star_rating_markup_with_count($product) !!}
@@ -87,6 +87,8 @@
                 let el = $(this);
                 let tab = el.data('tab');
                 let limit = el.data('limit');
+                let sort_by = el.data('sort_by');
+                let sort_to = el.data('sort_to');
                 let allId = el.data('all-id');
 
                 $.ajax({
@@ -95,6 +97,8 @@
                     data: {
                         category: tab,
                         limit: limit,
+                        sort_by: sort_by,
+                        sort_to: sort_to,
                         allId: allId
                     },
                     beforeSend: function () {

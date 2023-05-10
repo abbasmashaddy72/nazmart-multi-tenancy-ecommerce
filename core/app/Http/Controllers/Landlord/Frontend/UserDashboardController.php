@@ -245,7 +245,7 @@ class UserDashboardController extends Controller
             'support_ticket_id' => $request->ticket_id,
             'user_id' => Auth::guard('web')->id(),
             'type' => $request->user_type,
-            'message' => str_replace('script','',$request->message),
+            'message' => str_replace('script', '', $request->message),
             'notify' => $request->send_notify_mail ? 'on' : 'off',
         ]);
 
@@ -287,9 +287,9 @@ class UserDashboardController extends Controller
         $height = $canvas->get_height();
         $width = $canvas->get_width();
 
-        $canvas->set_opacity(.2,"Multiply");
+        $canvas->set_opacity(.2, "Multiply");
         $canvas->set_opacity(.2);
-        $canvas->page_text($width/5, $height/2, __('Paid'), null, 55, array(0,0,0),2,2,-30);
+        $canvas->page_text($width / 5, $height / 2, __('Paid'), null, 55, array(0, 0, 0), 2, 2, -30);
 
         return $pdf->download('package-invoice.pdf');
     }
@@ -371,11 +371,17 @@ class UserDashboardController extends Controller
             'custom_domain' => 'required|regex:/^[a-za-z.-]+$/',
         ]);
 
-          $all_tenant = Domain::where('tenant_id',$request->custom_domain)->first();
+        $tenant = Tenant::findOrFail($request->old_domain);
+        if (!empty($tenant) && !tenant_plan_sidebar_permission('custom_domain',$tenant))
+        {
+            return response()->danger(ResponseMessage::delete(__('Your request can not be processed')));
+        }
 
-            if(!is_null($all_tenant)){
-                return response()->danger(ResponseMessage::delete(__('You can not add this as your domain, this is reserved to landlord hosting domain')));
-            }
+        $all_tenant = Domain::where('tenant_id', $request->custom_domain)->first();
+
+        if (!is_null($all_tenant)) {
+            return response()->danger(ResponseMessage::delete(__('You can not add this as your domain, this is reserved to landlord hosting domain')));
+        }
 
         CustomDomain::updateOrCreate(
             [

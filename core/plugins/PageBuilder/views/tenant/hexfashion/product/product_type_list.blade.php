@@ -10,9 +10,9 @@
             <div class="col-xl-3 col-lg-4 mt-4">
                 <div class="store-tab-contents">
                     <ul class="tabs store-tabs">
-                        <li data-tab="all" class="active"> {{__('All Category')}} </li>
+                        <li data-tab="all" class="active" data-sort_by="{{$data['sort_by']}}" data-sort_to="{{$data['sort_to']}}"> {{__('All Category')}} </li>
                         @foreach($data['categories'] as $category)
-                            <li data-tab="{{$category->slug}}" data-limit="{{$data['product_limit']}}"> {{$category->name}} </li>
+                            <li data-tab="{{$category->slug}}" data-limit="{{$data['product_limit']}}" data-sort_by="{{$data['sort_by']}}" data-sort_to="{{$data['sort_to']}}"> {{$category->name}} </li>
                         @endforeach
                     </ul>
                 </div>
@@ -83,6 +83,8 @@
                 let el = $(this);
                 let tab = el.data('tab');
                 let limit = el.data('limit');
+                let sort_by = el.data('sort_by');
+                let sort_to = el.data('sort_to');
 
                 if(tab !== 'all')
                 {
@@ -92,6 +94,8 @@
                         data: {
                             category : tab,
                             limit : limit,
+                            sort_by: sort_by,
+                            sort_to: sort_to
                         },
                         beforeSend: function (){
                             $('.loader').fadeIn(200);

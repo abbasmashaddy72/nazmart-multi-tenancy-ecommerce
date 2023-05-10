@@ -113,7 +113,7 @@ class TenantFrontendController extends Controller
                 })->select('id', 'name', 'slug')->withCount('product')->get();
                 $sizes = Size::whereHas('product_sizes')->select('id', 'name', 'size_code', 'slug')->get();
                 $colors = Color::select('id', 'name', 'color_code', 'slug')->get();
-                $tags = ProductTag::select('tag_name')->distinct()->get();
+                $tags = ProductTag::whereHas('product')->select('tag_name')->distinct()->get();
 
                 $create_arr = request()->all();
                 $create_url = http_build_query($create_arr);
@@ -1125,7 +1125,7 @@ class TenantFrontendController extends Controller
             return response()->json([
                 'type' => 'success',
                 'coupon_amount' => round($total, 2),
-                'coupon_price' => (double)$subtotal - $coupon_amount_total,
+                'coupon_price' => round((double)$subtotal - $coupon_amount_total, 2),
                 'msg' => __('Coupon applied successfully')
             ]);
         }
@@ -1642,7 +1642,7 @@ class TenantFrontendController extends Controller
         $products_id = ProductCategory::whereIn('category_id', $category_id)->pluck('product_id')->toArray();
         $products->whereIn('id', $products_id);
 
-        $products = $products->orderBy('id', 'desc')
+        $products = $products->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
             ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
             ->take($request->limit ?? 6)
             ->get();
@@ -1667,8 +1667,8 @@ class TenantFrontendController extends Controller
             if ($discount != null) {
                 $discount = '<span class="global-card-thumb-badge-box bg-color-two">' . $discount . '% ' . __('Off') . '</span>';
             }
-            $sale_price_markup = amount_with_currency_symbol($sale_price);
-            $old_price_markup = $regular_price != null ? amount_with_currency_symbol($regular_price) : '';
+            $sale_price_markup = float_amount_with_currency_symbol($sale_price);
+            $old_price_markup = $regular_price != null ? float_amount_with_currency_symbol($regular_price) : '';
 
             $product_name = Str::words($product->name, 4);
 
@@ -1726,7 +1726,7 @@ HTML;
             $products_id = ProductCategory::where('category_id', $category_id->id)->pluck('product_id')->toArray();
             $products->whereIn('id', $products_id);
 
-            $products = $products->orderBy('id', 'desc')
+            $products = $products->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
                 ->take($request->limit ?? 8)
                 ->get();
@@ -1735,7 +1735,7 @@ HTML;
             $category_id = ProductCategory::whereIn('category_id', $allId)->pluck('product_id')->toArray();
 
             $products = $products->whereIn('id', $category_id)
-                ->orderBy('id', 'desc')
+                ->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
                 ->take($request->limit ?? 8)
                 ->get();
@@ -1761,7 +1761,7 @@ HTML;
             $products_id = ProductCategory::where('category_id', $category_id->id)->pluck('product_id')->toArray();
             $products->whereIn('id', $products_id);
 
-            $products = $products->orderBy('id', 'desc')
+            $products = $products->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
                 ->take($request->limit ?? 8)
                 ->get();
@@ -1770,7 +1770,7 @@ HTML;
             $category_id = ProductCategory::whereIn('category_id', $allId)->pluck('product_id')->toArray();
 
             $products = $products->whereIn('id', $category_id)
-                ->orderBy('id', 'desc')
+                ->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
                 ->take($request->limit ?? 8)
                 ->get();
@@ -1795,7 +1795,7 @@ HTML;
             $products_id = DigitalProductCategories::where('category_id', $category_id->id)->pluck('product_id')->toArray();
             $products->whereIn('id', $products_id);
 
-            $products = $products->orderBy('id', 'desc')
+            $products = $products->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->select('id', 'name', 'slug', 'regular_price', 'sale_price', 'image_id', 'promotional_date', 'promotional_price')
                 ->take($request->limit ?? 8)
                 ->get();
@@ -1804,7 +1804,7 @@ HTML;
             $category_id = DigitalProductCategories::whereIn('category_id', $allId)->pluck('product_id')->toArray();
 
             $products = $products->whereIn('id', $category_id)
-                ->orderBy('id', 'desc')
+                ->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->select('id', 'name', 'slug', 'regular_price', 'sale_price', 'image_id', 'promotional_date', 'promotional_price')
                 ->take($request->limit ?? 8)
                 ->get();
@@ -2095,7 +2095,7 @@ HTML;
         }
     }
 
-    public function category_products($category_type = null, $slug)
+    public function category_products($slug, $category_type = null)
     {
         $type = ['category', 'subcategory', 'child-category'];
         abort_if(!in_array($category_type, $type), 404);

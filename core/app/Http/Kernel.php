@@ -15,6 +15,7 @@ use App\Http\Middleware\Tenant\PackageExpireMiddleware;
 use App\Http\Middleware\Tenant\PageLimitMiddleware;
 use App\Http\Middleware\Tenant\RedirectIfNoDigitalProduct;
 use App\Http\Middleware\Tenant\TenantAccountStatus;
+use App\Http\Middleware\Tenant\TenantCheckPermission;
 use App\Http\Middleware\Tenant\TenantFeaturePermission;
 use App\Http\Middleware\Tenant\TenantUserMailVerifyMiddleware;
 use App\Http\Middleware\TenantCheckMiddleware;
@@ -97,7 +98,7 @@ class Kernel extends HttpKernel
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
         'page_limit' => PageLimitMiddleware::class,
-        'tenant_feature_permission' => TenantFeaturePermission::class,
+        'tenant_feature_permission' => TenantCheckPermission::class,
         'tenant_status' => TenantAccountStatus::class,
         'set_lang' => SetLang::class,
         'redirect_if_no_digital_product' => RedirectIfNoDigitalProduct::class

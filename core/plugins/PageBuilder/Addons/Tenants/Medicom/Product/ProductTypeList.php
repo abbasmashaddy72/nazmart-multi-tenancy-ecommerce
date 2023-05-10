@@ -8,6 +8,7 @@ use Modules\Product\Entities\Product;
 use Modules\Product\Entities\ProductCategory;
 use Plugins\PageBuilder\Fields\NiceSelect;
 use Plugins\PageBuilder\Fields\Number;
+use Plugins\PageBuilder\Fields\Select;
 use Plugins\PageBuilder\Fields\Text;
 use Plugins\PageBuilder\PageBuilderBase;
 
@@ -52,6 +53,27 @@ class ProductTypeList extends PageBuilderBase
             'info' => 'How many products will be shown under the selected category'
         ]);
 
+        $output .= Select::get([
+            'name' => 'sort_by',
+            'label' => __('Product Sort By'),
+            'options' => [
+                'id' => 'ID',
+                'created_at' => 'Created Date',
+                'sale_price' => 'Price'
+            ],
+            'value' => $widget_saved_values['sort_by'] ?? null,
+        ]);
+
+        $output .= Select::get([
+            'name' => 'sort_to',
+            'label' => __('Product Sort To'),
+            'options' => [
+                'desc' => 'Descending',
+                'asc' => 'Ascending'
+            ],
+            'value' => $widget_saved_values['sort_to'] ?? null,
+        ]);
+
         $output .= Text::get([
             'name' => 'view_all_url',
             'label' => __('View All URL'),
@@ -77,6 +99,9 @@ class ProductTypeList extends PageBuilderBase
         $padding_top = SanitizeInput::esc_html($this->setting_item('padding_top'));
         $padding_bottom = SanitizeInput::esc_html($this->setting_item('padding_bottom'));
 
+        $sort_by = SanitizeInput::esc_html($this->setting_item('sort_by') ?? 'id');
+        $sort_to = SanitizeInput::esc_html($this->setting_item('sort_to') ?? 'desc');
+
         $categories = Category::where('status_id',1);
         $products = Product::with('badge')->where('status_id', 1);
 
@@ -87,7 +112,7 @@ class ProductTypeList extends PageBuilderBase
             $products->whereIn('id', $products_id);
         }
 
-        $products = $products->orderBy('id','desc')->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id');
+        $products = $products->orderBy($sort_by, $sort_to)->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id');
 
         if(!empty($item_show)){
             $products = $products->take($item_show)->get();
@@ -103,7 +128,9 @@ class ProductTypeList extends PageBuilderBase
             'view_all_url' => $view_all_url,
             'categories'=> $categories,
             'products'=> $products,
-            'product_limit' => $item_show ?? 6
+            'product_limit' => $item_show ?? 6,
+            'sort_by' => $sort_by,
+            'sort_to' => $sort_to
         ];
 
         return self::renderView('tenant.medicom.product.product_type_list', $data);

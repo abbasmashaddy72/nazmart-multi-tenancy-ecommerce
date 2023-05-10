@@ -48,7 +48,6 @@ class SidebarMenuHelper
 
         $this->users_website_issues_manage_menus($menu_instance);
 
-
         // External Menu Render
         foreach (getAllExternalMenu() as $externalMenu)
         {
@@ -809,7 +808,6 @@ class SidebarMenuHelper
         $menu_instance = new \App\Helpers\MenuWithPermission();
 
         $current_tenant_payment_data = tenant()->payment_log ?? [];
-
         $admin = \Auth::guard('admin')->user();
 
         $menu_instance->add_menu_item('tenant-dashboard-menu', [
@@ -844,52 +842,38 @@ class SidebarMenuHelper
 
         $this->tenant_shipping_settings_menus($menu_instance);
 
-        $this->tenant_coupon_settings_menus($menu_instance);
+        if (tenant_plan_sidebar_permission('coupon'))
+        {
+            $this->tenant_coupon_settings_menus($menu_instance);
+        }
 
         $this->tenant_attribute_settings_menus($menu_instance);
         $this->tenant_product_settings_menus($menu_instance);
 
-        if (tenant_has_digital_product())
+        if (tenant_plan_sidebar_permission('digital_product'))
         {
             $this->tenant_digital_product_settings_menus($menu_instance);
         }
 
-        if (!empty($current_tenant_payment_data))
+        if (tenant_plan_sidebar_permission('inventory'))
         {
-            $package = $current_tenant_payment_data->package;
-
-            if (!empty($package))
-            {
-                $features = $package->plan_features->pluck('feature_name')->toArray();
-
-                $inventory = false;
-                $campaign = false;
-
-
-                if (in_array('inventory', (array)$features))
-                {
-                    $inventory = true;
-                }
-                if (in_array('campaign', (array)$features))
-                {
-                    $campaign = true;
-                }
-
-
-                if ($inventory)
-                {
-                    $this->tenant_inventory_settings_menus($menu_instance);
-                }
-                if ($campaign)
-                {
-                    $this->tenant_campaign_settings_menus($menu_instance);
-                }
-            }
+            $this->tenant_inventory_settings_menus($menu_instance);
         }
 
-        $this->tenant_testimonial_settings_menus($menu_instance);
+        if (tenant_plan_sidebar_permission('campaign'))
+        {
+            $this->tenant_campaign_settings_menus($menu_instance);
+        }
 
-        $this->tenant_newsletter_settings_menus($menu_instance);
+        if (tenant_plan_sidebar_permission('testimonial'))
+        {
+            $this->tenant_testimonial_settings_menus($menu_instance);
+        }
+
+        if (tenant_plan_sidebar_permission('newsletter'))
+        {
+            $this->tenant_newsletter_settings_menus($menu_instance);
+        }
 
         $this->tenant_form_builder_settings_menus($menu_instance);
 
@@ -897,7 +881,10 @@ class SidebarMenuHelper
             $this->tenant_payment_manage_menus($menu_instance);
         }
 
-        $this->tenant_custom_domain_request_settings_menus($menu_instance);
+        if (tenant_plan_sidebar_permission('custom_domain'))
+        {
+            $this->tenant_custom_domain_request_settings_menus($menu_instance);
+        }
 
         // External Menu Render
         foreach (getAllExternalMenu() as $externalMenu)

@@ -36,4 +36,23 @@ class MobileController extends Controller
         $payment_gateways = PaymentGateway::where('status', 1)->select('id', 'name', 'image', 'description')->get();
         return response()->json(['data' => $payment_gateways]);
     }
+
+    public function permission()
+    {
+        $permission = false;
+        $current_tenant_payment_data = tenant()->payment_log ?? []; // Getting the tenant payment log
+
+        if (!empty($current_tenant_payment_data)) // If the tenant subscribed to any plan and if the route has the permission name
+        {
+            $package = $current_tenant_payment_data?->package;
+
+            if (!empty($package))
+            {
+                $features = $package?->plan_features?->pluck('feature_name')->toArray();
+                $permission = in_array('app_api', (array)$features);
+            }
+        }
+
+        return response()->json(['permission' => $permission]);
+    }
 }

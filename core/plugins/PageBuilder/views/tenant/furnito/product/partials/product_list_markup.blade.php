@@ -23,7 +23,7 @@
             </div>
             <div class="global-card-contents">
                 <h5 class="global-card-contents-title">
-                    <a href="{{route('tenant.shop.product.details', $product->slug)}}"> {{Str::words($product->name, 4)}} </a>
+                    <a href="{{route('tenant.shop.product.details', $product->slug)}}"> {{Str::words($product->name, 15)}} </a>
                 </h5>
 
                 {!! render_product_star_rating_markup_with_count($product) !!}

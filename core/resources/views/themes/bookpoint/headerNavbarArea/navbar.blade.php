@@ -43,12 +43,6 @@
                                 $topbar_menu_id = get_static_option('topbar_menu') ?? $primary_menu;
                             @endphp
                             {!! render_frontend_menu($topbar_menu_id) !!}
-{{--                            <li class="topbar-list-item color-light"><a href="javascript:void(0)"--}}
-{{--                                                                        class="topbar-list-item-link"> Best Seller--}}
-{{--                                    Books </a></li>--}}
-{{--                            <li class="topbar-list-item color-light"><a href="javascript:void(0)"--}}
-{{--                                                                        class="topbar-list-item-link"> Special--}}
-{{--                                    Offer </a></li>--}}
                         </ul>
                     </div>
                 </div>

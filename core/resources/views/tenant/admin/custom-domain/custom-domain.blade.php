@@ -11,7 +11,7 @@
 
 @section('content')
     @php
-        $central_domain = getenv('CENTRAL_DOMAIN');
+        $central_domain = env('CENTRAL_DOMAIN');
     @endphp
     <div class="col-lg-12 col-ml-12">
         <div class="row g-4">
@@ -35,14 +35,14 @@
                             <tr>
                                 <td>CNAME Record</td>
                                 <td>www</td>
-                                <td>{{getenv('CENTRAL_DOMAIN')}}</td>
+                                <td>{{env('CENTRAL_DOMAIN')}}</td>
                                 <td>Automatic</td>
                             </tr>
 
                             <tr>
                                 <td>CNAME Record</td>
                                 <td>@</td>
-                                <td>{{getenv('CENTRAL_DOMAIN')}}</td>
+                                <td>{{env('CENTRAL_DOMAIN')}}</td>
                                 <td>Automatic</td>
                             </tr>
 

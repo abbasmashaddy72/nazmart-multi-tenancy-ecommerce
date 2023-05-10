@@ -36,7 +36,7 @@
 
                 <div class="global-card-contents mt-3">
                     <h5 class="global-card-contents-title-two">
-                        <a href="{{route('tenant.digital.shop.product.details', $product->slug)}}"> {{Str::words($product->name, 4)}} </a>
+                        <a href="{{route('tenant.digital.shop.product.details', $product->slug)}}"> {{Str::words($product->name, 15)}} </a>
                     </h5>
                     <span class="global-card-contents-subtitle mt-2"> {{$product->additionalFields?->author?->name}} </span>
                     <div class="price-update-through mt-3">

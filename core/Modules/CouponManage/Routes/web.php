@@ -13,7 +13,8 @@ Route::middleware([
     'tenant_admin_glvar',
     'package_expire',
     'set_lang',
-    'tenantAdminPanelMailVerify'
+    'tenantAdminPanelMailVerify',
+    \App\Http\Middleware\Tenant\TenantCheckPermission::class
 ])->prefix('admin-home')->name('tenant.')->group(function () {
         /*-----------------------------------
                     COUPON ROUTES
