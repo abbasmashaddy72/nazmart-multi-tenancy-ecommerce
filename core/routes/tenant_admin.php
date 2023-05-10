@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use App\Http\Controllers\Landlord\Admin\PaymentSettingsController;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
@@ -8,12 +9,14 @@ use App\Http\Controllers\Landlord\Admin\GeneralSettingsController;
 use Modules\Blog\Http\Controllers\Landlord\Admin\BlogTagController;
 use App\Http\Controllers\Tenant\Admin\OrderManageController;
 use App\Http\Controllers\Tenant\Admin\NewsletterController;
+use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 
 
 
 Route::middleware([
     'web',
-    InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomain::class,
+    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'auth:admin',
     'tenant_admin_glvar',
@@ -23,12 +26,11 @@ Route::middleware([
     'set_lang'
 ])->prefix('admin-home')->name('tenant.')->group(function () {
 
-
     /*----------------------------------------------------------------------------------------------------------------------------
     | BACKEND NEWSLETTER AREA
     |---------------------------------------------------------------------------------------------------------------------------*/
 
-    Route::controller(NewsletterController::class)->prefix('tenant-newsletter')->group(function (){
+    Route::controller(NewsletterController::class)->middleware(\App\Http\Middleware\Tenant\TenantCheckPermission::class)->prefix('tenant-newsletter')->group(function (){
         Route::get('/', 'index')->name('admin.newsletter');
         Route::post('/delete/{id}', 'delete')->name('admin.newsletter.delete');
         Route::post('/single', 'send_mail')->name('admin.newsletter.single.mail');
@@ -104,7 +106,7 @@ Route::middleware([
     /*----------------------------------------------------------------------------------------------------------------------------
     | CUSTOM DOMAIN MANAGE
     |----------------------------------------------------------------------------------------------------------------------------*/
-    Route::controller(\App\Http\Controllers\Tenant\Admin\CustomDomainController::class)->prefix('custom-domain')->group(function () {
+    Route::controller(\App\Http\Controllers\Tenant\Admin\CustomDomainController::class)->prefix('custom-domain')->middleware(\App\Http\Middleware\Tenant\TenantCheckPermission::class)->group(function () {
         Route::get('/custom-domain-request', 'custom_domain_request')->name('admin.custom.domain.requests');
         Route::post('/custom-domain-request', 'custom_domain_request_change');
     });
@@ -137,6 +139,7 @@ Route::middleware([
     ----------------------------*/
     Route::controller(\App\Http\Controllers\Tenant\Admin\TopbarController::class)->group(function () {
         Route::get('/topbar-settings', "index")->name('admin.topbar.settings');
+        Route::post('/topbar-settings', "update_topbar");
         Route::post('/topbar/new-social-item', 'new_social_item')->name('admin.new.social.item');
         Route::post('/topbar/update-social-item', 'update_social_item')->name('admin.update.social.item');
         Route::post('/topbar/delete-social-item/{id}', 'delete_social_item')->name('admin.delete.social.item');
@@ -185,7 +188,7 @@ Route::middleware([
     /*----------------------------------------------------------------------------------------------------------------------------
     | TESTIMONIAL  ROUTES
     |----------------------------------------------------------------------------------------------------------------------------*/
-    Route::controller(\App\Http\Controllers\Landlord\Admin\TestimonialController::class)->prefix('testimonial')->group(function () {
+    Route::controller(\App\Http\Controllers\Landlord\Admin\TestimonialController::class)->middleware('tenant_feature_permission')->prefix('testimonial')->group(function () {
         Route::get('/all', 'index')->name('admin.testimonial');
         Route::post('/all', 'store');
         Route::post('/clone', 'clone')->name('admin.testimonial.clone');
@@ -414,6 +417,7 @@ Route::middleware([
 
         //Order settings route
         Route::match(['get', 'post'] ,'/order/settings', 'order_manage_settings')->name('admin.product.order.settings');
+        Route::match(['get', 'post'] ,'/invoice/settings', 'order_invoice_settings')->name('admin.product.invoice.settings');
     });
 
     /*------------------------------------------
@@ -473,6 +477,10 @@ Route::middleware([
         Route::get('/email-settings', 'email_settings')->name('admin.general.email.settings');
         Route::post('/email-settings', 'update_email_settings');
 
+        //GDPR Settings
+        Route::get('/gdpr-settings', 'gdpr_settings')->name('admin.general.gdpr.settings');
+        Route::post('/gdpr-settings', 'update_gdpr_cookie_settings');
+
         /* custom css Settings */
         Route::get('/custom-css-settings', 'custom_css_settings')->name('admin.general.custom.css.settings');
         Route::post('/custom-css-settings', 'update_custom_css_settings');
@@ -488,6 +496,33 @@ Route::middleware([
         Route::get('/license-settings', 'license_settings')->name('admin.general.license.settings');
         Route::post('/license-settings', 'update_license_settings');
 
+    });
+
+
+    // Payment Gateway Settings
+    Route::controller(PaymentSettingsController::class)->name('admin.payment.settings.')->prefix('payment-settings/payment')->group(function (){
+        Route::get('/paypal', 'paypal_settings')->name('paypal');
+        Route::get('/paytm', 'paytm_settings')->name('paytm');
+        Route::get('/stripe', 'stripe_settings')->name('stripe');
+        Route::get('/razorpay', 'razorpay_settings')->name('razorpay');
+        Route::get('/paystack', 'paystack_settings')->name('paystack');
+        Route::get('/mollie', 'mollie_settings')->name('mollie');
+        Route::get('/midtrans', 'midtrans_settings')->name('midtrans');
+        Route::get('/cashfree', 'cashfree_settings')->name('cashfree');
+        Route::get('/instamojo', 'instamojo_settings')->name('instamojo');
+        Route::get('/marcadopago', 'marcadopago_settings')->name('marcadopago');
+        Route::get('/zitopay', 'zitopay_settings')->name('zitopay');
+        Route::get('/squareup', 'squareup_settings')->name('squareup');
+        Route::get('/cinetpay', 'cinetpay_settings')->name('cinetpay');
+        Route::get('/paytabs', 'paytabs_settings')->name('paytabs');
+        Route::get('/billplz', 'billplz_settings')->name('billplz');
+        Route::get('/toyyibpay', 'toyyibpay_settings')->name('toyyibpay');
+        Route::get('/flutterwave', 'flutterwave_settings')->name('flutterwave');
+        Route::get('/payfast', 'payfast_settings')->name('payfast');
+        Route::get('/manual-payment', 'manual_payment_settings')->name('manual_payment');
+        Route::get('/cash-on-delivery', 'cod_settings')->name('cod');
+
+        Route::post('/update', 'update_payment_settings')->name('update');
     });
 });
 

@@ -86,6 +86,8 @@
                             <label for="translate_string">{{__('Translated String')}}</label>
                             <input type="text" class="form-control" name="translate_string" placeholder="{{__('Translated String')}}">
                         </div>
+
+                        <p class="text-primary">{{__('If the translation does not work, try inputting the same text in lowercase')}}</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('Close')}}</button>

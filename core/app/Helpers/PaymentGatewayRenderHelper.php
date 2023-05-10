@@ -59,7 +59,7 @@ class PaymentGatewayRenderHelper
 
             if (array_key_exists('module', $gateway))
             {
-                $output .= renderPaymentGatewayImage($gateway['image'], $gateway['module']);
+                $output .= '<img src="'.loadPaymentGatewayLogo(moduleName: $gateway['module'], gatewayName: $gateway['name']).'"';
             } else {
                 $output .= render_image_markup_by_attachment_id($gateway['image']);
             }

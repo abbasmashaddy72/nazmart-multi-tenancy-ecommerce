@@ -74,14 +74,17 @@
 
                 <td data-label="Actions">
                     <div class="action-icon">
-                        <a href="{{route('tenant.shop.product.details', $product->slug)}}" class="icon eye" target="_blank"><i class="las la-eye"></i></a>
+                        <a href="{{route('tenant.shop.product.details', $product->slug)}}" class="icon eye" target="_blank" title="View the product" data-bs-toggle="tooltip" data-bs-placement="top">
+                            <i class="las la-eye"></i>
+                        </a>
                         <a href="{{ route("tenant.admin.product.edit", $product->id) }}"
-                           class="icon edit"> <i class="las la-pen-alt"></i> </a>
+                           class="icon edit" title="Edit the product" data-bs-toggle="tooltip" data-bs-placement="top"> <i class="las la-pen-alt"></i> </a>
                         <a href="{{ route("tenant.admin.product.clone", $product->id) }}"
-                           class="icon clone"> <i class="las la-copy"></i> </a>
+                           class="icon clone" title="Make duplicate" data-bs-toggle="tooltip" data-bs-placement="top"> <i class="las la-copy"></i> </a>
                         <a data-product-url="{{ route("tenant.admin.product.destroy", $product->id) }}"
-                           href="javascript:void(0)" class="delete-row icon deleted"> <i
-                                    class="las la-trash-alt"></i> </a>
+                           href="javascript:void(0)" class="delete-row icon deleted" title="Delete the product" data-bs-toggle="tooltip" data-bs-placement="top">
+                            <i class="las la-trash-alt"></i>
+                        </a>
                     </div>
                 </td>
             </tr>

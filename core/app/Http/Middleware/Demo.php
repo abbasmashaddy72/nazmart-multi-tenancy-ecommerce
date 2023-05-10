@@ -38,6 +38,11 @@ class Demo
 
         $msg = 'This is demonstration purpose only, you may not able to change few settings, you will get working file when you purchased it.';
 
+//        if (!empty(tenant()) && tenant()->id == 'medicom')
+//        {
+//            return $next($request);
+//        }
+
         if($request->isMethod('POST') || $request->isMethod('PUT')) {
 
             if($request->path() === 'register'){

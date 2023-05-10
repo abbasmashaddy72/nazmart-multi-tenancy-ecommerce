@@ -22,6 +22,7 @@ use Modules\MobileApp\Http\Controllers\MobileIntrosController;
 use Modules\MobileApp\Http\Controllers\MobileSliderController;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
+use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 
 
 /**--------------------------------------------------------------------------------------------------------------------------------
@@ -29,7 +30,8 @@ use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
  *----------------------------------------------------------------------------------------------------------------------------------*/
 Route::middleware([
     'web',
-    InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomain::class,
+    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'auth:admin',
     'tenant_admin_glvar',

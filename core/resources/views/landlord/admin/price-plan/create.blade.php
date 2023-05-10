@@ -4,7 +4,6 @@
 @endsection
 
 @section('style')
-
     <style>
         .all-field-wrap .action-wrap {
             position: absolute;
@@ -23,12 +22,43 @@
         .f_desc {
             height: 100px;
         }
-        small{
+
+        small {
             font-size: 12px;
             color: #b66dff;
         }
-        .price_plan_info{
+
+        .price_plan_info {
             cursor: pointer;
+        }
+
+        .payment-gateway-wrapper ul{
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            padding-left: 0;
+        }
+        .payment-gateway-wrapper ul li{
+            max-width: 100px;
+            cursor: pointer;
+            box-sizing: border-box;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            margin: 3px;
+            border: 1px solid #ddd;
+        }
+        .payment-gateway-wrapper ul li .img-select{
+            margin-bottom: 0
+        }
+        .img-select img{
+            max-width: 100%;
+        }
+
+        .payment-gateway-wrapper ul li.selected {
+            border: 2px solid red;
         }
     </style>
 
@@ -36,14 +66,7 @@
 
 @section('content')
     @php
-        $features = [
-                'products' => __('products'),
-                'pages' => __('pages'),
-                'blog' => __('blog'),
-                'storage' => __('storage'),
-                'inventory' => __('inventory'),
-                'campaign' => __('campaign')
-            ];
+        $features = price_plan_feature_list();
     @endphp
     <div class="col-12 stretch-card">
         <div class="card">
@@ -66,11 +89,6 @@
                     <x-fields.input name="package_badge" label="{{__('Package Badge')}}"/>
                     <x-fields.textarea name="package_description" label="{{__('Package Description')}}"/>
 
-                    @if(tenant())
-                        <x-fields.textarea name="features" label="{{__('Features')}}"
-                                           info="{{__('separate new feature by new line, add {close} for (x) icon add {check} for check icon')}}"/>
-                    @endif
-
                     @if(!tenant())
                         <div class="form-group landlord_price_plan_feature">
                             <h4>{{__('Select Features')}}</h4>
@@ -82,7 +100,7 @@
                                                    id="{{$key}}" class="exampleCheck1" value="{{$key}}"
                                                    data-feature="{{$key}}">
                                             <label class="ml-1" for="{{$key}}">
-                                                {{__(str_replace('_', ' ', ucfirst($feat)))}}
+                                                {{__(str_replace('_', ' ', ucwords($feat)))}}
                                             </label>
                                         </li>
                                     @endforeach
@@ -98,6 +116,50 @@
 
                         <div class="form-group storage_permission_box"></div>
 
+                        <div class="form-group landlord_price_plan_themes">
+                            <h4>{{__('Select Themes')}}</h4>
+                            <div class="feature-section">
+                                <ul>
+                                    @php
+                                        $themes = getAllThemeSlug();
+                                    @endphp
+                                    @foreach($themes as $theme)
+                                        <li class="d-inline">
+                                            <input type="checkbox" name="themes[]"
+                                                   id="{{$theme}}" class="exampleCheck1" value="{{$theme}}"
+                                                   data-feature="{{$theme}}">
+                                            <label class="ml-1 text-capitalize" for="{{$theme}}">
+                                                {{$theme}}
+                                            </label>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group landlord_price_plan_payment_gateways">
+                            <h4>{{__('Select Payment Gateways')}}</h4>
+                            <div class="feature-section">
+                                <style>
+                                    .select-all-theme{
+                                        width: 115px;
+                                    }
+                                    .select-all-theme .onff.slider:before{
+                                        content: "Select All";
+                                        width: 80px;
+                                    }
+                                    .select-all-theme input:checked + .onff.slider:before {
+                                        content: "Unselect" !important;
+                                    }
+                                </style>
+                                <x-fields.switcher class="select-all-theme" name="" label="" value=""/>
+                                @php
+                                    $replaceable_text = '<input type="hidden" name="selected_payment_gateway" value="paytm">';
+                                @endphp
+                                {!! str_replace($replaceable_text,'',render_payment_gateway_for_form()) !!}
+                                <input type="hidden" name="payment_gateways">
+                            </div>
+                        </div>
 
                         <x-fields.select name="type" class="package_type" title="{{__('Type')}}">
                             <option value="">{{__('Select')}}</option>
@@ -164,7 +226,7 @@
         });
 
         $('.trial_date_box').hide();
-        $(document).on('change', 'input[name=has_trial]', function (e){
+        $(document).on('change', 'input[name=has_trial]', function (e) {
             let el = $(this).val();
 
             $('.trial_date_box').toggle(500);
@@ -244,6 +306,44 @@
             }
         });
 
+        $(document).ready(function (){
+            let payment_gateway_item = $('.payment-gateway-wrapper ul li');
+            payment_gateway_item.removeClass('selected');
+
+            payment_gateway_item.on('click', function (e){
+                let gateways = '';
+
+                let el = $(this);
+                el.toggleClass('selected');
+
+                let all_payment_gateways = $('.payment-gateway-wrapper ul li.selected');
+                all_payment_gateways.each(function (index){
+                    gateways += $(this).data('gateway') + (all_payment_gateways.length-1 !== index ? ',' : '');
+                });
+
+                $("input[name='payment_gateways']").val(gateways);
+            });
+
+            $('.select-all-theme input[type="checkbox"]').on('change', function (){
+                let gateways = '';
+                let el = $(this);
+
+                payment_gateway_item.each(function (){
+                    $(this).removeClass('selected');
+                });
+
+                if(el.is(":checked"))
+                {
+                    let all_payment_gateways = $('.payment-gateway-wrapper ul li.selected');
+                    payment_gateway_item.each(function (index){
+                        $(this).addClass('selected');
+                        gateways += $(this).data('gateway') + (payment_gateway_item.length-1 !== index ? ',' : '');
+                    });
+                }
+
+                $("input[name='payment_gateways']").val(gateways);
+            });
+        });
     </script>
     <x-repeater/>
 @endsection

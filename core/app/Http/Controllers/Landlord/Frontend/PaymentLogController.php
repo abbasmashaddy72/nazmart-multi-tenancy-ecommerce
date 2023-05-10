@@ -17,6 +17,7 @@ use App\Models\PaymentGateway;
 use App\Models\PaymentLogs;
 use App\Models\PricePlan;
 use App\Models\Tenant;
+use App\Models\TenantException;
 use App\Models\User;
 use App\Models\ZeroPricePlanHistory;
 use Illuminate\Http\Request;
@@ -25,6 +26,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Modules\Wallet\Entities\Wallet;
 use Modules\Wallet\Entities\WalletSettings;
 use Modules\Wallet\Entities\WalletTenantList;
@@ -50,8 +52,11 @@ class PaymentLogController extends Controller
         $manual_transection_condition = $request->selected_payment_gateway == 'manual_payment' ? 'required' : 'nullable';
         $request_pack_id = $request->package_id;
         $plan = PricePlan::findOrFail($request_pack_id);
+
+        $zero_price_condition = 'required';
         if($plan->price == 0)
         {
+            $zero_price_condition = 'nullable';
             $request->selected_payment_gateway = 'manual_payment';
 
             $purchased_packaged = ZeroPricePlanHistory::where('user_id', Auth::guard('web')->user()->id)->count();
@@ -59,25 +64,34 @@ class PaymentLogController extends Controller
 
             if ($purchased_packaged >= $zero_plan_limit)
             {
-                return back()->with(FlashMsg::explain('danger', 'Sorry! You can not purchase more free plan.'));
+                return back()->with(FlashMsg::explain('danger', __('Sorry! You can not purchase more free plan.')));
             }
+        }
+
+        $selected_payment_gateway = 'nullable';
+        if ($request->selected_payment_gateway && $request->selected_payment_gateway != 'manual_payment')
+        {
+            $zero_price_condition = 'nullable';
+            $selected_payment_gateway = 'required';
         }
 
         $data = $request->validate([
             'name' => 'nullable|string|max:191',
             'email' => 'nullable|email|max:191',
+            'theme_slug' => ['required', Rule::in(getAllThemeSlug())],
             'package_id' => 'required|string',
-            'payment_gateway' => 'nullable|string',
+            'payment_gateway' => ''.$zero_price_condition.'|string',
+            'selected_payment_gateway' => ''.$selected_payment_gateway.'|string',
             'trasaction_id' => '' . $manual_transection_condition . '',
             'trasaction_attachment' => '' . $manual_transection_condition . '|mimes:jpeg,png,jpg,gif|max:2048',
             'subdomain' => "required_if:custom_subdomain,!=,null",
             'custom_subdomain' => "required_if:subdomain,==,custom_domain__dd",
-        ],
-            [
-                "custom_subdomain.required_if" => "Custom Sub Domain Required",
-                "trasaction_id" => "Transaction ID Required",
-                "trasaction_attachment" => "Transaction Attachment Required",
-            ]);
+        ], [
+            "custom_subdomain.required_if" => "Custom Sub Domain Required.",
+            "trasaction_id" => "Transaction ID Required.",
+            "trasaction_attachment" => "Transaction Attachment Required.",
+            "theme_slug.in" => "The selected theme is invalid."
+        ]);
 
         if ($request->custom_subdomain == null) {
             $request->validate([
@@ -86,26 +100,32 @@ class PaymentLogController extends Controller
 
             $existing_lifetime_plan = PaymentLogs::where(['tenant_id' => $request->subdomain, 'payment_status' => 'complete', 'expire_date' => null])->first();
             if ($existing_lifetime_plan != null) {
-                return back()->with(['type' => 'danger', 'msg' => 'You are already using a lifetime plan']);
+                return back()->with(['type' => 'danger', 'msg' => __('You are already using a lifetime plan')]);
             }
         }
 
         if ($request->custom_subdomain != null) {
             $has_subdomain = Tenant::find(trim($request->custom_subdomain));
             if (!empty($has_subdomain)) {
-                return back()->with(['type' => 'danger', 'msg' => 'This subdomain is already in use, Try something different']);
+                return back()->with(['type' => 'danger', 'msg' => __('This subdomain is already in use, Try something different')]);
             }
 
             $site_domain = url('/');
             $site_domain = str_replace(['http://', 'https://'], '', $site_domain);
             $site_domain = substr($site_domain, 0, strpos($site_domain, '.'));
             $restricted_words = ['https', 'http', 'http://', 'https://','www', 'subdomain', 'domain', 'primary-domain', 'central-domain',
-                'landlord', 'landlords', 'tenant', 'tenants', 'multi-store', 'multistore', 'admin',
+                'landlord', 'landlords', 'tenant', 'tenants', 'admin',
                 'user', 'user', $site_domain];
 
             if (in_array(trim($request->custom_subdomain), $restricted_words))
             {
-                return back()->with(FlashMsg::explain('danger', 'Sorry, You can not use this subdomain'));
+                return back()->with(FlashMsg::explain('danger', __('Sorry, You can not use this subdomain')));
+            }
+
+            $auth_user = Auth::guard('web')->user();
+            if (!empty(get_static_option('user_email_verify_status')) && !$auth_user->email_verified)
+            {
+                return back()->with(FlashMsg::explain('danger', __('Please verify your account, Visit user dashboard for verification')));
             }
 
             $sub = $request->custom_subdomain;
@@ -119,7 +139,7 @@ class PaymentLogController extends Controller
 
             if ($check_type == false)
             {
-                return back()->with(FlashMsg::explain('danger', 'Sorry, You can not use this subdomain'));
+                return back()->with(FlashMsg::explain('danger', __('Sorry, You can not use this subdomain')));
             }
         }
 
@@ -197,126 +217,142 @@ class PaymentLogController extends Controller
 
         DB::beginTransaction(); // Starting all the actions as safe translations
         try {
-        // Exising Tenant + Plan
-        if (!is_null($is_tenant)) {
-            $old_tenant_log = PaymentLogs::where(['user_id' => $auth_id, 'tenant_id' => $is_tenant->id])->latest()->first() ?? '';
+            // Exising Tenant + Plan
+            if (!is_null($is_tenant)) {
+                $old_tenant_log = PaymentLogs::where(['user_id' => $auth_id, 'tenant_id' => $is_tenant->id])->latest()->first() ?? '';
 
-            // If Payment Renewing
-            if (!empty($old_tenant_log->package_id) == $request_pack_id && !empty($old_tenant_log->user_id) && $old_tenant_log->user_id == $auth_id && ($old_tenant_log->payment_status == 'complete' || $old_tenant_log->status == 'trial')) {
-                if ($package_expire_date != null) {
-                    $old_days_left = Carbon::now()->diff($old_tenant_log->expire_date);
-                    $left_days = 0;
+                // If Payment Renewing
+                if (!empty($old_tenant_log->package_id) == $request_pack_id && !empty($old_tenant_log->user_id) && $old_tenant_log->user_id == $auth_id && ($old_tenant_log->payment_status == 'complete' || $old_tenant_log->status == 'trial')) {
+                    if ($package_expire_date != null) {
+                        $old_days_left = Carbon::now()->diff($old_tenant_log->expire_date);
+                        $left_days = 0;
 
-                    if ($old_days_left->invert == 0) {
-                        $left_days = $old_days_left->days;
+                        if ($old_days_left->invert == 0) {
+                            $left_days = $old_days_left->days;
+                        }
+
+                        $renew_left_days = 0;
+                        $renew_left_days = Carbon::parse($package_expire_date)->diffInDays();
+
+                        $sum_days = $left_days + $renew_left_days;
+                        $new_package_expire_date = Carbon::today()->addDays($sum_days)->format("d-m-Y h:i:s");
+                    } else {
+                        $new_package_expire_date = null;
                     }
 
-                    $renew_left_days = 0;
-                    $renew_left_days = Carbon::parse($package_expire_date)->diffInDays();
+                    PaymentLogs::findOrFail($old_tenant_log->id)->update([
+                        'email' => $email,
+                        'name' => $name,
+                        'package_name' => $order_details->title,
+                        'package_price' => $amount_to_charge,
+                        'package_gateway' => $selected_payment_gateway,
+                        'package_id' => $package_id,
+                        'user_id' => auth()->guard('web')->user()->id ?? null,
+                        'tenant_id' => $subdomain ?? null,
+                        'theme_slug' => $old_tenant_log->theme_slug,
+                        'status' => 'pending',
+                        'payment_status' => 'pending',
+                        'renew_status' => is_null($old_tenant_log->renew_status) ? 1 : $old_tenant_log->renew_status + 1,
+                        'is_renew' => 1,
+                        'track' => Str::random(10),
+                        'updated_at' => Carbon::now(),
+                        'start_date' => $package_start_date,
+                        'expire_date' => $new_package_expire_date
+                    ]);
 
-                    $sum_days = $left_days + $renew_left_days;
-                    $new_package_expire_date = Carbon::today()->addDays($sum_days)->format("d-m-Y h:i:s");
-                } else {
-                    $new_package_expire_date = null;
+                    $payment_details = PaymentLogs::findOrFail($old_tenant_log->id);
+                    $this->payment_details = $payment_details;
+                } // If Payment Pending
+                elseif (!empty($old_tenant_log) && $old_tenant_log->payment_status == 'pending') {
+                    PaymentLogs::findOrFail($old_tenant_log->id)->update([
+                        'email' => $email,
+                        'name' => $name,
+                        'package_name' => $order_details->title,
+                        'package_price' => $amount_to_charge,
+                        'package_gateway' => $selected_payment_gateway,
+                        'package_id' => $package_id,
+                        'user_id' => auth()->guard('web')->user()->id ?? null,
+                        'tenant_id' => $subdomain ?? null,
+                        'theme_slug' => $old_tenant_log->theme_slug,
+                        'status' => 'pending',
+                        'payment_status' => 'pending',
+                        'is_renew' => $old_tenant_log->renew_status != null ? 1 : 0,
+                        'track' => Str::random(10),
+                        'updated_at' => Carbon::now(),
+                        'start_date' => $package_start_date,
+                        'expire_date' => $package_expire_date
+                    ]);
+
+                    $payment_details = PaymentLogs::findOrFail($old_tenant_log->id);
+                    $this->payment_details = $payment_details;
                 }
+            } // New Tenant + Plan (New Payment)
+            else {
+                $old_tenant_log = PaymentLogs::where(['user_id' => $auth_id, 'tenant_id' => trim($request->custom_subdomain)])->latest()->first();
+                if (empty($old_tenant_log)) {
+                    $payment_log_id = PaymentLogs::create([
+                        'email' => $email,
+                        'name' => $name,
+                        'package_name' => $order_details->title,
+                        'package_price' => $amount_to_charge,
+                        'package_gateway' => $selected_payment_gateway,
+                        'package_id' => $package_id,
+                        'user_id' => auth()->guard('web')->user()->id ?? null,
+                        'tenant_id' => $subdomain ?? null,
+                        'theme_slug' => $request->theme_slug,
+                        'status' => 'pending',
+                        'payment_status' => 'pending',
+                        'is_renew' => 0,
+                        'track' => Str::random(10),
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                        'start_date' => $package_start_date,
+                        'expire_date' => $package_expire_date,
+                    ])->id;
 
-                PaymentLogs::findOrFail($old_tenant_log->id)->update([
-                    'email' => $email,
-                    'name' => $name,
-                    'package_name' => $order_details->title,
-                    'package_price' => $amount_to_charge,
-                    'package_gateway' => $selected_payment_gateway,
-                    'package_id' => $package_id,
-                    'user_id' => auth()->guard('web')->user()->id ?? null,
-                    'tenant_id' => $subdomain ?? null,
-                    'status' => 'pending',
-                    'payment_status' => 'pending',
-                    'renew_status' => is_null($old_tenant_log->renew_status) ? 1 : $old_tenant_log->renew_status + 1,
-                    'is_renew' => 1,
-                    'track' => Str::random(10),
-                    'updated_at' => Carbon::now(),
-                    'start_date' => $package_start_date,
-                    'expire_date' => $new_package_expire_date
-                ]);
+                    $payment_details = PaymentLogs::findOrFail($payment_log_id);
+                    $this->payment_details = $payment_details;
 
-                $payment_details = PaymentLogs::findOrFail($old_tenant_log->id);
-                $this->payment_details = $payment_details;
-            } // If Payment Pending
-            elseif (!empty($old_tenant_log) && $old_tenant_log->payment_status == 'pending') {
-                PaymentLogs::findOrFail($old_tenant_log->id)->update([
-                    'email' => $email,
-                    'name' => $name,
-                    'package_name' => $order_details->title,
-                    'package_price' => $amount_to_charge,
-                    'package_gateway' => $selected_payment_gateway,
-                    'package_id' => $package_id,
-                    'user_id' => auth()->guard('web')->user()->id ?? null,
-                    'tenant_id' => $subdomain ?? null,
-                    'status' => 'pending',
-                    'payment_status' => 'pending',
-                    'is_renew' => $old_tenant_log->renew_status != null ? 1 : 0,
-                    'track' => Str::random(10),
-                    'updated_at' => Carbon::now(),
-                    'start_date' => $package_start_date,
-                    'expire_date' => $package_expire_date
-                ]);
+                } else {
+                    $old_tenant_log->update([
+                        'email' => $email,
+                        'name' => $name,
+                        'package_name' => $order_details->title,
+                        'package_price' => $amount_to_charge,
+                        'package_gateway' => $selected_payment_gateway,
+                        'package_id' => $package_id,
+                        'user_id' => auth()->guard('web')->user()->id ?? null,
+                        'status' => 'pending',
+                        'payment_status' => 'pending',
+                        'is_renew' => 0,
+                        'track' => Str::random(10),
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                        'start_date' => $package_start_date,
+                        'expire_date' => $package_expire_date,
+                    ]);
 
-                $payment_details = PaymentLogs::findOrFail($old_tenant_log->id);
-                $this->payment_details = $payment_details;
+                    $payment_details = PaymentLogs::findOrFail($old_tenant_log->id);
+                    $this->payment_details = $payment_details;
+                }
             }
-        } // New Tenant + Plan (New Payment)
-        else {
-            $old_tenant_log = PaymentLogs::where(['user_id' => $auth_id, 'tenant_id' => trim($request->custom_subdomain)])->latest()->first();
-            if (empty($old_tenant_log)) {
-                $payment_log_id = PaymentLogs::create([
-                    'email' => $email,
-                    'name' => $name,
-                    'package_name' => $order_details->title,
-                    'package_price' => $amount_to_charge,
-                    'package_gateway' => $selected_payment_gateway,
-                    'package_id' => $package_id,
-                    'user_id' => auth()->guard('web')->user()->id ?? null,
-                    'tenant_id' => $subdomain ?? null,
-                    'status' => 'pending',
-                    'payment_status' => 'pending',
-                    'is_renew' => 0,
-                    'track' => Str::random(10),
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                    'start_date' => $package_start_date,
-                    'expire_date' => $package_expire_date,
-                ])->id;
-
-                $payment_details = PaymentLogs::findOrFail($payment_log_id);
-                $this->payment_details = $payment_details;
-            } else {
-                $old_tenant_log->update([
-                    'email' => $email,
-                    'name' => $name,
-                    'package_name' => $order_details->title,
-                    'package_price' => $amount_to_charge,
-                    'package_gateway' => $selected_payment_gateway,
-                    'package_id' => $package_id,
-                    'user_id' => auth()->guard('web')->user()->id ?? null,
-                    'status' => 'pending',
-                    'payment_status' => 'pending',
-                    'is_renew' => 0,
-                    'track' => Str::random(10),
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                    'start_date' => $package_start_date,
-                    'expire_date' => $package_expire_date,
-                ]);
-
-                $payment_details = PaymentLogs::findOrFail($old_tenant_log->id);
-                $this->payment_details = $payment_details;
-            }
-        }
 
             DB::commit(); // Committing all the actions
         } catch (\Exception $exception) {
             DB::rollBack(); // Rollback all the actions
             return back()->with('msg', 'Something went wrong');
+        }
+
+        if(!isset($this->payment_details))
+        {
+            TenantException::create([
+                'tenant_id' => $is_tenant->id,
+                'issue_type' => 'Payment log creation unsuccessful',
+                'description' => 'Payment log creation unsuccessful but tenant and domain created',
+                'domain_create_status' => 1,
+                'seen_status' => 0
+            ]);
+            return back()->with(['msg' => __('Your shop creation was done incorrectly. Please contact admin or create a new shop'), 'type' => 'danger']);
         }
 
         if ($request->selected_payment_gateway === 'manual_payment')
@@ -354,6 +390,10 @@ class PaymentLogController extends Controller
                 $custom_data['request'] = $request;
                 $custom_data['payment_details'] = $this->payment_details->toArray();
                 $custom_data['total'] = $this->total;
+                $custom_data['payment_type'] = "price_plan";
+                $custom_data['payment_for'] = "landlord";
+                $custom_data['cancel_url'] = route(self::CANCEL_ROUTE, random_int(111111,999999).$this->payment_details['id'].random_int(111111,999999));
+                $custom_data['success_url'] = route(self::SUCCESS_ROUTE, random_int(111111,999999).$this->payment_details['id'].random_int(111111,999999));
 
                 $charge_customer_class_namespace = getChargeCustomerMethodNameByPaymentGatewayNameSpace($payment_gateway_name);
                 $charge_customer_method_name = getChargeCustomerMethodNameByPaymentGatewayName($payment_gateway_name);
@@ -366,7 +406,6 @@ class PaymentLogController extends Controller
                     return back()->with(FlashMsg::explain('danger', 'Incorrect Class or Method'));
                 }
             } else {
-
                 $gateway = PaymentGatewayCredential::$gateway_function();
                 $redirect_url = $gateway->charge_customer(
                     $this->common_charge_customer_data($payment_gateway_name)
@@ -406,7 +445,13 @@ class PaymentLogController extends Controller
     {
         $paypal = PaymentGatewayCredential::get_paypal_credential();
         $payment_data = $paypal->ipn_response();
-        return $this->common_ipn_data($payment_data);
+
+        // todo: Implement it to every ipn method
+        try{
+            return $this->common_ipn_data($payment_data);
+        }catch(\Exception $e){
+
+        }
     }
 
     public function paytm_ipn()
@@ -542,25 +587,25 @@ class PaymentLogController extends Controller
                 $this->update_tenant($payment_data);
 
             } catch (\Exception $exception) {
-                    $message = $exception->getMessage();
-                    if(str_contains($message,'Access denied')){
-                        if(request()->ajax()){
-                            abort(462,__('Database created failed, Make sure your database user has permission to create database'));
-                        }
+                $message = $exception->getMessage();
+                if(str_contains($message,'Access denied')){
+                    if(request()->ajax()){
+                        abort(462,__('Database created failed, Make sure your database user has permission to create database'));
                     }
+                }
 
-                    $payment_details = PaymentLogs::where('id',$payment_data['order_id'])->first();
-                    if(empty($payment_details))
-                    {
-                        abort(500,__('Does not exist, Tenant does not exists'));
-                    }
-                    LandlordPricePlanAndTenantCreate::store_exception($payment_details->tenant_id,'Domain create',$exception->getMessage(), 0);
+                $payment_details = PaymentLogs::where('id',$payment_data['order_id'])->first();
+                if(empty($payment_details))
+                {
+                    abort(500,__('Does not exist, Tenant does not exists'));
+                }
+                LandlordPricePlanAndTenantCreate::store_exception($payment_details->tenant_id,'Domain create',$exception->getMessage(), 0);
 
                 //todo: send an email to admin that this user databse could not able to create automatically
 
                 try {
                     $message = sprintf(__('Database Creating failed for user id %1$s , please checkout admin panel and generate database for this user from admin panel manually'),
-                    $payment_details->user_id);
+                        $payment_details->user_id);
                     $subject = sprintf(__('Database Crating failed for user id %1$s'),$payment_details->user_id);
                     Mail::to(get_static_option('site_global_email'))->send(new BasicMail($message,$subject));
 
@@ -622,7 +667,7 @@ class PaymentLogController extends Controller
             Mail::to($package_details->email)->send(new PlaceOrder($all_fields, $all_attachment, $package_details, 'user', 'regular'));
 
         } catch (\Exception $e) {
-            return redirect()->back()->with(['type' => 'danger', 'msg' => $e->getMessage()]);
+//            return redirect()->back()->with(['type' => 'danger', 'msg' => $e->getMessage()]);
         }
     }
 
@@ -638,7 +683,7 @@ class PaymentLogController extends Controller
         $tenant = Tenant::find($log->tenant_id);
 
         if (!empty($log) && $log->payment_status == 'complete' && is_null($tenant)) {
-            event(new TenantRegisterEvent($user, $log->tenant_id, get_static_option('default_theme')));
+            event(new TenantRegisterEvent($user, $log->tenant_id, $log->theme_slug));
             try {
                 $raw_pass = get_static_option_central('tenant_admin_default_password') ??'12345678';
                 $credential_password = $raw_pass;
@@ -653,7 +698,7 @@ class PaymentLogController extends Controller
 
         } else if (!empty($log) && $log->payment_status == 'complete' && !is_null($tenant) && $log->is_renew == 0) {
             try {
-                $raw_pass = get_static_option_central('tenant_admin_default_password') ??'12345678';
+                $raw_pass = get_static_option_central('tenant_admin_default_password') ?? '12345678';
                 $credential_password = $raw_pass;
                 $credential_email = $user->email;
                 $credential_username = get_static_option_central('tenant_admin_default_username') ?? 'super_admin';
@@ -663,7 +708,7 @@ class PaymentLogController extends Controller
             } catch (\Exception $exception) {
                 $message = $exception->getMessage();
                 if(str_contains($message,'Access denied')){
-                        abort(463,__('Database created failed, Make sure your database user has permission to create database'));
+                    abort(463,__('Database created failed, Make sure your database user has permission to create database'));
                 }
             }
         }

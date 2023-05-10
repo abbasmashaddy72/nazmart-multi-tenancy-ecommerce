@@ -3,14 +3,17 @@
 namespace App\Actions\Payment\Tenant;
 
 use App\Enums\PaymentRouteEnum;
+use App\Enums\ProductTypeEnum;
 use App\Helpers\Payment\PaymentGatewayCredential;
 use App\Mail\ProductOrderEmail;
 use App\Mail\ProductOrderEmailAdmin;
 use App\Mail\ProductOrderManualEmail;
 use App\Models\Admin;
+use App\Models\OrderProducts;
 use App\Models\ProductOrder;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Mail;
+use Modules\DigitalProduct\Entities\DigitalProductDownload;
 
 class PaymentGatewayIpn
 {
@@ -139,9 +142,36 @@ class PaymentGatewayIpn
             (new self())->send_order_mail($payment_data['order_id']);
             $order_id = wrap_random_number($payment_data['order_id']);
 
-            ProductOrder::find($payment_data['order_id'])->update([
-                'payment_status' => 'success'
-            ]);
+            $order = ProductOrder::find($payment_data['order_id']);
+
+            $total_count = 0;
+            $digital_count = 0;
+            foreach (json_decode($order->order_details) ?? [] as $item)
+            {
+                if ($item->options->type == ProductTypeEnum::DIGITAL)
+                {
+                    DigitalProductDownload::updateOrCreate([
+                        'product_id' => $item->id,
+                        'user_id' => $order->user_id
+                    ],
+                    [
+                        'product_id' => $item->id,
+                        'user_id' => $order->user_id,
+                        'download_count' => 1
+                    ]);
+
+                    $digital_count++;
+                }
+                $total_count++;
+            }
+
+            if ($digital_count == $total_count)
+            {
+                $order->status = 'success';
+            }
+
+            $order->payment_status = 'success';
+            $order->save();
 
             Cart::instance("default")->destroy();
 

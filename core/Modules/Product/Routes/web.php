@@ -5,10 +5,12 @@ use Modules\Product\Http\Controllers\ProductController;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use Modules\Product\Http\Middleware\ProductLimitMiddleware;
+use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 
 Route::middleware([
     'web',
-    InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomain::class,
+    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'auth:admin',
     'tenant_admin_glvar',
@@ -31,6 +33,8 @@ Route::middleware([
             Route::get("clone/{id}", "clone")->name("clone")->middleware(ProductLimitMiddleware::class);
             Route::post("bulk/destroy", "bulk_destroy")->name("bulk.destroy");
             Route::get("search","productSearch")->name("search");
+
+            Route::get("review","productReview")->name("review");
 
             Route::prefix('trash')->name('trash.')->group(function (){
                 Route::get('/', 'trash')->name('all');

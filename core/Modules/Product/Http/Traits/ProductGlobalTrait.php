@@ -43,7 +43,8 @@ trait ProductGlobalTrait {
         }else if ($queryType == 'api'){
             $all_products = Product::query()->with('campaign_sold_product','category','subCategory','childCategory','campaign_product', 'inventory','badge','uom')
                 ->withAvg("reviews", "rating")
-                ->withCount("reviews");
+                ->withCount("reviews")
+                ->where('status_id', 1);
         }
 
         // search product name
@@ -526,9 +527,10 @@ trait ProductGlobalTrait {
                 'twitter_description' => $product?->metaData?->tw_description,
                 'twitter_image' => $product?->metaData?->tw_image,
             ];
+
+            $newProduct->metaData()->create(["metainfoable_id" => $id],$this->prepareMetaData($metaData));
         }
 
-        $newProduct->metaData()->create(["metainfoable_id" => $id],$this->prepareMetaData($metaData));
         $this->createdByUpdatedBy($id);
 
         $data["sku"] = create_slug(optional($product->inventory)->sku, 'ProductInventory', true, 'Product', 'sku');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tenant\Frontend;
 
+use App\Enums\ProductTypeEnum;
 use App\Facades\ThemeDataFacade;
 use App\Helpers\EmailHelpers\VerifyUserMailSend;
 use App\Helpers\ResponseMessage;
@@ -41,6 +42,12 @@ use Artesaos\SEOTools\Traits\SEOTools as SEOToolsTrait;
 use Modules\Campaign\Entities\Campaign;
 use Modules\Campaign\Entities\CampaignSoldProduct;
 use Modules\CountryManage\Entities\State;
+use Modules\DigitalProduct\Entities\DigitalAuthor;
+use Modules\DigitalProduct\Entities\DigitalCategories;
+use Modules\DigitalProduct\Entities\DigitalLanguage;
+use Modules\DigitalProduct\Entities\DigitalProduct;
+use Modules\DigitalProduct\Entities\DigitalProductCategories;
+use Modules\DigitalProduct\Entities\DigitalProductTags;
 use Modules\Product\Entities\Product;
 use Modules\Product\Entities\ProductCategory;
 use Modules\Product\Entities\ProductChildCategory;
@@ -54,6 +61,7 @@ use Modules\ShippingModule\Entities\ShippingMethod;
 use Modules\ShippingModule\Entities\ZoneRegion;
 use Modules\TaxModule\Entities\CountryTax;
 use Modules\TaxModule\Entities\StateTax;
+use function GuzzleHttp\Promise\all;
 
 class TenantFrontendController extends Controller
 {
@@ -100,10 +108,12 @@ class TenantFrontendController extends Controller
         if ($slug === $shop_page_slug) {
             if (tenant()) {
                 $product_object = Product::where('status_id', 1)->latest()->paginate(12);
-                $categories = Category::whereHas('product_categories')->select('id', 'name', 'slug')->withCount('product_categories')->get();
+                $categories = Category::whereHas('product', function ($query) {
+                    $query->where('status_id', 1);
+                })->select('id', 'name', 'slug')->withCount('product')->get();
                 $sizes = Size::whereHas('product_sizes')->select('id', 'name', 'size_code', 'slug')->get();
                 $colors = Color::select('id', 'name', 'color_code', 'slug')->get();
-                $tags = ProductTag::select('tag_name')->distinct()->get();
+                $tags = ProductTag::whereHas('product')->select('tag_name')->distinct()->get();
 
                 $create_arr = request()->all();
                 $create_url = http_build_query($create_arr);
@@ -127,6 +137,43 @@ class TenantFrontendController extends Controller
                     'sizes',
                     'colors',
                     'tags'
+                ));
+            }
+        }
+
+        $digital_shop_page_slug = get_page_slug(get_static_option('digital_shop_page'), 'digital_shop_page');
+        if (tenant_has_digital_product() && $slug === $digital_shop_page_slug) {
+            if (tenant()) {
+                $product_object = DigitalProduct::where('status_id', 1)->latest()->paginate(12);
+                $categories = DigitalCategories::whereHas('product', function ($query) {
+                    $query->where('status_id', 1);
+                })->select('id', 'name', 'slug')->withCount('product')->get();
+                $authors = DigitalAuthor::where('status', 1)->get();
+                $languages = DigitalLanguage::where('status', 1)->get();
+                $tags = DigitalProductTags::select('tag_name')->distinct()->get();
+
+                $create_arr = request()->all();
+                $create_url = http_build_query($create_arr);
+
+                $product_object->url(route('tenant.digital.shop') . '?' . $create_url);
+                $product_object->url(route('tenant.digital.shop') . '?' . $create_url);
+
+                $links = $product_object->getUrlRange(1, $product_object->lastPage());
+                $current_page = $product_object->currentPage();
+
+                $products = $product_object->items();
+
+                $pagination = $product_object->withQueryString();
+                return themeView('digital-shop.all-products', compact(
+                    'page_post',
+                    'products',
+                    'links',
+                    'current_page',
+                    'pagination',
+                    'categories',
+                    'tags',
+                    'languages',
+                    'authors'
                 ));
             }
         }
@@ -226,8 +273,6 @@ class TenantFrontendController extends Controller
         $create_arr = $request->all();
         $create_url = http_build_query($create_arr);
 
-
-        $product_object->url(route('tenant.shop') . '?' . $create_url);
         $product_object->url(route('tenant.shop') . '?' . $create_url);
 
         $links = $product_object->getUrlRange(1, $product_object->lastPage());
@@ -237,6 +282,7 @@ class TenantFrontendController extends Controller
 
         $grid = themeView("shop.partials.product-partials.grid-products", compact("products", "links", "current_page"))->render();
         $list = themeView("shop.partials.product-partials.list-products", compact("products", "links", "current_page"))->render();
+
         return response()->json(["list" => $list, "grid" => $grid, 'pagination' => $product_object]);
     }
 
@@ -289,7 +335,6 @@ class TenantFrontendController extends Controller
     {
         extract($this->productVariant($slug));
 
-
         $sub_category_arr = json_decode($product->sub_category_id, true);
 
         // related products
@@ -307,7 +352,6 @@ class TenantFrontendController extends Controller
             ->take(5)
             ->get();
 
-
         // sidebar data
         $all_category = ProductCategory::all();
         $all_units = ProductUom::all();
@@ -315,6 +359,7 @@ class TenantFrontendController extends Controller
         $min_price = request()->pr_min ? request()->pr_min : Product::query()->min('price');
         $max_price = request()->pr_max ? request()->pr_max : $maximum_available_price;
         $all_tags = ProductTag::all();
+        // todo:: now check product inventory set
 
         return themeView('shop.product_details.product-details', compact(
             'product',
@@ -401,8 +446,8 @@ class TenantFrontendController extends Controller
 
             $product_image = $product->image_id;
             if ($cart_data['product_variant']) {
-                $size_name = Size::find($cart_data['selected_size'])->name ?? '';
-                $color_name = Color::find($cart_data['selected_color'])->name ?? '';
+                $size_name = Size::find($cart_data['selected_size'] ?? 0)->name ?? '';
+                $color_name = Color::find($cart_data['selected_color'] ?? 0)->name ?? '';
 
                 $product_detail = ProductInventoryDetail::where("id", $cart_data['product_variant'])->first();
 
@@ -427,6 +472,7 @@ class TenantFrontendController extends Controller
                 'category' => $category,
                 'subcategory' => $subcategory
             ];
+            $options['type'] = ProductTypeEnum::PHYSICAL;
 
             Cart::instance("default")->add(['id' => $cart_data['product_id'], 'name' => $product->name, 'qty' => $cart_data['quantity'], 'price' => $final_sale_price, 'weight' => '0', 'options' => $options]);
 
@@ -435,9 +481,10 @@ class TenantFrontendController extends Controller
                 'msg' => __('Item added to cart')
             ]);
         } catch (\Exception $exception) {
+
             return response()->json([
                 'type' => 'error',
-                'error_msg' => __('Something went wrong!')
+                'error_msg' => __('Something went wrong!'),
             ]);
         }
     }
@@ -693,8 +740,7 @@ class TenantFrontendController extends Controller
     public function wishlist_page()
     {
         $username = Auth::guard("web")->user();
-        if (empty($username))
-        {
+        if (empty($username)) {
             $cart_data = Cart::instance("wishlist")->content();
             $wishlist = true;
 
@@ -718,59 +764,62 @@ class TenantFrontendController extends Controller
         ]);
 
         $product_data = Cart::get($request->product_id);
-        $product_inventory = ProductInventory::where('product_id', $product_data->id)->first();
-        $product_inventory_details = ProductInventoryDetail::where('id', $request->variant_id)->first();
 
-        if ($product_inventory_details && $request->quantity > $product_inventory_details->stock_count) {
-            return response()->json([
-                'type' => 'warning',
-                'quantity_msg' => __('Requested quantity is not available. Only available quantity is added to cart')
-            ]);
-        } elseif ($product_inventory && $request->quantity > $product_inventory->stock_count) {
-            return response()->json([
-                'type' => 'warning',
-                'quantity_msg' => __('Requested quantity is not available. Only available quantity is added to cart')
-            ]);
-        }
+        if ($product_data->options->type == ProductTypeEnum::PHYSICAL) {
+            $product_inventory = ProductInventory::where('product_id', $product_data->id)->first();
+            $product_inventory_details = ProductInventoryDetail::where('id', $request->variant_id)->first();
 
-        $sold_count = CampaignSoldProduct::where('product_id', $product_data->id)->first();
-        $product = Product::where('id', $product_data->id)->first();
+            if ($product_inventory_details && $request->quantity > $product_inventory_details->stock_count) {
+                return response()->json([
+                    'type' => 'warning',
+                    'quantity_msg' => __('Requested quantity is not available. Only available quantity is added to cart')
+                ]);
+            } elseif ($product_inventory && $request->quantity > $product_inventory->stock_count) {
+                return response()->json([
+                    'type' => 'warning',
+                    'quantity_msg' => __('Requested quantity is not available. Only available quantity is added to cart')
+                ]);
+            }
 
-        $product_left = $sold_count !== null ? $product->campaign_product->units_for_sale - $sold_count->sold_count : null;
+            $sold_count = CampaignSoldProduct::where('product_id', $product_data->id)->first();
+            $product = Product::where('id', $product_data->id)->first();
 
-        // now we will check if product left is equal or bigger than quantity than we will check
-        if (!($request->quantity <= $product_left) && $sold_count) {
-            return response()->json([
-                'type' => 'warning',
-                'quantity_msg' => __('Requested amount can not be cart. Campaign product stock limit is over!')
-            ]);
-        }
+            $product_left = $sold_count !== null ? $product->campaign_product->units_for_sale - $sold_count->sold_count : null;
+
+            // now we will check if product left is equal or bigger than quantity than we will check
+            if (!($request->quantity <= $product_left) && $sold_count) {
+                return response()->json([
+                    'type' => 'warning',
+                    'quantity_msg' => __('Requested amount can not be cart. Campaign product stock limit is over!')
+                ]);
+            }
 
 
-        DB::beginTransaction();
-        try {
-            $rowId = $request->product_id;
-            $qty = max($request->quantity, 1);
+            DB::beginTransaction();
+            try {
+                $rowId = $request->product_id;
+                $qty = max($request->quantity, 1);
 
-            Cart::update($rowId, ['qty' => $qty]);
-            DB::commit();
+                Cart::update($rowId, ['qty' => $qty]);
+                DB::commit();
 
-            $cart_data = Cart::content();
-            $markup = themeView('shop.cart.markup_for_controller.cart_products', compact('cart_data'))->render();
-            $cart_price_markup = themeView('shop.cart.markup_for_controller.cart_price', compact('cart_data'))->render();
+                $cart_data = Cart::content();
+                $markup = themeView('shop.cart.markup_for_controller.cart_products', compact('cart_data'))->render();
+                $cart_price_markup = themeView('shop.cart.markup_for_controller.cart_price', compact('cart_data'))->render();
 
-            return response()->json([
-                'type' => 'success',
-                'msg' => __('Cart is updated'),
-                'markup' => $markup,
-                'cart_price_markup' => $cart_price_markup,
-            ]);
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            return response()->json([
-                'type' => 'error',
-                'error_msg' => __('Something went wrong!')
-            ]);
+                return response()->json([
+                    'type' => 'success',
+                    'msg' => __('Cart is updated'),
+                    'markup' => $markup,
+                    'cart_price_markup' => $cart_price_markup,
+                ]);
+            } catch (\Exception $exception) {
+                DB::rollBack();
+                return response()->json([
+                    'type' => 'error',
+                    'error_msg' => __('Something went wrong!')
+                ]);
+            }
         }
     }
 
@@ -1022,7 +1071,7 @@ class TenantFrontendController extends Controller
         if ($request->total < $selected_shipping_method?->options?->minimum_order_amount) {
             return response()->json([
                 'type' => 'error',
-                'msg' => __(sprintf('%s%s Minimum order amount needed.' ,site_currency_symbol(), $selected_shipping_method?->options?->minimum_order_amount))
+                'msg' => __(sprintf('%s%s Minimum order amount needed.', site_currency_symbol(), $selected_shipping_method?->options?->minimum_order_amount))
             ]);
         }
 
@@ -1054,7 +1103,7 @@ class TenantFrontendController extends Controller
     {
         $all_cart_items = Cart::content();
         $products = Product::with("category", "subCategory", "childCategory")->whereIn('id', $all_cart_items?->pluck("id")?->toArray())->get();
-        $subtotal = Cart::subtotal();
+        $subtotal = Cart::subtotal(2,'.','');
 
         $coupon_amount_total = CheckoutCouponService::calculateCoupon($request, $subtotal, $products, 'DISCOUNT');
         if ($coupon_amount_total == 0) {
@@ -1076,7 +1125,7 @@ class TenantFrontendController extends Controller
             return response()->json([
                 'type' => 'success',
                 'coupon_amount' => round($total, 2),
-                'coupon_price' => (double)$subtotal - $coupon_amount_total,
+                'coupon_price' => round((double)$subtotal - $coupon_amount_total, 2),
                 'msg' => __('Coupon applied successfully')
             ]);
         }
@@ -1135,8 +1184,7 @@ class TenantFrontendController extends Controller
             if (!empty($product_tax)) {
                 $product_tax = $product_tax->toArray()['tax_percentage'];
             } else {
-                if (!empty($country_tax))
-                {
+                if (!empty($country_tax)) {
                     $product_tax = $country_tax->toArray()['tax_percentage'];
                 }
             }
@@ -1292,8 +1340,8 @@ class TenantFrontendController extends Controller
             $title = __('Thanks');
             $description = __('We are really thankful to you for subscribe our newsletter');
 
-            $markup = '<div style="text-align: center;margin-top: 100px"><h2>'.$title.'</h2>';
-            $markup .= '<p>'.$description.'</p></div>';
+            $markup = '<div style="text-align: center;margin-top: 100px"><h2>' . $title . '</h2>';
+            $markup .= '<p>' . $description . '</p></div>';
         }
         return $markup;
     }
@@ -1378,12 +1426,11 @@ class TenantFrontendController extends Controller
             //handle error
         }
 
-        if (empty(get_static_option('user_email_verify_status')))
-        {
+        if (empty(get_static_option('user_email_verify_status'))) {
             return to_route('tenant.user.home');
         }
 
-        return themeView('user.email-verify');
+        return view('tenant.frontend.user.email-verify');
     }
 
     public function tenant_logout()
@@ -1394,7 +1441,7 @@ class TenantFrontendController extends Controller
 
     public function showUserForgetPasswordForm()
     {
-        return themeView('user.forget-password');
+        return view('tenant.frontend.user.forget-password');
     }
 
     public function sendUserForgetPasswordMail(Request $request)
@@ -1409,7 +1456,7 @@ class TenantFrontendController extends Controller
             if (empty($existing_token)) {
                 DB::table('password_resets')->insert(['email' => $user_info->email, 'token' => $token_id]);
             }
-            $message = '<br>'.__('Here is you password reset link, If you did not request to reset your password just ignore this mail.') . '<br><br> <a class="btn" href="' . route('tenant.user.reset.password', ['user' => $user_info->username, 'token' => $token_id]) . '" style="color:white;background:gray;">' . __('Click Reset Password') . '</a>';
+            $message = '<br>' . __('Here is you password reset link, If you did not request to reset your password just ignore this mail.') . '<br><br> <a class="btn" href="' . route('tenant.user.reset.password', ['user' => $user_info->username, 'token' => $token_id]) . '" style="color:white;background:gray;">' . __('Click Reset Password') . '</a>';
             $data = [
                 'username' => $user_info->username,
                 'message' => $message
@@ -1436,7 +1483,7 @@ class TenantFrontendController extends Controller
 
     public function showUserResetPasswordForm($username, $token)
     {
-        return themeView('user.reset-password')->with([
+        return view('tenant.frontend.user.reset-password')->with([
             'username' => $username,
             'token' => $token
         ]);
@@ -1514,7 +1561,7 @@ class TenantFrontendController extends Controller
         if (empty(get_static_option('user_email_verify_status'))) {
             return redirect()->route('tenant.user.home');
         }
-        return themeView('user.email-verify');
+        return view('tenant.frontend.user.email-verify');
     }
 
     public function check_verify_user_email(Request $request)
@@ -1595,7 +1642,7 @@ class TenantFrontendController extends Controller
         $products_id = ProductCategory::whereIn('category_id', $category_id)->pluck('product_id')->toArray();
         $products->whereIn('id', $products_id);
 
-        $products = $products->orderBy('id', 'desc')
+        $products = $products->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
             ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
             ->take($request->limit ?? 6)
             ->get();
@@ -1620,8 +1667,8 @@ class TenantFrontendController extends Controller
             if ($discount != null) {
                 $discount = '<span class="global-card-thumb-badge-box bg-color-two">' . $discount . '% ' . __('Off') . '</span>';
             }
-            $sale_price_markup = amount_with_currency_symbol($sale_price);
-            $old_price_markup = $regular_price != null ? amount_with_currency_symbol($regular_price) : '';
+            $sale_price_markup = float_amount_with_currency_symbol($sale_price);
+            $old_price_markup = $regular_price != null ? float_amount_with_currency_symbol($regular_price) : '';
 
             $product_name = Str::words($product->name, 4);
 
@@ -1679,7 +1726,7 @@ HTML;
             $products_id = ProductCategory::where('category_id', $category_id->id)->pluck('product_id')->toArray();
             $products->whereIn('id', $products_id);
 
-            $products = $products->orderBy('id', 'desc')
+            $products = $products->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
                 ->take($request->limit ?? 8)
                 ->get();
@@ -1688,13 +1735,13 @@ HTML;
             $category_id = ProductCategory::whereIn('category_id', $allId)->pluck('product_id')->toArray();
 
             $products = $products->whereIn('id', $category_id)
-                ->orderBy('id', 'desc')
+                ->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
                 ->take($request->limit ?? 8)
                 ->get();
         }
 
-        $markup = view('pagebuilder::tenant.theme_two.product.partials.product_list_markup', compact('products'))->render();
+        $markup = view('pagebuilder::tenant.furnito.product.partials.product_list_markup', compact('products'))->render();
 
         return response()->json([
             'markup' => $markup,
@@ -1702,6 +1749,74 @@ HTML;
         ]);
     }
 
+    public function product_by_category_ajax_three(Request $request)
+    {
+        (string)$markup = '';
+
+        $products = Product::with('badge')->where('status_id', 1);
+
+        if ($request->category != 'all') {
+            $category_id = Category::where('slug', $request->category)->firstOrFail();
+
+            $products_id = ProductCategory::where('category_id', $category_id->id)->pluck('product_id')->toArray();
+            $products->whereIn('id', $products_id);
+
+            $products = $products->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
+                ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
+                ->take($request->limit ?? 8)
+                ->get();
+        } else {
+            $allId = explode(',', $request->allId);
+            $category_id = ProductCategory::whereIn('category_id', $allId)->pluck('product_id')->toArray();
+
+            $products = $products->whereIn('id', $category_id)
+                ->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
+                ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
+                ->take($request->limit ?? 8)
+                ->get();
+        }
+
+        $markup = view('pagebuilder::tenant.medicom.product.partials.product_list_markup', compact('products'))->render();
+
+        return response()->json([
+            'markup' => $markup,
+            'category' => $request->category
+        ]);
+    }
+
+    public function product_by_category_ajax_bookpoint(Request $request)
+    {
+        (string)$markup = '';
+        $products = DigitalProduct::where('status_id', 1);
+
+        if ($request->category != 'all') {
+            $category_id = DigitalCategories::where('slug', $request->category)->firstOrFail();
+
+            $products_id = DigitalProductCategories::where('category_id', $category_id->id)->pluck('product_id')->toArray();
+            $products->whereIn('id', $products_id);
+
+            $products = $products->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
+                ->select('id', 'name', 'slug', 'regular_price', 'sale_price', 'image_id', 'promotional_date', 'promotional_price')
+                ->take($request->limit ?? 8)
+                ->get();
+        } else {
+            $allId = explode(',', $request->allId);
+            $category_id = DigitalProductCategories::whereIn('category_id', $allId)->pluck('product_id')->toArray();
+
+            $products = $products->whereIn('id', $category_id)
+                ->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
+                ->select('id', 'name', 'slug', 'regular_price', 'sale_price', 'image_id', 'promotional_date', 'promotional_price')
+                ->take($request->limit ?? 8)
+                ->get();
+        }
+
+        $markup = view('pagebuilder::tenant.bookpoint.product.partials.product_list_markup', compact('products'))->render();
+
+        return response()->json([
+            'markup' => $markup,
+            'category' => $request->category
+        ]);
+    }
 
     public function productQuickViewPage($slug): string
     {
@@ -1787,11 +1902,11 @@ HTML;
                 $single_inventory_item[$included_attribute_single['attribute_name']] = $included_attribute_single['attribute_value'];
 
 
-                if (optional($inventoryDetails->find($id))->productColor) {
+                if (!empty(optional($inventoryDetails->find($id))->productColor)) {
                     $single_inventory_item['Color'] = optional(optional($inventoryDetails->find($id))->productColor)->name;
                 }
 
-                if (optional($inventoryDetails->find($id))->productSize) {
+                if (!empty(optional($inventoryDetails->find($id))->productSize)) {
                     $single_inventory_item['Size'] = optional(optional($inventoryDetails->find($id))->productSize)->name;
                 }
             }
@@ -1829,12 +1944,14 @@ HTML;
 
                 $single_inventory_item = [];
 
-                if (optional($inventoryDetails->find($product_id))->color) {
-                    $single_inventory_item['Color'] = optional($inventory->productColor)->name;
+                if (!empty(optional($inventoryDetails->find($product_id))->color)) {
+                    // todo:: this line will check if color name is exist then store it on $singleInventoryItem['Color'] array
+                    optional($inventory->productColor)->name ? $single_inventory_item['Color'] = optional($inventory->productColor)->name : null;
                 }
 
-                if (optional($inventoryDetails->find($product_id))->size) {
-                    $single_inventory_item['Size'] = optional($inventory->productSize)->name;
+                if (!empty(optional($inventoryDetails->find($product_id))->size)) {
+                    // todo:: this line will check if size name is exist then store it on $singleInventoryItem['Size'] array
+                    optional($inventory->productSize)->name ? $single_inventory_item['Size'] = optional($inventory->productSize)->name : null;
                 }
 
                 $product_inventory_set[] = $single_inventory_item;
@@ -1899,11 +2016,10 @@ HTML;
         ]);
 
         $track = (object)[];
-        $order = ProductOrder::where('id', $validated['order_id'])->select('id','payment_status', 'status')->first();
-        if (!empty($order))
-        {
-            $status = '<strong>'.__('Your Payment Status:').'</strong>'.' '.$order->payment_status.'</br>';
-            $status .= '<strong>'.__('Your Order Status:').'</strong>'.' '.$order->status;
+        $order = ProductOrder::where('id', $validated['order_id'])->select('id', 'payment_status', 'status')->first();
+        if (!empty($order)) {
+            $status = '<strong>' . __('Your Payment Status:') . '</strong>' . ' ' . $order->payment_status . '</br>';
+            $status .= '<strong>' . __('Your Order Status:') . '</strong>' . ' ' . $order->status;
             $track->message = $status;
             $track->status = true;
         } else {
@@ -1925,24 +2041,39 @@ HTML;
 
         $product_object = Product::with('badge', 'campaign_product')
             ->where('status_id', 1)
-            ->where("name", "LIKE", "%" . $search . "%")
+            ->where("name", "LIKE", "%" . htmlspecialchars(strip_tags($search)) . "%")
             ->orWhere("sale_price", $search)
-            ->take(5)
+            ->select('id', 'slug', 'name', 'price', 'sale_price', 'image_id','product_type')
+            ->take(20)
             ->get();
+
+        $digital_product_object = DigitalProduct::with('additionalFields')
+            ->where('status_id', 1)
+            ->where("name", "LIKE", "%" . htmlspecialchars(strip_tags($search)) . "%")
+            ->orWhere("sale_price", $search)
+            ->select('id', 'slug', 'name', 'regular_price as price', 'sale_price', 'image_id','product_type')
+            ->take(20)
+            ->get();
+
+        $product_object = $product_object->merge($digital_product_object);
 
         $markup = '';
         foreach ($product_object as $item) {
+            $item = (object) $item;
+
             $data = get_product_dynamic_price($item);
             $campaign_name = $data['campaign_name'];
             $data_regular_price = $data['regular_price'];
             $data_sale_price = $data['sale_price'];
 
             $sale_price = $data_sale_price;
-            $deleted_price = $data_regular_price != null ? amount_with_currency_symbol($data_regular_price) : '';
+            $deleted_price = $data_regular_price != null ? float_amount_with_currency_symbol($data_regular_price) : '';
 
             $image = render_image_markup_by_attachment_id($item->image_id);
+
+            $route = $item->product_type == ProductTypeEnum::DIGITAL ? 'digital.shop' : 'shop';
             $markup .= '<li class="product-suggestion-list-item">
-                           <a href="' . route('tenant.shop.product.details', $item->slug) . '" class="product-suggestion-list-link">
+                           <a href="' . route('tenant.'.$route.'.product.details', $item->slug) . '" class="product-suggestion-list-link">
                               <div class="product-image">' . $image . '</div>
                               <div class="product-info">
                                    <div class="product-info-top">
@@ -1950,7 +2081,7 @@ HTML;
                                    </div>
                                     <div class="product-price mt-2">
                                           <div class="price-update-through">
-                                                <span class="flash-price fw-500"> ' . amount_with_currency_symbol($sale_price) . ' </span>
+                                                <span class="flash-price fw-500"> ' . float_amount_with_currency_symbol($sale_price) . ' </span>
                                                 <span class="flash-old-prices"> ' . $deleted_price . ' </span>
                                            </div>
                                     </div>
@@ -1964,7 +2095,7 @@ HTML;
         }
     }
 
-    public function category_products($category_type = null, $slug)
+    public function category_products($slug, $category_type = null)
     {
         $type = ['category', 'subcategory', 'child-category'];
         abort_if(!in_array($category_type, $type), 404);

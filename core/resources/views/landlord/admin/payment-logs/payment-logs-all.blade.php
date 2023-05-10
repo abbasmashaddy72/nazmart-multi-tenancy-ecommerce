@@ -62,9 +62,9 @@
                                         <td>{{$data->tenant_id}}</td>
                                         <td>
                                             @if($data->payment_status == 'pending')
-                                                <span class="alert alert-warning text-capitalize">{{$data->payment_status}}</span>
+                                                <span class="alert alert-warning text-capitalize">{{__($data->payment_status)}}</span>
                                             @else
-                                                <span class="alert alert-success text-capitalize">{{$data->payment_status}}</span>
+                                                <span class="alert alert-success text-capitalize">{{__($data->payment_status)}}</span>
                                             @endif
                                         </td>
                                         <td>{{date_format($data->created_at,'d M Y')}}</td>

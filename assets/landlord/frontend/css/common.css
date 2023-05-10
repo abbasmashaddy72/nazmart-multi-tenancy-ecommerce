@@ -4612,6 +4612,8 @@ textarea {
   padding: 10px 35px;
   -webkit-transition: all 0.3s ease-in;
   transition: all 0.3s ease-in;
+  position: relative;
+  z-index: 0;
 }
 @media only screen and (max-width: 575.98px) {
   .btn-wrapper .cmn-btn {

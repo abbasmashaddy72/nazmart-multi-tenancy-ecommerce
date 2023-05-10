@@ -10,6 +10,7 @@ use App\Models\Themes;
 use App\Observers\WalletBalanceObserver;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Modules\Blog\Entities\BlogCategory;
 use Modules\Wallet\Entities\Wallet;
@@ -47,5 +48,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Paginator::useBootstrap();
+
+        if (get_static_option('site_force_ssl_redirection') === 'on'){
+            URL::forceScheme('https');
+        }
     }
 }

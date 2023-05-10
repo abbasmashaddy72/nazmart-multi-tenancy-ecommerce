@@ -18,6 +18,7 @@
 <script src="{{global_asset('assets/landlord/common/js/sweetalert2.js')}}"></script>
 <script src="{{global_asset('assets/common/js/countdown.jquery.js')}}"></script>
 <script src="{{global_asset('assets/common/js/flatpickr.js')}}"></script>
+<x-flatpicker.flatpickr-locale/>
 <script src="{{global_asset('assets/common/js/toastr.min.js')}}"></script>
 <script src="{{global_asset('assets/common/js/select2.min.js')}}"></script>
 <script>

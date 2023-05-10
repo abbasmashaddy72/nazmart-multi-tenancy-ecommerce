@@ -326,6 +326,7 @@
             </div>
         </div>
     @endcan
+
     <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
 @endsection
 @section('scripts')
@@ -364,11 +365,6 @@
                 $('#edit_form_subcategory').hide();
                 $("#edit_form_childcategory").hide();
                 $('#edit_form_products').hide();
-
-                console.log([
-                    '#edit_form_' + discount_on + 's',
-                    $('#edit_form_' + discount_on + 's')
-                ]);
 
                 if (discount_on == 'product') {
                     $('#edit_form_products').fadeOut();

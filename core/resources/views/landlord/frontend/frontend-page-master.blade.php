@@ -21,5 +21,6 @@
         </div>
     </div>
 </div>
+
 @yield('content')
 @include('landlord.frontend.partials.footer')

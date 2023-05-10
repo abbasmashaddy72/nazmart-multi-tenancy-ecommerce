@@ -108,7 +108,7 @@
                         @foreach($recent_logs as $key=> $data)
                             <tr>
                                 <td>{{$key +1}}</td>
-                                <td>{{$data?->domain?->domain ?? 'Unsuccessful Transaction'}}</td>
+                                <td>{{$data?->domain?->domain ?? __('Unsuccessful Transaction')}}</td>
                                 <td>{{$data->package_name}}</td>
                                 <td>{{ amount_with_currency_symbol($data->package_price) }}</td>
                                 <td>{{ $data->payment_status }}</td>

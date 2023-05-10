@@ -160,3 +160,14 @@ Route::get("assets/theme/screenshot/{theme}", function ($theme){
 
     return abort(404);
 })->name("theme.primary.screenshot");
+
+Route::get("assets/payment-gateway/screenshot/{moduleName}/{gatewayName}", function ($moduleName, $gatewayName){
+    $image_name = getPaymentGatewayImagePath($gatewayName);
+    $module_path = module_path($moduleName).'/assets/payment-gateway-image/'.$image_name;
+
+    if(file_exists($module_path)){
+        return response()->file($module_path);
+    }
+
+    return abort(404);
+})->name("payment.gateway.logo");

@@ -61,7 +61,22 @@ class ThemeMetaData
         {
             foreach ($headerHook->style as $item)
             {
-                $file_name[] = $item.'.css';
+                $file_name[] = $item;
+            }
+        }
+
+        return $file_name;
+    }
+
+    public function getHeaderHookRtlCssFiles()
+    {
+        $file_name = [];
+        $headerHook = $this->getHeaderHook();
+        if (!empty($headerHook) && property_exists($headerHook, 'rtl_style'))
+        {
+            foreach ($headerHook->rtl_style as $item)
+            {
+                $file_name[] = $item;
             }
         }
 
@@ -76,7 +91,7 @@ class ThemeMetaData
         {
             foreach ($headerHook->script as $item)
             {
-                $file_name[] = $item.'.js';
+                $file_name[] = $item;
             }
         }
 
@@ -86,12 +101,12 @@ class ThemeMetaData
     public function getFooterHookCssFiles()
     {
         $file_name = [];
-        $footerHook = $this->getHeaderHook();
+        $footerHook = $this->getFooterHook();
         if (!empty($footerHook) && property_exists($footerHook, 'style'))
         {
             foreach ($footerHook->style as $item)
             {
-                $file_name[] = $item.'.css';
+                $file_name[] = $item;
             }
         }
 
@@ -105,7 +120,7 @@ class ThemeMetaData
         {
             foreach ($footerHook->script as $item)
             {
-                $file_name[] = $item.'.js';
+                $file_name[] = $item;
             }
         }
 
@@ -116,36 +131,94 @@ class ThemeMetaData
     {
         $headerHook = $this->getHeaderHook();
         $current_theme = $this->getSelectedThemeSlug();
+        $return_val = '';
 
         if (!empty($headerHook) && property_exists($headerHook, 'blade'))
         {
             if (count($headerHook->blade) > 0)
             {
-                $file_name = 'themes.'.$current_theme.'.headerHookTemplate.'.current($headerHook->blade);
-                if (\view()->exists($file_name))
-                {
-                    return \view($file_name);
+                foreach ($headerHook->blade as $bl){
+                    $file_name = 'themes.'.$current_theme.'.headerHookTemplate.'.$bl;
+                    if (\view()->exists($file_name))
+                    {
+                        $return_val .=\view($file_name)->render()."\n";
+                    }
                 }
             }
         }
+
+        return $return_val;
     }
 
     public function renderFooterHookBladeFile()
     {
         $footerHook = $this->getFooterHook();
         $current_theme = $this->getSelectedThemeSlug();
-
+        $return_val = '';
         if (!empty($footerHook) && property_exists($footerHook, 'blade'))
         {
             if (count($footerHook->blade) > 0)
             {
-                $file_name = 'themes.'.$current_theme.'.footerHookTemplate.'.current($footerHook->blade);
-                if (\view()->exists($file_name))
-                {
-                    return \view($file_name);
+                foreach ($footerHook->blade as $bl){
+                    $file_name = 'themes.'.$current_theme.'.footerHookTemplate.'.$bl;
+                    if (\view()->exists($file_name))
+                    {
+                        $return_val .=\view($file_name)->render()."\n";
+                    }
                 }
+
             }
         }
+
+        return $return_val;
+    }
+
+    public function getFooterWidgetArea()
+    {
+        $widget_area_file_name = '';
+        $footerHook = $this->getFooterHook();
+
+        if (!empty($footerHook) && property_exists($footerHook, 'widgetArea'))
+        {
+            if (!empty($footerHook->widgetArea))
+            {
+                $widget_area_file_name = $footerHook->widgetArea;
+            }
+        }
+
+        return $widget_area_file_name;
+    }
+
+    public function getHeaderNavbarArea()
+    {
+        $navbar_area_file_name = '';
+        $headerHook = $this->getHeaderHook();
+
+        if (!empty($headerHook) && property_exists($headerHook, 'navbarArea'))
+        {
+            if (!empty($headerHook->navbarArea))
+            {
+                $navbar_area_file_name = $headerHook->navbarArea;
+            }
+        }
+
+        return $navbar_area_file_name;
+    }
+
+    public function getHeaderBreadcrumbArea()
+    {
+        $navbar_area_file_name = '';
+        $headerHook = $this->getHeaderHook();
+
+        if (!empty($headerHook) && property_exists($headerHook, 'breadcrumbArea'))
+        {
+            if (!empty($headerHook->breadcrumbArea))
+            {
+                $navbar_area_file_name = $headerHook->breadcrumbArea;
+            }
+        }
+
+        return $navbar_area_file_name;
     }
 
     /**
@@ -198,6 +271,26 @@ class ThemeMetaData
             }
         }
         return $allThemeData;
+    }
+
+    public function getAllThemeSlug(){
+        $themeSlugArray = [];
+        $allThemeData = getAllThemeData();
+
+        $index = 0;
+        foreach ($allThemeData as $data){
+            if (property_exists($data, 'status') && $data->status)
+            {
+                if (property_exists($data,'slug')){
+                    if ($data->slug == 'default')
+                    {
+                        continue;
+                    }
+                    $themeSlugArray[$index++] = $data->slug;
+                }
+            }
+        }
+        return $themeSlugArray;
     }
 
     public function getDefaultThemeData(){

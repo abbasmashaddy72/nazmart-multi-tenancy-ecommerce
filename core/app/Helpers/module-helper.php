@@ -7,6 +7,11 @@ function getAllExternalMenu()
     return ModuleDataFacade::getAllExternalMenu();
 }
 
+function getAllExternalPaymentGatewayMenu()
+{
+    return ModuleDataFacade::getAllExternalPaymentGatewayMenu();
+}
+
 function getExternalPaymentGateway()
 {
     return ModuleDataFacade::getExternalPaymentGateway();
@@ -32,6 +37,11 @@ function renderPaymentGatewayImage($imageName, $moduleName): string
     return ModuleDataFacade::renderPaymentGatewayImage($imageName, $moduleName);
 }
 
+function getPaymentGatewayImagePath($gateway_slug)
+{
+    return ModuleDataFacade::getPaymentGatewayImagePath($gateway_slug);
+}
+
 function renderAllPaymentGatewayExtraInfoBlade()
 {
     return ModuleDataFacade::renderAllPaymentGatewayExtraInfoBlade();
@@ -53,4 +63,10 @@ function getChargeCustomerMethodNameByPaymentGatewayNameSpace($payment_gateway_n
 function getChargeCustomerMethodNameByPaymentGatewayName($payment_gateway_name): mixed
 {
     return ModuleDataFacade::getChargeCustomerMethodNameByPaymentGatewayName($payment_gateway_name);
+}
+
+
+function loadPaymentGatewayLogo($moduleName, $gatewayName)
+{
+    return route('payment.gateway.logo', [$moduleName, $gatewayName]);
 }

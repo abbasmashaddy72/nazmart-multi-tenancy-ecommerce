@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static getPageBuilderAddonList
  * @method static getWidgetBuilderAddonList
  * @method static getAllExternalMenu
+ * @method static getAllExternalPaymentGatewayMenu
  * @method static getExternalPaymentGateway
  * @method static getAllPaymentGatewayList
  * @method static renderAllPaymentGatewayExtraInfoBlade

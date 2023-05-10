@@ -2,16 +2,19 @@
 
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
+use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 
 Route::middleware([
     'web',
-    InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomain::class,
+    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'auth:admin',
     'tenant_admin_glvar',
     'package_expire',
     'set_lang',
-    'tenantAdminPanelMailVerify'
+    'tenantAdminPanelMailVerify',
+    \App\Http\Middleware\Tenant\TenantCheckPermission::class
 ])->prefix('admin-home')->name('tenant.')->group(function () {
         /*-----------------------------------
                     COUPON ROUTES

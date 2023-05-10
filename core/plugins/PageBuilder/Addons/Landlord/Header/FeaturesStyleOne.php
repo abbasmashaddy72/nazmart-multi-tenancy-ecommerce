@@ -37,6 +37,13 @@ class FeaturesStyleOne extends PageBuilderBase
             'info' => __('To show the highlighted text, place your word between this code {h}YourText{/h]')
         ]);
 
+        $output .= Image::get([
+            'name' => 'title_line_shape',
+            'label' => __('Title Text Line Shape'),
+            'value' => $widget_saved_values['title_line_shape'] ?? null,
+            'dimensions' => '~230x60 px'
+        ]);
+
         $output .= Text::get([
             'name' => 'subtitle',
             'label' => __('Subtitle'),
@@ -102,6 +109,7 @@ class FeaturesStyleOne extends PageBuilderBase
 
         $repeater_data = $this->setting_item('features_repeater');
 
+        $title_line_shape = $this->setting_item('title_line_shape') ?? '';
         $bg_shape_image = $this->setting_item('background_shape') ?? '';
 
         $section_id = SanitizeInput::esc_html($this->setting_item('section_id')) ?? '';
@@ -114,6 +122,8 @@ class FeaturesStyleOne extends PageBuilderBase
             'title' => $title,
             'subtitle' => $subtitle,
             'repeater_data' => $repeater_data,
+
+            'title_line_shape' => $title_line_shape,
             'bg_shape_image' => $bg_shape_image,
 
             'padding_top' => $padding_top,

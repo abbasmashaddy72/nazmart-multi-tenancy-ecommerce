@@ -4,7 +4,7 @@ namespace Modules\MobileApp\Http\Controllers;
 
 use App\Helpers\FlashMsg;
 use App\Http\Controllers\Controller;
-use App\Page;
+use App\Models\Page;
 use Illuminate\Http\Request;
 
 class AdminMobileController extends Controller
@@ -15,26 +15,26 @@ class AdminMobileController extends Controller
     }
 
     public function terms_and_condition(){
-        $pages = Page::select("id","title")->get();
+        $pages = Page::select("id","slug","title")->get();
 
         return view("mobileapp::mobile-controller.terms_and_condition", compact("pages"));
     }
 
     public function update_terms_and_condition(Request $request){
-        set_static_option("mobile_terms_and_condition", $request->page);
+        update_static_option("mobile_terms_and_condition", $request->page);
 
-        return redirect()->back()->with(FlashMsg::update_succeed("Terms and condition"));
+        return redirect()->back()->with(FlashMsg::update_succeed(__("Terms and condition")));
     }
 
     public function privacy_and_policy(){
-        $pages = Page::select("id","title")->get();
+        $pages = Page::select("id","slug","title")->get();
 
         return view("mobileapp::mobile-controller.privacy_policy", compact("pages"));
     }
 
     public function update_privacy_and_policy(Request $request){
-        set_static_option("mobile_privacy_and_policy", $request->page);
+        update_static_option("mobile_privacy_and_policy", $request->page);
 
-        return redirect()->back()->with(FlashMsg::update_succeed("Privacy and policy"));
+        return redirect()->back()->with(FlashMsg::update_succeed(__("Privacy and policy")));
     }
 }

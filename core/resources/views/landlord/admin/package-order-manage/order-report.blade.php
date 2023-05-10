@@ -89,20 +89,20 @@
                                        <td>{{amount_with_currency_symbol($data->package_price)}}</td>
                                        <td>
                                            @if($data->payment_status == 'pending')
-                                               <span class="alert alert-warning text-capitalize">{{$data->payment_status}}</span>
+                                               <span class="alert alert-warning text-capitalize">{{__($data->payment_status)}}</span>
                                            @else
-                                               <span class="alert alert-success text-capitalize">{{$data->payment_status}}</span>
+                                               <span class="alert alert-success text-capitalize">{{__($data->payment_status)}}</span>
                                            @endif
                                        </td>
                                        <td>
                                            @if($data->status == 'pending')
-                                               <span class="alert alert-warning text-capitalize">{{$data->status}}</span>
+                                               <span class="alert alert-warning text-capitalize">{{__($data->status)}}</span>
                                            @elseif($data->status == 'canceled')
-                                               <span class="alert alert-danger text-capitalize">{{$data->status}}</span>
+                                               <span class="alert alert-danger text-capitalize">{{__($data->status)}}</span>
                                            @elseif($data->status == 'in_progress')
-                                               <span class="alert alert-info text-capitalize">{{str_replace('_',' ',$data->status)}}</span>
+                                               <span class="alert alert-info text-capitalize">{{__(str_replace('_',' ',$data->status))}}</span>
                                            @else
-                                               <span class="alert alert-success text-capitalize">{{$data->status}}</span>
+                                               <span class="alert alert-success text-capitalize">{{__($data->status)}}</span>
                                            @endif
                                        </td>
                                        <td>{{date_format($data->created_at,'d M Y')}}</td>

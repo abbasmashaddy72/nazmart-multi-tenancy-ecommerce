@@ -406,20 +406,20 @@ class LandlordFrontendController extends Controller
             'subdomain' => 'required|unique:tenants,id',
             'theme' => 'required',
         ],[
-            'theme.required' => 'No theme is selected.'
+            'theme.required' => __('No theme is selected.')
         ]);
 
         if ($request->subdomain != null) {
             $has_subdomain = Tenant::find(trim($request->subdomain));
             if (!empty($has_subdomain)) {
-                return back()->with(['type' => 'danger', 'msg' => 'This subdomain is already in use, Try something different']);
+                return back()->with(['type' => 'danger', 'msg' => __('This subdomain is already in use, Try something different')]);
             }
 
             $site_domain = url('/');
             $site_domain = str_replace(['http://', 'https://'], '', $site_domain);
             $site_domain = substr($site_domain, 0, strpos($site_domain, '.'));
             $restricted_words = ['https', 'http', 'http://', 'https://','www', 'subdomain', 'domain', 'primary-domain', 'central-domain',
-                'landlord', 'landlords', 'tenant', 'tenants', 'multi-store', 'multistore', 'admin',
+                'landlord', 'landlords', 'tenant', 'tenants', 'admin',
                 'user', 'user', $site_domain];
 
             if (in_array(trim($request->subdomain), $restricted_words))
@@ -456,7 +456,7 @@ class LandlordFrontendController extends Controller
                 'type' => 'danger'
             ]);
         }
-        if ($user->email_verified == 0)
+        if (!empty(get_static_option('user_email_verify_status')) && !$user->email_verified)
         {
             return response()->json([
                 'msg' => __('Please verify your account, Visit user dashboard for verification'),
@@ -485,7 +485,7 @@ class LandlordFrontendController extends Controller
                     $has_trial = true;
                 }
             }
-            if($has_trial == true){
+            if($has_trial){
                 return response()->json([
                     'msg' => __('Your trial limit is over! Please purchase a plan to continue').'<br>'.'<small>'.__('You can make trial once only..!').'</small>',
                     'type' => 'danger'
@@ -493,15 +493,15 @@ class LandlordFrontendController extends Controller
             }
         }
 
-//        try{
+        try{
             TenantCreateEventWithMail::tenant_create_event_with_credential_mail($user, $subdomain, $theme);
             TenantTrialPaymentLog::trial_payment_log($user,$plan,$subdomain);
 
-//        }catch(\Exception $ex){
-//            $message = $ex->getMessage();
-//            LandlordPricePlanAndTenantCreate::store_exception($subdomain,'domain failed on trial',$message,0);
-//            return response()->json(['msg' => __('something went wrong, we have notified to admin regarding this issue, please try after sometime'), 'type'=>'danger']);
-//        }
+        }catch(\Exception $ex){
+            $message = $ex->getMessage();
+            LandlordPricePlanAndTenantCreate::store_exception($subdomain,'domain failed on trial',$message,0);
+            return response()->json(['msg' => __('something went wrong, we have notified to admin regarding this issue, please try after sometime'), 'type'=>'danger']);
+        }
 
         $domain_details = DB::table('domains')->where('tenant_id',$subdomain)->first(); //domain; //issue in this line
 

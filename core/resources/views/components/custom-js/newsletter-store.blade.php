@@ -2,7 +2,8 @@
     $(document).on('click', '.newsletter-submit-btn', function (e) {
         e.preventDefault();
 
-        var email = $(this).parent().find('.email').val();
+        var email = $('.footer-widget input.email').val();
+        console.log(email);
 
         var errrContaner = $(this).parent().parent().find('.form-message-show');
         errrContaner.html('');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Enums\ProductTypeEnum;
 use App\Models\OrderProducts;
 use App\Models\ProductOrder;
 use App\Models\User;
@@ -13,6 +14,8 @@ use Illuminate\Support\Str;
 use Modules\Attributes\Entities\Category;
 use Modules\CountryManage\Entities\Country;
 use Modules\CountryManage\Entities\State;
+use Modules\CouponManage\Entities\ProductCoupon;
+use Modules\DigitalProduct\Entities\DigitalProduct;
 use Modules\Product\Entities\Product;
 use Modules\Product\Entities\ProductCategory;
 use Modules\Product\Entities\ProductChildCategory;
@@ -139,6 +142,7 @@ class ProductCheckoutService
                 'name' => $item->name,
                 'price' => $item->price,
                 'qty' => $item->qty,
+                'type' => $item?->options?->type,
                 'variant_id' => $item?->options?->variant_id,
                 'image' => $item->image
             ];
@@ -153,21 +157,57 @@ class ProductCheckoutService
         $total = 0.0;
         $cartArr = self::getCartProducts();
 
+        $arr = [];
+        $arr['PHYSICAL']['total'] = 0.0;
+        $arr['DIGITAL']['total'] = 0.0;
+
         foreach ($cartArr as $item) {
-            $total += $item['price'] * $item['qty'];
-            $products_id[] = $item['id'];
-            $variant_id[] = $item['variant_id'];
-            $quantity[] = $item['qty'];
-            $price[] = $item['price'];
+            if ($item['type'] == ProductTypeEnum::PHYSICAL)
+            {
+                $arr['PHYSICAL']['total'] += $item['price'] * $item['qty'];
+                $arr['PHYSICAL']['products_id'][] = $item['id'];
+                $arr['PHYSICAL']['products_type'][] = $item['type'];
+                $arr['PHYSICAL']['variant_id'][] = $item['variant_id'];
+                $arr['PHYSICAL']['quantity'][] = $item['qty'];
+                $arr['PHYSICAL']['price'][] = $item['price'];
+            } else {
+                $arr['DIGITAL']['total'] += $item['price'] * $item['qty'];
+                $arr['DIGITAL']['products_id'][] = $item['id'];
+                $arr['DIGITAL']['products_type'][] = $item['type'];
+                $arr['DIGITAL']['variant_id'][] = $item['variant_id'];
+                $arr['DIGITAL']['quantity'][] = $item['qty'];
+                $arr['DIGITAL']['price'][] = $item['price'];
+            }
+
+//            $total += $item['price'] * $item['qty'];
+//            $products_id[] = $item['id'];
+//            $products_type[] = $item['type'];
+//            $variant_id[] = $item['variant_id'];
+//            $quantity[] = $item['qty'];
+//            $price[] = $item['price'];
         }
 
-        return [
-            'total' => $total,
-            'products_id' => $products_id,
-            'variants_id' => $variant_id,
-            'quantity' => $quantity,
-            'price' => $price
-        ];
+
+        if (count($arr['DIGITAL']) <= 1)
+        {
+            unset($arr['DIGITAL']);
+        }
+
+        if (count($arr['PHYSICAL']) <= 1)
+        {
+            unset($arr['PHYSICAL']);
+        }
+
+//        return [
+//            'total' => $total,
+//            'products_id' => $products_id,
+//            'products_type' => $products_type,
+//            'variants_id' => $variant_id,
+//            'quantity' => $quantity,
+//            'price' => $price
+//        ];
+
+        return $arr;
     }
 
     public function getFinalPriceDetails($user, $validated_data)
@@ -178,24 +218,52 @@ class ProductCheckoutService
         ];
 
         $price = $this->getTotalPriceDetails();
-        $products = Product::whereIn('id' ,$price['products_id'])->get();
 
-        $data = $this->get_product_shipping_tax(['country' => $user['country'], 'state' => $user['state'], 'shipping_method' => (int)$shipping_method]);
-        $discounted_price = CheckoutCouponService::calculateCoupon($coupon, $price['total'], $products, 'DISCOUNT');
+        $shipping_cost = 0.0;
+        $product_tax = 0.0;
+        $subtotal = 0.0;
+        $total['total'] = 0.0;
+        if (array_key_exists('PHYSICAL', $price)) {
+            $products = Product::whereIn('id', $price['PHYSICAL']['products_id'])->get();
 
-        $product_tax = $data['product_tax'];
-        $shipping_cost = $data['shipping_cost'];
+            $data = $this->get_product_shipping_tax(['country' => $user['country'], 'state' => $user['state'], 'shipping_method' => (int)$shipping_method]);
+            $discounted_price = CheckoutCouponService::calculateCoupon($coupon, $price['PHYSICAL']['total'], $products, 'DISCOUNT');
 
-        $taxed_price = ($price['total'] * $product_tax) / 100;
-        $subtotal = $price['total'];
-        $total['total'] = $price['total'] + $taxed_price + $shipping_cost;
+            $product_tax = $data['product_tax'];
+            $shipping_cost = $data['shipping_cost'];
 
-        $discount = $discounted_price != 0 ? $discounted_price : 0;
-        if ($discounted_price > 0)
-        {
-            $total['total'] = $discount + $taxed_price + $shipping_cost;
-            $total['cart_total'] = $price;
+            $taxed_price = ($price['PHYSICAL']['total'] * $product_tax) / 100;
+            $subtotal = $price['PHYSICAL']['total'];
+            $total['total'] = $price['PHYSICAL']['total'] + $taxed_price + $shipping_cost;
+
+            $discount = $discounted_price != 0 ? $discounted_price : 0;
+            if ($discounted_price > 0) {
+                $total['total'] = $discount + $taxed_price + $shipping_cost;
+                $total['cart_total'] = $price['PHYSICAL'];
+            }
         }
+
+        $digital_subtotal = 0.0;
+        if (array_key_exists('DIGITAL', $price)) {
+            $products = DigitalProduct::whereIn('id', $price['DIGITAL']['products_id'])->get();
+            $tax = 0.0;
+            foreach ($products ?? [] as $product)
+            {
+                $price = get_digital_product_dynamic_price($product);
+                $price = (!is_null($price['sale_price']) || $price['sale_price'] > 0) ? $price['sale_price'] : $price['regular_price'];
+
+                $taxed_price = 0.0;
+                if (!is_null($product->tax))
+                {
+                    $tax = $product?->getTax?->tax_percentage;
+                    $taxed_price = ($price * $tax) / 100;
+                }
+                $digital_subtotal += $price + $taxed_price;
+            }
+        }
+
+        $subtotal += $digital_subtotal;
+        $total['total'] += $digital_subtotal;
 
         $total['payment_meta'] = $this->payment_meta(compact('product_tax', 'shipping_cost', 'subtotal', 'total'));
 
@@ -204,9 +272,14 @@ class ProductCheckoutService
 
     public function createOrder($validated_data, $user)
     {
+        $physical_items = Cart::content('default')->where('options.type', \App\Enums\ProductTypeEnum::PHYSICAL);
+
         // Checking shipping method is selected
-        if (!$this->check_shipping_method($user, $validated_data)) {
-            return false;
+        if (count($physical_items) >! 0)
+        {
+            if (!$this->check_shipping_method($user, $validated_data)) {
+                return false;
+            }
         }
 
         $totalPriceDetails = $this->getTotalPriceDetails();
@@ -218,6 +291,14 @@ class ProductCheckoutService
         $extra_note = $validated_data['message'];
         $cart_data = json_encode(Cart::content()->toArray());
 
+        $coupon = [];
+        if (!empty($validated_data['used_coupon']))
+        {
+            $coupon['coupon'] = ProductCoupon::where('code', $validated_data['used_coupon'])->first();
+            $coupon['coupon_code'] = $coupon['coupon']->code;
+            $coupon['coupon_discount'] = $coupon['coupon']->discount;
+        }
+
         $order_id = ProductOrder::create([
             'user_id' => $user['id'] ?? null,
             'name' => $user['name'],
@@ -228,6 +309,8 @@ class ProductCheckoutService
             'city' => $user['city'],
             'address' => $user['address'],
             'message' => $extra_note,
+            'coupon' => !empty($coupon) ? $coupon['coupon_code'] : '',
+            'coupon_discounted' => !empty($coupon) ? $coupon['coupon_discount'] : '',
             'total_amount' => $finalPriceDetails,
             'payment_gateway' => $payment_gateway,
             'status' => 'pending',
@@ -241,26 +324,45 @@ class ProductCheckoutService
             'updated_at' => Carbon::now()
         ])->id;
 
-        foreach ($totalPriceDetails['products_id'] as $key => $ids)
+        if (array_key_exists('PHYSICAL', $totalPriceDetails))
         {
-            $products = Product::whereIn('id', $totalPriceDetails['products_id'])->get();
-            $coupon = (object)[
-                "coupon" => $validated_data['used_coupon']
-            ];
-
-            if (in_array('cart_total', $finalDetails))
+            foreach ($totalPriceDetails['PHYSICAL']['products_id'] ?? [] as $key => $ids)
             {
-                $coupon_type_info = CheckoutCouponService::calculateCoupon($coupon , $finalDetails['cart_total'], $products, return_type: 'TOTAL',  purpose: 'type');
-                $price = $this->coupon_based_products($coupon_type_info, $ids, $totalPriceDetails['quantity'][$key]);
-            }
+                $products = Product::whereIn('id', $totalPriceDetails['PHYSICAL']['products_id'])->get();
+                $coupon = (object)[
+                    "coupon" => $validated_data['used_coupon']
+                ];
 
-            OrderProducts::create([
-                'order_id' => $order_id,
-                'product_id' => $totalPriceDetails['products_id'][$key],
-                'variant_id' => !empty($totalPriceDetails['variants_id'][$key]) ? $totalPriceDetails['variants_id'][$key] : null,
-                'quantity' => $totalPriceDetails['quantity'][$key] ?? null,
-                'price' => $price ?? $totalPriceDetails['price'][$key]
-            ]);
+                if (in_array('cart_total', $finalDetails))
+                {
+                    $coupon_type_info = CheckoutCouponService::calculateCoupon($coupon , $finalDetails['cart_total'], $products, return_type: 'TOTAL',  purpose: 'type');
+                    $price = $this->coupon_based_products($coupon_type_info, $ids, $totalPriceDetails['PHYSICAL']['quantity'][$key]);
+                }
+
+                OrderProducts::create([
+                    'order_id' => $order_id,
+                    'product_id' => $totalPriceDetails['PHYSICAL']['products_id'][$key],
+                    'variant_id' => !empty($totalPriceDetails['PHYSICAL']['variants_id'][$key]) ? $totalPriceDetails['PHYSICAL']['variants_id'][$key] : null,
+                    'quantity' => $totalPriceDetails['PHYSICAL']['quantity'][$key] ?? null,
+                    'price' => $price ?? $totalPriceDetails['PHYSICAL']['price'][$key],
+                    'product_type' => 1,
+                ]);
+            }
+        }
+
+        if (array_key_exists('DIGITAL', $totalPriceDetails))
+        {
+            foreach ($totalPriceDetails['DIGITAL']['products_id'] as $key => $ids)
+            {
+                OrderProducts::create([
+                    'order_id' => $order_id,
+                    'product_id' => $totalPriceDetails['DIGITAL']['products_id'][$key],
+                    'variant_id' => !empty($totalPriceDetails['DIGITAL']['variants_id'][$key]) ? $totalPriceDetails['DIGITAL']['variants_id'][$key] : null,
+                    'quantity' => $totalPriceDetails['DIGITAL']['quantity'][$key] ?? null,
+                    'price' => $price ?? $totalPriceDetails['DIGITAL']['price'][$key],
+                    'product_type' => 2,
+                ]);
+            }
         }
 
         return $order_id;

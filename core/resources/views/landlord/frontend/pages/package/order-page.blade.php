@@ -44,6 +44,12 @@
             border: 1px solid #ddd;
         }
 
+        @media only screen and (max-width: 375px) {
+            /*.payment-gateway-wrapper ul li {*/
+            /*    width: calc(100% / 3);*/
+            /*}*/
+        }
+
 
         .payment-gateway-wrapper ul li.selected:after, .payment-gateway-wrapper ul li.selected:before {
             visibility: visible;
@@ -151,6 +157,33 @@
             line-height: 28px;
             padding-inline: 3px;
         }
+
+        .theme-wrapper-bg {
+            height: 200px;
+        }
+        .theme-wrapper {
+            border: 1px solid transparent;
+            outline: 1px solid transparent;
+            padding: 10px;
+        }
+        .selected_theme {
+            transition: 0.5s;
+            border-color: var(--main-color-one);
+            outline-color: var(--main-color-one);
+        }
+
+        .selected_text {
+            top: 0;
+            left: 11px;
+            background-color: var(--main-color-one);
+            padding: 10px;
+            position: absolute;
+            color: white;
+            transition: 0.3s;
+        }
+        .selected_text i {
+            font-size: 20px;
+        }
     </style>
 @endsection
 
@@ -244,7 +277,11 @@
                                     $payment_gateway = !empty($custom_fields['selected_payment_gateway']) ? $custom_fields['selected_payment_gateway'] : '';
                                     $name = auth()->guard('web')->check() ? auth()->guard('web')->user()->name : '';
                                     $email = auth()->guard('web')->check() ? auth()->guard('web')->user()->email : '';
+
+                                    $default_theme = get_static_option('default_theme');
                                 @endphp
+
+                                <input type="hidden" name="theme_slug" id="theme-slug" value="{{$default_theme}}">
                                 <input type="hidden" name="payment_gateway" value=""
                                        class="payment_gateway_passing_clicking_name">
                                 <input type="hidden" name="package_id" value="{{$order_details->id}}">
@@ -277,11 +314,9 @@
                                             <select class="form-select form--control subdomain" id="subdomain"
                                                     name="subdomain">
                                                 <option
-                                                    value="custom_domain__dd"
-                                                    selected>{{__('Add new subdomain')}}</option>
+                                                    value="custom_domain__dd" selected>{{__('Add new subdomain')}}</option>
                                                 @foreach($user->tenant_details ?? [] as $tenant)
-                                                    <option
-                                                        value="{{$tenant->id}}">{{optional($tenant->domain)->domain}}</option>
+                                                    <option value="{{$tenant->id}}">{{optional($tenant->domain)->domain}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -301,8 +336,44 @@
                                             <div id="subdomain-wrap"></div>
                                         </div>
 
+                                        <div class="theme-section">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <h4 class="mb-3">{{__('Themes')}}</h4>
+                                                </div>
+                                            </div>
+                                            <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 theme-row mb-5">
+
+                                                @foreach(getAllThemeData() as $theme)
+                                                    @php
+                                                        $theme_slug = $theme->slug;
+                                                        $theme_data = getIndividualThemeDetails($theme_slug);
+                                                        $theme_image = loadScreenshot($theme_slug);
+
+                                                        $theme_custom_name = get_static_option_central($theme_data['slug'].'_theme_name');
+                                                        $theme_custom_url = get_static_option_central($theme_data['slug'].'_theme_url');
+                                                        $theme_custom_image = get_static_option_central($theme_data['slug'].'_theme_image');
+                                                    @endphp
+
+                                                    <div class="col" style="position: relative">
+                                                        <div class="theme-wrapper {{$default_theme == $theme_slug ? 'selected_theme' : ''}}"
+                                                             data-theme="{{$theme_data['slug']}}" data-name="{{!empty($theme_custom_name) ? $theme_custom_name : $theme_data['name']}}">
+                                                            <div class="theme-wrapper-bg" style="background-image: url({{ !empty($theme_custom_image) ? $theme_custom_image : $theme_image}})"></div>
+                                                            <h4 class="text-center mt-2">{{ !empty($theme_custom_name) ? $theme_custom_name : $theme_data['name']}}</h4>
+
+                                                            @if($default_theme == $theme_slug)
+                                                                <h4 class="selected_text"><i class="las la-check"></i></h4>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+
                                         @if($order_details->price != 0)
-                                            {!! (new \App\Helpers\PaymentGatewayRenderHelper())->renderPaymentGatewayForForm() !!}
+                                            <div class="mt-5">
+                                                {!! (new \App\Helpers\PaymentGatewayRenderHelper())->renderPaymentGatewayForForm() !!}
+                                            </div>
                                         @endif
 
                                         <div class="form-group single-input d-none manual_transaction_id mt-4">
@@ -403,7 +474,7 @@
 
 @section('scripts')
     <script src="{{global_asset('assets/common/js/toastr.min.js')}}"></script>
-    <x-custom-js.landloard-unique-subdomain-check :name="'custom_subdomain'"/> //subdomain check
+    <x-custom-js.landloard-unique-subdomain-check :name="'custom_subdomain'"/> {{--subdomain check--}}
 
     <script>
         (function ($) {
@@ -517,23 +588,40 @@
                 $(document).on('change', '#subdomain', function (e) {
                     $('.order-btn').attr('disabled', false)
 
+                    let theme_section = $('.theme-section');
+
                     let el = $(this);
                     let subdomain_type = el.val();
 
                     if (subdomain_type == 'custom_domain__dd') {
                         custom_subdomain_wrapper.slideDown();
+                        theme_section.slideDown();
                     } else {
                         custom_subdomain_wrapper.slideUp();
                         custom_subdomain_wrapper.find('input').val('');
+                        theme_section.slideUp();
                     }
                 });
-
 
                 $(document).on('click', '.order-btn', function () {
                     $('.loader').show();
                     $('.loader .loader_bottom_title').text('{{__('Your account is on its way. Why don’t you grab a coffee?')}}');
                     $(this).attr('disabled', true);
                     $('.order-form').trigger('submit');
+                });
+
+                $(document).on('click', '.theme-wrapper', function (e) {
+                    let el = $(this);
+                    let theme_slug = el.data('theme');
+
+                    $('.theme-wrapper').removeClass('selected_theme');
+                    el.addClass('selected_theme');
+
+                    let text = '<h4 class="selected_text"><i class="las la-check"></i></h4>';
+                    $('.selected_text').remove();
+                    el.append(text);
+
+                    $('input#theme-slug').val(theme_slug);
                 });
             });
         })(jQuery);

@@ -68,7 +68,7 @@
                                 $privacy_policy_page = get_page_slug(get_static_option('privacy_policy')) ?? '#';
                             @endphp
                             <input class="check-input agree" name="terms_condition" type="checkbox" id="check15">
-                            <label class="checkbox-label" for="check15">{{__('By creating an account, you agree to the')}}
+                            <label class="checkbox-label agreement" for="check15">{{__('By creating an account, you agree to the')}}
                                 <a class="color-one" href="{{$terms_condition_page}}" target="_blank"> {{__('terms and conditions')}}</a> {{__('and')}}
                                         <a class="color-one" href="{{$privacy_policy_page}}" target="_blank"> {{__('privacy policy')}} </a> </label>
                         </div>

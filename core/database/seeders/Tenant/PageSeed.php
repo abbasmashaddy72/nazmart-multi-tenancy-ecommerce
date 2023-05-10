@@ -49,9 +49,9 @@ class PageSeed extends Seeder
         // Uploading page layout
         if (session()->get('theme'))
         {
-            $file_name = session()->get('theme').'/home-layout.json';
+            $file_name = session()->get('theme').'/assets/page_layout/home-layout.json';
         } else {
-            $file_name = 'hexfashion/home-layout.json';
+            $file_name = 'hexfashion/assets/page_layout/home-layout.json';
         }
         $this->upload_layout($file_name, $page_data->id);
 
@@ -85,7 +85,7 @@ class PageSeed extends Seeder
         $page_data_2->metainfo()->create($Metas_2);
 
         // Uploading page layout
-        $file_name = 'hexfashion/about-layout.json';
+        $file_name = 'hexfashion/assets/page_layout/about-layout.json';
         $this->upload_layout($file_name, $page_data_2->id);
 
         $page_data_5 = new Page();
@@ -117,7 +117,7 @@ class PageSeed extends Seeder
         $page_data_5->metainfo()->create($Metas_5);
 
         // Uploading page layout
-        $file_name = 'hexfashion/contact-layout.json';
+        $file_name = 'hexfashion/assets/page_layout/contact-layout.json';
         $this->upload_layout($file_name, $page_data_5->id);
 
 
@@ -177,6 +177,34 @@ class PageSeed extends Seeder
         $page_data_7->save();
         $page_data_7->metainfo()->create($Metas_7);
 
+        $page_data_8 = new Page();
+        $page_data_8->slug = Str::slug('digital-product');
+        $page_data_8->title = SanitizeInput::esc_html('Digital Product');
+        $page_data_8->page_content = __('Shop content');
+        $page_data_8->visibility = 0;
+        $page_data_8->status = 1;
+        $page_data_8->navbar_variant = '01';
+        $page_data_8->footer_variant = '01';
+        $page_data_8->page_builder = 0;
+        $page_data_8->breadcrumb = 1;
+
+        $Metas_8 = [
+            'title' => SanitizeInput::esc_html('Demo Meta Title'),
+            'description' => SanitizeInput::esc_html('Demo meta desc'),
+            'image' => null,
+            //twitter
+            'tw_image' => null,
+            'tw_title' => SanitizeInput::esc_html('tw title'),
+            'tw_description' => SanitizeInput::esc_html('tw desc'),
+            //facebook
+            'fb_image' => null,
+            'fb_title' =>  SanitizeInput::esc_html('fb title'),
+            'fb_description' =>  SanitizeInput::esc_html('fb desc'),
+        ];
+
+        $page_data_8->save();
+        $page_data_8->metainfo()->create($Metas_8);
+
         session()->forget('theme');
     }
 
@@ -184,7 +212,7 @@ class PageSeed extends Seeder
     {
         DB::beginTransaction();
         try {
-            $file_contents = json_decode(file_get_contents('assets/tenant/seeder_files/page-layouts/'.$file));
+            $file_contents = json_decode(file_get_contents('core/resources/views/themes/'.$file));
 
             $contentArr = [];
             if (current($file_contents)->addon_page_type == 'dynamic_page')

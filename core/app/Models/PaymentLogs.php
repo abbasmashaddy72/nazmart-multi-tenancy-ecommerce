@@ -12,11 +12,12 @@ class PaymentLogs extends Model
 {
     use LogsActivity;
     protected $table = 'payment_logs';
-    protected $fillable = ['email','name','package_name','package_price','package_gateway','package_id',
+    protected $fillable = ['email','name','package_name','package_price','package_gateway','package_id', 'theme_slug',
         'user_id','tenant_id','attachments','custom_fields','status','track','transaction_id','payment_status','start_date','expire_date','renew_status','is_renew'
     ];
 
     protected static $recordEvents = ['updated','created','deleted'];
+    protected $casts = ['expire_date' => 'datetime'];
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -46,9 +47,4 @@ class PaymentLogs extends Model
     {
         return $this->belongsTo(\Stancl\Tenancy\Database\Models\Domain::class, 'tenant_id', 'tenant_id');
     }
-
-   protected $casts = [
-       'expire_date' => 'datetime',
-   ];
-
 }

@@ -23,6 +23,7 @@ use App\Http\Controllers\Landlord\Admin\MenuController;
 use App\Http\Controllers\Landlord\Admin\ThemeManageController;
 use Modules\SupportTicket\Http\Controllers\Landlord\Admin\SupportTicketController;
 use Modules\SupportTicket\Http\Controllers\Landlord\Admin\SupportDepartmentController;
+use App\Http\Controllers\Landlord\Admin\PaymentSettingsController;
 
 /* ------------------------------------------
      LANDLORD ADMIN ROUTES
@@ -86,7 +87,6 @@ Route::group(['middleware' => ['auth:admin','adminglobalVariable', 'set_lang'],'
     Route::controller(\App\Http\Controllers\Landlord\Admin\TenantExceptionController::class)->name('landlord.')->prefix('website-issues')->group(function (){
         Route::get('/','website_issues')->name('admin.tenant.website.issues');
         Route::post('/','generate_domain')->name('admin.failed.domain.generate');
-
     });
 
 
@@ -168,6 +168,14 @@ Route::group(['middleware' => ['auth:admin','adminglobalVariable', 'set_lang'],'
         Route::post('/widgets/delete','delete_widget')->name('admin.widgets.delete');
     });
 
+
+    /* ------------------------------------------
+    Text Highlight Settings ROUTES
+    -------------------------------------------- */
+    Route::controller(GeneralSettingsController::class)->name('landlord.')->prefix('landlord')->group(function (){
+        Route::get('/highlight','highlight')->name('admin.highlight');
+        Route::post('/highlight/update','highlight_update')->name('admin.highlight.update');
+    });
 
     /* ------------------------------------------
     Breadcrumb Settings ROUTES
@@ -340,6 +348,10 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::get('/seo-settings','seo_settings')->name('landlord.admin.general.seo.settings');
         Route::post('/seo-settings','update_seo_settings');
 
+        //GDPR Settings
+        Route::get('/gdpr-settings', 'gdpr_settings')->name('landlord.admin.general.gdpr.settings');
+        Route::post('/gdpr-settings', 'update_gdpr_cookie_settings');
+
         /* Payment Settings (Static) */
         Route::get('/payment-settings','payment_settings')->name('landlord.admin.general.payment.settings');
         Route::post('/payment-settings','update_payment_settings');
@@ -352,6 +364,10 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::get('/smtp-settings','smtp_settings')->name('landlord.admin.general.smtp.settings');
         Route::post('/smtp-settings','update_smtp_settings');
         Route::post('/send-test-mail','send_test_mail')->name('landlord.admin.general.smtp.settings.test.mail');
+
+        /* ssl Settings */
+        Route::get('/ssl-settings', 'ssl_settings')->name('landlord.admin.general.ssl.settings');
+        Route::post('/ssl-settings', 'update_ssl_settings');
 
         /* custom css Settings */
         Route::get('/custom-css-settings','custom_css_settings')->name('landlord.admin.general.custom.css.settings');
@@ -373,6 +389,31 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::get('/license-settings','license_settings')->name('landlord.admin.general.license.settings');
         Route::post('/license-settings','update_license_settings');
 
+    });
+
+    Route::controller(PaymentSettingsController::class)->name('landlord.admin.payment.settings.')->prefix('payment-settings/payment')->group(function (){
+        Route::get('/paypal', 'paypal_settings')->name('paypal');
+        Route::get('/paytm', 'paytm_settings')->name('paytm');
+        Route::get('/stripe', 'stripe_settings')->name('stripe');
+        Route::get('/razorpay', 'razorpay_settings')->name('razorpay');
+        Route::get('/paystack', 'paystack_settings')->name('paystack');
+        Route::get('/mollie', 'mollie_settings')->name('mollie');
+        Route::get('/midtrans', 'midtrans_settings')->name('midtrans');
+        Route::get('/cashfree', 'cashfree_settings')->name('cashfree');
+        Route::get('/instamojo', 'instamojo_settings')->name('instamojo');
+        Route::get('/marcadopago', 'marcadopago_settings')->name('marcadopago');
+        Route::get('/zitopay', 'zitopay_settings')->name('zitopay');
+        Route::get('/squareup', 'squareup_settings')->name('squareup');
+        Route::get('/cinetpay', 'cinetpay_settings')->name('cinetpay');
+        Route::get('/paytabs', 'paytabs_settings')->name('paytabs');
+        Route::get('/billplz', 'billplz_settings')->name('billplz');
+        Route::get('/toyyibpay', 'toyyibpay_settings')->name('toyyibpay');
+        Route::get('/flutterwave', 'flutterwave_settings')->name('flutterwave');
+        Route::get('/payfast', 'payfast_settings')->name('payfast');
+        Route::get('/manual-payment', 'manual_payment_settings')->name('manual_payment');
+        Route::get('/cash-on-delivery', 'cod_settings')->name('cod');
+
+        Route::post('/update', 'update_payment_settings')->name('update');
     });
 
     /* ------------------------------------------

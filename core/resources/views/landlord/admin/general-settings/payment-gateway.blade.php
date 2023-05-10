@@ -21,7 +21,6 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     @include('landlord.admin.general-settings.settings-portion.payment-common-settings')
-                                    @include('landlord.admin.general-settings.settings-portion.payment-credential-settings')
                                 </div>
                             </div>
 

@@ -5,6 +5,7 @@ namespace Modules\Product\Http\Controllers;
 use App\Helpers\FlashMsg;
 use App\Mail\ProductOrderEmail;
 use App\Mail\StockOutEmail;
+use App\Models\ProductReviews;
 use App\Models\Status;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\JsonResponse;
@@ -224,5 +225,11 @@ class ProductController extends Controller
         $statuses = Status::all();
 
         return view('product::search',compact("products","statuses"))->render();
+    }
+
+    public function productReview()
+    {
+        $review_list = ProductReviews::paginate(10);
+        return view('product::review', compact('review_list'));
     }
 }

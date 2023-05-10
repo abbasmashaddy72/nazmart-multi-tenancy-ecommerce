@@ -3,6 +3,7 @@
 namespace Modules\Wallet\Http\Controllers\Frontend;
 
 
+use App\Enums\PaymentRouteEnum;
 use App\Helpers\FlashMsg;
 use App\Helpers\ThemeMetaData;
 use App\Helpers\Payment\PaymentGatewayCredential;
@@ -11,6 +12,7 @@ use App\Models\PaymentGateway;
 use App\Models\User;
 use Auth;
 use FontLib\Table\Type\name;
+use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Mail;
@@ -111,6 +113,7 @@ class BuyerWalletController extends Controller
         $this->title = __('Deposit To Wallet');
         $this->description = sprintf(__('Order id #%1$d Email: %2$s, Name: %3$s'), $this->last_deposit_id, $email, $name);
 
+        $payment_gateway = $request->selected_payment_gateway;
         if ($request->selected_payment_gateway === 'manual_payment') {
             if ($request->hasFile('manual_payment_image')) {
                 $manual_payment_image = $request->manual_payment_image;
@@ -139,7 +142,32 @@ class BuyerWalletController extends Controller
             return back()->with(['type' => 'success', 'msg' => 'Manual deposit success. Your wallet will credited after admin approval']);
 
         } else {
-            return $this->payment_with_gateway($request->selected_payment_gateway);
+            $credential_function = 'get_' . $payment_gateway . '_credential';
+
+            if (!method_exists((new PaymentGatewayCredential()), $credential_function))
+            {
+                $custom_data['request'] = $request->all();
+                $custom_data['payment_details'] = $deposit->toArray();
+                $custom_data['total'] = $this->total;
+                $custom_data['payment_type'] = "deposit";
+                $custom_data['payment_for'] = "landlord";
+                $custom_data['cancel_url'] = route(self::CANCEL_ROUTE, random_int(111111,999999).$custom_data['payment_details']['id'].random_int(111111,999999));
+                $custom_data['success_url'] = route('landlord.user.wallet.history');
+
+                $charge_customer_class_namespace = getChargeCustomerMethodNameByPaymentGatewayNameSpace($payment_gateway);
+                $charge_customer_method_name = getChargeCustomerMethodNameByPaymentGatewayName($payment_gateway);
+
+                $custom_charge_customer_class_object = new $charge_customer_class_namespace;
+                if(class_exists($charge_customer_class_namespace) && method_exists($custom_charge_customer_class_object, $charge_customer_method_name))
+                {
+                    Cart::instance("default")->destroy();
+                    return $custom_charge_customer_class_object->$charge_customer_method_name($custom_data);
+                } else {
+                    return back()->with(FlashMsg::explain('danger', 'Incorrect Class or Method'));
+                }
+            } else {
+                return $this->payment_with_gateway($request->selected_payment_gateway);
+            }
         }
     }
 
@@ -190,7 +218,6 @@ class BuyerWalletController extends Controller
 
     public function wallet_settings()
     {
-        WalletService::renew_package_from_wallet();
         $balance = Wallet::select('balance')->where('user_id', Auth::guard('web')->user()->id)->first();
         $settings = WalletSettings::where('user_id', Auth::guard('web')->user()->id)->first();
         return view('wallet::frontend.buyer.wallet-settings', compact('settings', 'balance'));

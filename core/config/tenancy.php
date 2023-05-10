@@ -183,10 +183,14 @@ return [
         '--force' => true, // This needs to be true to run migrations in production.
         '--path' => [
             database_path('migrations/tenant'),
+            tenant_module_migrations_file_path("Badge"),
+            tenant_module_migrations_file_path("Attributes"),
             tenant_module_migrations_file_path("Campaign"),
             tenant_module_migrations_file_path("ShippingModule"),
             tenant_module_migrations_file_path("RefundModule"),
+            tenant_module_migrations_file_path("Product"),
             tenant_module_migrations_file_path("MobileApp"),
+            tenant_module_migrations_file_path("DigitalProduct")
         ],
         '--realpath' => true,
     ],

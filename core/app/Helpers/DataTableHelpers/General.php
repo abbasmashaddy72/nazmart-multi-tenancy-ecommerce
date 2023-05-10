@@ -26,10 +26,11 @@ HTML;
     }
 
     public static function deletePopover($url){
+            $title = 'Delete';
             $token = csrf_token();
             return <<<HTML
 <a tabindex="0" class="btn btn-danger btn-xs mb-3 mr-1 swal_delete_button"
- data-bs-toggle="tooltip" data-bs-placement="top" title="Delete"
+ data-bs-toggle="tooltip" data-bs-placement="top" title="{$title}"
 >
     <i class="la la-trash"></i>
 </a>
@@ -43,6 +44,7 @@ HTML;
     }
 
     public static function editIcon($url){
+        $title = 'Edit';
         return <<<HTML
 <a class="btn btn-primary btn-xs mb-3 mr-1" href="{$url}"
  data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"
@@ -54,9 +56,10 @@ HTML;
     }
 
     public static function viewIcon($url){
+        $title = __('View');
         return <<<HTML
 <a class="btn btn-info btn-xs mb-3 mr-1" target="_blank" href="{$url}"
-data-bs-toggle="tooltip" data-bs-placement="top" title="View"
+data-bs-toggle="tooltip" data-bs-placement="top" title="{$title}"
 >
     <i class="la la-eye"></i>
 </a>
@@ -108,12 +111,13 @@ HTML;
     }
 
     public static function cloneIcon($action,$id){
+        $title = 'clone this to new draft';
         $csrf = csrf_field();
         return <<<HTML
 <form action="{$action}" method="post" class="d-inline">
 {$csrf}
     <input type="hidden" name="item_id" value="{$id}">
-    <button type="submit" data-bs-toggle="tooltip" title="clone this to new draft" class="btn btn-xs btn-secondary btn-sm mb-3 mr-1"><i class="la la-copy"></i></button>
+    <button type="submit" data-bs-toggle="tooltip" title="{$title}" class="btn btn-xs btn-secondary btn-sm mb-3 mr-1"><i class="la la-copy"></i></button>
 </form>
 HTML;
 

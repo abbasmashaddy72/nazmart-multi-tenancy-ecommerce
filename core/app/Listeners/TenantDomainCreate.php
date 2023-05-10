@@ -20,8 +20,8 @@ class TenantDomainCreate
     {
         try{
             $tenant = Tenant::create(['id' => $event->subdomain]);
-            DB::table('tenants')->where('id',$tenant->id)->update(['user_id' => optional($event->user_info)->id, 'theme_slug' => $event->theme]);
-            $tenant->domains()->create(['domain' => $event->subdomain.'.'.getenv('CENTRAL_DOMAIN')]);
+            DB::table('tenants')->where('id',$tenant->id)->update(['user_id' => $event->user_info->id, 'theme_slug' => $event->theme]);
+            $tenant->domains()->create(['domain' => $event->subdomain.'.'.env('CENTRAL_DOMAIN')]);
 
         }catch(\Exception $ex){
             $message = $ex->getMessage();

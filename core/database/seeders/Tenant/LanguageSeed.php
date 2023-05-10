@@ -13,11 +13,11 @@ class LanguageSeed extends Seeder
     public function run()
     {
         Language::create([
-            'name' => __('English (USA)'),
+            'name' => __('English (UK)'),
             'direction' => 0,
-            'slug' => 'en_US',
+            'slug' => 'en_GB',
             'status' => 1,
-            'default' => 1
+            'default' => 0
         ]);
 
         Language::create([
@@ -26,6 +26,10 @@ class LanguageSeed extends Seeder
             'slug' => 'ar',
             'status' => 1,
             'default' => 0
+        ]);
+
+        Language::where('slug', get_static_option_central('default_language') ?? 'en_GB')->update([
+            'default' => 1
         ]);
     }
 }

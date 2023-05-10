@@ -6,17 +6,6 @@
     $button_icon=   $data['button_icon'];
     $padding_top =  $data['padding_top'];
     $padding_bottom =  $data['padding_bottom'];
-
-    if(!empty($title)){
-        $ex = explode(' ' ,$title) ;
-        if (count($ex) > 1)
-            {
-                $first_three_word =  $ex[0]. ' '. $ex[1]. ' ' .$ex[2];
-                $third_word = $ex[3] . ' ' .$ex[4];
-                $remaining_last = array_slice($ex,5) ;
-                $implode_last = implode(' ', $remaining_last);
-            }
-    }
 @endphp
 
 <div class="banner-area banner-padding section-bg-1" data-padding-top="{{$padding_top}}"
@@ -38,10 +27,10 @@
 
                                     $highlighted_word = explode('{/h}', $text[1])[0];
 
-                                    $highlighted_text = '<span class="banner-content-title-shape">'. $highlighted_word .'</span>';
-                                    $final_title = '<h2 class="banner-content-title">'.str_replace('{h}'.$highlighted_word.'{/h}', $highlighted_text, $data['title']).'</h2>';
+                                    $highlighted_text = '<span class="banner-content-title-shape title-shape">'. $highlighted_word .'</span>';
+                                    $final_title = '<h1 class="banner-content-title">'.str_replace('{h}'.$highlighted_word.'{/h}', $highlighted_text, $data['title']).'</h1>';
                                 } else {
-                                    $final_title = '<h2 class="banner-content-title">'. $data['title'] .'</h2>';
+                                    $final_title = '<h1 class="banner-content-title">'. $data['title'] .'</h1>';
                                 }
                         @endphp
 

@@ -1,28 +1,32 @@
 {
-    "name":"Furnito",
-    "slug":"furnito",
-    "description":"Furniture Theme",
-    "author":"Mazharul Islam Suzon",
-    "version":"1.0.0",
-    "status":true,
-    "screenshot":[
+    "name": "Furnito",
+    "slug": "furnito",
+    "description": "Furniture Theme",
+    "author": "Mazharul Islam Suzon",
+    "version": "1.0.0",
+    "status": true,
+    "screenshot": [
         {
-            "primary":"primary.jpg",
-            "sort":"desc"
+            "primary": "primary.jpg",
+            "sort": "desc"
         }
     ],
-    "headerHook":[
+    "headerHook": [
         {
-            "style":["furnito"],
-            "script":[],
-            "blade":[]
+            "style": [
+                "furnito"
+            ],
+            "script": [],
+            "blade": [],
+            "navbarArea": "navbar"
         }
     ],
-    "footerHook":[
+    "footerHook": [
         {
-            "style":[],
-            "script":[],
-            "blade":[]
+            "style": [],
+            "script": [],
+            "blade": [],
+            "widetArea": "footer-furnito"
         }
     ]
 }

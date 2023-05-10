@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ \App\Facades\GlobalLanguage::default_dir() }}">
+<html lang="{{ \App\Facades\GlobalLanguage::default_slug() }}" dir="{{ \App\Facades\GlobalLanguage::default_dir() }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,9 +10,9 @@
         @if(!request()->routeIs('tenant.home'))
             @yield('title')  -
         @endif
-        {{get_static_option('site_'.\App\Facades\GlobalLanguage::user_lang_slug().'_title',__('Xgenious'))}}
-        @if(!empty(get_static_option('site_'.\App\Facades\GlobalLanguage::user_lang_slug().'_tag_line')))
-            - {{get_static_option('site_'.\App\Facades\GlobalLanguage::user_lang_slug().'_tag_line')}}
+        {{get_static_option('site_title',__('Xgenious'))}}
+        @if(!empty(get_static_option('site_tag_line')))
+            - {{get_static_option('site_tag_line')}}
         @endif
     </title>
     <!-- Fonts -->

@@ -22,6 +22,7 @@
                     <x-admin.header-wrapper>
                         <x-slot name="left">
                             <h4 class="card-title mb-4">{{__('All Themes')}}</h4>
+                            <p>{{__('Note : By default every theme button is showing (Inactive) so that means if you click on (Inactive) it will be hide or inactive from frontend, At the same way when it will show active that means this is inactive you can active by clicking it.')}}</p>
                         </x-slot>
                         <x-slot name="right" class="d-flex">
                         </x-slot>
@@ -32,7 +33,6 @@
 
                 <div class="row g-4">
                     @foreach(getAllThemeDataForAdmin() as $theme)
-                        @break($loop->iteration > 2)
                         @php
                             $theme_slug = $theme->slug;
                             $theme_data = getIndividualThemeDetails($theme_slug);
@@ -48,6 +48,7 @@
                                 $custom_theme_image = get_static_option_central($theme_data['slug'].'_theme_image');
                             @endphp
                             <div class="themePreview">
+                                <p class="themePreview-btn {{$theme->status == 'active' ? '' : 'inactivated'}}" data-slug="{{$theme_slug}}">{{$theme->status == 'active' ? __('Activated') : __('Inactivated')}}</p>
                                 <a href="javascript:void(0)" id="theme-preview" data-bs-target="#theme-modal"
                                    data-bs-toggle="modal"
                                    data-slug="{{$theme_data['slug']}}"
@@ -196,7 +197,6 @@
                 modal.find('.modal-body a.edit-btn').attr('data-image_id', image_id)
             });
 
-
             $(document).on('click', 'a.edit-btn', function (e) {
                 let el = $(this);
                 let slug = el.attr('data-slug');
@@ -212,7 +212,6 @@
                 modal.find('.modal-body textarea[name=theme_description]').text(description);
                 modal.find('.modal-body input[name=theme_url]').val(theme_url);
 
-                console.log(theme_image, theme_image_id);
                 if (theme_image_id != '') {
                     modal.find('.media-upload-btn-wrapper .img-wrap').html('<div class="attachment-preview"><div class="thumbnail"><div class="centered">' +
                         '<img class="avatar user-thumb" src="' + theme_image + '" > </div></div></div>');
@@ -226,60 +225,80 @@
         $(document).on('click', '.theme_status_update_button', function (e) {
             e.preventDefault();
 
-            let el = $(this);
-            let slug = el.attr('data-slug');
-            let status = el.attr('data-status');
+            Swal.fire({
+                title: '{{ __('Are you sure?') }}',
+                text: '{{ __('Activation of Inactivation of this theme will bring changes in the page builder add-ons, but there will be no change in the front end but break design') }}',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '{{__('Confirm')}}',
+                cancelButtonText: "{{__('Cancel')}}",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let el = $(this);
+                    let slug = el.attr('data-slug');
+                    let status = el.attr('data-status');
 
-            let button = $('.theme_status_update_button[data-slug=' + slug + ']');
-            let theme_preview_button = $('.theme-preview[data-slug=' + slug + ']');
+                    let button = $('.theme_status_update_button[data-slug=' + slug + ']');
+                    let theme_preview_button = $('.theme-preview[data-slug=' + slug + ']');
+                    let theme_current_slug = $('.themePreview-btn[data-slug=' + slug + ']')
 
-            $.ajax({
-                'type': 'POST',
-                'url': '{{route('landlord.admin.theme.status.update')}}',
-                'data': {
-                    '_token': '{{csrf_token()}}',
-                    'slug': slug
-                },
-                beforeSend: function () {
-                    if (status == 'active') {
-                        button.text('Inactivating..');
-                    } else {
-                        button.text('Activating..');
-                    }
-                },
-                success: function (data) {
-                    var success = $('.themeInfo_' + id + '');
-                    var modal = $('#theme-modal');
+                    $.ajax({
+                        'type': 'POST',
+                        'url': '{{route('landlord.admin.theme.status.update')}}',
+                        'data': {
+                            '_token': '{{csrf_token()}}',
+                            'slug': slug
+                        },
+                        beforeSend: function () {
+                            if (status == 'active') {
+                                button.text(`{{__('Inactivating..')}}`);
+                            } else {
+                                button.text(`{{__('Activating..')}}`);
+                            }
+                        },
+                        success: function (data) {
+                            var success = $('.themeInfo_' + slug + '');
+                            var modal = $('#theme-modal');
 
-                    if (data.status == true) {
-                        button.text('Inactive');
-                        button.attr('data-status', 'inactive');
-                        theme_preview_button.attr('data-button_text', 'inactive');
+                            if (data.status === true) {
+                                button.text('Inactive');
+                                button.attr('data-status', 'inactive');
+                                theme_preview_button.attr('data-button_text', 'inactive');
 
-                        success.find('h3').text('The theme is active successfully');
-                        success.slideDown(20);
+                                theme_current_slug.text(`{{__('Activated')}}`);
+                                theme_current_slug.removeClass('inactivated');
 
-                        modal.find('.themeName').text('The theme is inactive successfully');
-                        $('.modal-success-msg').slideDown(20)
-                    } else {
-                        button.text('Active');
-                        button.attr('data-status', 'active');
-                        theme_preview_button.attr('data-button_text', 'active');
+                                success.find('h3').text(`{{__('The theme is active successfully')}}`);
+                                success.slideDown(20);
 
-                        success.find('h3').text('The theme is inactive successfully');
-                        success.slideDown(20);
+                                modal.find('.themeName').text(`{{__('The theme is inactive successfully')}}`);
+                                $('.modal-success-msg').slideDown(20)
+                            } else {
+                                button.text(`{{__('Active')}}`);
+                                button.attr('data-status', 'active');
+                                theme_preview_button.attr('data-button_text', 'active');
 
-                        modal.find('.themeName').text('The theme is inactive successfully');
-                        $('.modal-success-msg').slideDown(20)
-                    }
+                                theme_current_slug.text(`{{__('Inactivated')}}`);
+                                theme_current_slug.addClass('inactivated');
 
-                    setTimeout(function () {
-                        success.slideUp()
-                        $('.modal-success-msg').slideUp()
-                    }, 5000);
-                },
-                error: function (data) {
+                                success.find('h3').text(`{{__('The theme is inactive successfully')}}`);
+                                success.slideDown(20);
 
+                                modal.find('.themeName').text(`{{__('The theme is inactive successfully')}}`);
+                                $('.modal-success-msg').slideDown(20)
+                            }
+
+                            setTimeout(function () {
+                                success.slideUp()
+                                $('.modal-success-msg').slideUp()
+                            }, 5000);
+                        },
+                        error: function (data) {
+
+                        }
+                    });
                 }
             });
         });

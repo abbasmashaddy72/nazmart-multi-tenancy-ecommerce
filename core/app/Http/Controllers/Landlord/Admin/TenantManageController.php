@@ -222,7 +222,7 @@ class TenantManageController extends Controller
 
     public function tenant_domain_delete($tenant_id)
     {
-        //old domain = same = tenant id //
+        // old domain = same = tenant id //
 
         $tenant = Tenant::findOrFail($tenant_id);
         $user_id = $tenant->user_id;
@@ -234,7 +234,9 @@ class TenantManageController extends Controller
 
         if(!empty($tenant)){
             $tenant->domains()->delete();
-            $tenant->delete();
+            try {
+                $tenant->delete();
+            } catch (\Exception $exception) {}
         }
         if(\File::exists($path) && is_dir($path)){
             File::deleteDirectory($path);
@@ -353,8 +355,48 @@ class TenantManageController extends Controller
 
                 $payment_details = PaymentLogs::findOrFail($old_tenant_log->id);
             }
+            else {
+
+                $package_start_date = $tenant->start_date;
+                $new_package_expire_date = $tenant->expire_date;
+
+                $user = User::find($request->subs_user_id);
+                $payment_log = PaymentLogs::create([
+                    'custom_fields' =>  '',
+                    'attachments' =>  '',
+                    'email' => $user->email,
+                    'name' => $user->name,
+                    'package_name' => $package->title,
+                    'package_price' => $package->price,
+                    'package_gateway' => null,
+                    'package_id' => $package->id,
+                    'user_id' => $user->id,
+                    'tenant_id' => $tenant->id,
+                    'status' => 'pending',
+                    'payment_status' => $request->payment_status,
+                    'renew_status' => 0,
+                    'is_renew' => 0,
+                    'track' => Str::random(10) . Str::random(10),
+                    'start_date' => $package_start_date,
+                    'expire_date' => $new_package_expire_date
+                ]);
+
+                DB::table('tenants')->where('id', $tenant->id)->update([
+                    'renew_status' => 0,
+                    'is_renew' => 0,
+                    'start_date' => $package_start_date,
+                    'expire_date' => $new_package_expire_date
+                ]);
+
+                $payment_details = PaymentLogs::findOrFail($payment_log->id);
+            }
         } else {
-            event(new TenantRegisterEvent($user, $subdomain, get_static_option('default_theme')));
+           try{
+                event(new TenantRegisterEvent($user, $subdomain, get_static_option('default_theme')));
+            }catch(\Exception $e){
+                return redirect()->back()->with(['type'=> 'danger', 'msg' => $e->getMessage()]);
+            }
+
             $tenant = DB::table('tenants')->where('user_id', $user->id)->latest()->select('id')->first();
 
             $payment_log_id = PaymentLogs::create([
@@ -436,11 +478,22 @@ class TenantManageController extends Controller
             'id' => 'required|integer'
         ]);
 
-        User::find($data['id'])->update([
+        $user = User::find($data['id']);
+        $user->update([
             'email_verified' => 1,
             'email_verified_at' => now()
         ]);
 
-        return back()->with(FlashMsg::explain('success', __('User Email is Verified')));
+        $message = wrap_by_paragraph(__('Hello').' '.$user->name, true);
+        $message .= wrap_by_paragraph(__('Your user account is verified by admin'));
+        $subject = __('Account verification');
+
+        try {
+            Mail::to($user->email)->send(new BasicMail($message, $subject));
+        }catch (\Exception $ex){
+            return response()->danger(ResponseMessage::delete($ex->getMessage()));
+        }
+
+        return back()->with(FlashMsg::explain('success', $user->name .' '. __('user account is verified')));
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tenant\Frontend;
 
+use App\Actions\Tenant\ZipFileDownloader;
 use App\Events\SupportMessage;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ResponseMessage;
@@ -29,6 +30,8 @@ use Modules\Blog\Entities\Blog;
 use Barryvdh\DomPDF\Facade as PDF;
 use Modules\CountryManage\Entities\Country;
 use Modules\CountryManage\Entities\State;
+use Modules\DigitalProduct\Entities\DigitalProduct;
+use Modules\DigitalProduct\Entities\DigitalProductDownload;
 use Modules\Product\Entities\ProductSellInfo;
 use Modules\RefundModule\Entities\RefundProduct;
 use Modules\TaxModule\Entities\CountryTax;
@@ -343,6 +346,62 @@ class UserDashboardController extends Controller
         return view(self::BASE_PATH.'order-list', compact("order_list"));
     }
 
+    public function download_list($id = null){
+        if (!empty($id)){
+            $order = ProductOrder::when(!empty($id), function ($query) use ($id) {
+                $query->with("shipping");
+                $query->where("id",$id);
+            })->where("user_id", \auth("web")->user()->id)
+                ->latest()->firstOrFail();
+
+            return view(self::BASE_PATH.'order-details', compact("order"));
+        }
+
+
+        $download_list = DigitalProductDownload::where("user_id", \auth("web")->user()->id)->latest()->paginate(10);
+
+        return view(self::BASE_PATH.'download-list', compact("download_list"));
+    }
+
+    public function download($slug)
+    {
+        abort_if(empty($slug), 403);
+
+        $user = Auth::guard('web')->user();
+
+        $product = DigitalProduct::where('slug', $slug)->firstOrFail();
+        $purchase_check = DigitalProductDownload::where(['product_id' => $product->id, 'user_id' => $user->id])->first();
+
+        if (empty($purchase_check))
+        {
+            return redirect()->back()->with(['msg' => __('You need to purchase the product first'), 'type' => 'warning']);
+        }
+
+        $zipDownloader = new ZipFileDownloader();
+        return $zipDownloader->download($product);
+
+//        $zip_file_name = time().'.zip';
+//        $zip_file_location = global_assets_path('assets/tenant/uploads/digital-product-file/'.tenant()->id.'/'.$zip_file_name);
+//
+//        $zip = new \ZipArchive();
+//
+//        if ($zip->open($zip_file_location, \ZipArchive::CREATE) === TRUE)
+//        {
+//            $real_file_path = global_assets_path('assets/tenant/uploads/digital-product-file/'.tenant()->id.'/'.$product->file);
+//            $zip->addFile($real_file_path, $product->file);
+//            $zip->close();
+//        }
+//
+//        return response()->download($zip_file_location);
+
+
+//        $headers = ['Content-Type: file/zip'];
+//        if (file_exists($file_path)) {
+//            return \Response::download($file_path, $file_name, $headers);
+//        } else {
+//            echo('File not found.');
+//        }
+    }
 
     public function generate_package_invoice(Request $request)
     {

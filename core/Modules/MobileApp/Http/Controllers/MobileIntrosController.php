@@ -25,11 +25,12 @@ class MobileIntrosController extends Controller
     {
         $mobileIntro = MobileIntro::create($request->validated());
 
-        return redirect(route("admin.mobile.intro.all"))->with($mobileIntro ? ["success" => true, "msg" => "Mobile Intro created successfully"] : ["success" => false,"msg" => "failed to create mobile intro"]);
+        return redirect(route("tenant.admin.mobile.intro.all"))->with($mobileIntro ? ["success" => true, "msg" => __("Mobile Intro created successfully")] : ["success" => false,"msg" => __("Failed to create mobile intro")]);
     }
 
     public function show($id)
     {
+
     }
 
     public function edit(MobileIntro $mobileIntro)
@@ -41,12 +42,12 @@ class MobileIntrosController extends Controller
     {
         $update = $mobileIntro->update($request->validated());
 
-        return redirect(route("admin.mobile.intro.all"))
+        return redirect(route("tenant.admin.mobile.intro.all"))
             ->with(
                 $update ?
-                    ["success" => true, "msg" => "Mobile Intro updated successfully"]
+                    ["success" => true, "msg" => __("Mobile Intro updated successfully")]
                     :
-                    ["success" => false,"msg" => "failed to update mobile intro"]
+                    ["success" => false,"msg" => __("Failed to update mobile intro")]
             );
     }
 
@@ -54,6 +55,6 @@ class MobileIntrosController extends Controller
     {
         $delete = $mobileIntro->delete();
 
-        return response()->json(["success" => (bool) $delete ?? false, "msg" => $delete ? "Successfully delete mobile intro." : "Failed to delete mobile intro."]);
+        return response()->json(["success" => (bool) $delete ?? false, "msg" => $delete ? __("Successfully delete mobile intro.") : __("Failed to delete mobile intro.")]);
     }
 }

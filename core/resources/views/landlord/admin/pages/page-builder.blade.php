@@ -6,11 +6,25 @@
     <x-pagebuilder::css/>
     <link rel="stylesheet" href="{{global_asset('assets/common/css/fontawesome-iconpicker.min.css')}}">
     <link href="{{ global_asset('assets/landlord/admin/css/nice-select.css') }}" rel="stylesheet">
+
+    <style>
+        .attachment-preview {
+            overflow: hidden;
+        }
+        .attachment-preview .thumbnail .centered {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: translate(50%, 50%);
+            width: 100%;
+            height: 100%;
+        }
+        .attachment-preview .thumbnail .centered img {
+            object-fit: contain;
+        }
+    </style>
 @endsection
 @section('content')
-    @php
-        $lang_slug = request()->get('lang') ?? \App\Facades\GlobalLanguage::default_slug();
-    @endphp
     <div class="col-12 stretch-card">
         <div class="card">
             <div class="card-body">
@@ -19,15 +33,6 @@
                         <h4 class="card-title mb-4">{{$page->title}} <br> <small class="text-small">{{__('Edit With Page Builder')}}</small></h4>
                     </x-slot>
                     <x-slot name="right" class="d-flex">
-                        <form action="{{route(route_prefix().'admin.pages.create')}}" method="get">
-                            <x-fields.select name="lang" title="{{__('Language')}}">
-                                @foreach(\App\Facades\GlobalLanguage::all_languages() as $lang)
-                                    <option value="{{$lang->slug}}" @if($lang->slug === $lang_slug) selected @endif>{{$lang->name}}</option>
-
-                                @endforeach
-                            </x-fields.select>
-                        </form>
-                        <p></p>
                         <x-link-with-popover url="{{route(route_prefix().'admin.pages')}}" extraclass="ml-3">
                             {{__('All Pages')}}
                         </x-link-with-popover>

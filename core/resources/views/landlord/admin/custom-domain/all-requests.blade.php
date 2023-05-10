@@ -49,7 +49,7 @@
                                                     </td>
                                                     <td>{{$data->id}}</td>
                                                     <td>{{optional($data->user)->username}}</td>
-                                                    <td>{{optional($data)->old_domain .'.' . getenv('CENTRAL_DOMAIN')}}</td>
+                                                    <td>{{optional($data)->old_domain .'.' . env('CENTRAL_DOMAIN')}}</td>
                                                     <td>{{$data->custom_domain}}</td>
                                                     <td class="py-4">
                                                         @if($data->custom_domain_status == 'pending')

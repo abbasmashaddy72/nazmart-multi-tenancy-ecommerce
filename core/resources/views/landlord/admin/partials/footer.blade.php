@@ -18,11 +18,39 @@
 <script src="{{global_asset('assets/landlord/common/js/axios.min.js')}}"></script>
 <script src="{{global_asset('assets/landlord/common/js/sweetalert2.js')}}"></script>
 <script src="{{global_asset('assets/common/js/flatpickr.js')}}"></script>
+<x-flatpicker.flatpickr-locale/>
 <script src="{{global_asset('assets/common/js/select2.min.js')}}"></script>
 <script src="{{global_asset('assets/common/js/toastr.min.js')}}"></script>
 <script src="{{global_asset('assets/common/js/fontawesome-iconpicker.min.js')}}"></script>
 <script src="{{global_asset('assets/landlord/admin/js/jquery.nice-select.min.js')}}"></script>
 <script>
+    function translatedDataTable() {
+        return {
+            "decimal": "",
+            "emptyTable": "{{__('No data available in table')}}",
+            "info": "{{__('Showing')}} _START_ {{__('to')}} _END_ {{__('of')}} _TOTAL_ {{__('entries')}}",
+            "infoEmpty": "{{__('Showing')}} 0 {{__('to')}} 0 {{__('of')}} 0 {{__('entries')}}",
+            "infoFiltered": "({{__('filtered from')}} _MAX_ {{__('total entries')}})",
+            "infoPostFix": "",
+            "thousands": ",",
+            "lengthMenu": "{{__('Show')}} _MENU_ {{__('entries')}}",
+            "loadingRecords": "{{__('Loading...')}}",
+            "processing": "",
+            "search": "{{__('Search:')}}",
+            "zeroRecords": "{{__('No matching records found')}}",
+            "paginate": {
+                "first": "{{__('First')}}",
+                "last": "{{__('Last')}}",
+                "next": "{{__('Next')}}",
+                "previous": "{{__('Previous')}}"
+            },
+            "aria": {
+                "sortAscending": ": activate to sort column ascending",
+                "sortDescending": ": activate to sort column descending"
+            }
+        }
+    }
+
     (function($){
         "use strict";
 

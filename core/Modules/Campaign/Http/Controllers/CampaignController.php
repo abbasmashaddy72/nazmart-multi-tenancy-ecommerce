@@ -48,7 +48,13 @@ class CampaignController extends Controller
             'campaign_subtitle' => 'required|string',
             'campaign_start_date' => 'required',
             'campaign_end_date' => 'required',
+            'product_id.*' => 'required',
+        ],
+        [
+            'product_id.*.required' => __('Products are required')
         ]);
+
+        $validated_product_data = $this->getValidatedCampaignProducts($request);
 
         try{
             DB::beginTransaction();
@@ -61,8 +67,7 @@ class CampaignController extends Controller
                 'end_date' => $request->campaign_end_date,
             ] + $this->how_is_the_owner());
 
-            if ($campaign->id) {
-                $validated_product_data = $this->getValidatedCampaignProducts($request);
+            if ($campaign->id && !empty($validated_product_data)) {
                 $this->insertCampaignProducts($campaign->id, $validated_product_data);
             }
 
@@ -103,7 +108,7 @@ class CampaignController extends Controller
      */
     public function update(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'campaign_name' => 'required|string|max:191',
             'campaign_subtitle' => 'required|string',
             'image' => 'required|string',
@@ -111,6 +116,8 @@ class CampaignController extends Controller
             'campaign_start_date' => 'required',
             'campaign_end_date' => 'required',
         ]);
+
+        $validated_product_data = $this->getValidatedCampaignProducts($request);
 
         DB::beginTransaction();
         try{
@@ -123,12 +130,13 @@ class CampaignController extends Controller
                 'end_date' => $request->campaign_end_date,
             ] + $this->how_is_the_owner());
 
-            $this->updateCampaignProducts($request->id, $request);
+            $this->updateCampaignProducts($request->id, $request, $validated_product_data);
 
             DB::commit();
             return back()->with(FlashMsg::update_succeed('Campaign'));
         } catch (\Throwable $th) {
             DB::rollBack();
+            return $th->getMessage();
             return back()->with(FlashMsg::update_failed('Campaign'));
         }
     }
@@ -187,34 +195,35 @@ class CampaignController extends Controller
     /**====================================================================
      *                  CAMPAIGN PRODUCT FUNCTIONS
     ==================================================================== */
-    public function updateCampaignProducts($campaign_id, $request)
+    public function updateCampaignProducts($campaign_id, $request, $validated_product_data)
     {
-        try {
-            DB::beginTransaction();
+//        try {
+//            DB::beginTransaction();
 
             $delete = $this->deleteCampaignProducts($campaign_id);
-            $validated_product_data = $this->getValidatedCampaignProducts($request);
-            $campaign_products = $this->insertCampaignProducts($campaign_id, $validated_product_data, $request->campaign_start_date, $request->campaign_end_date);
+            if(!empty($validated_product_data)){
+                $campaign_products = $this->insertCampaignProducts($campaign_id, $validated_product_data, $request->campaign_start_date, $request->campaign_end_date);
+            }
 
-            DB::commit();
-        }catch(\Throwable $th) {
-            DB::rollBack();
-
-            return false;
-        }
+//            DB::commit();
+//        }catch(\Throwable $th) {
+//            DB::rollBack();
+//
+//            return false;
+//        }
     }
 
     public function getValidatedCampaignProducts(Request $request): array
     {
         return $request->validate([
-            'product_id' => 'required|array',
-            'campaign_price' => 'required|array',
-            'units_for_sale' => 'required|array',
-            'start_date' => 'required|array',
-            'end_date' => 'required|array',
-            'product_id.*' => 'required|exists:products,id',
-            'campaign_price.*' => 'required|string',
-            'units_for_sale.*' => 'required|string',
+            'product_id' => 'nullable|array',
+            'campaign_price' => 'nullable|array',
+            'units_for_sale' => 'nullable|array',
+            'start_date' => 'nullable|array',
+            'end_date' => 'nullable|array',
+            'product_id.*' => 'nullable|exists:products,id',
+            'campaign_price.*' => 'nullable|string',
+            'units_for_sale.*' => 'nullable|string',
             'start_date.*' => 'nullable|date',
             'end_date.*' => 'nullable|date',
         ]);
@@ -259,7 +268,6 @@ class CampaignController extends Controller
         if($this->getGuardName() == "admin"){
             $arr = [
                 "admin_id" => $this->userId(),
-                "vendor_id" => null,
                 "type" => $this->getGuardName(),
             ];
         }

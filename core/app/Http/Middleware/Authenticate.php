@@ -14,7 +14,6 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
-
         if (! $request->expectsJson()) {
             if ($request->is('admin-home') || $request->is('admin-home/*')){
                 if (!is_null(tenant())){

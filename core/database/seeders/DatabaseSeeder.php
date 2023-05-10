@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
+        update_static_option_central('get_script_version','1.1.0');
+
 //        $payment_gateway_markup = [
 //            [
 //                'name' => 'paypal',
@@ -259,7 +261,7 @@ class DatabaseSeeder extends Seeder
 //                    'name' => '',
 //                    'description'=> ''
 //                ])
-//            ]
+//            ],
 //
 //            [
 //                'name' => 'toyyibpay',
@@ -277,7 +279,7 @@ class DatabaseSeeder extends Seeder
 //        foreach ($payment_gateway_markup as $payment_gate) {
 //            PaymentGateway::create($payment_gate);
 //        }
-
+//
 //        $permissions = [
 //           'page-list',
 //           'page-create',

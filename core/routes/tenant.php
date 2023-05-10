@@ -9,6 +9,8 @@ use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Controllers\Tenant\Frontend\ShopCreationController;
 use App\Http\Controllers\Tenant\Frontend\TenantFrontendController;
 use App\Http\Controllers\Tenant\Frontend\CheckoutPaymentController;
+use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
+use App\Http\Controllers\Tenant\Frontend\FrontendDigitalProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +27,8 @@ use App\Http\Controllers\Tenant\Frontend\CheckoutPaymentController;
 
 Route::middleware([
     'web',
-    InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomain::class,
+    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'tenant_glvar',
     'maintenance_mode',
@@ -44,8 +47,8 @@ Route::middleware([
 
     /* tenant admin login */
     Route::middleware('package_expire')->controller(\App\Http\Controllers\Landlord\Admin\Auth\AdminLoginController::class)->prefix('admin')->group(function (){
-        Route::get('/','login_form')->name('tenant.admin.login');
-        Route::post('/','login_admin');
+        Route::get('/','login_form')->name('tenant.admin.login')->withoutMiddleware('maintenance_mode');
+        Route::post('/','login_admin')->withoutMiddleware('maintenance_mode');
         Route::post('/logout','logout_admin')->name('tenant.admin.logout');
         Route::get('/restricted', 'restricted')->name('tenant.admin.restricted');
 
@@ -59,13 +62,25 @@ Route::middleware([
     Route::get('/campaign/{id}', [TenantFrontendController::class, 'campaign'])->name('tenant.campaign.index');
 
     Route::prefix('shop')->as('tenant.')->group(function (){
+        Route::middleware('redirect_if_no_digital_product')->prefix('digital')->name('digital.')->group(function (){
+            Route::get('/search', [FrontendDigitalProductController::class, 'shop_page'])->name('shop');
+            Route::get('/product/{slug}', [FrontendDigitalProductController::class, 'product_details'])->name('shop.product.details'); // Product Details
+
+            Route::get('/type/{slug}/{category_type?}', [FrontendDigitalProductController::class, 'category_products'])->name('shop.category.products'); // Product Category / Subcategory / ChildCategory
+
+            Route::post('/product/review', [FrontendDigitalProductController::class, 'product_review'])->name('shop.product.review'); // Product Review
+            Route::get('/product/review/more', [FrontendDigitalProductController::class, 'render_reviews'])->name('shop.product.review.more.ajax'); // Product Review Ajax
+
+            Route::post('/product/cart/add', [FrontendDigitalProductController::class, 'add_to_cart'])->name('shop.product.add.to.cart.ajax'); // Shop to Add to Cart
+        });
+
         Route::get('/search', [TenantFrontendController::class, 'shop_page'])->name('shop');
         Route::get('/product/search', [TenantFrontendController::class, 'shop_search'])->name('shop.search');
         Route::get('/product/quick-view', [TenantFrontendController::class, 'product_quick_view'])->name('shop.quick.view');
         Route::get('/product/{slug}', [TenantFrontendController::class, 'product_details'])->name('shop.product.details'); // Product Details
 
 
-        Route::get('/type/{category_type?}/{slug}', [TenantFrontendController::class, 'category_products'])->name('shop.category.products'); // Product Category / Subcategory / ChildCategory
+        Route::get('/type/{slug}/{category_type?}', [TenantFrontendController::class, 'category_products'])->name('shop.category.products'); // Product Category / Subcategory / ChildCategory
 
         Route::post('/product/review', [TenantFrontendController::class, 'product_review'])->name('shop.product.review'); // Product Review
         Route::get('/product/review/more', [TenantFrontendController::class, 'render_reviews'])->name('shop.product.review.more.ajax'); // Product Review Ajax
@@ -103,16 +118,16 @@ Route::middleware([
 
         // todo:: hare custom assets route
         Route::get("assets/css/{filename}", function ($filename){
-            if(file_exists(theme_assets('css/'. $filename))){
-                return response()->file(theme_assets('css/'. $filename),['content-type' => "text/css"]);
+            if(file_exists(theme_assets('css/'. $filename .'.css'))){
+                return response()->file(theme_assets('css/'. $filename .'.css'),['content-type' => "text/css"]);
             }
 
             return abort(404);
         })->name("custom.css.file.url");
 
         Route::get("assets/js/{filename}", function ($filename){
-            if(file_exists(theme_assets('js/'. $filename))){
-                return response()->file(theme_assets('js/'. $filename));
+            if(file_exists(theme_assets('js/'. $filename .'.js'))){
+                return response()->file(theme_assets('js/'. $filename .'.js'));
             }
 
             return abort(404);
@@ -151,7 +166,8 @@ Route::middleware([
 
 Route::group(['prefix' => 'product', 'as' => 'tenant.products.', 'middleware' =>[
     'web',
-    InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomain::class,
+    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'tenant_glvar',
     'maintenance_mode',
@@ -175,7 +191,8 @@ require_once __DIR__ .'/tenant_admin.php';
 
 Route::middleware([
     'web',
-    InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomain::class,
+    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'tenant_glvar',
     'set_lang'
@@ -249,6 +266,8 @@ Route::middleware([
         Route::post('/support-ticket/status-change', 'support_ticket_status_change')->name('user.dashboard.support.ticket.status.change');
         Route::post('/support-ticket/message', 'support_ticket_message')->name('user.dashboard.support.ticket.message');
         Route::get('/order-list/{id?}', 'order_list')->name('user.dashboard.package.order');
+        Route::get('/download-list/{id?}', 'download_list')->name('user.dashboard.download.list');
+        Route::get('/download/{slug}', 'download')->name('user.dashboard.download.file');
         Route::post('/package-order/cancel', 'package_order_cancel')->name('user.dashboard.package.order.cancel');
         Route::post('/package-user/generate-invoice', 'generate_package_invoice')->name('frontend.package.invoice.generate');
 
@@ -279,8 +298,10 @@ Route::middleware([
     });
 
     Route::name('tenant.')->group(function (){
-        Route::get('category-wise-product/theme-one', [TenantFrontendController::class, 'product_by_category_ajax_one'])->name('category.wise.product.one');
-        Route::get('category-wise-product/theme-two', [TenantFrontendController::class, 'product_by_category_ajax_two'])->name('category.wise.product.two');
+        Route::get('category-wise-product/theme-hexfashion', [TenantFrontendController::class, 'product_by_category_ajax_one'])->name('category.wise.product.one');
+        Route::get('category-wise-product/theme-furnito', [TenantFrontendController::class, 'product_by_category_ajax_two'])->name('category.wise.product.two');
+        Route::get('category-wise-product/theme-medicom', [TenantFrontendController::class, 'product_by_category_ajax_three'])->name('category.wise.product.three');
+        Route::get('category-wise-product/theme-bookpoint', [TenantFrontendController::class, 'product_by_category_ajax_bookpoint'])->name('category.wise.product.bookpoint');
     });
 });
 

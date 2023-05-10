@@ -52,7 +52,7 @@
                                 <div class="form-group col-md-3 mt-3">
                                     <label>{{__('Value One')}}</label>
                                     <input type="text" readonly class="form-control"
-                                           value="{{getenv('CENTRAL_DOMAIN')}}">
+                                           value="{{env('CENTRAL_DOMAIN')}}">
                                 </div>
 
                                 <div class="form-group col-md-3 mt-3">
@@ -74,7 +74,7 @@
                                 <div class="form-group col-md-3 mt-3">
                                     <label>{{__('Value Two')}}</label>
                                     <input type="text" readonly class="form-control"
-                                           value="{{getenv('CENTRAL_DOMAIN')}}">
+                                           value="{{env('CENTRAL_DOMAIN')}}">
                                 </div>
                                 <div class="form-group col-md-3 mt-3">
                                     <label>{{__('TTL Two')}}</label>

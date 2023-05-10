@@ -9,7 +9,7 @@
 
 @section('section')
     @php
-        $central_domain = getenv('CENTRAL_DOMAIN');
+        $central_domain = env('CENTRAL_DOMAIN');
     @endphp
 <div class="parent">
     <div class="row">
@@ -37,14 +37,14 @@
                         <tr>
                             <td>{{__('CNAME Record')}}</td>
                             <td>www</td>
-                            <td>{{getenv('CENTRAL_DOMAIN')}}</td>
+                            <td>{{env('CENTRAL_DOMAIN')}}</td>
                             <td>{{__('Automatic')}}</td>
                         </tr>
 
                         <tr>
                             <td>{{__('CNAME Record')}}</td>
                             <td>@</td>
-                            <td>{{getenv('CENTRAL_DOMAIN')}}</td>
+                            <td>{{env('CENTRAL_DOMAIN')}}</td>
                             <td>{{__('Automatic')}}</td>
                         </tr>
 
@@ -88,7 +88,7 @@
                                         <tbody>
                                             @foreach($user_domain_infos->tenant_details ?? [] as $tenant)
                                                 <tr>
-                                                <td>{{$tenant->id . '.'. getenv('CENTRAL_DOMAIN')}}</td>
+                                                <td>{{$tenant->id . '.'. env('CENTRAL_DOMAIN')}}</td>
                                                 <td>{{optional($tenant->custom_domain)->custom_domain}}</td>
                                                 <td class="py-4">
                                                     @if(optional($tenant->custom_domain)->custom_domain_status == 'pending')
@@ -148,9 +148,15 @@
                             @endphp
                             <label for="name">{{__('Select your domain')}}</label>
                             <select class="form-control" name="old_domain" id="">
-                                <option value="">Select a domain</option>
+                                <option value="">{{__('Select a domain')}}</option>
                                 @foreach($domain_list as $domain)
-                                    <option value="{{$domain->id}}">{{$domain->id}}</option>
+                                    @php
+                                        $tenant = \App\Models\Tenant::find($domain->id);
+                                    @endphp
+
+                                    @if(tenant_plan_sidebar_permission('custom_domain', $tenant))
+                                        <option value="{{$domain->id}}">{{$domain->id}}</option>
+                                   @endif
                                 @endforeach
                             </select>
                             <small>{{__('Select the domain which you want to change')}}</small>
@@ -167,6 +173,9 @@
                               The valid format will be exactly like this one - domain.tld, domain.tld or subdomain.domain.tld, subdomain.domain.tld'))}}
                         </div>
 
+                        <div class="alert alert-warning mt-3">
+                            <p>{{__("If you are unable to locate your subdomain in the list, it is possible that the custom domain feature may not be included in your subscription plan.")}}</p>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('Close')}}</button>

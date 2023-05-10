@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Actions\Payment\Tenant\PaymentGatewayIpn;
 use App\Enums\PaymentRouteEnum;
+use App\Enums\ProductTypeEnum;
 use App\Helpers\FlashMsg;
 use App\Helpers\Payment\PaymentGatewayCredential;
 use App\Mail\StockOutEmail;
@@ -13,6 +14,7 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Modules\Campaign\Entities\CampaignSoldProduct;
+use Modules\DigitalProduct\Entities\DigitalProductDownload;
 use Modules\Product\Entities\ProductInventory;
 use Modules\Product\Entities\ProductInventoryDetail;
 
@@ -26,13 +28,10 @@ class CheckoutToPaymentService
         $amount_to_charge = $payment_details->total_amount;
 
         $ordered_products = OrderProducts::where('order_id', $payment_details->id)->get();
-        foreach ($ordered_products ?? [] as $product)
-        {
-            if($product->campaign_product !== null)
-            {
+        foreach ($ordered_products ?? [] as $product) {
+            if ($product->campaign_product !== null) {
                 $sold_count = CampaignSoldProduct::where('product_id', $product->product_id)->first();
-                if (empty($sold_count))
-                {
+                if (empty($sold_count)) {
                     CampaignSoldProduct::create([
                         'product_id' => $product->product_id,
                         'sold_count' => 1,
@@ -41,12 +40,10 @@ class CheckoutToPaymentService
                         'updated_at' => now()
                     ]);
                 } else {
-                    if ($sold_count->sold_count < $product->campaign_product->units_for_sale)
-                    {
-                        if ($product->campaign_product->units_for_sale >= ($product->quantity + $sold_count->sold_count))
-                        {
+                    if ($sold_count->sold_count < $product->campaign_product->units_for_sale) {
+                        if ($product->campaign_product->units_for_sale >= ($product->quantity + $sold_count->sold_count)) {
                             $sold_count->increment('sold_count', $product->quantity);
-                            $sold_count->total_amount += $product->campaign_product->campaign_price*$product->quantity;
+                            $sold_count->total_amount += $product->campaign_product->campaign_price * $product->quantity;
                             $sold_count->save();
                         } else {
                             return back()->withErrors('Campaign sell limitation is over, You can not purchase current amount');
@@ -57,41 +54,55 @@ class CheckoutToPaymentService
                 }
             }
 
-            if ($product->variant_id !== null)
-            {
+            if ($product->variant_id !== null) {
                 $variants = ProductInventoryDetail::where(['product_id' => $product->product_id, 'id' => $product->variant_id])->get();
-                if (!empty($variants))
-                {
-                    foreach ($variants ?? [] as $variant)
-                    {
+                if (!empty($variants)) {
+                    foreach ($variants ?? [] as $variant) {
                         $variant->decrement('stock_count', $product->quantity);
                         $variant->increment('sold_count', $product->quantity);
                     }
                 }
             }
-            $product_inventory = ProductInventory::where('product_id', $product->product_id)->first();
-            $product_inventory->decrement('stock_count', $product->quantity);
-            $product_inventory->sold_count = $product_inventory->sold_count == null ? 1 : $product_inventory->sold_count + $product->quantity;
-            $product_inventory->save();
+
+            if ($product->product_type == ProductTypeEnum::PHYSICAL) {
+                $product_inventory = ProductInventory::where('product_id', $product->product_id)->first();
+                $product_inventory->decrement('stock_count', $product->quantity);
+                $product_inventory->sold_count = $product_inventory->sold_count == null ? 1 : $product_inventory->sold_count + $product->quantity;
+                $product_inventory->save();
+            }
         }
 
-        self::checkStock(); // Checking Stock for warning and email notification
+        if ($product->product_type == ProductTypeEnum::PHYSICAL) {
+            self::checkStock(); // Checking Stock for warning and email notification
+        }
 
-        if ($payment_gateway != 'manual_payment'  && $checkout_type === 'digital') {
+        if ($product->product_type == ProductTypeEnum::DIGITAL) {
+            DigitalProductDownload::create([
+                'product_id' => $product->product_id,
+                'download_count' => 1,
+                'user_id' => \Auth::guard('web')->user()->id
+            ]);
+        }
+
+        if ($payment_gateway != 'manual_payment' && $checkout_type === 'digital') {
             $credential_function = 'get_' . $payment_gateway . '_credential';
 
-            if (!method_exists((new PaymentGatewayCredential()), $credential_function))
-            {
+            if (!method_exists((new PaymentGatewayCredential()), $credential_function)) {
                 $custom_data['request'] = $data;
                 $custom_data['payment_details'] = $payment_details->toArray();
                 $custom_data['total'] = $amount_to_charge;
+
+                //add extra param support to the shop checkout payment system
+                $custom_data['payment_type'] = "shop_checkout";
+                $custom_data['payment_for'] = "tenant";
+                $custom_data['cancel_url'] = route(PaymentRouteEnum::STATIC_CANCEL_ROUTE);
+                $custom_data['success_url'] = route(PaymentRouteEnum::SUCCESS_ROUTE, random_int(111111, 999999) . $payment_details->id . random_int(111111, 999999));
 
                 $charge_customer_class_namespace = getChargeCustomerMethodNameByPaymentGatewayNameSpace($payment_gateway);
                 $charge_customer_method_name = getChargeCustomerMethodNameByPaymentGatewayName($payment_gateway);
 
                 $custom_charge_customer_class_object = new $charge_customer_class_namespace;
-                if(class_exists($charge_customer_class_namespace) && method_exists($custom_charge_customer_class_object, $charge_customer_method_name))
-                {
+                if (class_exists($charge_customer_class_namespace) && method_exists($custom_charge_customer_class_object, $charge_customer_method_name)) {
                     Cart::instance("default")->destroy();
                     return $custom_charge_customer_class_object->$charge_customer_method_name($custom_data);
                 } else {
@@ -103,7 +114,7 @@ class CheckoutToPaymentService
             }
 
         } else {
-            if($payment_gateway != null){
+            if ($payment_gateway != null) {
                 $payment_details->update(['transaction_id' => $payment_details->transaction_id]);
             }
             $order_id = Str::random(6) . $payment_details->id . Str::random(6);
@@ -121,7 +132,7 @@ class CheckoutToPaymentService
     {
         $data = [
             'amount' => $amount_to_charge,
-            'title' => 'Order ID: '.$payment_details->id,
+            'title' => 'Order ID: ' . $payment_details->id,
             'description' => 'Payment For Order ID: #' . $payment_details->id .
                 ' Payer Name: ' . $payment_details->name .
                 ' Payer Email: ' . $payment_details->email,
@@ -165,10 +176,8 @@ class CheckoutToPaymentService
         $every_filtered_product_id = array_unique(array_merge($inventory_product_items_id, $products_id));
         $all_products = \Modules\Product\Entities\Product::whereIn('id', $every_filtered_product_id)->select('id', 'name', 'is_inventory_warn_able')->get();
 
-        if (count($all_products) > 0)
-        {
-            foreach ($all_products as $item)
-            {
+        if (count($all_products) > 0) {
+            foreach ($all_products as $item) {
                 $inventory = $item?->inventory?->stock_count;
                 $variant = $item->inventoryDetail->where('stock_count', '<=', $threshold_amount)->first();
                 $variant = !empty($variant) ? $variant->stock_count : [];
@@ -180,7 +189,7 @@ class CheckoutToPaymentService
             $email = get_static_option('order_receiving_email') ?? get_static_option('tenant_site_global_email');
             try {
                 Mail::to($email)->send(new StockOutEmail($all_products));
-            }catch (\Exception $e){
+            } catch (\Exception $e) {
 
             }
         }

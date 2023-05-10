@@ -22,12 +22,15 @@ use Plugins\WidgetBuilder\Widgets\TenantNavigationMenuWidget;
 use Plugins\WidgetBuilder\Widgets\TenantNavigationMenuWidgetTwo;
 use Plugins\WidgetBuilder\Widgets\TenantNewsletterOne;
 use Plugins\WidgetBuilder\Widgets\TenantNewsletterTwo;
+use Plugins\WidgetBuilder\Widgets\Tenants\Bookpoint\ContactWidget;
+use Plugins\WidgetBuilder\Widgets\Tenants\Bookpoint\NavigationMenuWidgetBookpoint;
+use Plugins\WidgetBuilder\Widgets\Tenants\Bookpoint\NewsletterBookpoint;
+use Plugins\WidgetBuilder\Widgets\Tenants\Bookpoint\TenantImageWidget;
 use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterAbout;
 use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterBottomLinksWidget;
 use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterContact;
 use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterPaymentGatewaysWidget;
 use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\SocialFollowWidget;
-use Plugins\WidgetBuilder\Widgets\TenantServiceCategoryWidget;
 use Plugins\WidgetBuilder\Widgets\TenantSidebarBannerWidget;
 
 class WidgetBuilderSetup
@@ -60,6 +63,11 @@ class WidgetBuilderSetup
             FooterPaymentGatewaysWidget::class,
             FooterPaymentGatewaysWidget::class,
             ShopFooterWidget::class,
+
+            NewsletterBookpoint::class,
+            ContactWidget::class,
+            NavigationMenuWidgetBookpoint::class,
+            TenantImageWidget::class
         ];
 
         // Third party custom addons
@@ -71,7 +79,7 @@ class WidgetBuilderSetup
     private static function registerd_sidebars(){
 
         $register_widgets_for_admin = ['footer','sidebar'];
-        $register_widgets_for_tenant = ['footer','footer_bottom_left','footer_bottom_right', 'footer_bottom','sidebar','blog_sidebar', 'shop_footer'];
+        $register_widgets_for_tenant = ['footer','footer_top','footer_bottom_left','footer_bottom_right', 'footer_bottom',/*'sidebar','blog_sidebar',*/ 'shop_footer'];
         $condition = (bool) tenant() ? $register_widgets_for_tenant : $register_widgets_for_admin;
         return $condition;
     }
@@ -117,7 +125,7 @@ class WidgetBuilderSetup
     public static function render_admin_sidebar_item($sidebar){
         $markup = '<div class="card">
                     <div class="card-header widget-area-header">
-                        <h4 class="header-title">'.ucfirst(str_replace('_',' ',$sidebar)).' '.__('Widgets Area').'</h4>
+                        <h4 class="header-title">'.__(ucfirst(str_replace('_',' ',$sidebar)).' '.__('Widgets Area')).'</h4>
                         <span class="widget-area-expand"><i class="las la-angle-down"></i></span>
                     </div>
                     <div class="card-body widget-area-body hide">

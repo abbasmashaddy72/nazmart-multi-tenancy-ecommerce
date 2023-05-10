@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use Modules\Blog\Http\Controllers\Landlord\Admin\BlogController;
+use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 
 
 Route::group(['prefix'=>'admin-home'],function() {
@@ -33,7 +34,7 @@ Route::group(['prefix'=>'admin-home'],function() {
     });
 
     //BACKEND BLOG CATEGORY AREA
-    Route::controller(Landlord\Admin\BlogCategoryController::class)->prefix('landlord-blog-category')->name('landlord.')->middleware(['adminglobalVariable','auth:admin'])->group(function(){
+    Route::controller(Landlord\Admin\BlogCategoryController::class)->prefix('landlord-blog-category')->name('landlord.')->middleware(['adminglobalVariable','auth:admin', 'set_lang'])->group(function(){
         Route::get('/','index')->name('admin.blog.category');
         Route::post('/store','new_category')->name('admin.blog.category.store');
         Route::post('/update','update_category')->name('admin.blog.category.update');
@@ -68,7 +69,8 @@ if (is_null(tenant())){
 
 Route::middleware([
     'web',
-    InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomain::class,
+    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'tenant_glvar',
     'set_lang'

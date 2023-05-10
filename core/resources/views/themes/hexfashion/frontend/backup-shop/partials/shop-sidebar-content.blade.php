@@ -20,7 +20,7 @@
                             <li class="list" data-slug="{{$category->slug}}" data-value="{{ $category->name }}">
                                 <a href="javascript:void(0)" class="item">
                                     <span data-value="{{ $category->name }}" data-slug="{{$category->slug}}" class="ad-values"> {{$category->name}} </span>
-                                    <span> {{$category->product_categories_count}} </span>
+                                    <span> {{$category->product_count}} </span>
                                 </a>
                             </li>
                         @endforeach

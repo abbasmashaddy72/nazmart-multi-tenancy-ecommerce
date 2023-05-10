@@ -4,8 +4,10 @@
 namespace App\Helpers;
 
 
+use App\Facades\ModuleDataFacade;
 use App\Models\PaymentLogs;
 use App\Models\PricePlan;
+use App\Models\TenantException;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use function __;
@@ -46,7 +48,21 @@ class SidebarMenuHelper
 
         $this->users_website_issues_manage_menus($menu_instance);
 
+        // External Menu Render
+        foreach (getAllExternalMenu() as $externalMenu)
+        {
+            foreach ($externalMenu as $individual_menu_item){
+                $convert_to_array = (array) $individual_menu_item;
+                $routeName = $convert_to_array['route'];
+                if (isset($routeName) && !empty($routeName) && Route::has($routeName)){
+                    $menu_instance->add_menu_item($convert_to_array['id'], $convert_to_array);
+                }
+            }
+        }
+
         $this->general_settings_menus($menu_instance);
+
+        $this->payment_settings_menus($menu_instance);
 
         $menu_instance->add_menu_item('languages', [
             'route' => 'landlord.admin.languages',
@@ -324,7 +340,7 @@ class SidebarMenuHelper
 
         $menu_instance->add_menu_item('form-builder-settings-all', [
             'route' => 'landlord.admin.form.builder.all',
-            'label' => __('Custom From Builder'),
+            'label' => __('Custom Form Builder'),
             'parent' => 'form-builder-settings-menu-items',
             'permissions' => ['form-builder'],
         ]);
@@ -343,11 +359,18 @@ class SidebarMenuHelper
             'route' => '#',
             'label' => __('Appearance Settings'),
             'parent' => null,
-            'permissions' => ['widget-builder'],
+            'permissions' => ['widget-builder', 'highlight-settings', 'breadcrumb-settings', 'menu-manage'],
             'icon' => 'mdi mdi-folder-outline',
         ]);
 
-        $menu_instance->add_menu_item('Breadcrumb-settings-all', [
+        $menu_instance->add_menu_item('highlight-settings-all', [
+            'route' => 'landlord.admin.highlight',
+            'label' => __('Text Highlight Settings'),
+            'parent' => 'appearance-settings-menu-items',
+            'permissions' => ['highlight-settings'],
+        ]);
+
+        $menu_instance->add_menu_item('breadcrumb-settings-all', [
             'route' => 'landlord.admin.breadcrumb',
             'label' => __('Breadcrumb Settings'),
             'parent' => 'appearance-settings-menu-items',
@@ -417,8 +440,8 @@ class SidebarMenuHelper
             'parent' => null,
             'permissions' => ['general-settings-page-settings', 'general-settings-site-identity', 'general-settings-basic-settings', 'general-settings-color-settings',
                 'general-settings-typography-settings', 'general-settings-seo-settings', 'general-settings-payment-settings', 'general-settings-third-party-script-settings',
-                'general-settings-smtp-settings', 'general-settings-custom-css-settings', 'general-settings-custom-js-settings', 'general-settings-database-upgrade-settings',
-                'general-settings-cache-clear-settings', 'general-settings-license-settings'],
+                'general-settings-ssl-settings', 'general-settings-smtp-settings', 'general-settings-custom-css-settings', 'general-settings-custom-js-settings',
+                'general-settings-database-upgrade-settings', 'general-settings-cache-clear-settings', 'general-settings-license-settings'],
             'icon' => 'mdi mdi-settings',
         ]);
         $menu_instance->add_menu_item('general-settings-page-settings', [
@@ -459,7 +482,7 @@ class SidebarMenuHelper
         ]);
         $menu_instance->add_menu_item('general-settings-payment-gateway-settings', [
             'route' => 'landlord.admin.general.payment.settings',
-            'label' => __('Payment Settings'),
+            'label' => __('Currency Settings'),
             'parent' => 'general-settings-menu-items',
             'permissions' => ['general-settings-payment-settings'],
         ]);
@@ -475,6 +498,24 @@ class SidebarMenuHelper
             'parent' => 'general-settings-menu-items',
             'permissions' => ['general-settings-smtp-settings'],
         ]);
+
+        if (!tenant())
+        {
+            $menu_instance->add_menu_item('general-settings-ssl-settings', [
+                'route' => 'landlord.admin.general.ssl.settings',
+                'label' => __('SSL Settings'),
+                'parent' => 'general-settings-menu-items',
+                'permissions' => ['general-settings-ssl-settings'],
+            ]);
+        }
+
+        $menu_instance->add_menu_item('general-settings-gdpr-settings', [
+            'route' => 'landlord.admin.general.gdpr.settings',
+            'label' => __('GDPR Settings'),
+            'parent' => 'general-settings-menu-items',
+            'permissions' => ['general-settings-gdpr-settings'],
+        ]);
+
         $menu_instance->add_menu_item('general-settings-custom-css-settings', [
             'route' => 'landlord.admin.general.custom.css.settings',
             'label' => __('Custom CSS'),
@@ -505,6 +546,146 @@ class SidebarMenuHelper
             'parent' => 'general-settings-menu-items',
             'permissions' => ['general-settings-license-settings'],
         ]);
+    }
+
+    private function payment_settings_menus(MenuWithPermission $menu_instance): void
+    {
+        $menu_instance->add_menu_item('payment-settings-menu-items', [
+            'route' => '#',
+            'label' => __('Payment Settings'),
+            'parent' => null,
+            'permissions' => ['paypal-payment-settings'],
+            'icon' => 'mdi mdi-coin',
+        ]);
+        $menu_instance->add_menu_item('paypal-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.paypal',
+            'label' => __('Paypal'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['paypal-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('paytm-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.paytm',
+            'label' => __('Paytm'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['paytm-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('stripe-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.stripe',
+            'label' => __('Stripe'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['stripe-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('razorpay-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.razorpay',
+            'label' => __('Razorpay'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['razorpay-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('paystack-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.paystack',
+            'label' => __('Paystack'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['paystack-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('mollie-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.mollie',
+            'label' => __('Mollie'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['mollie-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('midtrans-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.midtrans',
+            'label' => __('Midtrans'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['midtrans-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('cashfree-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.cashfree',
+            'label' => __('Cashfree'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['cashfree-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('instamojo-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.instamojo',
+            'label' => __('Instamojo'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['instamojo-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('marcadopago-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.marcadopago',
+            'label' => __('Marcadopago'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['marcadopago-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('zitopay-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.zitopay',
+            'label' => __('Zitopay'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['zitopay-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('squareup-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.squareup',
+            'label' => __('Squareup'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['squareup-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('cinetpay-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.cinetpay',
+            'label' => __('Cinetpay'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['cinetpay-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('paytabs-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.paytabs',
+            'label' => __('Paytabs'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['paytabs-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('billplz-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.billplz',
+            'label' => __('Billplz'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['billplz-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('toyyibpay-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.toyyibpay',
+            'label' => __('Toyyibpay'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['toyyibpay-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('flutterwave-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.flutterwave',
+            'label' => __('Flutterwave'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['flutterwave-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('payfast-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.payfast',
+            'label' => __('Payfast'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['payfast-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('manual_payment-settings-page-settings', [
+            'route' => 'landlord.admin.payment.settings.manual_payment',
+            'label' => __('Manual Payment'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['manual_payment-payment-settings'],
+        ]);
+
+        // External Menu Render
+        foreach (getAllExternalPaymentGatewayMenu() as $externalMenu)
+        {
+            foreach ($externalMenu as $individual_menu_item){
+                $convert_to_array = (array) $individual_menu_item;
+                $convert_to_array['parent'] = 'payment-settings-menu-items';
+
+                $routeName = $convert_to_array['route'];
+                if (isset($routeName) && !empty($routeName) && Route::has($routeName)){
+                    $menu_instance->add_menu_item($convert_to_array['id'], $convert_to_array);
+                }
+            }
+        }
+
     }
 
     private function users_manage_menus(MenuWithPermission $menu_instance): void
@@ -627,7 +808,6 @@ class SidebarMenuHelper
         $menu_instance = new \App\Helpers\MenuWithPermission();
 
         $current_tenant_payment_data = tenant()->payment_log ?? [];
-
         $admin = \Auth::guard('admin')->user();
 
         $menu_instance->add_menu_item('tenant-dashboard-menu', [
@@ -662,47 +842,38 @@ class SidebarMenuHelper
 
         $this->tenant_shipping_settings_menus($menu_instance);
 
-        $this->tenant_coupon_settings_menus($menu_instance);
+        if (tenant_plan_sidebar_permission('coupon'))
+        {
+            $this->tenant_coupon_settings_menus($menu_instance);
+        }
 
         $this->tenant_attribute_settings_menus($menu_instance);
         $this->tenant_product_settings_menus($menu_instance);
 
-        if (!empty($current_tenant_payment_data))
+        if (tenant_plan_sidebar_permission('digital_product'))
         {
-            $package = $current_tenant_payment_data->package;
-
-            if (!empty($package))
-            {
-                $features = $package->plan_features->pluck('feature_name')->toArray();
-
-                $inventory = false;
-                $campaign = false;
-
-
-                if (in_array('inventory', (array)$features))
-                {
-                    $inventory = true;
-                }
-                if (in_array('campaign', (array)$features))
-                {
-                    $campaign = true;
-                }
-
-
-                if ($inventory)
-                {
-                    $this->tenant_inventory_settings_menus($menu_instance);
-                }
-                if ($campaign)
-                {
-                    $this->tenant_campaign_settings_menus($menu_instance);
-                }
-            }
+            $this->tenant_digital_product_settings_menus($menu_instance);
         }
 
-        $this->tenant_testimonial_settings_menus($menu_instance);
+        if (tenant_plan_sidebar_permission('inventory'))
+        {
+            $this->tenant_inventory_settings_menus($menu_instance);
+        }
 
-        $this->tenant_newsletter_settings_menus($menu_instance);
+        if (tenant_plan_sidebar_permission('campaign'))
+        {
+            $this->tenant_campaign_settings_menus($menu_instance);
+        }
+
+        if (tenant_plan_sidebar_permission('testimonial'))
+        {
+            $this->tenant_testimonial_settings_menus($menu_instance);
+        }
+
+        if (tenant_plan_sidebar_permission('newsletter'))
+        {
+            $this->tenant_newsletter_settings_menus($menu_instance);
+        }
 
         $this->tenant_form_builder_settings_menus($menu_instance);
 
@@ -710,7 +881,10 @@ class SidebarMenuHelper
             $this->tenant_payment_manage_menus($menu_instance);
         }
 
-        $this->tenant_custom_domain_request_settings_menus($menu_instance);
+        if (tenant_plan_sidebar_permission('custom_domain'))
+        {
+            $this->tenant_custom_domain_request_settings_menus($menu_instance);
+        }
 
         // External Menu Render
         foreach (getAllExternalMenu() as $externalMenu)
@@ -729,6 +903,8 @@ class SidebarMenuHelper
         $this->tenant_appearance_settings_menus($menu_instance);
 
         $this->tenant_general_settings_menus($menu_instance);
+
+        $this->tenant_payment_settings_menus($menu_instance);
 
         $menu_instance->add_menu_item('tenant-languages', [
             'route' => 'tenant.admin.languages',
@@ -750,7 +926,7 @@ class SidebarMenuHelper
             'permissions' => ['product-order-all-order', 'product-order-pending-order',
                 'product-progress-order', 'product-order-complete', 'product-order-success-page', 'product-order-cancel-page',
                 'product-order-page-manage', 'product-order-report', 'product-order-payment-logs', 'product-order-payment-report',
-                'product-order-manage-settings'
+                'product-order-manage-settings', 'product-order-invoice-settings'
             ],
             'icon' => 'mdi mdi-cart',
         ]);
@@ -777,6 +953,12 @@ class SidebarMenuHelper
             'label' => __('Order Settings'),
             'parent' => 'product-order-manage-settings',
             'permissions' => ['product-order-manage-settings'],
+        ]);
+        $menu_instance->add_menu_item('invoice-settings-order-settings', [
+            'route' => 'tenant.admin.product.invoice.settings',
+            'label' => __('Invoice Settings'),
+            'parent' => 'product-order-manage-settings',
+            'permissions' => ['product-order-invoice-settings'],
         ]);
     }
 
@@ -1099,7 +1281,7 @@ class SidebarMenuHelper
             'route' => '#',
             'label' => __('Products'),
             'parent' => null,
-            'permissions' => ['product-list', 'product-create', 'product-edit', 'product-delete', 'product-settings'],
+            'permissions' => ['product-list', 'product-create', 'product-edit', 'product-delete', 'product-settings', 'product-reviews'],
             'icon' => 'mdi mdi-shopping',
         ]);
 
@@ -1116,6 +1298,104 @@ class SidebarMenuHelper
             'parent' => 'product-settings-menu-items',
             'permissions' => ['product-create'],
         ]);
+
+        $menu_instance->add_menu_item('product-reviews-menu-items', [
+            'route' => 'tenant.admin.product.review',
+            'label' => __('Review and Rating List'),
+            'parent' => 'product-settings-menu-items',
+            'permissions' => ['product-reviews'],
+        ]);
+    }
+
+    private function tenant_digital_product_settings_menus(MenuWithPermission $menu_instance): void
+    {
+        $menu_instance->add_menu_item('digital-product-settings-menu-items', [
+            'route' => '#',
+            'label' => __('Digital Products'),
+            'parent' => null,
+            'permissions' => [
+                'digital-product-type-list', 'digital-product-list', 'digital-product-create', 'digital-product-edit', 'digital-product-delete', 'digital-product-settings', 'digital-product-reviews',
+                'digital-product-category-list', 'digital-product-subcategory-list', 'digital-product-childcategory-list', 'digital-product-tax-list', 'digital-product-language-list'
+            ],
+            'icon' => 'mdi mdi-shopping',
+        ]);
+
+        $menu_instance->add_menu_item('digital-product-list-settings-menu-items', [
+            'route' => 'tenant.admin.digital.product.all',
+            'label' => __('All Product'),
+            'parent' => 'digital-product-settings-menu-items',
+            'permissions' => ['digital-product-list'],
+        ]);
+
+        $menu_instance->add_menu_item('digital-product-create-settings-menu-items', [
+            'route' => 'tenant.admin.digital.product.create',
+            'label' => __('Add New Product'),
+            'parent' => 'digital-product-settings-menu-items',
+            'permissions' => ['digital-product-create'],
+        ]);
+
+        $menu_instance->add_menu_item('digital-product-type-settings-menu-items', [
+            'route' => 'tenant.admin.digital.product.type.all',
+            'label' => __('Product List Type'),
+            'parent' => 'digital-product-settings-menu-items',
+            'permissions' => ['digital-product-type-list'],
+        ]);
+
+        $menu_instance->add_menu_item('digital-product-category-settings-menu-items', [
+            'route' => 'tenant.admin.digital.product.category.all',
+            'label' => __('Category Manage'),
+            'parent' => 'digital-product-settings-menu-items',
+            'permissions' => ['digital-product-category-list'],
+        ]);
+
+        $menu_instance->add_menu_item('digital-product-subcategory-settings-menu-items', [
+            'route' => 'tenant.admin.digital.product.subcategory.all',
+            'label' => __('Sub Category Manage'),
+            'parent' => 'digital-product-settings-menu-items',
+            'permissions' => ['digital-product-subcategory-list'],
+        ]);
+
+        $menu_instance->add_menu_item('digital-product-childcategory-settings-menu-items', [
+            'route' => 'tenant.admin.digital.product.childcategory.all',
+            'label' => __('Child Category Manage'),
+            'parent' => 'digital-product-settings-menu-items',
+            'permissions' => ['digital-product-childcategory-list'],
+        ]);
+
+        $menu_instance->add_menu_item('digital-product-author-settings-menu-items', [
+            'route' => 'tenant.admin.digital.product.author.all',
+            'label' => __('Author Manage'),
+            'parent' => 'digital-product-settings-menu-items',
+            'permissions' => ['digital-product-author-list'],
+        ]);
+
+        $menu_instance->add_menu_item('digital-product-language-settings-menu-items', [
+            'route' => 'tenant.admin.digital.product.language.all',
+            'label' => __('Language Manage'),
+            'parent' => 'digital-product-settings-menu-items',
+            'permissions' => ['digital-product-language-list'],
+        ]);
+
+        $menu_instance->add_menu_item('digital-product-tax-settings-menu-items', [
+            'route' => 'tenant.admin.digital.product.tax.all',
+            'label' => __('Tax Manage'),
+            'parent' => 'digital-product-settings-menu-items',
+            'permissions' => ['digital-product-tax-list'],
+        ]);
+
+//        $menu_instance->add_menu_item('product-create-menu-items', [
+//            'route' => 'tenant.admin.product.create',
+//            'label' => __('Add New Product'),
+//            'parent' => 'product-settings-menu-items',
+//            'permissions' => ['product-create'],
+//        ]);
+//
+//        $menu_instance->add_menu_item('product-reviews-menu-items', [
+//            'route' => 'tenant.admin.product.review',
+//            'label' => __('Review and Rating List'),
+//            'parent' => 'product-settings-menu-items',
+//            'permissions' => ['product-reviews'],
+//        ]);
     }
 
     private function tenant_campaign_settings_menus(MenuWithPermission $menu_instance): void
@@ -1269,6 +1549,41 @@ class SidebarMenuHelper
             'parent' => 'mobile-app-settings-menu-items',
             'permissions' => null,
         ]);
+
+        $menu_instance->add_menu_item('mobile-intro-all', [
+            'route' => 'tenant.admin.mobile.intro.all',
+            'label' => __('Mobile Intro'),
+            'parent' => 'mobile-app-settings-menu-items',
+            'permissions' => null,
+        ]);
+
+        $menu_instance->add_menu_item('featured-product-all', [
+            'route' => 'tenant.admin.featured.product.all',
+            'label' => __('Featured Product'),
+            'parent' => 'mobile-app-settings-menu-items',
+            'permissions' => null,
+        ]);
+
+        $menu_instance->add_menu_item('mobile-campaign-all', [
+            'route' => 'tenant.admin.mobile.campaign.create',
+            'label' => __('Mobile Campaign'),
+            'parent' => 'mobile-app-settings-menu-items',
+            'permissions' => null,
+        ]);
+
+        $menu_instance->add_menu_item('mobile-tac-settings', [
+            'route' => 'tenant.admin.mobile.settings.terms_and_condition',
+            'label' => __('Mobile Terms Condition'),
+            'parent' => 'mobile-app-settings-menu-items',
+            'permissions' => null,
+        ]);
+
+        $menu_instance->add_menu_item('mobile-pap-settings', [
+            'route' => 'tenant.admin.mobile.settings.privacy.policy',
+            'label' => __('Mobile Privacy Policy'),
+            'parent' => 'mobile-app-settings-menu-items',
+            'permissions' => null,
+        ]);
     }
 
     private function tenant_appearance_settings_menus(MenuWithPermission $menu_instance): void
@@ -1286,6 +1601,13 @@ class SidebarMenuHelper
             'label' => __('Theme Manage'),
             'parent' => 'appearance-settings-menu-items',
             'permissions' => null,
+        ]);
+
+        $menu_instance->add_menu_item('topbar-settings-all', [
+            'route' => 'tenant.admin.topbar.settings',
+            'label' => __('Topbar Settings'),
+            'parent' => 'appearance-settings-menu-items',
+            'permissions' => ['topbar-manage'],
         ]);
 
         $menu_instance->add_menu_item('menu-settings-all', [
@@ -1374,7 +1696,7 @@ class SidebarMenuHelper
         ]);
         $menu_instance->add_menu_item('general-settings-payment-gateway-settings', [
             'route' => 'tenant.admin.general.payment.settings',
-            'label' => __('Payment Settings'),
+            'label' => __('Currency Settings'),
             'parent' => 'general-settings-menu-items',
             'permissions' => ['general-settings-payment-settings'],
         ]);
@@ -1389,6 +1711,12 @@ class SidebarMenuHelper
             'label' => __('Email Settings'),
             'parent' => 'general-settings-menu-items',
             'permissions' => ['general-settings-smtp-settings'],
+        ]);
+        $menu_instance->add_menu_item('general-settings-gdpr-settings', [
+            'route' => 'tenant.admin.general.gdpr.settings',
+            'label' => __('GDPR Settings'),
+            'parent' => 'general-settings-menu-items',
+            'permissions' => ['general-settings-gdpr-settings'],
         ]);
         $menu_instance->add_menu_item('general-settings-custom-css-settings', [
             'route' => 'tenant.admin.general.custom.css.settings',
@@ -1449,6 +1777,151 @@ class SidebarMenuHelper
             'parent' => 'tenant-payment-manage-settings-menu-items',
             'permissions' => [],
         ]);
+    }
+
+    private function tenant_payment_settings_menus(MenuWithPermission $menu_instance): void
+    {
+        $menu_instance->add_menu_item('payment-settings-menu-items', [
+            'route' => '#',
+            'label' => __('Payment Settings'),
+            'parent' => null,
+            'permissions' => ['paypal-payment-settings'],
+            'icon' => 'mdi mdi-coin',
+        ]);
+        $menu_instance->add_menu_item('paypal-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.paypal',
+            'label' => __('Paypal'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['paypal-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('paytm-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.paytm',
+            'label' => __('Paytm'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['paytm-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('stripe-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.stripe',
+            'label' => __('Stripe'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['stripe-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('razorpay-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.razorpay',
+            'label' => __('Razorpay'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['razorpay-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('paystack-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.paystack',
+            'label' => __('Paystack'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['paystack-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('mollie-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.mollie',
+            'label' => __('Mollie'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['mollie-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('midtrans-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.midtrans',
+            'label' => __('Midtrans'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['midtrans-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('cashfree-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.cashfree',
+            'label' => __('Cashfree'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['cashfree-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('instamojo-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.instamojo',
+            'label' => __('Instamojo'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['instamojo-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('marcadopago-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.marcadopago',
+            'label' => __('Marcadopago'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['marcadopago-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('zitopay-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.zitopay',
+            'label' => __('Zitopay'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['zitopay-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('squareup-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.squareup',
+            'label' => __('Squareup'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['squareup-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('cinetpay-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.cinetpay',
+            'label' => __('Cinetpay'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['cinetpay-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('paytabs-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.paytabs',
+            'label' => __('Paytabs'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['paytabs-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('billplz-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.billplz',
+            'label' => __('Billplz'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['billplz-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('toyyibpay-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.toyyibpay',
+            'label' => __('Toyyibpay'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['toyyibpay-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('flutterwave-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.flutterwave',
+            'label' => __('Flutterwave'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['flutterwave-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('payfast-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.payfast',
+            'label' => __('Payfast'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['payfast-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('manual_payment-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.manual_payment',
+            'label' => __('Manual Payment'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['manual_payment-payment-settings'],
+        ]);
+        $menu_instance->add_menu_item('cod-settings-page-settings', [
+            'route' => 'tenant.admin.payment.settings.cod',
+            'label' => __('Cash On Delivery'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['cod-payment-settings'],
+        ]);
+
+        // External Menu Render
+        foreach (getAllExternalPaymentGatewayMenu() as $externalMenu)
+        {
+            foreach ($externalMenu as $individual_menu_item){
+                $convert_to_array = (array) $individual_menu_item;
+                $convert_to_array['parent'] = 'payment-settings-menu-items';
+
+                $routeName = $convert_to_array['tenantRoute'];
+                if (isset($routeName) && !empty($routeName) && Route::has($routeName)){
+                    $menu_instance->add_menu_item($convert_to_array['id'], $convert_to_array);
+                }
+            }
+        }
     }
 
     private function tenant_custom_domain_request_settings_menus(MenuWithPermission $menu_instance): void

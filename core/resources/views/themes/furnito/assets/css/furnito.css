@@ -3351,3 +3351,7 @@ textarea {
   display: inline-block;
   margin: auto;
 }
+
+.footer-furnito {
+    background-color: var(--section-bg-3);
+}

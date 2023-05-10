@@ -1872,3 +1872,7 @@ Version: 1.0.0
     display: none !important;
   }
 }
+
+.breadcrumb-bg{
+  background: var(--breadcrumb-bg);
+}

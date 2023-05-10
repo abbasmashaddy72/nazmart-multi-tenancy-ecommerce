@@ -556,7 +556,7 @@
 .badge-item {
     border: 1px solid #ddd;
     padding: 10px;
-    padding-right: 30px;
+    padding-right: 29px;
     cursor: pointer;
 }
 
@@ -2171,3 +2171,9 @@ table.dataTable tbody tr {
     justify-content: space-between;
     flex-wrap: wrap;
 }
+
+.badge-wrap{
+    display: flex;
+    flex-wrap: wrap;
+}
+

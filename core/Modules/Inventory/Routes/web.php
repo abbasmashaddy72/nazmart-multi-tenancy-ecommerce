@@ -3,17 +3,20 @@
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use Modules\Inventory\Http\Controllers\InventoryController;
+use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 
 Route::middleware([
     'web',
-    InitializeTenancyByDomain::class,
+//    InitializeTenancyByDomain::class,
+    InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'auth:admin',
     'tenant_admin_glvar',
     'package_expire',
     'set_lang',
     'tenantAdminPanelMailVerify',
-    'tenant_feature_permission'
+//    'tenant_feature_permission',
+    \App\Http\Middleware\Tenant\TenantCheckPermission::class
 ])->name('tenant.')->group(function () {
     /*-----------------------------------
         INVENTORY ROUTES

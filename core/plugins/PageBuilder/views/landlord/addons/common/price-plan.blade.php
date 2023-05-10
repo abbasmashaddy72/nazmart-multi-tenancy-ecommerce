@@ -5,10 +5,10 @@
 
         $highlighted_word = explode('{/h}', $text[1])[0];
 
-        $highlighted_text = '<span class="section-shape">'. $highlighted_word .'</span>';
-        $final_title = '<h2 class="title">'.str_replace('{h}'.$highlighted_word.'{/h}', $highlighted_text, $data['title']).'</h2>';
+        $highlighted_text = '<span class="section-shape title-shape">'. $highlighted_word .'</span>';
+        $final_title = '<h1 class="title">'.str_replace('{h}'.$highlighted_word.'{/h}', $highlighted_text, $data['title']).'</h1>';
     } else {
-        $final_title = '<h2 class="title">'. $data['title'] .'</h2>';
+        $final_title = '<h1 class="title">'. $data['title'] .'</h1>';
     }
 @endphp
 
@@ -18,6 +18,16 @@
     }
     .all-features a:hover{
         border-bottom: 1px solid var(--main-color-one);
+    }
+    .plan-description {
+        background: var(--section-bg-1);
+    }
+    .plan-description p{
+        text-align: justify;
+        hyphens: none;
+    }
+    .single-price:hover .plan-description {
+        background: #ffffff;
     }
 </style>
 
@@ -63,12 +73,16 @@
                      $id = 'lifetime';
                       $period = __('/lt');
                 }
+
+                $content_center_class = count($plan_items) <= 3 ? 'justify-content-center' : '';
             @endphp
 
             <div class="tab-content-item {{$active}}" id="tab-{{$id}}">
-                <div class="row mt-4">
+                <div class="row {{$content_center_class}} mt-4">
                     @foreach($plan_items as $key => $price_plan_item)
-                        @php $featured_condition = $key == 1 ? 'active' : '' @endphp
+                        @php
+                            $featured_condition = $key == 1 ? 'active' : '';
+                        @endphp
 
                         <div class="col-lg-4 col-md-6 mt-4">
                             <div class="single-price radius-10 {{$featured_condition}}">
@@ -140,7 +154,14 @@
                                             </li>
                                         @endif
                                 </ul>
-                                <div class="btn-wrapper text-center all-features mt-4 mt-lg-5">
+
+                                @if(!empty($price_plan_item->description))
+                                    <div class="mt-4 p-3 rounded plan-description">
+                                        <p>{{$price_plan_item->description}}</p>
+                                    </div>
+                                @endif
+
+                                <div class="btn-wrapper text-center all-features mt-4 mt-lg-4">
                                     <a href="{{route('landlord.frontend.plan.order',$price_plan_item->id)}}">{{__('View All Features')}}</a>
                                 </div>
                                 <div class="btn-wrapper mt-4 mt-lg-4">

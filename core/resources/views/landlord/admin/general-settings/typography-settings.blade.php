@@ -82,14 +82,7 @@
 
                     @if(tenant())
                         <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3">
-                            @php
-                                $theme_number = 3; // Number of Themes
-                                $theme = [1 => 'theme_one', 2 => 'theme_two', 3 => 'theme_three'];
-                            @endphp
-
-                            @for($i=1; $i<=$theme_number; $i++)
-                                @includeIf('landlord.admin.general-settings.tenant.theme.typography-settings-theme-0'.$i, ['suffix' => $theme[$i]])
-                            @endfor
+                            @include('landlord.admin.general-settings.tenant.theme.typography-settings')
                         </div>
                     @endif
 
@@ -181,19 +174,19 @@
                     let theme = switch_one.data('theme');
                     var dependendFields = $('select[name=heading_font_family_'+theme+'], .heading_font_variant_'+theme+'');
 
-                    dependendFields.parent().hide();
+                    dependendFields.parent().fadeOut();
                 }
                 if(!switch_two.prop('checked')) {
                     let theme = switch_two.data('theme');
                     var dependendFields = $('select[name=heading_font_family_'+theme+'], .heading_font_variant_'+theme+'');
 
-                    dependendFields.parent().hide();
+                    dependendFields.parent().fadeOut();
                 }
                 if(!switch_three.prop('checked')) {
                     let theme = switch_three.data('theme');
                     var dependendFields = $('select[name=heading_font_family_'+theme+'], .heading_font_variant_'+theme+'');
 
-                    dependendFields.parent().hide();
+                    dependendFields.parent().fadeOut();
                 }
 
                 $(document).on('change','input.heading_font',function (e) {
@@ -203,16 +196,16 @@
                     var dependendFields = $('select[name=heading_font_family_'+themeName+'], .heading_font_variant_'+themeName+'');
 
                     if(!$(this).prop('checked')){
-                        dependendFields.parent().hide();
+                        dependendFields.parent().fadeOut();
                     }else{
-                        dependendFields.parent().show();
+                        dependendFields.parent().fadeIn();
                     }
                 });
 
 
                 $(document).on('click','#typography_submit_btn',function (e) {
                     e.preventDefault();
-                    $(this).text('Updating...').prop('disabled',true);
+                    $(this).text('{{'Updating...'}}').prop('disabled',true);
                     $(this).parent().trigger('submit');
                 })
             });

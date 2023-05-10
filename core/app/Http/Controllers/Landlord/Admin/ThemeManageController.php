@@ -8,6 +8,8 @@ use App\Helpers\SanitizeInput;
 use App\Http\Controllers\Controller;
 use App\Models\Themes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class ThemeManageController extends Controller
 {
@@ -43,8 +45,8 @@ class ThemeManageController extends Controller
 
         $status = $theme_file->status ? 'inactive' : 'active';
         return response()->json([
-            'status' => $status,
-            'msg' => 'The theme is '.$status.' successfully'
+            'status' => $theme_file->status,
+            'msg' => __('The theme is '.$status.' successfully')
         ]);
     }
 

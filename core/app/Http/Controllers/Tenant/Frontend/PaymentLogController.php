@@ -47,7 +47,6 @@ class PaymentLogController extends Controller
         $email = $request_date_remove['email'];
         $trasaction_id = $request_date_remove['trasaction_id'];
 
-
         unset($request_date_remove['custom_form_id']);
         unset($request_date_remove['selected_payment_gateway']);
         unset($request_date_remove['payment_gateway']);

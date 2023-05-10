@@ -42,8 +42,8 @@ class BlogController extends Controller
         $default_lang = $request->lang ?? GlobalLanguage::default_slug();
 
         if ($request->ajax()){
-
             $data = Blog::select('*')->orderBy('id','desc')->get();
+
             return DataTables::of($data)
                 ->addIndexColumn()
 
