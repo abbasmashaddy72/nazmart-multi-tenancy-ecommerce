@@ -210,6 +210,6 @@ class GeneralData extends Seeder
 
     private function central_data()
     {
-        update_static_option_central('get_script_version', '1.0.4');
+        update_static_option_central('get_script_version', '1.1.1');
     }
 }
