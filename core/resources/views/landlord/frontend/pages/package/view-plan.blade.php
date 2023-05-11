@@ -178,7 +178,7 @@
                                             @if($loop->first)
                                                 <p class="font-weight-bold">{{__('Features')}}</p>
                                             @endif
-                                            <li class="check"> {{__(str_replace('_', ' ',ucfirst($item->feature_name))) ?? ''}}</li>
+                                            <li class="check"> {{__(str_replace('_', ' ',ucwords($item->feature_name))) ?? ''}}</li>
                                         @endforeach
                                     </ul>
                                 </div>

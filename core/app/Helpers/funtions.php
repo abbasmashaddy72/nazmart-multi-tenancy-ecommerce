@@ -1718,3 +1718,47 @@ function tenant_plan_sidebar_permission($permission_name, $tenant = null) // Pla
 
     return $inventory;
 }
+
+function tenant_plan_payment_gateway_list()
+{
+    $gateway = [];
+    $tenant = !empty($tenant) ? $tenant : tenant();
+    $current_tenant_payment_data = $tenant->payment_log ?? [];
+
+    if (!empty($current_tenant_payment_data))
+    {
+        $package = $current_tenant_payment_data->package;
+        if (!empty($package))
+        {
+            $features = $package->plan_payment_gateways->pluck('payment_gateway_name');
+            if (!empty($features))
+            {
+                $gateway = $features->toArray();
+            }
+        }
+    }
+
+    return $gateway;
+}
+
+function tenant_plan_theme_list()
+{
+    $themes = [];
+    $tenant = !empty($tenant) ? $tenant : tenant();
+    $current_tenant_payment_data = $tenant->payment_log ?? [];
+
+    if (!empty($current_tenant_payment_data))
+    {
+        $package = $current_tenant_payment_data->package;
+        if (!empty($package))
+        {
+            $features = $package->plan_themes->pluck('theme_slug');
+            if (!empty($features))
+            {
+                $themes = $features->toArray();
+            }
+        }
+    }
+
+    return $themes;
+}

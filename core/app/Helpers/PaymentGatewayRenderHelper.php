@@ -10,9 +10,15 @@ class PaymentGatewayRenderHelper
 {
     public static function listOfPaymentGateways()
     {
-        $payment_gateway_list = PaymentGateway::where('status', 1)->select(['name', 'image'])->get();
+        $plan_based_payment_gateway = tenant_plan_payment_gateway_list();
+        $payment_gateway_list = PaymentGateway::where('status', 1);
+        if (!empty($plan_based_payment_gateway)) // For tenant
+        {
+            $payment_gateway_list->whereIn('name', $plan_based_payment_gateway);
+        }
+        $payment_gateway_list = $payment_gateway_list->select(['name', 'image'])->get();
+
         $payment_gateway_list = !empty($payment_gateway_list) ? $payment_gateway_list->toArray() : $payment_gateway_list;
-//      $payment_gateway_list = ['paypal','manual_payment','mollie','paytm','stripe','razorpay','flutterwave','paystack','marcadopago','instamojo','cashfree','payfast','midtrans','squareup','cinetpay','paytabs','billplz','zitopay'];
 
         //todo append payment gateway name from modules
         $modules_payment_gateway = getAllPaymentGatewayListWithImage();

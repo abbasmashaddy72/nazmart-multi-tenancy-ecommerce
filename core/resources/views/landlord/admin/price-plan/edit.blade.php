@@ -177,12 +177,12 @@
                         <div class="form-group landlord_price_plan_themes">
                             <h4>{{__('Select Themes')}}</h4>
                             <div class="feature-section">
-                                <ul>
+                                <ul class="d-flex flex-wrap gap-3" style="list-style-type: none">
                                     @php
                                         $themes = getAllThemeSlug();
                                     @endphp
                                     @foreach($themes as $theme)
-                                        <li class="d-inline">
+                                        <li>
                                             <input type="checkbox" name="themes[]"
                                                    id="{{$theme}}" class="exampleCheck1" value="{{$theme}}" data-feature="{{$theme}}"
                                                 @foreach($plan->plan_themes as $theme_old)
@@ -236,7 +236,7 @@
 
                             <div class="form-group trial_date_box mx-4">
                                 <label for="">{{__('Trial Days')}}</label>
-                                <input type="number" class="form-control" name="trial_days" placeholder="Days.."
+                                <input type="number" class="form-control" name="trial_days" placeholder="{{__('Days..')}}"
                                        value="{{$plan->trial_days}}">
                             </div>
                         </div>
@@ -402,13 +402,13 @@
             let payment_gateway_item = $('.payment-gateway-wrapper ul li');
             let selected_gateways = "{{ $plan_payment_gateways }}";
             let selected_gateways_array = selected_gateways.split(',');
-            if(selected_gateways_array.length === payment_gateway_item.length )
+            if(selected_gateways_array.length === payment_gateway_item.length)
             {
                 $('.select-all-theme input[type="checkbox"]').attr('checked', true)
             }
 
             payment_gateway_item.removeClass('selected');
-            if (selected_gateways_array.length > 1)
+            if (selected_gateways_array.length > 0)
             {
                 $.each(selected_gateways_array, function (key, value) {
                     $('.payment-gateway-wrapper ul li[data-gateway='+value+']').addClass('selected');
