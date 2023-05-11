@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{global_asset('assets/common/css/custom-style.css')}}">
 
     <style>
-        .selected_text{
+        .selected_text {
             top: 0;
             left: 0;
             background-color: #b66dff;
@@ -16,13 +16,16 @@
             color: white;
             transition: 0.3s;
         }
-        .selected_text i{
+
+        .selected_text i {
             font-size: 30px;
         }
-        .active_theme{
+
+        .active_theme {
             background-color: #b66dff;
         }
-        .modal-image{
+
+        .modal-image {
             width: 100%;
         }
     </style>
@@ -37,6 +40,11 @@
             @foreach($all_theme as $theme)
                 @php
                     $theme_slug = $theme->slug;
+                    if (!in_array($theme_slug ,tenant_plan_theme_list()))
+                    {
+                        continue;
+                    }
+
                     $theme_data = getIndividualThemeDetails($theme_slug);
                     $theme_image = loadScreenshot($theme_slug);
 
@@ -57,7 +65,8 @@
                            data-url="{{route('tenant.admin.theme.update', $theme_data['slug'])}}"
                            class="theme-preview active"
                         >
-                            <div class="bg" style="background-image: url('{{!empty($custom_theme_image) ? $custom_theme_image : $theme_image}}');"></div>
+                            <div class="bg"
+                                 style="background-image: url('{{!empty($custom_theme_image) ? $custom_theme_image : $theme_image}}');"></div>
                         </a>
 
                         <div class="themeInfo themeInfo_{{$theme_data['slug']}}" data-slug="{{$theme_data['slug']}}">
@@ -141,13 +150,13 @@
                     }
                 },
                 success: function (data) {
-                    var success = $('.themeInfo_'+slug+'');
+                    var success = $('.themeInfo_' + slug + '');
                     var modal = $('#theme-modal');
 
                     if (data.status == true) {
                         button.text('Selected');
-                        button.attr('data-status','selected');
-                        theme_preview_button.attr('data-button_text','selected');
+                        button.attr('data-status', 'selected');
+                        theme_preview_button.attr('data-button_text', 'selected');
 
                         success.find('h3').text('{{__('The theme is active successfully')}}');
                         success.slideDown(20);
@@ -155,7 +164,7 @@
                         modal.find('.themeName').text('{{__('The theme is active successfully')}}');
                         $('.modal-success-msg').slideDown(20)
 
-                        setTimeout(function (){
+                        setTimeout(function () {
                             location.reload();
                         }, 1000);
 

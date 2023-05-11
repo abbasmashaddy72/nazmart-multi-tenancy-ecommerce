@@ -143,7 +143,7 @@ class ModuleMetaData
             {
                 foreach ($paymentMeta as $key => $meta)
                 {
-                    if (property_exists($meta, 'slug')) {
+                    if (property_exists($meta, 'slug') && $meta?->status) {
                         $outputMarkup[$eachIndex]['name'] = $meta->slug;
                         $outputMarkup[$eachIndex]['image'] = $this->getPaymentGatewayImagePath($meta->slug);
                         $outputMarkup[$eachIndex]['module'] = $index;

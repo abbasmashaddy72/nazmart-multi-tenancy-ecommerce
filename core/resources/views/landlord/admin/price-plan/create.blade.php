@@ -119,12 +119,12 @@
                         <div class="form-group landlord_price_plan_themes">
                             <h4>{{__('Select Themes')}}</h4>
                             <div class="feature-section">
-                                <ul>
+                                <ul class="d-flex flex-wrap gap-3" style="list-style-type: none">
                                     @php
                                         $themes = getAllThemeSlug();
                                     @endphp
                                     @foreach($themes as $theme)
-                                        <li class="d-inline">
+                                        <li>
                                             <input type="checkbox" name="themes[]"
                                                    id="{{$theme}}" class="exampleCheck1" value="{{$theme}}"
                                                    data-feature="{{$theme}}">
