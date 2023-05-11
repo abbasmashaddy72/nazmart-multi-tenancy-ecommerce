@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        update_static_option_central('get_script_version','1.1.0');
+        update_static_option_central('get_script_version','1.1.1');
 
 //        $payment_gateway_markup = [
 //            [
