@@ -262,6 +262,11 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::get('/edit-profile/{id}','edit_profile')->name('admin.tenant.edit.profile');
         Route::post('/update-profile','update_edit_profile')->name('admin.tenant.update.profile');
         Route::post('/delete/{id}','delete')->name('admin.tenant.delete');
+
+        Route::get('/trash/delete','trash')->name('admin.tenant.trash');
+        Route::get('/trash/delete/restore/{id}','trash_restore')->name('admin.tenant.trash.restore');
+        Route::post('/trash/delete/delete/{id}','trash_delete')->name('admin.tenant.trash.delete');
+
         Route::post('/change-password','update_change_password')->name('admin.tenant.change.password');
         Route::get('/view/{id}','view_profile')->name('admin.tenant.view');
         Route::post('/send-mail','send_mail')->name('admin.tenant.send.mail');

@@ -57,7 +57,7 @@ function tenant_has_digital_product()
     $digital_product = false;
     if (tenant())
     {
-        $plan_features = tenant()->payment_log->package->plan_features;
+        $plan_features = tenant()?->payment_log?->package?->plan_features;
         if (!empty($plan_features))
         {
             $features = $plan_features->pluck('feature_name');

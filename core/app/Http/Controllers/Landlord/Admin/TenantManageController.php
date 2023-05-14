@@ -143,6 +143,34 @@ class TenantManageController extends Controller
         return response()->danger(ResponseMessage::delete(__('Tenant deleted successfully..!')));
     }
 
+    public function trash()
+    {
+        $trashed_users = User::onlyTrashed()->get();
+        return view(self::BASE_PATH.'trash',compact('trashed_users'));
+    }
+
+    public function trash_restore($id)
+    {
+        $user = User::onlyTrashed()->findOrFail($id);
+
+        try {
+            $user->restore();
+        } catch (\Exception $exception) {}
+
+        return back()->with(FlashMsg::explain('success', __('The user is restored')));
+    }
+
+    public function trash_delete($id)
+    {
+        $user = User::onlyTrashed()->findOrFail($id);
+
+        try {
+            $user->forceDelete();
+        } catch (\Exception $exception) {}
+
+        return back()->with(FlashMsg::explain('danger', __('The user is deleted permanently')));
+    }
+
     public function update_change_password(Request $request)
     {
         $this->validate(

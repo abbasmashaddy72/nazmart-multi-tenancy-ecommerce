@@ -16,7 +16,10 @@
             <div class="card-body">
                 <h4 class="card-title mb-4">{{__('All Tenants')}}</h4>
 
-                <h5 class="text-danger">{{__('( If you delete any user and if it\'s associated with any package than everything regarding with this user will be deleted )')}}</h5>
+                <div class="d-flex justify-content-between mb-3">
+                    <h5 class="text-danger">{{__('( If you delete any user and if it\'s associated with any package than everything regarding with this user will be deleted )')}}</h5>
+                    <a class="btn btn-danger btn-sm" href="{{route('landlord.admin.tenant.trash')}}">{{__('Trash')}}</a>
+                </div>
 
                 <x-error-msg/>
                 <x-flash-msg/>
