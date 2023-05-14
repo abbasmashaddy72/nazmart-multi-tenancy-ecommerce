@@ -272,6 +272,8 @@ class TenantManageController extends Controller
        $request->validate([
            'package' => 'required',
            'payment_status' => 'required',
+           'account_status' => 'required',
+           'custom_theme' => 'required'
        ]);
 
        if ($request->custom_subdomain == null)
@@ -334,9 +336,10 @@ class TenantManageController extends Controller
                     'package_price' => $package->price,
                     'package_gateway' => null,
                     'package_id' => $package->id,
+                    'theme_slug' => $request->custom_theme,
                     'user_id' => $old_tenant_log->user_id,
                     'tenant_id' => $tenant->id,
-                    'status' => 'pending',
+                    'status' => $request->account_status,
                     'payment_status' => $request->payment_status,
                     'renew_status' => is_null($old_tenant_log->renew_status) ? 1 : $old_tenant_log->renew_status + 1,
                     'is_renew' => 1,
@@ -349,6 +352,7 @@ class TenantManageController extends Controller
                 DB::table('tenants')->where('id', $tenant->id)->update([
                     'renew_status' => $renew_status = is_null($tenant->renew_status) ? 0 : $tenant->renew_status+1,
                     'is_renew' => $renew_status == 0 ? 0 : 1,
+                    'theme_slug' => $request->custom_theme,
                     'start_date' => $package_start_date,
                     'expire_date' => $new_package_expire_date
                 ]);
@@ -370,10 +374,12 @@ class TenantManageController extends Controller
                     'package_price' => $package->price,
                     'package_gateway' => null,
                     'package_id' => $package->id,
+                    'theme_slug' => $request->custom_theme,
                     'user_id' => $user->id,
                     'tenant_id' => $tenant->id,
                     'status' => 'pending',
                     'payment_status' => $request->payment_status,
+                    'account_status' => $request->account_status,
                     'renew_status' => 0,
                     'is_renew' => 0,
                     'track' => Str::random(10) . Str::random(10),
@@ -384,6 +390,7 @@ class TenantManageController extends Controller
                 DB::table('tenants')->where('id', $tenant->id)->update([
                     'renew_status' => 0,
                     'is_renew' => 0,
+                    'theme_slug' => $request->custom_theme,
                     'start_date' => $package_start_date,
                     'expire_date' => $new_package_expire_date
                 ]);
@@ -392,7 +399,7 @@ class TenantManageController extends Controller
             }
         } else {
            try{
-                event(new TenantRegisterEvent($user, $subdomain, get_static_option('default_theme')));
+                event(new TenantRegisterEvent($user, $subdomain, $request->custom_theme));
             }catch(\Exception $e){
                 return redirect()->back()->with(['type'=> 'danger', 'msg' => $e->getMessage()]);
             }
@@ -408,9 +415,11 @@ class TenantManageController extends Controller
                 'package_id' => $package->id,
                 'user_id' => $user->id,
                 'tenant_id' => $tenant->id,
+                'theme_slug' => $request->custom_theme,
                 'status' => 'pending',
                 'is_renew' => 0,
                 'payment_status' => $request->payment_status,
+                'account_status' => $request->account_status,
                 'track' => Str::random(10) . Str::random(10),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -495,5 +504,21 @@ class TenantManageController extends Controller
         }
 
         return back()->with(FlashMsg::explain('success', $user->name .' '. __('user account is verified')));
+    }
+
+    public function check_subdomain_theme(Request $request)
+    {
+        $request->validate([
+            'subdomain' => 'required'
+        ]);
+
+        $theme = '';
+        $tenant = Tenant::find($request->subdomain);
+        if (!empty($tenant))
+        {
+            $theme = $tenant->theme_slug ?? '';
+        }
+
+        return response()->json(['theme_slug' => $theme]);
     }
 }

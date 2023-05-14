@@ -412,7 +412,6 @@
             }
 
             payment_gateway_item.removeClass('selected');
-            console.log(selected_gateways_array, selected_gateways_array.length);
             if (selected_gateways_array.length > 0)
             {
                 $.each(selected_gateways_array, function (key, value) {

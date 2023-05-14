@@ -274,6 +274,7 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::get('/account-settings','account_settings')->name('admin.tenant.settings');
         Route::post('/account-settings','account_settings_update');
         Route::post('/verify-account','verify_account')->name('admin.tenant.verify.account');
+        Route::post('/check-subdomain-theme','check_subdomain_theme')->name('admin.tenant.check.subdomain.theme');
     });
 
 /*----------------------------------------------------------------------------------------------------------------------------
