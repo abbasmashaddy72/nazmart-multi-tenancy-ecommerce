@@ -114,18 +114,6 @@
                         <input type="hidden" name="subs_pack_id" id="subs_pack_id">
 
                         <div class="form-group">
-                            <label for="">{{__('Select A Package')}}</label>
-                            <select class="form-control package_id_selector" name="package">
-                                <option value="">{{__('Select Package')}}</option>
-                                @foreach(\App\Models\PricePlan::all() as $price)
-                                    <option value="{{$price->id}}" data-id="{{$price->id}}">
-                                        {{$price->title}} {{ '('.amount_with_currency_symbol($price->price).')' }} - {{\App\Enums\PricePlanTypEnums::getText($price->type)}}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="form-group">
                             <label for="subdomain">{{__('Subdomain')}}</label>
                             <select class="form-select subdomain" id="subdomain" name="subdomain">
 
@@ -135,8 +123,32 @@
                         <div class="form-group custom_subdomain_wrapper mt-3">
                             <label for="custom-subdomain">Add new subdomain</label>
                             <input class="form--control custom_subdomain" id="custom-subdomain" type="text" autocomplete="off" value="{{old('subdomain')}}"
-                                   placeholder="{{__('Subdomain')}}" style="border:0;border-bottom: 1px solid #595959">
+                                   placeholder="{{__('Subdomain')}}" style="border:0;border-bottom: 1px solid #595959;width: 100%">
                             <div id="subdomain-wrap"></div>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            @php
+                                $themes = getAllThemeSlug();
+                            @endphp
+                            <label for="custom-theme">{{__('Add Theme')}}</label>
+                            <select class="form-select text-capitalize" name="custom_theme" id="custom-theme">
+                                @foreach($themes as $theme)
+                                    <option value="{{$theme}}">{{$theme}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">{{__('Select A Package')}}</label>
+                            <select class="form-control package_id_selector" name="package">
+                                <option value="">{{__('Select Package')}}</option>
+                                @foreach(\App\Models\PricePlan::all() as $price)
+                                    <option value="{{$price->id}}" data-id="{{$price->id}}">
+                                        {{$price->title}} {{ '('.float_amount_with_currency_symbol($price->price).')' }} - {{\App\Enums\PricePlanTypEnums::getText($price->type)}}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <div class="form-group">
@@ -146,6 +158,15 @@
                                 <option value="pending">{{__('Pending')}}</option>
                             </select>
                             <small class="text-primary">{{__('You can set payment status pending or complete from here')}}</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">{{__('Account Status')}}</label>
+                            <select class="form-control" name="account_status">
+                                <option value="complete">{{__('Complete')}}</option>
+                                <option value="pending">{{__('Pending')}}</option>
+                            </select>
+                            <small class="text-primary">{{__('You can set account status pending or complete from here')}}</small>
                         </div>
 
                     </div>
@@ -231,6 +252,8 @@
 
     <script>
         $(document).ready(function(){
+            let theme_selected_first = false; // if theme selected first then after domain selection do not change theme again
+
             $(document).on('click','.user_change_password_btn',function(e){
                 e.preventDefault();
                 var el = $(this);
@@ -268,6 +291,33 @@
                     custom_subdomain_wrapper.slideUp();
                     custom_subdomain_wrapper.removeAttr('#custom-subdomain').attr('name', 'custom_subdomain');
                 }
+            });
+
+            $(document).on('change', '#subdomain', function (){
+                let el = $(this).parent().parent().find(".form-group #custom-theme");
+                let subdomain = $(this).val();
+
+                if(!theme_selected_first)
+                {
+                    $.ajax({
+                        url: '{{route('landlord.admin.tenant.check.subdomain.theme')}}',
+                        type: 'POST',
+                        data: {
+                            _token : '{{csrf_token()}}',
+                            subdomain : subdomain
+                        },
+                        beforeSend: function () {
+                            el.find('option').attr('selected', false);
+                        },
+                        success: function (res) {
+                            el.find("option[value="+res.theme_slug+"]").attr('selected', true);
+                        }
+                    });
+                }
+            });
+
+            $(document).on('change', '#custom-theme', function () {
+                theme_selected_first = true;
             });
         });
     </script>

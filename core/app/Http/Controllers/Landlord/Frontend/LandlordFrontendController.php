@@ -495,7 +495,7 @@ class LandlordFrontendController extends Controller
 
         try{
             TenantCreateEventWithMail::tenant_create_event_with_credential_mail($user, $subdomain, $theme);
-            TenantTrialPaymentLog::trial_payment_log($user,$plan,$subdomain);
+            TenantTrialPaymentLog::trial_payment_log($user,$plan,$subdomain,$theme);
 
         }catch(\Exception $ex){
             $message = $ex->getMessage();
