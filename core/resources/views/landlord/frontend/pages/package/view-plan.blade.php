@@ -359,7 +359,7 @@
                                 <hr>
                                 <p><strong>{{__('Plan:')}}</strong> <span>{{$order_details->title}}</span></p>
                                 <p><strong>{{__('Price:')}}</strong>
-                                    <span>{{amount_with_currency_symbol($order_details->price)}}</span></p>
+                                    <span>{{float_amount_with_currency_symbol($order_details->price)}}</span></p>
                                 <p><strong>{{__('Trial:')}}</strong> <span class="text-capitalize">{{$order_details->trial_days}} {{__('days')}}</span>
                                 </p>
                                 <p class="modal_theme"><strong>{{__('Theme:')}}</strong> <span></span></p>

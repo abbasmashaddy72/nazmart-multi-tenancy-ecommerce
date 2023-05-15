@@ -322,6 +322,10 @@
             $(document).on('change', '#custom-theme', function () {
                 theme_selected_first = true;
             });
+
+            $(document).on('submit', '#user_add_subscription_form', function () {
+                $(this).find('button[type=submit]').attr('disabled', true);
+            });
         });
     </script>
 

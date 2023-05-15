@@ -723,6 +723,13 @@ class SidebarMenuHelper
             'parent' => 'users-manage-settings-menu-items',
             'permissions' => [],
         ]);
+
+        $menu_instance->add_menu_item('users-manage-failed-tenant-settings', [
+            'route' => 'landlord.admin.tenant.failed.index',
+            'label' => __('Failed Tenants'),
+            'parent' => 'users-manage-settings-menu-items',
+            'permissions' => [],
+        ]);
     }
 
     private function admin_manage_menus(MenuWithPermission $menu_instance): void
