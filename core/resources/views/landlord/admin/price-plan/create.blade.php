@@ -156,7 +156,7 @@
                                 @php
                                     $replaceable_text = '<input type="hidden" name="selected_payment_gateway" value="paytm">';
                                 @endphp
-                                {!! str_replace($replaceable_text,'',render_payment_gateway_for_form()) !!}
+                                {!! str_replace($replaceable_text,'',render_payment_gateway_for_price_plan()) !!}
                                 <input type="hidden" name="payment_gateways">
                             </div>
                         </div>

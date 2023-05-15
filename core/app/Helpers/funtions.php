@@ -1392,6 +1392,32 @@ function render_payment_gateway_for_form($cash_on_delivery = false)
     return $output;
 }
 
+function render_payment_gateway_for_price_plan($cash_on_delivery = false)
+{
+    $output = '<div class="payment-gateway-wrapper">';
+    $output .= '<input type="hidden" name="selected_payment_gateway" value="' . get_static_option('site_default_payment_gateway') . '">';
+
+    $all_gateway = \App\Models\PaymentGateway::all();
+
+    $output .= '<ul>';
+    if ($cash_on_delivery) {
+        $output .= '<li data-gateway="cash_on_delivery" ><div class="img-select">';
+        $output .= render_image_markup_by_attachment_id(get_static_option('cash_on_delivery_preview_logo'));
+        $output .= '</div></li>';
+    }
+    foreach ($all_gateway as $gateway) {
+        $class = (get_static_option('site_default_payment_gateway') == $gateway->name) ? 'class="selected"' : '';
+
+        $output .= '<li data-gateway="' . $gateway->name . '" ' . $class . '><div class="img-select">';
+        $output .= render_image_markup_by_attachment_id($gateway->image);
+        $output .= '</div></li>';
+    }
+    $output .= '</ul>';
+
+    $output .= '</div>';
+    return $output;
+}
+
 function get_user_name_by_id($id)
 {
     $user = \App\Models\User::find($id);

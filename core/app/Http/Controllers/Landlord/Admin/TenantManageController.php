@@ -405,9 +405,8 @@ class TenantManageController extends Controller
                     'theme_slug' => $request->custom_theme,
                     'user_id' => $user->id,
                     'tenant_id' => $tenant->id,
-                    'status' => 'pending',
                     'payment_status' => $request->payment_status,
-                    'account_status' => $request->account_status,
+                    'status' => $request->account_status,
                     'renew_status' => 0,
                     'is_renew' => 0,
                     'track' => Str::random(10) . Str::random(10),
@@ -444,10 +443,9 @@ class TenantManageController extends Controller
                 'user_id' => $user->id,
                 'tenant_id' => $tenant->id,
                 'theme_slug' => $request->custom_theme,
-                'status' => 'pending',
                 'is_renew' => 0,
                 'payment_status' => $request->payment_status,
-                'account_status' => $request->account_status,
+                'status' => $request->account_status,
                 'track' => Str::random(10) . Str::random(10),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -476,7 +474,7 @@ class TenantManageController extends Controller
             $credential_username = get_static_option_central('tenant_admin_default_username') ?? 'super_admin';
             Mail::to($credential_email)->send(new TenantCredentialMail($credential_username, $credential_password));
         }catch (\Exception $e){
-            return redirect()->back()->with(['type'=> 'danger', 'msg' => $e->getMessage()]);
+
         }
 
         return response()->success(ResponseMessage::success(__('Subscription assigned for this user')));
@@ -548,5 +546,36 @@ class TenantManageController extends Controller
         }
 
         return response()->json(['theme_slug' => $theme]);
+    }
+
+    public function failed_tenants()
+    {
+        $tenants = Tenant::where('user_id', NULL)->orderBy('created_at', 'desc')->get();
+        $users = User::orderBy('created_at', 'desc')->get();
+
+        return view(self::BASE_PATH.'failed',compact('tenants', 'users'));
+    }
+
+    public function failed_tenants_edit(Request $request)
+    {
+        $request->validate([
+            'tenant_id' => 'required',
+            'tenant_name' => 'required'
+        ]);
+
+        $tenant = Tenant::where('user_id', NULL)->where('id', $request->tenant_id)->first();
+        $tenant->id = $request->tenant_name;
+        $tenant->save();
+
+        return back()->with(FlashMsg::explain('success', 'Tenant subdomain name updated'));
+    }
+
+    public function failed_tenants_delete(Request $request, $id)
+    {
+        abort_if(empty($id), 403);
+
+        $tenant = DB::table('tenants')->delete($id);
+
+        return back()->with(FlashMsg::explain($tenant ? 'success' : 'danger', $tenant ? __('Tenant deleted successfully') : __('Something went wrong')));
     }
 }

@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
 //                        'sandbox_app_id'  => '',
 //                        'live_client_id'  => '',
 //                        'live_client_secret'  => '',
-//                        'live_app_id'  => ''
+//                        'live_access_token'  => ''
 //                    ]
 //                )
 //            ],
