@@ -102,7 +102,7 @@ class ContactAreaOne extends PageBuilderBase
             'padding_bottom'=> $padding_bottom,
         ];
 
-        return self::renderView('tenant.theme_one.contact.contact-area',$data);
+        return self::renderView('tenant.furnito.contact.contact-area',$data);
 
     }
 

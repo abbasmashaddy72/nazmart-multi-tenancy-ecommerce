@@ -22,4 +22,9 @@ class OrderProducts extends Model
     {
         return $this->hasOne(CampaignProduct::class, 'product_id', 'product_id');
     }
+
+    public function order()
+    {
+        return $this->belongsTo(ProductOrder::class, 'order_id', 'id');
+    }
 }

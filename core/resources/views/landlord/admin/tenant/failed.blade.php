@@ -67,17 +67,9 @@
                                         <i class="mdi mdi-pencil"></i>
                                     </x-modal.button>
 
-                                    @php
-                                        $select = '<option value="" selected disabled>Select a subdomain</option>';
-                                             foreach($user->tenant_details ?? [] as $tenant)
-                                             {
-                                                  $select .= '<option value="'.$tenant->id.'">'.optional($tenant->domain)->domain.'</option>';
-                                             }
-                                             $select .= '<option value="custom_domain__dd">Add new subdomain</option>';
-                                    @endphp
                                     <x-modal.button target="user_add_subscription" extra="user_add_subscription"
-                                                    type="primary" dataid="{{$user->id}}" select-markup="{{$select}}">
-                                        {{__('Assign to User')}}
+                                                    type="success" dataid="{{$user->id}}" datauser="{{ !empty($user?->payment_log?->user_id) }}">
+                                        {{__('Regenerate')}}
                                     </x-modal.button>
 
                                     <x-link-with-popover url="{{route('landlord.admin.tenant.details',$user->id)}}"
@@ -103,14 +95,14 @@
                     <button type="button" class="close" data-bs-dismiss="modal"><span>×</span></button>
                 </div>
 
-                <form action="{{route('landlord.admin.tenant.assign.subscription')}}" id="user_add_subscription_form"
+                <form action="{{route('landlord.admin.tenant.failed.assign.subscription')}}" id="user_add_subscription_form"
                       method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
-                        <input type="hidden" name="subs_user_id" id="subs_user_id">
+                        <input type="hidden" name="subs_tenant_id" id="subs_user_id">
                         <input type="hidden" name="subs_pack_id" id="subs_pack_id">
 
-                        <div class="form-group">
+                        <div class="form-group user-select-wrapper" style="display: none">
                             <label for="subdomain">{{__('User')}}</label>
                             <select class="form-select user" id="user" name="user">
                                 <option value="" selected disabled>{{__('Select an user')}}</option>
@@ -155,13 +147,22 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="">{{__('Database Name')}}</label>
+                            <input class="form-control database-name" type="text" name="database_name" id="database-name" autocomplete="off" placeholder="Database name">
+                            <p class="bg-warning">
+                                <small class="text-dark ms-2">{{__('Set your database name here.')}}</small>
+                            </p>
+                        </div>
+
+                        <div class="form-group">
                             <label for="">{{__('Payment Status')}}</label>
                             <select class="form-control" name="payment_status">
                                 <option value="complete">{{__('Complete')}}</option>
                                 <option value="pending">{{__('Pending')}}</option>
                             </select>
-                            <small
-                                class="text-primary">{{__('You can set payment status pending or complete from here')}}</small>
+                            <p>
+                                <small class="text-primary">{{__('You can set payment status pending or complete from here')}}</small>
+                            </p>
                         </div>
 
                         <div class="form-group">
@@ -170,8 +171,9 @@
                                 <option value="complete">{{__('Complete')}}</option>
                                 <option value="pending">{{__('Pending')}}</option>
                             </select>
-                            <small
-                                class="text-primary">{{__('You can set account status pending or complete from here')}}</small>
+                            <p>
+                                <small class="text-primary">{{__('You can set account status pending or complete from here')}}</small>
+                            </p>
                         </div>
 
                     </div>
@@ -184,7 +186,7 @@
         </div>
     </div>
 
-    {{--Change Password Modal--}}
+    {{--Change Domain Modal--}}
     <div class="modal fade" id="tenant_edit" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -335,8 +337,16 @@
             //Assign Subscription Modal Code
             $(document).on('click', '.user_add_subscription', function () {
                 let user_id = $(this).data('id');
+                let user = $(this).data('user');
+
                 $('#subs_user_id').val(user_id);
-                $("#user_add_subscription #subdomain").html($(this).data('select-markup'));
+                let user_wrapper = $('.user-select-wrapper');
+                user_wrapper.hide();
+
+                if (!user)
+                {
+                    user_wrapper.show();
+                }
             });
 
             $(document).on('change', '.package_id_selector', function () {

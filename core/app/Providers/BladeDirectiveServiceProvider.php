@@ -18,6 +18,14 @@ class BladeDirectiveServiceProvider extends ServiceProvider
             return tenant();
         });
 
+        Blade::directive('tenant', function () {
+            return "<?php if(tenant()) { ?>";
+        });
+
+        Blade::directive('endtenant', function ($expression) {
+            return "<?php } ?>";
+        });
+
 //        Blade::directive('themeInclude', function ($expression){
 //            \Artisan::call('view:clear');
 //            $real_path = str_replace(["'","."], ["","/"], $expression);
