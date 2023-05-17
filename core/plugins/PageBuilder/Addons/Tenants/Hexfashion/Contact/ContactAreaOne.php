@@ -113,6 +113,6 @@ class ContactAreaOne extends PageBuilderBase
 
     public function addon_title()
     {
-        return __('Theme 1: Contact Area(01)');
+        return __('Theme Hexfashion: Contact Area(01)');
     }
 }

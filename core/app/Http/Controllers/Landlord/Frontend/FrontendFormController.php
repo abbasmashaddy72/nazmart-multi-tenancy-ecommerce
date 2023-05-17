@@ -118,7 +118,8 @@ class FrontendFormController extends Controller
                 ])
             );
         }catch(\Exception $e){
-            return response()->json(['msg' => $e->getMessage(), 'type' => 'danger']);
+            $msg = $e->getMessage();
+            return response()->json(['msg' => __('Sorry! The message could not be send. Try again later.'), 'type' => 'danger']);
         }
 
         return response()->json(['msg' => $success_message, 'type' => 'success']);

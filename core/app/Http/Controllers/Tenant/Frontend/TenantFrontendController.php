@@ -1204,6 +1204,22 @@ class TenantFrontendController extends Controller
         ]);
 
         $user = Auth::guard('web')->user();
+
+        $if_not_bought = OrderProducts::where('product_id', 233)->first();
+
+        dd($if_not_bought);
+
+//        $if_not_bought = OrderProducts::where('product_id', $request->product_id)->where(function ($query) use ($request, $user){
+//            $order = ProductOrder::find($request->product_id);
+//            dd($order);
+//            if ($order->user_id == $user->id)
+//            {
+//                return $query;
+//            }
+//        })->first();
+
+        dd($if_not_bought);
+
         $existing_record = ProductReviews::where(['user_id' => $user->id, 'product_id' => $request->product_id])->select('id')->first();
 
         if (!$existing_record) {
