@@ -74,46 +74,52 @@
             </li>
 
 
-            <li class="nav-item dropdown">
-                <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#"
-                   data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="mdi mdi-bell"></i>
-                    @php
-                        $comments = $new_comments->where('status', 'unread')?->count();
-                    @endphp
-                    @if($comments > 0)
-                        <span class="count-symbol bg-warning"></span>
-                    @endif
-                </a>
-                <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
-                     aria-labelledby="messageDropdown">
+            @if(isPluginActive('Blog'))
+                <li class="nav-item dropdown">
+                    <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="mdi mdi-bell"></i>
+                        @php
+                            $comments = $new_comments->where('status', 'unread')?->count();
+                        @endphp
+                        @if($comments > 0)
+                            <span class="count-symbol bg-warning"></span>
+                        @endif
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
+                         aria-labelledby="messageDropdown">
 
-                    <h6 class="p-3 mb-0">{{$comments. ' '.  __('Unread Comments') }}  </h6>
-                    <div class="dropdown-divider"></div>
+                        <h6 class="p-3 mb-0">{{$comments. ' '.  __('Unread Comments') }}  </h6>
+                        <div class="dropdown-divider"></div>
 
-                    @foreach($new_comments as $comment)
-                        <a class="dropdown-item preview-item" href="{{route(route_prefix().'admin.blog.comments.view', $comment->blog_id)}}">
-                            <div class="preview-thumbnail">
-                                <div class="preview-icon bg-success">
-                                    <i class="mdi mdi-bell text-white"></i>
+                        @foreach($new_comments as $comment)
+                            <a class="dropdown-item preview-item"
+                               href="{{route(route_prefix().'admin.blog.comments.view', $comment->blog_id)}}">
+                                <div class="preview-thumbnail">
+                                    <div class="preview-icon bg-success">
+                                        <i class="mdi mdi-bell text-white"></i>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                                <h6 class="preview-subject mb-1 font-weight-normal">{{__('You have new comment in your blog' )}}
-                                    <strong>{{Str::words($comment->blog?->title)}}</strong></h6>
-                                <p class="text-gray mb-0"> {{$comment->created_at->diffForHumans() . ' '}}  @if($comment->status == 'unread')<small class="mt-1 text-danger">{{'('.__('New' .')')}}</small>@endif</p>
-                            </div>
-                            <div class="dropdown-divider"></div>
-                            @endforeach
+                                <div
+                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                                    <h6 class="preview-subject mb-1 font-weight-normal">{{__('You have new comment in your blog' )}}
+                                        <strong>{{Str::words($comment->blog?->title)}}</strong></h6>
+                                    <p class="text-gray mb-0"> {{$comment->created_at->diffForHumans() . ' '}}  @if($comment->status == 'unread')
+                                            <small class="mt-1 text-danger">{{'('.__('New' .')')}}</small>
+                                        @endif</p>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                @endforeach
 
-                            <h6 class="p-3 mb-0 text-center"><a
-                                    href="{{route(route_prefix().'admin.blog')}}">{{__('Seel All')}}</a>
-                            </h6>
-                        </a>
-                </div>
+                                <h6 class="p-3 mb-0 text-center"><a
+                                        href="{{route(route_prefix().'admin.blog')}}">{{__('Seel All')}}</a>
+                                </h6>
+                            </a>
+                    </div>
 
-            </li>
+                </li>
+            @endif
 
 
 
@@ -133,7 +139,8 @@
 
                     @foreach($all_messages as $message)
 
-                        <a class="dropdown-item preview-item" href="{{route(route_prefix().'admin.contact.message.view', $message->id)}}">
+                        <a class="dropdown-item preview-item"
+                           href="{{route(route_prefix().'admin.contact.message.view', $message->id)}}">
                             <div class="preview-thumbnail">
                                 <div class="preview-icon bg-success">
                                     <i class="las la-envelope"></i>
@@ -142,10 +149,13 @@
                             @php
                                 $fields = json_decode($message->fields,true);
                             @endphp
-                            <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                                    <h6 class="preview-subject mb-1 font-weight-normal">{{__('You have message from').' '}}
-                                        <strong>{{optional($message->form)->title}}</strong></h6>
-                                    <p class="text-gray mb-0"> {{$message->created_at->diffForHumans() . ' '}}  @if($message->status === 1)<small class="mt-1 text-danger">{{'('.__('New' .')')}}</small>@endif</p>
+                            <div
+                                class="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                                <h6 class="preview-subject mb-1 font-weight-normal">{{__('You have message from').' '}}
+                                    <strong>{{optional($message->form)->title}}</strong></h6>
+                                <p class="text-gray mb-0"> {{$message->created_at->diffForHumans() . ' '}}  @if($message->status === 1)
+                                        <small class="mt-1 text-danger">{{'('.__('New' .')')}}</small>
+                                    @endif</p>
                             </div>
                             <div class="dropdown-divider"></div>
                             @endforeach

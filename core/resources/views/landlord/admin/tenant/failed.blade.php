@@ -170,6 +170,7 @@
                             <select class="form-control" name="account_status">
                                 <option value="complete">{{__('Complete')}}</option>
                                 <option value="pending">{{__('Pending')}}</option>
+                                <option value="trial">{{__('Trial')}}</option>
                             </select>
                             <p>
                                 <small class="text-primary">{{__('You can set account status pending or complete from here')}}</small>

@@ -33,15 +33,38 @@ class SidebarMenuHelper
             $this->users_manage_menus($menu_instance);
         }
 
-        $this->blog_settings_menus($menu_instance);
+        if (isPluginActive('Blog'))
+        {
+            $this->blog_settings_menus($menu_instance);
+        }
+
         $this->pages_settings_menus($menu_instance);
-        $this->themes_settings_menus($menu_instance);
+
+        if (isPluginActive('ThemeManage'))
+        {
+            $this->themes_settings_menus($menu_instance);
+        }
+
         $this->price_plan_settings_menus($menu_instance);
         $this->order_manage_settings_menus($menu_instance);
-        $this->wallet_manage_settings_menus($menu_instance);
+
+        if (isPluginActive('Wallet'))
+        {
+            $this->wallet_manage_settings_menus($menu_instance);
+        }
+
         $this->custom_domain_settings_menus($menu_instance);
-        $this->support_ticket_settings_menus($menu_instance);
-        $this->newsletter_settings_menus($menu_instance);
+
+        if (isPluginActive('SupportTicket'))
+        {
+            $this->support_ticket_settings_menus($menu_instance);
+        }
+
+        if (isPluginActive('Newsletter'))
+        {
+            $this->newsletter_settings_menus($menu_instance);
+        }
+
         $this->testimonial_settings_menus($menu_instance);
         $this->form_builder_settings_menus($menu_instance);
         $this->appearance_settings_menus($menu_instance);
@@ -837,12 +860,25 @@ class SidebarMenuHelper
 
         $this->tenant_pages_settings_menus($menu_instance);
 
-        $this->tenant_support_ticket_settings_menus($menu_instance);
-        $this->tenant_refund_settings_menus($menu_instance);
+        if (isPluginActive('SupportTicket'))
+        {
+            $this->tenant_support_ticket_settings_menus($menu_instance);
+        }
 
-        $this->tenant_blog_settings_menus($menu_instance);
+        if (isPluginActive('RefundModule'))
+        {
+            $this->tenant_refund_settings_menus($menu_instance);
+        }
 
-        $this->tenant_badge_settings_menus($menu_instance);
+        if (isPluginActive('Blog'))
+        {
+            $this->tenant_blog_settings_menus($menu_instance);
+        }
+
+        if (isPluginActive('Badge'))
+        {
+            $this->tenant_badge_settings_menus($menu_instance);
+        }
 
         $this->tenant_country_settings_menus($menu_instance);
         $this->tenant_tax_settings_menus($menu_instance);
@@ -854,22 +890,39 @@ class SidebarMenuHelper
             $this->tenant_coupon_settings_menus($menu_instance);
         }
 
-        $this->tenant_attribute_settings_menus($menu_instance);
-        $this->tenant_product_settings_menus($menu_instance);
-
-        if (tenant_plan_sidebar_permission('digital_product'))
+        if (isPluginActive('Attributes'))
         {
-            $this->tenant_digital_product_settings_menus($menu_instance);
+            $this->tenant_attribute_settings_menus($menu_instance);
         }
 
-        if (tenant_plan_sidebar_permission('inventory'))
+        if (isPluginActive('Product'))
         {
-            $this->tenant_inventory_settings_menus($menu_instance);
+            $this->tenant_product_settings_menus($menu_instance);
         }
 
-        if (tenant_plan_sidebar_permission('campaign'))
+        if (isPluginActive('DigitalProduct'))
         {
-            $this->tenant_campaign_settings_menus($menu_instance);
+            if (tenant_plan_sidebar_permission('digital_product'))
+            {
+                $this->tenant_digital_product_settings_menus($menu_instance);
+            }
+        }
+
+        if (isPluginActive('Inventory'))
+        {
+            if (tenant_plan_sidebar_permission('inventory'))
+            {
+                $this->tenant_inventory_settings_menus($menu_instance);
+            }
+        }
+
+
+        if (isPluginActive('Campaign'))
+        {
+            if (tenant_plan_sidebar_permission('campaign'))
+            {
+                $this->tenant_campaign_settings_menus($menu_instance);
+            }
         }
 
         if (tenant_plan_sidebar_permission('testimonial'))
@@ -877,10 +930,14 @@ class SidebarMenuHelper
             $this->tenant_testimonial_settings_menus($menu_instance);
         }
 
-        if (tenant_plan_sidebar_permission('newsletter'))
+        if (isPluginActive('NewsLetter'))
         {
-            $this->tenant_newsletter_settings_menus($menu_instance);
+            if (tenant_plan_sidebar_permission('newsletter'))
+            {
+                $this->tenant_newsletter_settings_menus($menu_instance);
+            }
         }
+
 
         $this->tenant_form_builder_settings_menus($menu_instance);
 
@@ -905,7 +962,10 @@ class SidebarMenuHelper
             }
         }
 
-        $this->tenant_mobile_app_settings_menus($menu_instance);
+        if (isPluginActive('MobileApp'))
+        {
+            $this->tenant_mobile_app_settings_menus($menu_instance);
+        }
 
         $this->tenant_appearance_settings_menus($menu_instance);
 

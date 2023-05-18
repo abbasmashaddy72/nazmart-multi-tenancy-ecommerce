@@ -588,7 +588,7 @@ class TenantManageController extends Controller
     {
         $user_validation_rule = isset($request->user) ? 'required' : 'nullable';
         $validated = $request->validate([
-            'database_name' => 'required',
+//            'database_name' => 'required',
             'package' => 'required',
             'payment_status' => 'required',
             'account_status' => 'required',
@@ -600,7 +600,7 @@ class TenantManageController extends Controller
         ]);
 
         $reassign_object = new ReassignTenant($validated);
-        $user = $reassign_object->createOrModifyDatabase();
+        $user = $reassign_object->regenerateTenant();
 
         dd($user);
 
