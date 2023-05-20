@@ -87,6 +87,7 @@ Route::group(['middleware' => ['auth:admin','adminglobalVariable', 'set_lang'],'
     Route::controller(\App\Http\Controllers\Landlord\Admin\TenantExceptionController::class)->name('landlord.')->prefix('website-issues')->group(function (){
         Route::get('/','website_issues')->name('admin.tenant.website.issues');
         Route::post('/','generate_domain')->name('admin.failed.domain.generate');
+        Route::post('/manual-database','manual_database')->name('admin.failed.database.generate');
     });
 
 
@@ -285,7 +286,7 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
             Route::get('/tenants', 'failed_tenants')->name('index');
             Route::post('/edit', 'failed_tenants_edit')->name('edit');
             Route::post('/delete/{id}', 'failed_tenants_delete')->name('delete');
-            Route::post('/assign-subscription','failed_assign_subscription')->name('assign.subscription');
+            Route::post('/assign-subscription','failed_regenerate_subscription')->name('assign.subscription');
         });
     });
 

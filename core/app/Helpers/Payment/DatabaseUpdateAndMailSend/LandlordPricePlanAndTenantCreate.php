@@ -28,7 +28,7 @@ class LandlordPricePlanAndTenantCreate
         ]);
     }
 
-    public static function update_tenant($payment_data, $theme = 'theme-1')
+    public static function update_tenant($payment_data)
     {
         $payment_log = PaymentLogs::where('id', $payment_data['order_id'])->first();
         $tenant = Tenant::find($payment_log->tenant_id);
@@ -38,7 +38,7 @@ class LandlordPricePlanAndTenantCreate
                 'start_date' => $payment_log->start_date,
                 'expire_date' => $payment_log->status == 'trial' ? $payment_log->expire_date : get_plan_left_days($payment_log->package_id, $tenant->expire_date),
                 'user_id' => $payment_log->user_id,
-                'theme_slug' => $theme
+                'theme_slug' => $payment_log->theme_slug
             ]);
         }catch (\Exception $e){
             self::store_exception($payment_log->tenant_id,'database update',$e->getMessage(),1);
@@ -66,7 +66,7 @@ class LandlordPricePlanAndTenantCreate
     }
 
 
-    public static function tenant_create_event_with_credential_mail($order_id,$event=true)
+    public static function tenant_create_event_with_credential_mail($order_id, $event = true)
     {
         $log = PaymentLogs::findOrFail($order_id);
         $user = User::where('id', $log->user_id)->first();
@@ -100,7 +100,7 @@ class LandlordPricePlanAndTenantCreate
     public static function createDatabaseUsingEventListener($log,$user,$event=true){
 
         if($event){
-            event(new TenantRegisterEvent($user, $log->tenant_id));
+            event(new TenantRegisterEvent($user, $log->tenant_id, $log->theme));
         }
 
         $raw_pass = get_static_option('tenant_default_pass') ?? '12345678';
@@ -122,7 +122,6 @@ class LandlordPricePlanAndTenantCreate
             'domain_create_status' => $domain_create_status,
         ]);
 
-
         $admin_email = get_static_option('site_global_email');
 
         $data['subject'] = __('User Domain or database create failed');
@@ -135,5 +134,4 @@ class LandlordPricePlanAndTenantCreate
             //handle error
         }
     }
-
 }

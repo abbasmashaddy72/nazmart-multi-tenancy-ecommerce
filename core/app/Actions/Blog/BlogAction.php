@@ -62,7 +62,7 @@ class BlogAction
         $blog_update =  Blog::findOrFail($id);
 
         $blog_update->title = SanitizeInput::esc_html($request->title);
-        $blog_update->blog_content = str_replace('script','', $request->blog_content);
+        $blog_update->blog_content = $request->blog_content;
         $blog_update->excerpt = SanitizeInput::esc_html($request->excerpt);
 
         $slug = !empty($request->slug) ? Str::slug($request->slug) : Str::slug($request->title);
