@@ -1696,6 +1696,21 @@ function getAllThemeData()
     return \App\Facades\ThemeDataFacade::getAllThemeData();
 }
 
+function getPricePlanBasedAllThemeData($themeNameArray)
+{
+    $themeList = [];
+    $all_theme =  \App\Facades\ThemeDataFacade::getAllThemeData();
+    foreach($all_theme as $key => $theme)
+    {
+        if (in_array($key, $themeNameArray))
+        {
+            $themeList[] = $theme;
+        }
+    }
+
+    return $themeList;
+}
+
 function getIndividualThemeDetails($theme_slug)
 {
     return \App\Facades\ThemeDataFacade::getIndividualThemeDetails($theme_slug);

@@ -1,0 +1,39 @@
+{
+    "name": "Aromatic",
+    "slug": "aromatic",
+    "description": "Perfume Theme",
+    "author": "Mazharul Islam Suzon",
+    "version": "1.0.0",
+    "status": true,
+    "screenshot": [
+        {
+            "primary": "primary.jpg"
+        }
+    ],
+    "headerHook": [
+        {
+            "loadCoreStyle": false,
+            "style": [
+                "bootstrap.min",
+                "style"
+            ],
+            "rtl_style": [
+                "rtl"
+            ],
+            "script": [],
+            "blade": [],
+            "navbarArea": "navbar"
+        }
+    ],
+    "footerHook": [
+        {
+            "style": [],
+            "script": [
+                "main",
+                "imagesloaded.pkgd.min"
+            ],
+            "blade": [],
+            "widgetArea": "footer-aromatic"
+        }
+    ]
+}
