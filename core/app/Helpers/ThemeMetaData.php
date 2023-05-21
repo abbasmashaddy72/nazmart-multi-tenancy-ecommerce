@@ -430,4 +430,16 @@ class ThemeMetaData
 
         return $src_markup;
     }
+
+    public function loadCoreStyle()
+    {
+        $load_style = true;
+        $current_theme = $this->getHeaderHook();
+        if (property_exists($current_theme, 'loadCoreStyle'))
+        {
+            $load_style = $current_theme->loadCoreStyle;
+        }
+
+        return $load_style;
+    }
 }

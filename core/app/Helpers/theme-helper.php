@@ -22,3 +22,8 @@ function getAllThemeSlug()
 {
     return ThemeDataFacade::getAllThemeSlug();
 }
+
+function loadCoreStyle()
+{
+    return ThemeDataFacade::loadCoreStyle();
+}

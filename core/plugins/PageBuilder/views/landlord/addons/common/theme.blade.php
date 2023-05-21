@@ -58,7 +58,7 @@
             @endforeach
 
             @if(get_static_option('up_coming_themes_frontend'))
-                @foreach(range(4, 12) as $item)
+                @foreach(range(4, 11) as $item)
                     @if($item == 4)
                         @php
                             $base_url = URL::to('/');

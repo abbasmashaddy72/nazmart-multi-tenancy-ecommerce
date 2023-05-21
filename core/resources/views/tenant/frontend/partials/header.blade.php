@@ -34,20 +34,22 @@
     </title>
 
     {!! render_favicon_by_id(filter_static_option_value('site_favicon', $global_static_field_data)) !!}
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/bootstrap.min.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/animate.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/slick.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/nice-select.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/line-awesome.min.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/common/css/jquery.ihavecookies.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/odometer.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/common.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/magnific-popup.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/helpers.css')}}">
-    <link rel="stylesheet" href="{{ global_asset('assets/common/css/toastr.css') }}">
-    <link rel="stylesheet" href="{{global_asset('assets/common/css/loader-01.css')}}">
 
-{{--    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/style.css')}}">--}}
+    @if(loadCoreStyle())
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/bootstrap.min.css')}}">
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/animate.css')}}">
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/slick.css')}}">
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/nice-select.css')}}">
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/line-awesome.min.css')}}">
+        <link rel="stylesheet" href="{{global_asset('assets/common/css/jquery.ihavecookies.css')}}">
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/odometer.css')}}">
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/common.css')}}">
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/magnific-popup.css')}}">
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/helpers.css')}}">
+        <link rel="stylesheet" href="{{ global_asset('assets/common/css/toastr.css') }}">
+        <link rel="stylesheet" href="{{global_asset('assets/common/css/loader-01.css')}}">
+    @endif
+
 
     @foreach($theme_header_css_files ?? [] as $cssFile)
         <link rel="stylesheet" href="{{ loadCss($cssFile) }}" type="text/css" />

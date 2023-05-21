@@ -81,7 +81,7 @@
                     @endforeach
 
                     @if(get_static_option('up_coming_themes_backend'))
-                        @foreach(range(3, 12) as $item)
+                        @foreach(range(4, 11) as $item)
                             <div class="col-xl-3 col-md-6">
                                 <div class="themePreview coming_soon">
                                     <a href="javascript:void(0)" id="theme-preview"

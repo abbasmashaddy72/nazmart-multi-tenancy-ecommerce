@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static getAllThemeData
  * @method static getAllThemeSlug
  *
+ * @method static loadCoreStyle
  * @method static getAllThemeDataForAdmin
  * @method static getIndividualThemeData
  * @method static getHeaderHook

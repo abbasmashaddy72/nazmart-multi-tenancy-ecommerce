@@ -12,6 +12,7 @@ use App\Mail\BasicMail;
 use App\Models\Page;
 use App\Models\PaymentGateway;
 use App\Models\StaticOption;
+use App\Models\Tenant;
 use Database\Seeders\ThemeModifySeeder;
 use Database\Seeders\ThemeModifySeederTenant;
 use Illuminate\Http\Request;
@@ -613,6 +614,8 @@ class GeneralSettingsController extends Controller
 
     public function update_database_upgrade(Request $request)
     {
+        dd(Tenant::all());
+
         setEnvValue(['APP_ENV' => 'local']);
         Artisan::call('migrate', ['--force' => true]);
         Artisan::call('tenants:migrate', ['--force' => true]);
