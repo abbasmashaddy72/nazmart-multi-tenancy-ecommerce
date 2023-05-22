@@ -129,6 +129,10 @@ class PageBuilderSetup
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\Services::class,
                     ContactAreaOne::class,
                 ];
+            } elseif($theme == 'aromatic') {
+                $addons = [
+                    \Plugins\PageBuilder\Addons\Tenants\Aromatic\Header\HeaderOne::class,
+                ];
             }
 
             // Global addons for all theme

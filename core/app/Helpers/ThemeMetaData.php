@@ -18,7 +18,7 @@ class ThemeMetaData
         $selectedThemeData = null;
         $tenant_theme = tenant()->theme_slug ?? '';
         $theme = $this->getIndividualThemeData($tenant_theme);
-        if (!empty($theme)){
+        if (!empty($theme)) {
             $selectedThemeData = $theme;
         }
 
@@ -35,7 +35,7 @@ class ThemeMetaData
     {
         $headerHook = [];
         $themeMeta = $this->getSelectedThemeData();
-        if (!empty($themeMeta) && property_exists($themeMeta, 'headerHook')){
+        if (!empty($themeMeta) && property_exists($themeMeta, 'headerHook')) {
             $headerHook = current($themeMeta->headerHook);
         }
 
@@ -46,7 +46,7 @@ class ThemeMetaData
     {
         $footerHook = [];
         $themeMeta = $this->getSelectedThemeData();
-        if (!empty($themeMeta) && property_exists($themeMeta, 'footerHook')){
+        if (!empty($themeMeta) && property_exists($themeMeta, 'footerHook')) {
             $footerHook = current($themeMeta->footerHook);
         }
 
@@ -57,10 +57,8 @@ class ThemeMetaData
     {
         $file_name = [];
         $headerHook = $this->getHeaderHook();
-        if (!empty($headerHook) && property_exists($headerHook, 'style'))
-        {
-            foreach ($headerHook->style as $item)
-            {
+        if (!empty($headerHook) && property_exists($headerHook, 'style')) {
+            foreach ($headerHook->style as $item) {
                 $file_name[] = $item;
             }
         }
@@ -72,10 +70,8 @@ class ThemeMetaData
     {
         $file_name = [];
         $headerHook = $this->getHeaderHook();
-        if (!empty($headerHook) && property_exists($headerHook, 'rtl_style'))
-        {
-            foreach ($headerHook->rtl_style as $item)
-            {
+        if (!empty($headerHook) && property_exists($headerHook, 'rtl_style')) {
+            foreach ($headerHook->rtl_style as $item) {
                 $file_name[] = $item;
             }
         }
@@ -87,10 +83,8 @@ class ThemeMetaData
     {
         $file_name = [];
         $headerHook = $this->getHeaderHook();
-        if (!empty($headerHook) && property_exists($headerHook, 'script'))
-        {
-            foreach ($headerHook->script as $item)
-            {
+        if (!empty($headerHook) && property_exists($headerHook, 'script')) {
+            foreach ($headerHook->script as $item) {
                 $file_name[] = $item;
             }
         }
@@ -102,24 +96,21 @@ class ThemeMetaData
     {
         $file_name = [];
         $footerHook = $this->getFooterHook();
-        if (!empty($footerHook) && property_exists($footerHook, 'style'))
-        {
-            foreach ($footerHook->style as $item)
-            {
+        if (!empty($footerHook) && property_exists($footerHook, 'style')) {
+            foreach ($footerHook->style as $item) {
                 $file_name[] = $item;
             }
         }
 
         return $file_name;
     }
+
     public function getFooterHookJsFiles()
     {
         $file_name = [];
         $footerHook = $this->getFooterHook();
-        if (!empty($footerHook) && property_exists($footerHook, 'script'))
-        {
-            foreach ($footerHook->script as $item)
-            {
+        if (!empty($footerHook) && property_exists($footerHook, 'script')) {
+            foreach ($footerHook->script as $item) {
                 $file_name[] = $item;
             }
         }
@@ -133,15 +124,12 @@ class ThemeMetaData
         $current_theme = $this->getSelectedThemeSlug();
         $return_val = '';
 
-        if (!empty($headerHook) && property_exists($headerHook, 'blade'))
-        {
-            if (count($headerHook->blade) > 0)
-            {
-                foreach ($headerHook->blade as $bl){
-                    $file_name = 'themes.'.$current_theme.'.headerHookTemplate.'.$bl;
-                    if (\view()->exists($file_name))
-                    {
-                        $return_val .=\view($file_name)->render()."\n";
+        if (!empty($headerHook) && property_exists($headerHook, 'blade')) {
+            if (count($headerHook->blade) > 0) {
+                foreach ($headerHook->blade as $bl) {
+                    $file_name = 'themes.' . $current_theme . '.headerHookTemplate.' . $bl;
+                    if (\view()->exists($file_name)) {
+                        $return_val .= \view($file_name)->render() . "\n";
                     }
                 }
             }
@@ -155,15 +143,12 @@ class ThemeMetaData
         $footerHook = $this->getFooterHook();
         $current_theme = $this->getSelectedThemeSlug();
         $return_val = '';
-        if (!empty($footerHook) && property_exists($footerHook, 'blade'))
-        {
-            if (count($footerHook->blade) > 0)
-            {
-                foreach ($footerHook->blade as $bl){
-                    $file_name = 'themes.'.$current_theme.'.footerHookTemplate.'.$bl;
-                    if (\view()->exists($file_name))
-                    {
-                        $return_val .=\view($file_name)->render()."\n";
+        if (!empty($footerHook) && property_exists($footerHook, 'blade')) {
+            if (count($footerHook->blade) > 0) {
+                foreach ($footerHook->blade as $bl) {
+                    $file_name = 'themes.' . $current_theme . '.footerHookTemplate.' . $bl;
+                    if (\view()->exists($file_name)) {
+                        $return_val .= \view($file_name)->render() . "\n";
                     }
                 }
 
@@ -178,10 +163,8 @@ class ThemeMetaData
         $widget_area_file_name = '';
         $footerHook = $this->getFooterHook();
 
-        if (!empty($footerHook) && property_exists($footerHook, 'widgetArea'))
-        {
-            if (!empty($footerHook->widgetArea))
-            {
+        if (!empty($footerHook) && property_exists($footerHook, 'widgetArea')) {
+            if (!empty($footerHook->widgetArea)) {
                 $widget_area_file_name = $footerHook->widgetArea;
             }
         }
@@ -194,10 +177,8 @@ class ThemeMetaData
         $navbar_area_file_name = '';
         $headerHook = $this->getHeaderHook();
 
-        if (!empty($headerHook) && property_exists($headerHook, 'navbarArea'))
-        {
-            if (!empty($headerHook->navbarArea))
-            {
+        if (!empty($headerHook) && property_exists($headerHook, 'navbarArea')) {
+            if (!empty($headerHook->navbarArea)) {
                 $navbar_area_file_name = $headerHook->navbarArea;
             }
         }
@@ -210,10 +191,8 @@ class ThemeMetaData
         $navbar_area_file_name = '';
         $headerHook = $this->getHeaderHook();
 
-        if (!empty($headerHook) && property_exists($headerHook, 'breadcrumbArea'))
-        {
-            if (!empty($headerHook->breadcrumbArea))
-            {
+        if (!empty($headerHook) && property_exists($headerHook, 'breadcrumbArea')) {
+            if (!empty($headerHook->breadcrumbArea)) {
                 $navbar_area_file_name = $headerHook->breadcrumbArea;
             }
         }
@@ -229,41 +208,40 @@ class ThemeMetaData
     public function renderThemeView($view = '', $data = []): Application|Factory|View
     {
         $theme_slug = $this->getSelectedThemeSlug();
-        return view('themes.'.$theme_slug.'.frontend.'.$view, $data);
+        return view('themes.' . $theme_slug . '.frontend.' . $view, $data);
     }
 
-    public function getAllThemeDataForAdmin(){
+    public function getAllThemeDataForAdmin()
+    {
         $allThemeData = [];
-        $allDirectories = glob(base_path().'/resources/views/themes/*',GLOB_ONLYDIR);
-        foreach ($allDirectories as $dire){
+        $allDirectories = glob(base_path() . '/resources/views/themes/*', GLOB_ONLYDIR);
+        foreach ($allDirectories as $dire) {
             //todo scan all the json file
-            $currFolderName = pathinfo($dire,PATHINFO_BASENAME);
+            $currFolderName = pathinfo($dire, PATHINFO_BASENAME);
             $themeInformation = $this->getIndividualThemeData($currFolderName);
 
-                if (property_exists($themeInformation,'slug')){
-                    if ($themeInformation->slug == 'default')
-                    {
-                        continue;
-                    }
-                    $allThemeData[$currFolderName] = $themeInformation;
+            if (property_exists($themeInformation, 'slug')) {
+                if ($themeInformation->slug == 'default') {
+                    continue;
                 }
+                $allThemeData[$currFolderName] = $themeInformation;
+            }
         }
         return $allThemeData;
     }
 
-    public function getAllThemeData(){
+    public function getAllThemeData()
+    {
         $allThemeData = [];
-        $allDirectories = glob(base_path().'/resources/views/themes/*',GLOB_ONLYDIR);
-        foreach ($allDirectories as $dire){
+        $allDirectories = glob(base_path() . '/resources/views/themes/*', GLOB_ONLYDIR);
+        foreach ($allDirectories as $dire) {
             //todo scan all the json file
-            $currFolderName = pathinfo($dire,PATHINFO_BASENAME);
+            $currFolderName = pathinfo($dire, PATHINFO_BASENAME);
             $themeInformation = $this->getIndividualThemeData($currFolderName);
 
-            if (property_exists($themeInformation, 'status') && $themeInformation->status)
-            {
-                if (property_exists($themeInformation,'slug')){
-                    if ($themeInformation->slug == 'default')
-                    {
+            if (property_exists($themeInformation, 'status') && $themeInformation->status) {
+                if (property_exists($themeInformation, 'slug')) {
+                    if ($themeInformation->slug == 'default') {
                         continue;
                     }
                     $allThemeData[$currFolderName] = $themeInformation;
@@ -273,17 +251,16 @@ class ThemeMetaData
         return $allThemeData;
     }
 
-    public function getAllThemeSlug(){
+    public function getAllThemeSlug()
+    {
         $themeSlugArray = [];
         $allThemeData = getAllThemeData();
 
         $index = 0;
-        foreach ($allThemeData as $data){
-            if (property_exists($data, 'status') && $data->status)
-            {
-                if (property_exists($data,'slug')){
-                    if ($data->slug == 'default')
-                    {
+        foreach ($allThemeData as $data) {
+            if (property_exists($data, 'status') && $data->status) {
+                if (property_exists($data, 'slug')) {
+                    if ($data->slug == 'default') {
                         continue;
                     }
                     $themeSlugArray[$index++] = $data->slug;
@@ -293,17 +270,17 @@ class ThemeMetaData
         return $themeSlugArray;
     }
 
-    public function getDefaultThemeData(){
+    public function getDefaultThemeData()
+    {
         $allThemeData = [];
-        $allDirectories = glob(base_path().'/resources/views/themes/*',GLOB_ONLYDIR);
-        foreach ($allDirectories as $dire){
+        $allDirectories = glob(base_path() . '/resources/views/themes/*', GLOB_ONLYDIR);
+        foreach ($allDirectories as $dire) {
             //todo scan all the json file
-            $currFolderName = pathinfo($dire,PATHINFO_BASENAME);
+            $currFolderName = pathinfo($dire, PATHINFO_BASENAME);
             $themeInformation = $this->getIndividualThemeData($currFolderName);
 
-            if (property_exists($themeInformation,'slug')){
-                if ($themeInformation->slug != 'default')
-                {
+            if (property_exists($themeInformation, 'slug')) {
+                if ($themeInformation->slug != 'default') {
                     continue;
                 }
                 $allThemeData[$currFolderName] = $themeInformation;
@@ -313,37 +290,35 @@ class ThemeMetaData
         return !empty($allThemeData) ? current($allThemeData) : $allThemeData;
     }
 
-    private function getIndividualThemeData(string $themeName, bool $returnType = false){
-        $filePath =  theme_path($themeName).'/theme.json';
-        if (file_exists($filePath) && !is_dir($filePath)){
+    private function getIndividualThemeData(string $themeName, bool $returnType = false)
+    {
+        $filePath = theme_path($themeName) . '/theme.json';
+        if (file_exists($filePath) && !is_dir($filePath)) {
             //cache data for 10days
             return json_decode(file_get_contents($filePath), $returnType);
         }
     }
 
-    public function getIndividualThemeDetails(string $themeName, bool $returnType = false){
+    public function getIndividualThemeDetails(string $themeName, bool $returnType = false)
+    {
         $details = [];
         $theme_meta = $this->getIndividualThemeData($themeName);
         $default_meta = $this->getDefaultThemeData();
 
-        if (!empty($theme_meta))
-        {
-            if (property_exists($theme_meta, 'name'))
-            {
+        if (!empty($theme_meta)) {
+            if (property_exists($theme_meta, 'name')) {
                 $details['name'] = $theme_meta->name;
             } else {
                 $details['name'] = $default_meta->name;
             }
 
-            if (property_exists($theme_meta, 'slug'))
-            {
+            if (property_exists($theme_meta, 'slug')) {
                 $details['slug'] = $theme_meta->slug;
             } else {
                 $details['slug'] = $default_meta->slug;
             }
 
-            if (property_exists($theme_meta, 'description'))
-            {
+            if (property_exists($theme_meta, 'description')) {
                 $details['description'] = $theme_meta->description;
             } else {
                 $details['description'] = $default_meta->description;
@@ -357,11 +332,9 @@ class ThemeMetaData
     {
         $screenshot = [];
         $theme_meta = $this->getIndividualThemeData($themeSlug);
-        if (!empty($theme_meta) && property_exists($theme_meta, 'screenshot'))
-        {
+        if (!empty($theme_meta) && property_exists($theme_meta, 'screenshot')) {
             $screenshot = $theme_meta->screenshot;
-            if (!empty($screenshot) && count($screenshot) > 0)
-            {
+            if (!empty($screenshot) && count($screenshot) > 0) {
                 $screenshot = current($screenshot);
             }
         }
@@ -380,19 +353,14 @@ class ThemeMetaData
         $screenshot_list = [];
         $screenshot_dir = theme_screenshots($themeSlug);
 
-        if (is_dir($screenshot_dir) && !is_file($screenshot_dir))
-        {
+        if (is_dir($screenshot_dir) && !is_file($screenshot_dir)) {
             $all_files = \File::allFiles($screenshot_dir);
-            if (!empty($all_files))
-            {
-                foreach ($all_files as $item)
-                {
-                    $extension = pathinfo($item,PATHINFO_EXTENSION);
-                    if (in_array($extension, ['jpg','png','jpeg']))
-                    {
+            if (!empty($all_files)) {
+                foreach ($all_files as $item) {
+                    $extension = pathinfo($item, PATHINFO_EXTENSION);
+                    if (in_array($extension, ['jpg', 'png', 'jpeg'])) {
                         $theme_meta = $this->getIndividualScreenshotMeta($themeSlug);
-                        if (!empty($theme_meta) && pathinfo($item, PATHINFO_BASENAME) == $theme_meta->primary)
-                        {
+                        if (!empty($theme_meta) && pathinfo($item, PATHINFO_BASENAME) == $theme_meta->primary) {
                             $screenshot_list['primary'] = pathinfo($item);
                         } else {
                             $screenshot_list['secondary'][] = pathinfo($item);
@@ -409,22 +377,19 @@ class ThemeMetaData
     {
         $src_markup = '';
         $image_data = $this->getIndividualThemeScreenshot($themeSlug);
-        if (!empty($image_data))
-        {
-            if (array_key_exists('primary', $image_data))
-            {
+        if (!empty($image_data)) {
+            if (array_key_exists('primary', $image_data)) {
                 $primary = $image_data['primary'];
             } else {
                 $default_theme = $this->getDefaultThemeData();
                 $default_screenshot = $this->getIndividualThemeScreenshot($default_theme->slug);
 
-                if (array_key_exists('primary', $default_screenshot))
-                {
+                if (array_key_exists('primary', $default_screenshot)) {
                     $themeSlug = property_exists($default_theme, 'slug') ? $default_theme->slug : 'default';
                     $primary = $default_screenshot['primary'];
                 }
             }
-            $src_markup = global_asset(theme_assets('screenshot', $themeSlug).'/'.$primary['basename']);
+            $src_markup = global_asset(theme_assets('screenshot', $themeSlug) . '/' . $primary['basename']);
             $src_markup = str_replace('/assets', '', $src_markup);
         }
 
@@ -433,13 +398,83 @@ class ThemeMetaData
 
     public function loadCoreStyle()
     {
-        $load_style = true;
+        $all_styles = [
+            "bootstrap.min",
+            "animate",
+            "slick",
+            "nice-select",
+            "line-awesome.min",
+            "jquery.ihavecookies",
+            "odometer",
+            "common",
+            "magnific-popup",
+            "helpers",
+            "toastr",
+            "loader"
+        ];
+
         $current_theme = $this->getHeaderHook();
-        if (property_exists($current_theme, 'loadCoreStyle'))
-        {
-            $load_style = $current_theme->loadCoreStyle;
+        if (property_exists($current_theme, 'loadCoreStyle')) {
+            $core_styles = $current_theme->loadCoreStyle;
+            $temp_array = [];
+
+            foreach($all_styles as $value){
+                $item_key = $core_styles->$value ?? "not-found";
+
+                if($item_key != false){
+                    $temp_array[] = $value;
+                }
+            }
+
+            // assign temp_array into all_styles and after that unset it from memory
+            $all_styles = $temp_array;
+            unset($temp_array);
         }
 
-        return $load_style;
+        return $all_styles;
+    }
+
+    public function loadCoreScript()
+    {
+        $all_scripts = [
+            "jquery-3.6.1.min",
+            "jquery-migrate-3.4.0.min",
+            "bootstrap.bundle.min",
+            "jquery.lazy.min",
+            "slick",
+            "odometer",
+            "viewport.jquery",
+            "wow",
+            "jquery.nice-select",
+            "jquery.syotimer.min",
+            "sweetalert2",
+            "toastr.min",
+            "jquery.nicescroll",
+            "nouislider-8.5.1.min",
+            "custom-alert-message",
+            "main",
+            "star-rating.min",
+            "md5"
+        ];
+
+        $current_theme = $this->getFooterHook();
+        if (property_exists($current_theme, 'loadCoreScript')) {
+            $core_script = $current_theme->loadCoreScript;
+            $temp_array = [];
+
+            foreach($all_scripts as $value){
+                $item_key = $core_script->$value ?? "not-found";
+
+                if($item_key != false){
+                    $temp_array[] = $value;
+                }
+            }
+
+            // assign temp_array into all_styles and after that unset it from memory
+            $all_scripts = $temp_array;
+            unset($temp_array);
+        }
+
+        return $all_scripts;
     }
 }

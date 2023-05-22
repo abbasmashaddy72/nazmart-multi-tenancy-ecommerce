@@ -27,3 +27,8 @@ function loadCoreStyle()
 {
     return ThemeDataFacade::loadCoreStyle();
 }
+
+function loadCoreScript()
+{
+    return ThemeDataFacade::loadCoreScript();
+}

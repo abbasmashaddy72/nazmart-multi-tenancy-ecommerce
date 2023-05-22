@@ -614,8 +614,6 @@ class GeneralSettingsController extends Controller
 
     public function update_database_upgrade(Request $request)
     {
-        dd(Tenant::all());
-
         setEnvValue(['APP_ENV' => 'local']);
         Artisan::call('migrate', ['--force' => true]);
         Artisan::call('tenants:migrate', ['--force' => true]);

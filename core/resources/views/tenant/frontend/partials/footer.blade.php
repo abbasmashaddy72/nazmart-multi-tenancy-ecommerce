@@ -22,55 +22,96 @@
     <link rel="stylesheet" href="{{ loadCss($cssFile) }}" type="text/css" />
 @endforeach
 
-<!-- jquery -->
-<script src="{{global_asset('assets/tenant/frontend/js/jquery-3.6.1.min.js')}}"></script>
+@php
+    $loadCoreScript = loadCoreScript();
+@endphp
 
-<!-- jquery Migrate -->
-<script src="{{global_asset('assets/tenant/frontend/js/jquery-migrate-3.4.0.min.js')}}"></script>
+@if(in_array('jquery-3.6.1.min', $loadCoreScript))
+    <!-- jquery -->
+    <script src="{{global_asset('assets/tenant/frontend/js/jquery-3.6.1.min.js')}}"></script>
+@endif
 
-<!-- bootstrap -->
-<script src="{{global_asset('assets/tenant/frontend/js/bootstrap.bundle.min.js')}}"></script>
+@if(in_array('jquery-migrate-3.4.0.min', $loadCoreScript))
+    <!-- jquery Migrate -->
+    <script src="{{global_asset('assets/tenant/frontend/js/jquery-migrate-3.4.0.min.js')}}"></script>
+@endif
 
-<!-- Lazyload Js -->
-<script src="{{global_asset('assets/tenant/frontend/js/jquery.lazy.min.js')}}"></script>
+@if(in_array('bootstrap.bundle.min', $loadCoreScript))
+    <!-- bootstrap -->
+    <script src="{{global_asset('assets/tenant/frontend/js/bootstrap.bundle.min.js')}}"></script>
+@endif
 
-<!-- Slick Slider -->
-<script src="{{global_asset('assets/tenant/frontend/js/slick.js')}}"></script>
+@if(in_array('jquery.lazy.min', $loadCoreScript))
+    <!-- Lazyload Js -->
+    <script src="{{global_asset('assets/tenant/frontend/js/jquery.lazy.min.js')}}"></script>
+@endif
 
-<!-- Odometer js -->
-<script src="{{global_asset('assets/tenant/frontend/js/odometer.js')}}"></script>
+@if(in_array('slick', $loadCoreScript))
+    <!-- Slick Slider -->
+    <script src="{{global_asset('assets/tenant/frontend/js/slick.js')}}"></script>
+@endif
 
-<!-- Viewport js -->
-<script src="{{global_asset('assets/tenant/frontend/js/viewport.jquery.js')}}"></script>
+@if(in_array('odometer', $loadCoreScript))
+    <!-- Odometer js -->
+    <script src="{{global_asset('assets/tenant/frontend/js/odometer.js')}}"></script>
+@endif
 
-<!-- All Plugins js -->
-<script src="{{global_asset('assets/tenant/frontend/js/wow.js')}}"></script>
+@if(in_array('viewport.jquery', $loadCoreScript))
+    <!-- Viewport js -->
+    <script src="{{global_asset('assets/tenant/frontend/js/viewport.jquery.js')}}"></script>
+@endif
 
-<!-- Nice Select Js -->
-<script src="{{global_asset('assets/tenant/frontend/js/jquery.nice-select.js')}}"></script>
+@if(in_array('wow', $loadCoreScript))
+    <!-- All Plugins js -->
+    <script src="{{global_asset('assets/tenant/frontend/js/wow.js')}}"></script>
+@endif
 
-<!-- COuntdown Js -->
-<script src="{{global_asset('assets/tenant/frontend/js/jquery.syotimer.min.js')}}"></script>
+@if(in_array('jquery.nice-select', $loadCoreScript))
+    <!-- Nice Select Js -->
+    <script src="{{global_asset('assets/tenant/frontend/js/jquery.nice-select.js')}}"></script>
+@endif
 
-<!-- Sweet Alert -->
-<script src="{{global_asset('assets/landlord/common/js/sweetalert2.js')}}"></script>
+@if(in_array('jquery.syotimer.min', $loadCoreScript))
+    <!-- COuntdown Js -->
+    <script src="{{global_asset('assets/tenant/frontend/js/jquery.syotimer.min.js')}}"></script>
+@endif
 
-<!-- Toastr -->
-<script src="{{global_asset('assets/common/js/toastr.min.js')}}"></script>
+@if(in_array('sweetalert2', $loadCoreScript))
+    <!-- Sweet Alert -->
+    <script src="{{global_asset('assets/landlord/common/js/sweetalert2.js')}}"></script>
+@endif
 
-<!-- Nice Scroll -->
-<script src="{{global_asset('assets/tenant/frontend/js/jquery.nicescroll.min.js')}}"></script>
+@if(in_array('toastr.min', $loadCoreScript))
+    <!-- Toastr -->
+    <script src="{{global_asset('assets/common/js/toastr.min.js')}}"></script>
+@endif
 
-<!-- Range Slider -->
-<script src="{{global_asset('assets/tenant/frontend/js/nouislider-8.5.1.min.js')}}"></script>
+@if(in_array('jquery.nicescroll.min', $loadCoreScript))
+    <!-- Nice Scroll -->
+    <script src="{{global_asset('assets/tenant/frontend/js/jquery.nicescroll.min.js')}}"></script>
+@endif
 
-<script src="{{global_asset('assets/tenant/frontend/js/custom-alert-message.js')}}"></script>
+@if(in_array('nouislider-8.5.1.min', $loadCoreScript))
+    <!-- Range Slider -->
+    <script src="{{global_asset('assets/tenant/frontend/js/nouislider-8.5.1.min.js')}}"></script>
+@endif
 
-<!-- main js -->
-<script src="{{global_asset('assets/tenant/frontend/js/main.js')}}"></script>
+@if(in_array('custom-alert-message', $loadCoreScript))
+    <script src="{{global_asset('assets/tenant/frontend/js/custom-alert-message.js')}}"></script>
+@endif
 
-<script src="{{global_asset('assets/common/js/star-rating.min.js')}}"></script>
-<script src="{{global_asset('assets/common/js/md5.js')}}"></script>
+@if(in_array('main', $loadCoreScript))
+    <!-- main js -->
+    <script src="{{global_asset('assets/tenant/frontend/js/main.js')}}"></script>
+@endif
+
+@if(in_array('star-rating.min', $loadCoreScript))
+    <script src="{{global_asset('assets/common/js/star-rating.min.js')}}"></script>
+@endif
+
+@if(in_array('md5', $loadCoreScript))
+    <script src="{{global_asset('assets/common/js/md5.js')}}"></script>
+@endif
 
 @include('landlord.frontend.partials.gdpr-cookie')
 
