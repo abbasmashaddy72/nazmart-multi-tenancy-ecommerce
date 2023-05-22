@@ -12,7 +12,15 @@
     ],
     "headerHook": [
         {
-            "loadCoreStyle": false,
+            "loadCoreStyle": {
+                "bootstrap.min": false,
+                "jquery.ihavecookies": false,
+                "odometer": false,
+                "common": false,
+                "magnific-popup": false,
+                "helpers": false,
+                "toastr": false
+            },
             "style": [
                 "bootstrap.min",
                 "style"
@@ -27,10 +35,17 @@
     ],
     "footerHook": [
         {
+            "loadCoreScript": {
+                "odometer":  false,
+                "viewport.jquery":  false,
+                "main":  false
+            },
             "style": [],
             "script": [
-                "main",
-                "imagesloaded.pkgd.min"
+                "imagesloaded.pkgd.min",
+                "isotope.pkgd.min",
+                "jquery.nicescroll.min",
+                "main"
             ],
             "blade": [],
             "widgetArea": "footer-aromatic"

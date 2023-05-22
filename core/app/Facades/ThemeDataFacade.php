@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static getAllThemeSlug
  *
  * @method static loadCoreStyle
+ * @method static loadCoreScript
  * @method static getAllThemeDataForAdmin
  * @method static getIndividualThemeData
  * @method static getHeaderHook
