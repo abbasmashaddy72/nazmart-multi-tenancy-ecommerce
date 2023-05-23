@@ -44,7 +44,7 @@ use Plugins\PageBuilder\Addons\Tenants\Hexfashion\About\AboutCounter;
 use Plugins\PageBuilder\Addons\Tenants\Furnito\Blog\BlogOne;
 use Plugins\PageBuilder\Addons\Tenants\Furnito\Common\CategoriesSlider;
 use Plugins\PageBuilder\Addons\Tenants\Furnito\Common\CollectionCard;
-use Plugins\PageBuilder\Addons\Tenants\Furnito\Product\TrendingProducts;
+use Plugins\PageBuilder\Addons\Tenants\Furnito\Product\NewCollection;
 
 
 class PageBuilderSetup
@@ -87,7 +87,7 @@ class PageBuilderSetup
                 $addons = [
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Header\HeaderOne::class,
                     CollectionCard::class,
-                    TrendingProducts::class,
+                    NewCollection::class,
                     CategoriesSlider::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\Brand::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\Testimonial::class,
@@ -132,6 +132,7 @@ class PageBuilderSetup
             } elseif($theme == 'aromatic') {
                 $addons = [
                     \Plugins\PageBuilder\Addons\Tenants\Aromatic\Header\HeaderOne::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Aromatic\Product\NewCollection::class,
                 ];
             }
 

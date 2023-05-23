@@ -1603,6 +1603,12 @@ function get_module_view($moduleName, $fileName)
     return strtolower($moduleName) . '::payment-gateway-view.' . $fileName;
 }
 
+/**
+ * @method theme_assets
+ * @param $file
+ * @param $theme
+ * @return string
+ */
 function theme_assets($file, $theme = ''): string
 {
     $name = \App\Facades\ThemeDataFacade::getSelectedThemeSlug();
