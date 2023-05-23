@@ -1366,6 +1366,13 @@ class SidebarMenuHelper
             'permissions' => ['product-create'],
         ]);
 
+        $menu_instance->add_menu_item('product-global-settings-menu-items', [
+            'route' => 'tenant.admin.product.settings',
+            'label' => __('Product Settings'),
+            'parent' => 'product-settings-menu-items',
+            'permissions' => ['product-settings'],
+        ]);
+
         $menu_instance->add_menu_item('product-reviews-menu-items', [
             'route' => 'tenant.admin.product.review',
             'label' => __('Review and Rating List'),
@@ -1659,7 +1666,7 @@ class SidebarMenuHelper
             'route' => '#',
             'label' => __('Appearance Settings'),
             'parent' => null,
-            'permissions' => ['menu-manage', 'topbar-manage', 'widget-builder', 'other-settings'],
+            'permissions' => ['menu-manage', 'topbar-manage', 'widget-builder', 'other-settings', 'section-title-manage'],
             'icon' => 'mdi mdi-folder-outline',
         ]);
 
@@ -1668,6 +1675,13 @@ class SidebarMenuHelper
             'label' => __('Theme Manage'),
             'parent' => 'appearance-settings-menu-items',
             'permissions' => null,
+        ]);
+
+        $menu_instance->add_menu_item('section-title-settings-all', [
+            'route' => 'tenant.admin.section.manage',
+            'label' => __('Section Title Manage'),
+            'parent' => 'appearance-settings-menu-items',
+            'permissions' => ['section-title-manage'],
         ]);
 
         $menu_instance->add_menu_item('topbar-settings-all', [

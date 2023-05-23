@@ -1,20 +1,21 @@
 <?php
 
-namespace Plugins\PageBuilder\Addons\Tenants\Furnito\Product;
+namespace Plugins\PageBuilder\Addons\Tenants\Aromatic\Product;
 
 use App\Helpers\SanitizeInput;
 use Modules\Attributes\Entities\Category;
 use Modules\Product\Entities\Product;
 use Modules\Product\Entities\ProductCategory;
+use Plugins\PageBuilder\Fields\Image;
 use Plugins\PageBuilder\Fields\NiceSelect;
 use Plugins\PageBuilder\Fields\Number;
 use Plugins\PageBuilder\Fields\Select;
+use Plugins\PageBuilder\Fields\Switcher;
 use Plugins\PageBuilder\Fields\Text;
 use Plugins\PageBuilder\PageBuilderBase;
 
-class TrendingProducts extends PageBuilderBase
+class NewCollection extends PageBuilderBase
 {
-
     public function preview_image()
     {
         return 'Tenant/common/brand-01.png';
@@ -33,10 +34,10 @@ class TrendingProducts extends PageBuilderBase
             'value' => $widget_saved_values['title'] ?? null,
         ]);
 
-        $output .= Text::get([
-            'name' => 'subtitle',
-            'label' => __('Section Subtitle'),
-            'value' => $widget_saved_values['subtitle'] ?? null,
+        $output .= Switcher::get([
+            'name' => 'title_line',
+            'label' => __('Show/Hide Title Line'),
+            'value' => $widget_saved_values['title_line'] ?? null,
         ]);
 
         $products = Product::where(['status_id' => 1])->get()->mapWithKeys(function ($item){
@@ -49,7 +50,7 @@ class TrendingProducts extends PageBuilderBase
             'label' => __('Select Products'),
             'options' => $products,
             'value' => $widget_saved_values['products'] ?? null,
-            'info' => __('you can select your desired products or leave it empty')
+            'info' => __('You can select your desired products or leave it empty to show latest products')
         ]);
 
         $output .= Number::get([
@@ -83,7 +84,7 @@ class TrendingProducts extends PageBuilderBase
     {
         $product_id = $this->setting_item('products');
         $title = SanitizeInput::esc_html($this->setting_item('title') ?? '');
-        $subtitle = SanitizeInput::esc_html($this->setting_item('subtitle') ?? '');
+        $title_line = $this->setting_item('title_line');
         $item_show = SanitizeInput::esc_html($this->setting_item('item_show') ?? '');
         $item_order = SanitizeInput::esc_html($this->setting_item('item_order') ?? '');
 
@@ -91,24 +92,28 @@ class TrendingProducts extends PageBuilderBase
         $padding_bottom = SanitizeInput::esc_html($this->setting_item('padding_bottom'));
 
         $products = Product::with('badge', 'campaign_product', 'inventory', 'inventoryDetail')
-                    ->where('status_id', 1)
-                    ->whereIn('id', $product_id ?? [])
-                    ->orderBy('created_at', $item_order ?? 'desc')
-                    ->take($item_show ?? 4)->get();
+                    ->where('status_id', 1);
+
+        if (!empty($product_id))
+        {
+            $products->whereIn('id', $product_id);
+        }
+
+        $products = $products->orderBy('created_at', $item_order ?? 'desc')->take($item_show ?? 4)->get();
 
         $data = [
             'padding_top'=> $padding_top,
             'padding_bottom'=> $padding_bottom,
             'title' => $title,
-            'subtitle' => $subtitle,
+            'title_line' => $title_line,
             'products'=> $products,
         ];
 
-        return self::renderView('tenant.furnito.product.trending_products',$data);
+        return self::renderView('tenant.aromatic.product.new_collection', $data);
     }
 
     public function addon_title()
     {
-        return __('Theme 2: Trending Products');
+        return __('Aromatic: New Collection');
     }
 }
