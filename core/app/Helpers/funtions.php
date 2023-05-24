@@ -439,6 +439,19 @@ function render_star($rating, $class = '')
     return $markup;
 }
 
+function mares_product_star_rating($rating, $class='')
+{
+    $markup = '<ul class="'.$class.'">';
+    if (!empty($rating)) {
+        for ($i = 0; $i < $rating; $i++) {
+            $markup .= '<li> <i class="las la-star"></i> </li>';
+        }
+    }
+    $markup .= '</ul>';
+
+    return $markup;
+}
+
 function get_footer_copyright_text()
 {
     $footer_copyright_text = get_static_option('site_footer_copyright_text');
@@ -1808,4 +1821,27 @@ function tenant_plan_theme_list()
     }
 
     return $themes;
+}
+
+function product_limited_text($text, $type)
+{
+    switch ($type) {
+        case 'title':
+            $limit = get_static_option('product_title_length') ?? 15;
+            $product_text = Str::words($text, $limit);
+            break;
+
+        case 'description';
+            $limit = get_static_option('product_description_length') ?? 30;
+            $product_text = Str::words($text, $limit);
+            break;
+    }
+
+    return $product_text;
+}
+
+function title_underline_image_src()
+{
+    $title_line = get_attachment_image_by_id(get_static_option('title_shape_image'));
+    return !empty($title_line) ? $title_line['img_url'] : '';
 }

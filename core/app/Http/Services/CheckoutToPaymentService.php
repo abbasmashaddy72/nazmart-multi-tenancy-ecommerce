@@ -28,6 +28,7 @@ class CheckoutToPaymentService
         $amount_to_charge = $payment_details->total_amount;
 
         $ordered_products = OrderProducts::where('order_id', $payment_details->id)->get();
+
         foreach ($ordered_products ?? [] as $product) {
             if ($product->campaign_product !== null) {
                 $sold_count = CampaignSoldProduct::where('product_id', $product->product_id)->first();

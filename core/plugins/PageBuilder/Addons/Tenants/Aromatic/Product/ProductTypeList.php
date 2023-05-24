@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugins\PageBuilder\Addons\Tenants\Furnito\Product;
+namespace Plugins\PageBuilder\Addons\Tenants\Aromatic\Product;
 
 use App\Helpers\SanitizeInput;
 use Modules\Attributes\Entities\Category;
@@ -9,6 +9,7 @@ use Modules\Product\Entities\ProductCategory;
 use Plugins\PageBuilder\Fields\NiceSelect;
 use Plugins\PageBuilder\Fields\Number;
 use Plugins\PageBuilder\Fields\Select;
+use Plugins\PageBuilder\Fields\Switcher;
 use Plugins\PageBuilder\Fields\Text;
 use Plugins\PageBuilder\PageBuilderBase;
 
@@ -33,10 +34,10 @@ class ProductTypeList extends PageBuilderBase
             'value' => $widget_saved_values['title'] ?? null,
         ]);
 
-        $output .= Text::get([
-            'name' => 'subtitle',
-            'label' => __('Section Subtitle'),
-            'value' => $widget_saved_values['subtitle'] ?? null,
+        $output .= Switcher::get([
+            'name' => 'title_line',
+            'label' => __('Show/Hide Title Line'),
+            'value' => $widget_saved_values['title_line'] ?? null,
         ]);
 
         $categories = Category::where(['status_id' => 1])->get()->mapWithKeys(function ($item){
@@ -100,6 +101,7 @@ class ProductTypeList extends PageBuilderBase
     {
         $categories_id = $this->setting_item('categories');
         $title = SanitizeInput::esc_html($this->setting_item('title') ?? '');
+        $title_line = SanitizeInput::esc_html($this->setting_item('title_line') ?? '');
         $subtitle = SanitizeInput::esc_html($this->setting_item('subtitle') ?? '');
         $item_show = SanitizeInput::esc_html($this->setting_item('item_show') ?? '');
         $view_all_url = SanitizeInput::esc_html($this->setting_item('view_all_url') ?? '');
@@ -126,12 +128,11 @@ class ProductTypeList extends PageBuilderBase
             $products = $products->orderBy($sort_by, $sort_to)->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')->take(6)->get();
         }
 
-
         $data = [
             'padding_top'=> $padding_top,
             'padding_bottom'=> $padding_bottom,
             'title' => $title,
-            'subtitle' => $subtitle,
+            'title_line' => $title_line,
             'view_all_url' => $view_all_url,
             'categories'=> $categories,
             'products'=> $products,
@@ -140,11 +141,11 @@ class ProductTypeList extends PageBuilderBase
             'sort_to' => $sort_to
         ];
 
-        return self::renderView('tenant.furnito.product.product_type_list',$data);
+        return self::renderView('tenant.aromatic.product.product_type_list', $data);
     }
 
     public function addon_title()
     {
-        return __('Theme Furnito: Product Type List(01)');
+        return __('Theme Aromatic: Product Type List');
     }
 }
