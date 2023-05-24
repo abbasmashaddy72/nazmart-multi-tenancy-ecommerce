@@ -302,6 +302,7 @@ Route::middleware([
         Route::get('category-wise-product/theme-furnito', [TenantFrontendController::class, 'product_by_category_ajax_two'])->name('category.wise.product.two');
         Route::get('category-wise-product/theme-medicom', [TenantFrontendController::class, 'product_by_category_ajax_three'])->name('category.wise.product.three');
         Route::get('category-wise-product/theme-bookpoint', [TenantFrontendController::class, 'product_by_category_ajax_bookpoint'])->name('category.wise.product.bookpoint');
+        Route::get('category-wise-product/theme-aromatic', [TenantFrontendController::class, 'product_by_category_ajax_aromatic'])->name('category.wise.product.aromatic');
     });
 });
 

@@ -23,6 +23,7 @@ use Plugins\PageBuilder\Addons\Landlord\Common\WhyChooseUs;
 use Plugins\PageBuilder\Addons\Landlord\Header\AboutHeaderStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\FeaturesStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\HeaderStyleOne;
+use Plugins\PageBuilder\Addons\Tenants\Aromatic\Product\BestProduct;
 use Plugins\PageBuilder\Addons\Tenants\Bookpoint\Blog\RecentBlog;
 use Plugins\PageBuilder\Addons\Tenants\Bookpoint\Common\TopAuthor;
 use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Contact\ContactAreaOne;
@@ -133,6 +134,8 @@ class PageBuilderSetup
                 $addons = [
                     \Plugins\PageBuilder\Addons\Tenants\Aromatic\Header\HeaderOne::class,
                     \Plugins\PageBuilder\Addons\Tenants\Aromatic\Product\NewCollection::class,
+                    BestProduct::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Aromatic\Product\ProductTypeList::class
                 ];
             }
 

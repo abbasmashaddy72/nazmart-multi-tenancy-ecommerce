@@ -36,12 +36,12 @@
 
                                 <x-fields.input type="number" value="{{get_static_option('product_title_length')}}" name="product_title_length"
                                                 label="{{__('Product Title Length')}}"
-                                                info="{{__('It will limit every product title length on the whole site')}}"
+                                                info="{{__('It will limit every product title word length on the whole site')}}"
                                                 tooltip="{{__('asd')}}" direction="right"/>
 
                                 <x-fields.input type="number" value="{{get_static_option('product_description_length')}}" name="product_description_length"
                                                 label="{{__('Product Description Length')}}"
-                                                info="{{__('It will limit every product description length on the whole site')}}"
+                                                info="{{__('It will limit every product description word length on the whole site')}}"
                                                 tooltip="{{__('asd')}}" direction="right"/>
 
                                 <button type="submit" class="btn btn-gradient-primary mt-5 me-2">{{__('Save Changes')}}</button>
