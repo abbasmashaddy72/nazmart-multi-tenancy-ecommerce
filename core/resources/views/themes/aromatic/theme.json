@@ -29,15 +29,16 @@
             ],
             "script": [],
             "blade": [],
-            "navbarArea": "navbar"
+            "navbarArea": "navbar",
+            "breadcrumbArea": "breadcrumb"
         }
     ],
     "footerHook": [
         {
             "loadCoreScript": {
-                "odometer":  false,
-                "viewport.jquery":  false,
-                "main":  false
+                "odometer": false,
+                "viewport.jquery": false,
+                "main": false
             },
             "style": [],
             "script": [

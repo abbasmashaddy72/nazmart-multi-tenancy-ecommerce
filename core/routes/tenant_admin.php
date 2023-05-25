@@ -154,6 +154,14 @@ Route::middleware([
     });
 
     /* ------------------------------------------
+    Breadcrumb Settings ROUTES
+    -------------------------------------------- */
+    Route::controller(GeneralSettingsController::class)->group(function (){
+        Route::get('/breadcrumb','breadcrumb')->name('admin.breadcrumb.manage');
+        Route::post('/breadcrumb/update','breadcrumb_update')->name('admin.breadcrumb.update');
+    });
+
+    /* ------------------------------------------
      PAGES MANAGE ROUTES
     -------------------------------------------- */
     Route::controller(\App\Http\Controllers\Landlord\Admin\PagesController::class)->prefix('pages')->group(function () {

@@ -102,7 +102,6 @@ class ProductTypeList extends PageBuilderBase
         $categories_id = $this->setting_item('categories');
         $title = SanitizeInput::esc_html($this->setting_item('title') ?? '');
         $title_line = SanitizeInput::esc_html($this->setting_item('title_line') ?? '');
-        $subtitle = SanitizeInput::esc_html($this->setting_item('subtitle') ?? '');
         $item_show = SanitizeInput::esc_html($this->setting_item('item_show') ?? '');
         $view_all_url = SanitizeInput::esc_html($this->setting_item('view_all_url') ?? '');
 

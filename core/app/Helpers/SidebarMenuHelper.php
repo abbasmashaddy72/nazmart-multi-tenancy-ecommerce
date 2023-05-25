@@ -1684,6 +1684,13 @@ class SidebarMenuHelper
             'permissions' => ['section-title-manage'],
         ]);
 
+        $menu_instance->add_menu_item('breadcrumb-settings-all', [
+            'route' => 'tenant.admin.breadcrumb.manage',
+            'label' => __('Breadcrumb Settings'),
+            'parent' => 'appearance-settings-menu-items',
+            'permissions' => ['breadcrumb-settings'],
+        ]);
+
         $menu_instance->add_menu_item('topbar-settings-all', [
             'route' => 'tenant.admin.topbar.settings',
             'label' => __('Topbar Settings'),

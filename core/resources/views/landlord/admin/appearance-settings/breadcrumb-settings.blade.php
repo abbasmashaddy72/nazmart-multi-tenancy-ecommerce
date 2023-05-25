@@ -13,8 +13,16 @@
                 <form class="forms-sample" method="post" action="{{route(route_prefix().'admin.breadcrumb.update')}}">
                     @csrf
 
-                    <x-fields.media-upload name="background_left_shape_image" title="{{__('Left Shape Image')}}"/>
-                    <x-fields.media-upload name="background_right_shape_image" title="{{__('Right Shape Image')}}"/>
+                    @tenant
+                        <x-fields.media-upload name="background_image_one" title="{{__('Image One')}}"/>
+                        <x-fields.media-upload name="background_image_two" title="{{__('Image Two')}}"/>
+                        <x-fields.media-upload name="background_image_three" title="{{__('Image Three')}}"/>
+                        <x-fields.media-upload name="background_image_four" title="{{__('Image Four')}}"/>
+                        <x-fields.media-upload name="background_image_five" title="{{__('Image Five')}}"/>
+                    @else
+                        <x-fields.media-upload name="background_left_shape_image" title="{{__('Left Shape Image')}}"/>
+                        <x-fields.media-upload name="background_right_shape_image" title="{{__('Right Shape Image')}}"/>
+                    @endtenant
 
                     <button type="submit" class="btn btn-gradient-primary mt-5 me-2">{{__('Save Changes')}}</button>
                 </form>

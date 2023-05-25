@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugins\PageBuilder\Addons\Tenants\Furnito\Common;
+namespace Plugins\PageBuilder\Addons\Tenants\Aromatic\Common;
 
 use App\Helpers\LanguageHelper;
 use App\Helpers\SanitizeInput;
@@ -26,7 +26,7 @@ class Brand extends PageBuilderBase
         $output .= $this->default_fields();
         $widget_saved_values = $this->get_settings();
 
-        $brand = \Modules\Attributes\Entities\Brand::select('id','name')->get()->mapWithKeys(function ($item){
+        $brand = \Modules\Attributes\Entities\Brand::select('id', 'name')->get()->mapWithKeys(function ($item) {
             return [$item->id => $item->name];
         })->toArray();
 
@@ -36,7 +36,7 @@ class Brand extends PageBuilderBase
             'label' => __('Select Brand'),
             'options' => $brand,
             'value' => $widget_saved_values['brand'] ?? null,
-            'info' => __('you can select your desired campaign or leave it empty')
+            'info' => __('You can select your desired campaign or leave it empty')
         ]);
 
         $output .= Number::get([
@@ -69,30 +69,29 @@ class Brand extends PageBuilderBase
         $padding_top = SanitizeInput::esc_html($this->setting_item('padding_top'));
         $padding_bottom = SanitizeInput::esc_html($this->setting_item('padding_bottom'));
 
-        $brands = [];
+        $brands = \Modules\Attributes\Entities\Brand::query();
         if (!empty($brands_id)) {
-            $brands = \Modules\Attributes\Entities\Brand::whereIn('id', $brands_id);
+            $brands->whereIn('id', $brands_id);
+        }
 
-            if (!empty($item_show)) {
-                $brands = $brands->take($item_show)->get();
-            } else {
-                $brands = $brands->take(3)->get();
-            }
+        if (!empty($item_show)) {
+            $brands = $brands->take($item_show)->get();
+        } else {
+            $brands = $brands->take(8)->get();
         }
 
         $data = [
-            'padding_top'=> $padding_top,
-            'padding_bottom'=> $padding_bottom,
-            'brands'=> $brands,
+            'padding_top' => $padding_top,
+            'padding_bottom' => $padding_bottom,
+            'brands' => $brands,
             'item_pagination' => $item_pagination ?? 6
         ];
 
-        return self::renderView('tenant.furnito.common.brand',$data);
-
+        return self::renderView('tenant.aromatic.common.brand', $data);
     }
 
     public function addon_title()
     {
-        return __('Them 2: Brand(01)');
+        return __('Aromatic: Brand');
     }
 }

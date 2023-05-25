@@ -124,7 +124,7 @@
             </div>
         </div>
         <div class="imageloaded">
-            <div class="row grid margin-top-40">
+            <div class="row grid margin-top-40 markup_wrapper">
                 @foreach($data['products'] ?? [] as $product)
                     @php
                         $data_info = get_product_dynamic_price($product);
@@ -189,7 +189,7 @@
 
                 $.ajax({
                     type: 'GET',
-                    url: "{{route('tenant.category.wise.product.two')}}",
+                    url: "{{route('tenant.category.wise.product.aromatic')}}",
                     data: {
                         category: tab,
                         limit: limit,

@@ -454,6 +454,7 @@ class GeneralSettingsController extends Controller
     public function update_third_party_script_settings(Request $request)
     {
         $this->validate($request, [
+            'instagram_access_token' => 'nullable|string',
             'tawk_api_key' => 'nullable|string',
             'google_adsense_id' => 'nullable|string',
             'site_third_party_tracking_code' => 'nullable|string',
@@ -463,18 +464,14 @@ class GeneralSettingsController extends Controller
         ]);
 
         update_static_option('site_disqus_key', $request->site_disqus_key);
-        update_static_option('site_google_analytics', $request->site_google_analytics);
-        update_static_option('tawk_api_key', $request->tawk_api_key);
-        update_static_option('site_third_party_tracking_code', $request->site_third_party_tracking_code);
-        update_static_option('site_google_captcha_v3_site_key', $request->site_google_captcha_v3_site_key);
-        update_static_option('site_google_captcha_v3_secret_key', $request->site_google_captcha_v3_secret_key);
 
         $fields = [
             'site_google_captcha_v3_secret_key',
             'site_google_captcha_v3_site_key',
             'site_third_party_tracking_code',
             'site_google_analytics',
-            'tawk_api_key'
+            'tawk_api_key',
+            'instagram_access_token'
         ];
         foreach ($fields as $field) {
             update_static_option($field, $request->$field);
@@ -686,6 +683,11 @@ class GeneralSettingsController extends Controller
         $data = $request->validate([
             'background_left_shape_image' => 'nullable|integer',
             'background_right_shape_image' => 'nullable|integer',
+            'background_image_one' => 'nullable|integer',
+            'background_image_two' => 'nullable|integer',
+            'background_image_three' => 'nullable|integer',
+            'background_image_four' => 'nullable|integer',
+            'background_image_five' => 'nullable|integer'
         ]);
 
         foreach ($data as $key => $item) {

@@ -19,23 +19,15 @@ class BladeDirectiveServiceProvider extends ServiceProvider
         });
 
         Blade::directive('tenant', function () {
-            return "<?php if(tenant()) { ?>";
+            return "<?php if(tenant()): ?>";
         });
 
-        Blade::directive('endtenant', function ($expression) {
-            return "<?php } ?>";
+        Blade::directive('else', function () {
+            return "<?php else: ?>";
         });
 
-//        Blade::directive('themeInclude', function ($expression){
-//            \Artisan::call('view:clear');
-//            $real_path = str_replace(["'","."], ["","/"], $expression);
-//            return $real_path;
-////            $real_path = str_replace(["'","."], ["","/"], resource_path((include_theme_path($real_path))));
-////            return $real_path;
-////            echo include_theme_path($real_path);
-////            return  Blade::include(include_theme_path($expression));
-////            dd(include_theme_path(str_replace("'",'',$expression)));
-////            return Blade::include(include_theme_path(str_replace("'",'',$expression)));
-//        });
+        Blade::directive('endtenant', function () {
+            return "<?php endif ?>";
+        });
     }
 }
