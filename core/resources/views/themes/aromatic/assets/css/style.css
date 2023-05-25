@@ -1,9 +1,9 @@
 @charset "UTF-8";
 /*
 Theme Name: Newspaper Magazine Bussiness
-Theme URI: 
-Author: 
-Author URI: 
+Theme URI:
+Author:
+Author URI:
 Description: Newspaper Magazine is a business website template
 Version: 1.0.0
 */
@@ -1768,7 +1768,7 @@ input[type=number] {
   }
 }
 /*----------------------------------------------
-    # Nav bar 
+    # Nav bar
 ----------------------------------------------*/
 .mobile-logo {
   display: none;
@@ -16942,3 +16942,5 @@ button.btn-submit.bg-color-four {
 .noUi-background {
   background: #DDDDDD;
 }
+
+

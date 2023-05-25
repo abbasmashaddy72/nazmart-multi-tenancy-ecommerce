@@ -76,6 +76,8 @@
         <link rel="stylesheet" href="{{global_asset('assets/common/css/loader.css')}}">
     @endif
 
+    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/footer-style.css')}}">
+
     @foreach($theme_header_css_files ?? [] as $cssFile)
         <link rel="stylesheet" href="{{ loadCss($cssFile) }}" type="text/css" />
     @endforeach

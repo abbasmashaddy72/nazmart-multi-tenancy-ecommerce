@@ -135,11 +135,9 @@
 <script>
     let site_currency_symbol = '{{ site_currency_symbol() }}';
 
-    @if(tenant()->theme_slug == 'hexfashion')
+    @if(tenant()->theme_slug == 'hexfashion' || tenant()->theme_slug == 'furnito' || tenant()->theme_slug == 'aromatic')
         $('.theme-one-footer .col-lg-3').removeClass('col-lg-3').addClass('col-lg-4');
-    @elseif(tenant()->theme_slug == 'furnito')
         $('.theme-two-footer .col-lg-3').removeClass('col-lg-3').addClass('col-lg-4');
-    @elseif(tenant()->theme_slug == 'aromatic')
         $('.theme-aromatic-footer .col-lg-3').removeClass('col-lg-3').addClass('col-lg-4');
     @endif
 </script>

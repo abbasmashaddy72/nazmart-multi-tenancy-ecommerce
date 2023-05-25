@@ -30,6 +30,14 @@
                                 <label for="site_google_captcha_v3_secret_key">{{__('Google Captcha V3 Secret Key')}}</label>
                                 <input type="text" name="site_google_captcha_v3_secret_key"  class="form-control" value="{{get_static_option('site_google_captcha_v3_secret_key')}}" id="site_google_captcha_v3_secret_key">
                             </div>
+
+                            @tenant
+                                <div class="form-group">
+                                    <label for="tawk_api_key">{{__('Instagram Access Token')}}</label>
+                                    <input type="text" name="instagram_access_token"  class="form-control" value="{{get_static_option('instagram_access_token')}}" id="instagram_access_token">
+                                </div>
+                            @endtenant
+
                             <div class="form-group">
                                 <label for="tawk_api_key">{{__('Tawk.to API')}}</label>
                                 <textarea name="tawk_api_key" id="tawk_api_key" cols="30" rows="10" class="form-control">{{get_static_option('tawk_api_key')}}</textarea>

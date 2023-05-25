@@ -22,6 +22,8 @@ use Plugins\WidgetBuilder\Widgets\TenantNavigationMenuWidget;
 use Plugins\WidgetBuilder\Widgets\TenantNavigationMenuWidgetTwo;
 use Plugins\WidgetBuilder\Widgets\TenantNewsletterOne;
 use Plugins\WidgetBuilder\Widgets\TenantNewsletterTwo;
+use Plugins\WidgetBuilder\Widgets\Tenants\Aromatic\BottomPaymentGatewayImage;
+use Plugins\WidgetBuilder\Widgets\Tenants\Aromatic\BottomNavigationMenuWidget;
 use Plugins\WidgetBuilder\Widgets\Tenants\Bookpoint\ContactWidget;
 use Plugins\WidgetBuilder\Widgets\Tenants\Bookpoint\NavigationMenuWidgetBookpoint;
 use Plugins\WidgetBuilder\Widgets\Tenants\Bookpoint\NewsletterBookpoint;
@@ -32,6 +34,9 @@ use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterContact;
 use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterPaymentGatewaysWidget;
 use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\SocialFollowWidget;
 use Plugins\WidgetBuilder\Widgets\TenantSidebarBannerWidget;
+use Plugins\WidgetBuilder\Widgets\Tenants\Aromatic\ContactWidget as AromaticContactWidget;
+use Plugins\WidgetBuilder\Widgets\Tenants\Aromatic\TenantImageWidget as AromaticImageWidget;
+use Plugins\WidgetBuilder\Widgets\Tenants\Aromatic\SocialFollowWidget as  AromaticSocialFollow;
 
 class WidgetBuilderSetup
 {
@@ -67,7 +72,14 @@ class WidgetBuilderSetup
             NewsletterBookpoint::class,
             ContactWidget::class,
             NavigationMenuWidgetBookpoint::class,
-            TenantImageWidget::class
+            TenantImageWidget::class,
+
+            // Aromatic
+            AromaticContactWidget::class,
+            AromaticImageWidget::class,
+            AromaticSocialFollow::class,
+            BottomNavigationMenuWidget::class,
+            BottomPaymentGatewayImage::class
         ];
 
         // Third party custom addons
