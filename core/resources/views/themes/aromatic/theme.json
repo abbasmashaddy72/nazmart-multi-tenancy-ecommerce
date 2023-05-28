@@ -13,7 +13,6 @@
     "headerHook": [
         {
             "loadCoreStyle": {
-                "bootstrap.min": false,
                 "jquery.ihavecookies": false,
                 "odometer": false,
                 "common": false,
@@ -21,7 +20,7 @@
                 "toastr": false
             },
             "style": [
-                "bootstrap.min",
+
                 "style"
             ],
             "rtl_style": [

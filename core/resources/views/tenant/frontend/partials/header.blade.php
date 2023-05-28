@@ -97,8 +97,16 @@
     @endif
 
     @include('tenant.frontend.partials.css-variable', ['theme_slug' => $theme_slug])
+
     <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/shop-order-custom.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/digital-shop-common.css')}}">
+    @if(getSelectedThemeSlug() == 'bookpoint')
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/shop-common.css')}}">
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/digital-shop-common.css')}}">
+    @else
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/digital-shop-common.css')}}">
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/shop-common.css')}}">
+    @endif
+
 
     @yield('style')
 

@@ -23,6 +23,8 @@ use Plugins\PageBuilder\Addons\Landlord\Common\WhyChooseUs;
 use Plugins\PageBuilder\Addons\Landlord\Header\AboutHeaderStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\FeaturesStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\HeaderStyleOne;
+use Plugins\PageBuilder\Addons\Tenants\Aromatic\About\AboutImage;
+use Plugins\PageBuilder\Addons\Tenants\Aromatic\Common\BrandTwo;
 use Plugins\PageBuilder\Addons\Tenants\Aromatic\Common\InstagramWidget;
 use Plugins\PageBuilder\Addons\Tenants\Aromatic\Product\BestProduct;
 use Plugins\PageBuilder\Addons\Tenants\Bookpoint\Blog\RecentBlog;
@@ -99,7 +101,7 @@ class PageBuilderSetup
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Contact\ContactAreaOne::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Contact\GoogleMap::class,
                     BlogOne::class,
-                    \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutCounter::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutImage::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutStory::class,
                 ];
             } elseif ($theme == 'medicom') {
@@ -125,7 +127,7 @@ class PageBuilderSetup
                     \Plugins\PageBuilder\Addons\Tenants\Bookpoint\Product\FeaturedProductSlider::class,
 
                     //temporary addons
-                    \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutCounter::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutImage::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutStory::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\Testimonial::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\Services::class,
@@ -138,7 +140,12 @@ class PageBuilderSetup
                     BestProduct::class,
                     \Plugins\PageBuilder\Addons\Tenants\Aromatic\Product\ProductTypeList::class,
                     \Plugins\PageBuilder\Addons\Tenants\Aromatic\Common\Brand::class,
-                    InstagramWidget::class
+                    BrandTwo::class,
+                    InstagramWidget::class,
+                    AboutImage::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Aromatic\Common\Services::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Aromatic\Contact\GoogleMap::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Aromatic\Contact\ContactArea::class
                 ];
             }
 
