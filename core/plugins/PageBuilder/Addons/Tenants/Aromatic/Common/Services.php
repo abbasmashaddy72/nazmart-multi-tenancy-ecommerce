@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugins\PageBuilder\Addons\Tenants\Furnito\Common;
+namespace Plugins\PageBuilder\Addons\Tenants\Aromatic\Common;
 
 use App\Helpers\LanguageHelper;
 use App\Helpers\SanitizeInput;
@@ -69,7 +69,7 @@ class Services extends PageBuilderBase
             'repeater_data' => $repeater_data,
         ];
 
-        return self::renderView('tenant.furnito.common.services', $data);
+        return self::renderView('tenant.aromatic.common.services', $data);
 
     }
 
@@ -80,6 +80,6 @@ class Services extends PageBuilderBase
 
     public function addon_title()
     {
-        return __('Theme 2: Our Services(01)');
+        return __('Aromatic: Our Services');
     }
 }

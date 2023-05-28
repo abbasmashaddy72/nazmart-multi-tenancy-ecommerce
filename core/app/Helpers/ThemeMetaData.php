@@ -449,7 +449,7 @@ class ThemeMetaData
             "jquery.syotimer.min",
             "sweetalert2",
             "toastr.min",
-            "jquery.nicescroll",
+            "jquery.nicescroll.min",
             "nouislider-8.5.1.min",
             "custom-alert-message",
             "main",

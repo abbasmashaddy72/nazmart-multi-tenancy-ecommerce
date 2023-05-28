@@ -13,7 +13,7 @@
         ------------------------------------------*/
         var globalSlickInit = $('.global-slick-init');
         if (globalSlickInit.length > 0) {
-            //todo have to check slider item 
+            //todo have to check slider item
             $.each(globalSlickInit, function(index, value) {
                 if ($(this).children('div').length > 1) {
                     //todo configure slider settings object
@@ -89,7 +89,7 @@
             });
         }
 
-        /* 
+        /*
         ========================================
             CountDown Timer
         ========================================
@@ -104,7 +104,7 @@
 
         /*
         ========================================
-            Category Mega menu 
+            Category Mega menu
         ========================================
         */
         $(document).on('click', '.cate-list .menu-item-has-children', function(e) {
@@ -117,7 +117,7 @@
             Nice Scroll js
         ========================================
         */
-        $(".category-megamenu-inneraa, .navbar-area-side, .single-addto-cart-wrappers").niceScroll({});
+        // $(".category-megamenu-inneraa, .navbar-area-side, .single-addto-cart-wrappers").niceScroll({});
 
         /*
         ========================================
@@ -194,7 +194,7 @@
             $(".navbar-area-side").toggleClass("active");
         });
 
-        /* 
+        /*
         ========================================
             Tab
         ========================================
@@ -210,9 +210,9 @@
             $("#" + tab_id).addClass('active');
         });
 
-        /* 
+        /*
         ========================================
-            Pagination 
+            Pagination
         ========================================
         */
 
@@ -227,7 +227,7 @@
 
         $('.lazyloads').Lazy();
 
-        /* 
+        /*
         ----------------------------------------
             SearchBar
         ----------------------------------------
@@ -279,7 +279,7 @@
         });
 
 
-        /* 
+        /*
         ========================================
             Product Quantity js
         ========================================
@@ -318,7 +318,7 @@
 
         });
 
-        /* 
+        /*
         ========================================
             Click Clear Contents
         ========================================
@@ -332,7 +332,7 @@
             $('.click-hide-filter').hide();
         });
 
-        /* 
+        /*
         ========================================
             top-menu-category Click
         ========================================
@@ -343,7 +343,7 @@
             $(this).addClass('active');
         });
 
-        /* 
+        /*
         ========================================
             Click Active Class
         ========================================
@@ -355,7 +355,7 @@
             $(this).addClass('active');
         });
 
-        /* 
+        /*
         ========================================
             Shop Responsive Sidebar
         ========================================
@@ -366,7 +366,7 @@
         $(document).on('click', '.sidebar-icon', function() {
             $('.shop-close, .shop-close-main, .body-overlay').addClass('active');
         });
-        /* 
+        /*
         ========================================
             Discount Popup Click
         ========================================
@@ -382,7 +382,7 @@
         }, 3000);
 
 
-        /* 
+        /*
         ========================================
             Cart Click Loading
         ========================================
@@ -396,7 +396,7 @@
         });
 
 
-        /* 
+        /*
         ========================================
             Cart Click Close
         ========================================
@@ -415,9 +415,9 @@
         });
 
 
-        /* 
+        /*
         ========================================
-            Addto-Cart Click Close 
+            Addto-Cart Click Close
         ========================================
         */
 
@@ -425,7 +425,7 @@
             $(this).parent().hide(100);
         });
 
-        /* 
+        /*
         ========================================
             Click Open SignIn SignUp
         ========================================
@@ -445,7 +445,7 @@
             $('.checkout-address-form-wrapper').toggleClass('active');
         });
 
-        /* 
+        /*
         ========================================
             Popup Modal Cart
         ========================================
@@ -459,7 +459,7 @@
         });
 
 
-        /* 
+        /*
         ========================================
             Dashboard Responsive Sidebar
         ========================================

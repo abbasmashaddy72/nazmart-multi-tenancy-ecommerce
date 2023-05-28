@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugins\PageBuilder\Addons\Tenants\Furnito\Contact;
+namespace Plugins\PageBuilder\Addons\Tenants\Aromatic\Contact;
 use App\Facades\GlobalLanguage;
 use App\Helpers\LanguageHelper;
 use App\Helpers\SanitizeInput;
@@ -14,7 +14,7 @@ use Plugins\PageBuilder\Helpers\RepeaterField;
 use Plugins\PageBuilder\PageBuilderBase;
 use function __;
 
-class ContactAreaOne extends PageBuilderBase
+class ContactArea extends PageBuilderBase
 {
 
     public function preview_image()
@@ -36,12 +36,6 @@ class ContactAreaOne extends PageBuilderBase
             'value' => $widget_saved_values['title'] ?? null,
         ]);
 
-        $output .= Textarea::get([
-            'name' => 'description',
-            'label' => __('Description'),
-            'value' => $widget_saved_values['description'] ?? null,
-        ]);
-
         //repeater
         $output .= Repeater::get([
             'multi_lang' => false,
@@ -57,12 +51,7 @@ class ContactAreaOne extends PageBuilderBase
                     'type' => RepeaterField::TEXT,
                     'name' => 'repeater_sub_info',
                     'label' => __('Sub Information')
-                ],
-                [
-                    'type' => RepeaterField::ICON_PICKER,
-                    'name' => 'repeater_icon',
-                    'label' => __('Icon')
-                ],
+                ]
             ]
         ]);
 
@@ -86,7 +75,6 @@ class ContactAreaOne extends PageBuilderBase
     public function frontend_render()
     {
         $title = SanitizeInput::esc_html($this->setting_item('title')) ?? '';
-        $description = SanitizeInput::esc_html($this->setting_item('description')) ?? '';
 
         $custom_form_id = SanitizeInput::esc_html($this->setting_item('custom_form_id'));
         $repeater_data = $this->setting_item('contact_tenant_repeater');
@@ -95,14 +83,13 @@ class ContactAreaOne extends PageBuilderBase
 
         $data = [
             'title'=> $title,
-            'description'=> $description,
             'custom_form_id'=> $custom_form_id,
             'repeater_data'=> $repeater_data,
             'padding_top'=> $padding_top,
             'padding_bottom'=> $padding_bottom,
         ];
 
-        return self::renderView('tenant.furnito.contact.contact-area',$data);
+        return self::renderView('tenant.aromatic.contact.contact-area',$data);
 
     }
 
@@ -113,6 +100,6 @@ class ContactAreaOne extends PageBuilderBase
 
     public function addon_title()
     {
-        return __('Theme 1: Contact Area(01)');
+        return __('Aromatic: Contact Area');
     }
 }

@@ -1,50 +1,37 @@
-
-<!-- Contact area Starts -->
-<section class="contact-theme-area" data-padding-top="{{$data['padding_top']}}" data-padding-bottom="{{$data['padding_bottom']}}">
-    <div class="container container-one">
-        <div class="row gx-5">
-            <div class="col-lg-4 mt-4">
-                <div class="contact-left-wrapper">
-                    <div class="section-title theme-one text-left">
-                        <h2 class="title"> {{\App\Helpers\SanitizeInput::esc_html($data['title'])}} </h2>
-                    </div>
-                    <div class="contact-contents mt-4">
-                        <p class="contact-contents-para"> {{\App\Helpers\SanitizeInput::esc_html($data['description'])}} </p>
-                        <div class="contact-contents-inner mt-4 mt-lg-5">
-                            @foreach($data['repeater_data']['repeater_info_'] ?? [] as $key => $info)
-                                <div class="contact-contents-inner-single">
-                                <div class="contact-contents-inner-single-flex">
-                                    <div class="contact-contents-inner-single-icon">
-                                        <i class="{{$data['repeater_data']['repeater_icon_'][$key] ?? ''}}"></i>
-                                    </div>
-                                    <div class="contact-contents-inner-single-contents">
-                                        <h4 class="contact-contents-inner-single-contents-title fw-500"> {{\App\Helpers\SanitizeInput::esc_html($data['repeater_data']['repeater_info_'][$key]) ?? ''}} </h4>
-                                        <span class="contact-contents-inner-single-contents-item"> <a href="javascript:void(0)"> {{\App\Helpers\SanitizeInput::esc_html($data['repeater_data']['repeater_sub_info_'][$key]) ?? ''}} </a> </span>
-                                    </div>
-                                </div>
+<!-- Contact Area Starts -->
+<section class="contact-area" data-padding-top="{{$data['padding_top']}}" data-padding-bottom="{{$data['padding_bottom']}}">
+    <div class="container-three">
+        <div class="row align-items-center">
+            <div class="col-xl-5 col-lg-6 margin-top-30">
+                <div class="contact-wrappers bg-item-four">
+                    <div class="contacts-content">
+                        <h2 class="contact-title"> {{$data['title'] ?? ''}} </h2>
+                        @foreach($data['repeater_data']['repeater_info_'] ?? [] as $key => $item)
+                            <div class="single-contact-item margin-top-30">
+                                <span class="item-title"> {{esc_html($data['repeater_data']['repeater_info_'][$key]) ?? ''}} </span>
+                                <span class="item-para"> {{esc_html($data['repeater_data']['repeater_sub_info_'][$key]) ?? ''}} </span>
                             </div>
-                            @endforeach
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
-            <div class="col-lg-8 mt-4">
-                <div class="contact-forms-wrapper">
-                    <div class="section-title theme-one text-left">
-                        <h2 class="title"> {{__('Send us an Email')}} </h2>
-                    </div>
-                    <div class="contact-content-theme">
-                        @if(!empty($data['custom_form_id']))
-                            @php $form_details = \App\Models\FormBuilder::find($data['custom_form_id']); @endphp
-                        @endif
-                        {!! \App\Helpers\FormBuilderCustom::render_form(optional($form_details)->id,null,null,'btn-default') !!}
-                    </div>
+            <div class="col-xl-7 col-lg-6 margin-top-30">
+                <div class="contact-form">
+                    @if(!empty($data['custom_form_id']))
+                        @php
+                            $form_details = \App\Models\FormBuilder::find($data['custom_form_id']);
+                        @endphp
+                    @endif
+
+                    {!! \App\Helpers\FormBuilderCustom::render_form(optional($form_details)->id,null,null,'btn-default') !!}
                 </div>
             </div>
         </div>
     </div>
 </section>
-<!-- Contact area end -->
+<!-- Contact Area end -->
+
+
 
 @section('scripts')
     <script>
@@ -91,6 +78,16 @@
                     btn.text('{{__("Submit Message")}}');
                 }
             });
+        });
+
+        $(document).ready(function () {
+            let contact_form_name = `{{$form_details->title ?? ''}}`;
+            let appendable = `<label class="contact-title" for="#"> ${contact_form_name} </label>`;
+            let form = $('.contact-form form');
+
+            form.prepend(appendable);
+            form.find('textarea').attr('rows', 3);
+            $('.contact-title').addClass('mb-4');
         });
     </script>
 

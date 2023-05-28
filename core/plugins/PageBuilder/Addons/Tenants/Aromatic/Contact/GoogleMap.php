@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugins\PageBuilder\Addons\Tenants\Furnito\Contact;
+namespace Plugins\PageBuilder\Addons\Tenants\Aromatic\Contact;
 use App\Helpers\LanguageHelper;
 use App\Helpers\SanitizeInput;
 use App\Models\FormBuilder;
@@ -71,7 +71,7 @@ class GoogleMap extends PageBuilderBase
             'padding_bottom'=> $padding_bottom,
         ];
 
-        return self::renderView('tenant.contact.google-map',$data);
+        return self::renderView('tenant.aromatic.contact.google-map',$data);
 
     }
 

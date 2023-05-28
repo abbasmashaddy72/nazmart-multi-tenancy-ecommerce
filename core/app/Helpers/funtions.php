@@ -1820,3 +1820,13 @@ function number_to_word(int $number)
 {
     return (new \App\Helpers\NumberToWordHelper())->convertNumber($number) ?? '';
 }
+
+function esc_html($text)
+{
+    return \App\Helpers\SanitizeInput::esc_html($text);
+}
+
+function esc_url($text)
+{
+    return \App\Helpers\SanitizeInput::esc_url($text);
+}
