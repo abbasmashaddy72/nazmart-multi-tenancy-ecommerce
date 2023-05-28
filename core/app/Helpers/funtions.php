@@ -1695,26 +1695,6 @@ function externalAddonImagepath($moduleName)
     return 'core/Modules/' . $moduleName . '/assets/addon-image/'; // 'assets/plugins/PageBuilder/images'
 }
 
-function getSelectedThemeSlug()
-{
-    return \App\Facades\ThemeDataFacade::getSelectedThemeSlug();
-}
-
-function getSelectedThemeData()
-{
-    return \App\Facades\ThemeDataFacade::getSelectedThemeData();
-}
-
-function getAllThemeDataForAdmin()
-{
-    return \App\Facades\ThemeDataFacade::getAllThemeDataForAdmin();
-}
-
-function getAllThemeData()
-{
-    return \App\Facades\ThemeDataFacade::getAllThemeData();
-}
-
 function getPricePlanBasedAllThemeData($themeNameArray)
 {
     $themeList = [];
@@ -1728,21 +1708,6 @@ function getPricePlanBasedAllThemeData($themeNameArray)
     }
 
     return $themeList;
-}
-
-function getIndividualThemeDetails($theme_slug)
-{
-    return \App\Facades\ThemeDataFacade::getIndividualThemeDetails($theme_slug);
-}
-
-function renderPrimaryThemeScreenshot($theme_slug)
-{
-    return \App\Facades\ThemeDataFacade::renderPrimaryThemeScreenshot($theme_slug);
-}
-
-function renderFooterHookBladeFile()
-{
-    return \App\Facades\ThemeDataFacade::renderFooterHookBladeFile();
 }
 
 function theme_custom_name($theme_data)
@@ -1844,4 +1809,14 @@ function title_underline_image_src()
 {
     $title_line = get_attachment_image_by_id(get_static_option('title_shape_image'));
     return !empty($title_line) ? $title_line['img_url'] : '';
+}
+
+/**
+ * @param integer $number
+ * @return mixed
+ * @see number_to_word
+ */
+function number_to_word(int $number)
+{
+    return (new \App\Helpers\NumberToWordHelper())->convertNumber($number) ?? '';
 }
