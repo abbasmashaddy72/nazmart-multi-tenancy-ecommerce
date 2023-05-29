@@ -173,7 +173,6 @@
                 <h6 class="payment-label fw-500"> {{__('Select Payment Method')}} </h6>
                 <div class="payment-card mt-4">
 
-{{--                    {!! render_payment_gateway_for_form() !!}--}}
                     {!! (new \App\Helpers\PaymentGatewayRenderHelper())->renderPaymentGatewayForForm() !!}
 
                     <div class="form-group d-none manual_transaction_id">
@@ -194,11 +193,11 @@
 
             <div class="btn-wrapper mt-3">
                 <a href="javascript:void(0)"
-                   class="cmn-btn cmn-btn-bg-2 w-100 radius-0 checkout_disable proceed_checkout_btn"> {{__('Proceed to Checkout')}} </a>
+                   class="cmn-btn cmn-btn-bg-1 w-100 radius-0 checkout_disable proceed_checkout_btn"> {{__('Proceed to Checkout')}} </a>
             </div>
 
             <div class="btn-wrapper mt-3">
-                <a href="{{route('tenant.shop.cart')}}" class="cmn-btn cmn-btn-outline-two w-100 radius-0"> {{__('Return to Cart')}} </a>
+                <a href="{{route('tenant.shop.cart')}}" class="cmn-btn cmn-btn-outline-one w-100 radius-0"> {{__('Return to Cart')}} </a>
             </div>
         </div>
     </div>

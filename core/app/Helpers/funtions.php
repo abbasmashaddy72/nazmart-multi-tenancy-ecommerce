@@ -341,7 +341,7 @@ function get_theme_image($slug)
     //Info - Theme image path - assets/img/theme
     $themes = [];
 
-    foreach (range(1, 12) as $item) {
+    foreach (range(1, 14) as $item) {
         $themes['theme-' . $item] = global_asset('assets/img/theme/th-' . $item . '.jpg');
     }
 

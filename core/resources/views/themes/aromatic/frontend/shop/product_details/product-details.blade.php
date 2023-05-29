@@ -147,11 +147,11 @@
 
         <!-- Shop Details area end -->
     <section class="shop-details-area padding-top-100 padding-bottom-50">
-        <div class="container container-one">
-            <div class="row">
-                @include('tenant.frontend.shop.product_details.partials.product-images-slider')
-                <div class="col-lg-6">
-                    @include('tenant.frontend.shop.product_details.partials.product-options')
+        <div class="container">
+            <div class="row justify-content-between">
+                @include(include_theme_path('shop.product_details.partials.product-images-slider'))
+                <div class="col-xl-5 col-lg-6">
+                    @include(include_theme_path('shop.product_details.partials.product-options'))
                 </div>
             </div>
         </div>
@@ -170,9 +170,9 @@
                             <li class="ff-jost" data-tab="ship_return"> {{__('Ship & Return')}} </li>
                         </ul>
 
-                        @include('tenant.frontend.shop.product_details.partials.product-description')
-                        @include('tenant.frontend.shop.product_details.partials.product-reviews')
-                        @include('tenant.frontend.shop.product_details.partials.product-ship_return')
+                        @include(include_theme_path('shop.product_details.partials.product-description'))
+                        @include(include_theme_path('shop.product_details.partials.product-reviews'))
+                        @include(include_theme_path('shop.product_details.partials.product-ship_return'))
                     </div>
                 </div>
             </div>
@@ -181,7 +181,7 @@
     <!-- Shop Details tab area end -->
 
     <!-- Featured area starts -->
-    @include('tenant.frontend.shop.product_details.partials.featured-product')
+    @include(include_theme_path('shop.product_details.partials.featured-product'))
     <!-- Featured area end -->
 @endsection
 

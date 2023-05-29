@@ -9,7 +9,7 @@
                 $discount = $data['discount'];
             @endphp
 
-            <div class="col-xxl-4 col-lg-6 col-sm-6">
+            <div class="col-xxl-3 col-lg-6 col-sm-6">
                 <div class="global-card no-shadow radius-0 pb-0">
                     <div class="global-card-thumb">
                         <a href="{{route('tenant.shop.product.details', $product->slug)}}">

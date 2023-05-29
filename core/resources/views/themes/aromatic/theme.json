@@ -16,8 +16,7 @@
                 "jquery.ihavecookies": false,
                 "odometer": false,
                 "common": false,
-                "magnific-popup": false,
-                "toastr": false
+                "magnific-popup": false
             },
             "style": [
 
@@ -43,7 +42,6 @@
             "script": [
                 "imagesloaded.pkgd.min",
                 "isotope.pkgd.min",
-                "jquery.nicescroll.min",
                 "main"
             ],
             "blade": [],

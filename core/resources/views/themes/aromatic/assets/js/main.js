@@ -179,8 +179,7 @@
         /*-----------------
             Nice Select
         ------------------*/
-
-        $('select').niceSelect();
+        // $('select').niceSelect();
 
 
         $(document).on('click', '.navbar-toggler', function() {
@@ -204,7 +203,7 @@
             var tab_id = $(this).attr('data-tab');
 
             $('ul.tabs li').removeClass('active');
-            $('.tab-content').removeClass('active');
+            $('.tab-content-item').removeClass('active');
 
             $(this).addClass('active');
             $("#" + tab_id).addClass('active');
@@ -471,35 +470,6 @@
         $(document).on('click', '.sidebar-icon', function() {
             $('.dashboard-close, .dashboard-close-main, .body-overlay').addClass('active');
         });
-
-        /*----------------------
-            Range Slider
-        -----------------------*/
-
-        var i = document.querySelector(".ui-range-slider");
-        if (void 0 !== i && null !== i) {
-            var j = parseInt(i.parentNode.getAttribute("data-start-min"), 10),
-                k = parseInt(i.parentNode.getAttribute("data-start-max"), 10),
-                l = parseInt(i.parentNode.getAttribute("data-min"), 10),
-                m = parseInt(i.parentNode.getAttribute("data-max"), 10),
-                n = parseInt(i.parentNode.getAttribute("data-step"), 10),
-                o = document.querySelector(".ui-range-value-min span"),
-                p = document.querySelector(".ui-range-value-max span"),
-                q = document.querySelector(".ui-range-value-min input"),
-                r = document.querySelector(".ui-range-value-max input");
-            noUiSlider.create(i, {
-                start: [j, k],
-                connect: !0,
-                step: n,
-                range: {
-                    min: l,
-                    max: m
-                }
-            }), i.noUiSlider.on("update", function(a, b) {
-                var c = a[b];
-                b ? (p.innerHTML = Math.round(c), r.value = Math.round(c)) : (o.innerHTML = Math.round(c), q.value = Math.round(c))
-            })
-        }
 
         /*------------------
             back to top
