@@ -1190,8 +1190,6 @@ class TenantFrontendController extends Controller
                     $product_tax = $country_tax->toArray()['tax_percentage'];
                 }
             }
-        } else {
-            $product_tax = $country_tax->toArray()['tax_percentage'];
         }
 
         return $product_tax;

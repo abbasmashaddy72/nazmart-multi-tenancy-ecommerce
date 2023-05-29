@@ -13,12 +13,33 @@
         </div>
     @endif
 
-    <div class="name_badge">
+    <div class="name_badge d-flex">
         <h2 class="details-title"> {{$product->name}}
             @if(!empty($product->badge))
                 <span class="global-card-thumb-badge-box global-card-thumb-badge-box-product-details  bg-color-new "> {{$product?->badge?->name}} </span>
             @endif
         </h2>
+
+        <div class="wishlist-compare">
+            <div class="wishlist-compare-btn">
+                <a href="javascript:void(0)"
+                   class="{{ $quickView ? "quick_view_add_to_wishlist" : "add_to_wishlist_single_page" }} btn-wishlist share-icon fw-500">
+                <span class="icon">
+                    <i class="lar la-heart"></i>
+                </span>
+                </a>
+                <a href="javascript:void(0)"
+                   class="btn-wishlist share-icon fw-500 {{ $quickView ? "quick-view-" : "" }}compare-btn"
+                   data-product_id="{{$product->id}}"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="top"
+                   title="{{__('Add to Compare')}}">
+                    <span class="icon">
+                        <i class="las la-retweet"></i>
+                    </span>
+                </a>
+            </div>
+        </div>
     </div>
 
     {!! render_product_star_rating_markup_with_count($product) !!}
@@ -138,41 +159,18 @@
             </div>
         </div>
     </div>
-    <div class="wishlist-compare mt-4">
-        <div class="wishlist-compare-btn">
-            <a href="javascript:void(0)"
-               class="{{ $quickView ? "quick_view_add_to_wishlist" : "add_to_wishlist_single_page" }} btn-wishlist share-icon fw-500">
-                <span class="icon">
-                    <i class="lar la-heart"></i>
-                </span>
-            </a>
-            <a href="javascript:void(0)"
-               class="btn-wishlist share-icon fw-500 {{ $quickView ? "quick-view-" : "" }}compare-btn"
-               data-product_id="{{$product->id}}"
-               data-bs-toggle="tooltip"
-               data-bs-placement="top"
-               title="{{__('Add to Compare')}}">
-                    <span class="icon">
-                        <i class="las la-retweet"></i>
-                    </span>
-            </a>
-        </div>
-        <div class="wishlist-share social_share_parent">
-            <a href="javascript:void(0)" class="share-icon fw-500">
-                    <span class="icon">
-                        <i class="las la-share-alt"></i>
-                    </span>
-            </a>
 
-            @php
-                $product_primary_image = get_attachment_image_by_id($product->image_id);
-                $product_primary_image = $product_primary_image ? $product_primary_image['img_url'] : '';
-            @endphp
-            <ul class="social_share_wrapper_item">
-                {!! single_post_share($product->slug, $product->name, $product_primary_image) !!}
-            </ul>
-        </div>
+    <div class="wishlist-share social_share_parent">
+        @php
+            $product_primary_image = get_attachment_image_by_id($product->image_id);
+            $product_primary_image = $product_primary_image ? $product_primary_image['img_url'] : '';
+        @endphp
+
+        <ul class="d-flex mt-5">
+            {!! single_post_share($product->slug, $product->name, $product_primary_image) !!}
+        </ul>
     </div>
+
     <div class="shop-details-stock shop-border-top pt-4 mt-4">
         <ul class="stock-category">
             <li class="category-list">
@@ -207,7 +205,7 @@
         <div class="delivery-options delivery-parent mt-4">
             @if($product->product_delivery_option != null)
                 @foreach($product->product_delivery_option as $option)
-                    <div class="delivery-item d-flex">
+                    <div class="delivery-item">
                         <div class="icon">
                             <i class="{{ $option->icon }}"></i>
                         </div>
@@ -221,23 +219,19 @@
         </div>
         <div class="details-checkout-shop shop-border-top pt-4 mt-4">
             <span class="guaranteed-checkout fw-500 color-heading"> {{__('Guaranteed Safe Checkout')}} </span>
+
+            @php
+                $payment_gateway_images = \App\Models\PaymentGateway::where('status', 1)->get('image')->pluck('image');
+            @endphp
+
             <ul class="payment-list mt-3">
-                <li class="single-list">
-                    <a href="javascript:void(0)"> <img src="{{global_asset('assets/img/single-page/payment1.png')}}"
-                                                       alt=""> </a>
-                </li>
-                <li class="single-list">
-                    <a href="javascript:void(0)"> <img src="{{global_asset('assets/img/single-page/payment2.png')}}"
-                                                       alt=""> </a>
-                </li>
-                <li class="single-list">
-                    <a href="javascript:void(0)"> <img src="{{global_asset('assets/img/single-page/payment3.png')}}"
-                                                       alt=""> </a>
-                </li>
-                <li class="single-list">
-                    <a href="javascript:void(0)"> <img src="{{global_asset('assets/img/single-page/payment4.png')}}"
-                                                       alt=""> </a>
-                </li>
+                @foreach($payment_gateway_images as $image)
+                    <li class="single-list">
+                        <a href="javascript:void(0)">
+                            {!! render_image_markup_by_attachment_id($image) !!}
+                        </a>
+                    </li>
+                @endforeach
             </ul>
         </div>
     </div>

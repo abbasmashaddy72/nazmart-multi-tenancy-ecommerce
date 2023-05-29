@@ -335,7 +335,7 @@
             function getShippingMethodBasedTotal(shipping_method ,country, state, total) {
                 let checkout_btn = $('.checkout_disable');
                 checkout_btn.addClass('proceed_checkout_btn');
-                checkout_btn.css({'background': 'var(--main-color-two)', 'border': '2px solid var(--main-color-two)', 'color': '#fff', 'cursor': 'pointer'});
+                checkout_btn.css({'background': 'var(--main-color-one)', 'border': '2px solid var(--main-color-one)', 'color': '#fff', 'cursor': 'pointer'});
 
                 $.ajax({
                     url: '{{route('tenant.shop.checkout.sync-product-shipping.ajax')}}',

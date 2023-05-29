@@ -2143,7 +2143,9 @@ input[type=number] {
     transform: translateY(-50%);
     border: 1px solid rgba(0, 0, 0, 0.5);
     outline: none;
+      box-shadow: none;
   }
+
   .navbar-area .nav-container .responsive-mobile-menu .navbar-toggler.white-color {
     border: 1px solid rgba(255, 255, 255, 0.8);
   }
@@ -2203,12 +2205,12 @@ input[type=number] {
   .navbar-area .nav-container .navbar-collapse {
     max-width: 100%;
   }
-  .navbar-area .nav-container .navbar-collapse.show .navbar-nav {
+  .navbar-area .nav-container .navbar-collapse .navbar-nav {
     background: #DDD;
   }
   .navbar-area .nav-container .navbar-collapse .navbar-nav {
     display: block;
-    margin-top: 30px;
+    margin-top: 20px;
   }
   .navbar-area .nav-container .navbar-collapse .navbar-nav li {
     display: block;
@@ -15421,6 +15423,16 @@ button.btn-submit.bg-color-four {
   -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
   display: none;
+}
+
+@media only screen and (max-width: 575px) {
+    .back-to-top {
+        right: 20px;
+        width: 35px;
+        height: 35px;
+        line-height: 35px;
+        font-size: 18px
+    }
 }
 .back-to-top.bg-color-two {
   background: var(--main-color-two);
