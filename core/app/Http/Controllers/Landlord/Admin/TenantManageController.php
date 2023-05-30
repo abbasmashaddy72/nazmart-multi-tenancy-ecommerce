@@ -596,7 +596,7 @@ class TenantManageController extends Controller
         ]);
 
         $reassign_object = new ReGenerateTenant($validated);
-        $response = $reassign_object->regenerateTenant();
+        $response[] = $reassign_object->regenerateTenant();
 
         if (!empty($response))
         {
@@ -605,5 +605,35 @@ class TenantManageController extends Controller
         }
 
         return back()->with(FlashMsg::explain('success', 'Tenant Regenerated successfully'));
+    }
+
+    public function create_payment_log(Request $request)
+    {
+        $data = $request->validate([
+            'tenant_id' => 'required|exists:tenants,id',
+            'user' => 'required|exists:users,id',
+            'custom_theme' => 'required',
+            'package' => 'required|exists:price_plans,id',
+            'payment_status' => 'required',
+            'status' => 'required',
+        ]);
+
+        $user = User::find($data['user']);
+        $package = PricePlan::find($data['package']);
+
+        $payment_log = new PaymentLogs();
+        $payment_log->user_id = $user->id;
+        $payment_log->email = $user->email;
+        $payment_log->name = $user->name;
+        $payment_log->package_name = $package->title;
+        $payment_log->package_price = $package->price;
+        $payment_log->package_id = $package->id;
+        $payment_log->tenant_id = $data['tenant_id'];
+        $payment_log->theme_slug = $data['custom_theme'];
+        $payment_log->payment_status = $data['payment_status'];
+        $payment_log->status = $data['status'];
+        $payment_log->save();
+
+        return back()->with(FlashMsg::explain('success', __('Payment Log created successfully')));
     }
 }

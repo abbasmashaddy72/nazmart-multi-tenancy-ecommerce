@@ -287,6 +287,7 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
             Route::post('/edit', 'failed_tenants_edit')->name('edit');
             Route::post('/delete/{id}', 'failed_tenants_delete')->name('delete');
             Route::post('/assign-subscription','failed_regenerate_subscription')->name('assign.subscription');
+            Route::post('/manual-payment-log','create_payment_log')->name('manual.paymentlog');
         });
     });
 

@@ -69,16 +69,16 @@
                                 <div class="product-quantity">
                                     @if(!$wishlist)
                                         <span class="substract">
-                                        <i class="las la-minus"></i>
-                                    </span>
+                                            <i class="las la-minus"></i>
+                                        </span>
                                     @endif
                                     <input class="quantity-input"
                                            {{ $wishlist ? "disabled='true' readonly='true'" : "" }} type="number"
                                            value="{{$data->qty}}">
                                     @if(!$wishlist)
                                         <span class="plus">
-                                        <i class="las la-plus"></i>
-                                    </span>
+                                            <i class="las la-plus"></i>
+                                        </span>
                                     @endif
                                 </div>
                             @else
