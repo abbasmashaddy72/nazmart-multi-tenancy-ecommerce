@@ -81,13 +81,13 @@ class ReGenerateTenant
             if(!\str_contains($message,'database exists')){
                 $error_msg = __('Database created failed, Make sure your database user has permission to create database');
                 $response[] = $error_msg;
-                LandlordPricePlanAndTenantCreate::store_exception($tenant->id, 'database exists', $error_msg, 1);
+                LandlordPricePlanAndTenantCreate::store_exception($tenant->id, 'database exists', $error_msg, 0);
             }
 
             if(\str_contains($message,'database exists')){
                 $error_msg = __('Data already Exists');
                 $response[] = $error_msg;
-                LandlordPricePlanAndTenantCreate::store_exception($tenant->id, 'database exists', $error_msg, 1);
+                LandlordPricePlanAndTenantCreate::store_exception($tenant->id, 'database exists', $error_msg, 0);
             }
         }
 
@@ -146,11 +146,6 @@ class ReGenerateTenant
         }
 
         return $response;
-    }
-
-    public function createPaymentLog()
-    {
-
     }
 
     public function modifyTenant(): bool

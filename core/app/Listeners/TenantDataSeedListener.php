@@ -18,22 +18,10 @@ class TenantDataSeedListener
 
     public function handle(TenantRegisterEvent $event)
     {
-        try{
-            //database migrate
-            $command = 'tenants:migrate --force --tenants='.$event->subdomain;
-            Artisan::call($command);
+        //database migrate
+        $command = 'tenants:migrate --force --tenants='.$event->subdomain;
+        Artisan::call($command);
 
-        }catch(\Exception $e){
-            $message = $e->getMessage();
-
-            if(str_contains($message,'Duplicate entry')){
-                abort(460,__('Tenant database demo data already imported'));
-            }
-
-            if(str_contains($message,'does not exist')){
-                abort(461,__('Tenant does not exists'));
-            }
-        }
 
         $command = 'tenants:seed --force --tenants='.$event->subdomain;
         Artisan::call($command);

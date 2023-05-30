@@ -115,20 +115,24 @@ class LandlordPricePlanAndTenantCreate
 
     public static function store_exception($tenant_id,$issue_type,$description,$domain_create_status)
     {
-        TenantException::create([
-            'tenant_id' => $tenant_id,
-            'issue_type' => $issue_type,
-            'description' => $description,
-            'domain_create_status' => $domain_create_status,
-        ]);
+        try {
+            TenantException::create([
+                'tenant_id' => $tenant_id,
+                'issue_type' => $issue_type,
+                'description' => $description,
+                'domain_create_status' => $domain_create_status,
+            ]);
+        } catch (\Exception $exception) {
+
+        } catch (\PDOException $exception) {
+
+        }
 
         $admin_email = get_static_option('site_global_email');
-
         $data['subject'] = __('User Domain or database create failed');
         $data['message'] = __('hello') . '<br>';
-        $data['message'] .= __('This users domain create failed please take action of ') . ':' . $tenant_id . ' ';
+        $data['message'] .= __('This users domain create failed please take action of') . ' : ' . $tenant_id . ' ';
         try {
-            //send mail while order status change
             Mail::to($admin_email)->send(new BasicMail($data['message'], $data['subject']));
         } catch (\Exception $e) {
             //handle error

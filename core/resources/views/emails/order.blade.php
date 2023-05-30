@@ -96,12 +96,12 @@
 <div class="mail-container">
     <div class="logo-wrapper">
         <a href="{{url('/')}}">
-            {!! render_image_markup_by_attachment_id(get_static_option('site_logo')) !!}
+{{--            {!! render_image_markup_by_attachment_id(get_static_option('site_logo')) !!}--}}
+            <h4>{{get_static_option('site_title')}}</h4>
         </a>
     </div>
     <div class="main-content-wrap">
         <p>{{__('Hello')}}</p>
-
 
         @if($user_type == 'user')
             @if(!is_null($package->renew_status))
@@ -192,8 +192,7 @@
         </table>
     </div>
     <footer>
-        {!! get_footer_copyright_text(\App\Facades\GlobalLanguage::default_slug()) !!}
-
+        {!! get_footer_copyright_text() !!}
     </footer>
 </div>
 </body>
