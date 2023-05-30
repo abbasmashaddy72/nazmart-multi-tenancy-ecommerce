@@ -52,6 +52,7 @@
                                        data-issue_type="{{ ucfirst($data->issue_type)}}"
                                        data-domain="{{$data->tenant_id}}"
                                        data-domain_status="{{\App\Enums\DomainCreateStatusEnum::getText($data->domain_create_status)}}"
+                                       data-expected_database_name="{{env('TENANT_DATABASE_PREFIX').$data->tenant_id}}"
                                        data-description="{{$data->description}}"
                                     >
                                         <i class="mdi mdi-eye"></i>
@@ -100,6 +101,7 @@
                         <li><strong>{{ __('Issue Type') }}</strong> : <span class="issue_type"></span></li>
                         <li><strong>{{ __('Domain') }}</strong> : <span class="domain"></span></li>
                         <li><strong>{{ __('Domain Status') }}</strong> : <span class="domain_status"></span></li>
+                        <li><strong>{{ __('Expected Database Name') }}</strong> : <span class="expected_database_name"></span></li>
                         <li><strong>{{ __('Description') }}</strong> : <span class="description"></span></li>
                     </ul>
                 </div>
@@ -163,6 +165,7 @@
                 modal.find('.issue_type').text(el.data('issue_type'))
                 modal.find('.domain').text(el.data('domain'))
                 modal.find('.domain_status').text(el.data('domain_status'))
+                modal.find('.expected_database_name').text(el.data('expected_database_name'))
                 modal.find('.description').text(el.data('description'))
             });
 

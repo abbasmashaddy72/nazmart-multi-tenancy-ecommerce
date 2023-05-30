@@ -7,6 +7,7 @@ use App\Actions\Tenant\ReGenerateTenant;
 use App\Actions\Tenant\TenantCreateEventWithMail;
 use App\Events\TenantRegisterEvent;
 use App\Helpers\FlashMsg;
+use App\Helpers\Payment\DatabaseUpdateAndMailSend\LandlordPricePlanAndTenantCreate;
 use App\Helpers\ResponseMessage;
 use App\Http\Controllers\Controller;
 use App\Mail\BasicMail;
@@ -28,6 +29,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use phpDocumentor\Reflection\Types\Self_;
 use Spatie\Activitylog\Models\Activity;
+use Symfony\Component\ErrorHandler\Error\OutOfMemoryError;
 
 class TenantManageController extends Controller
 {
@@ -391,7 +393,6 @@ class TenantManageController extends Controller
                 $payment_details = PaymentLogs::findOrFail($old_tenant_log->id);
             }
             else {
-
                 $package_start_date = $tenant->start_date;
                 $new_package_expire_date = $tenant->expire_date;
 
@@ -428,15 +429,7 @@ class TenantManageController extends Controller
                 $payment_details = PaymentLogs::findOrFail($payment_log->id);
             }
         } else {
-           try{
-                event(new TenantRegisterEvent($user, $subdomain, $request->custom_theme));
-            }catch(\Exception $e){
-                return redirect()->back()->with(['type'=> 'danger', 'msg' => $e->getMessage()]);
-            }
-
-            $tenant = DB::table('tenants')->where('user_id', $user->id)->latest()->select('id')->first();
-
-            $payment_log_id = PaymentLogs::create([
+            $payment_log = PaymentLogs::create([
                 'email' => $user->email,
                 'name' => $user->name,
                 'package_name' => $package->title,
@@ -444,7 +437,7 @@ class TenantManageController extends Controller
                 'package_gateway' => null,
                 'package_id' => $package->id,
                 'user_id' => $user->id,
-                'tenant_id' => $tenant->id,
+                'tenant_id' => $subdomain,
                 'theme_slug' => $request->custom_theme,
                 'is_renew' => 0,
                 'payment_status' => $request->payment_status,
@@ -456,11 +449,32 @@ class TenantManageController extends Controller
                 'expire_date' => $package_expire_date,
             ]);
 
-            DB::table('tenants')->where('id', $payment_log_id->tenant_id)->update([
-                'start_date' => $package_start_date,
-                'expire_date' => $package_expire_date,
-            ]);
-            $payment_details = PaymentLogs::findOrFail($payment_log_id->id);
+            try{
+                event(new TenantRegisterEvent($user, $subdomain, $request->custom_theme));
+
+                DB::table('tenants')->where('id', $payment_log->tenant_id)->update([
+                    'start_date' => $package_start_date,
+                    'expire_date' => $package_expire_date,
+                ]);
+            }catch(\Exception $e){
+                $message = $e->getMessage();
+
+                if(strpos($message,'Access denied') == true){
+
+                    $admin_mail_message = sprintf(__('Database Crating failed for user id %1$s , please checkout admin panel and generate database for this user trial from admin panel manually'), $payment_log->user_id);
+                    $admin_mail_subject = sprintf(__('Database Crating failed on trial request for user id %1$s'), $payment_log->user_id);
+                    //added in try catch block, because if any user did not configure smtp yet, but trying to create user website, it throwing 500error
+                    try{
+                        Mail::to(get_static_option('site_global_email'))->send(new BasicMail($admin_mail_message, $admin_mail_subject));
+                    }catch(\Exception $e){}
+
+                    LandlordPricePlanAndTenantCreate::store_exception($payment_log->tenant_id,'domain create failed',$message,0);
+
+                    return redirect()->back()->with(FlashMsg::item_delete(__('You have no permission to create database, we have created an issue, please go to website settings and manually generate this..!')));
+                }
+            }
+
+            $payment_details = PaymentLogs::findOrFail($payment_log->id);
         }
 
         $order_mail = get_static_option('order_page_form_mail') ? get_static_option('order_page_form_mail') : get_static_option('site_global_email');
@@ -582,6 +596,7 @@ class TenantManageController extends Controller
         abort_if(empty($id), 403);
 
         $tenant = DB::table('tenants')->delete($id);
+        PaymentLogs::where('tenant_id', $id)->delete();
 
         return back()->with(FlashMsg::explain($tenant ? 'success' : 'danger', $tenant ? __('Tenant deleted successfully') : __('Something went wrong')));
     }
@@ -632,6 +647,7 @@ class TenantManageController extends Controller
         $payment_log->theme_slug = $data['custom_theme'];
         $payment_log->payment_status = $data['payment_status'];
         $payment_log->status = $data['status'];
+        $payment_log->start_date = now();
         $payment_log->save();
 
         return back()->with(FlashMsg::explain('success', __('Payment Log created successfully')));

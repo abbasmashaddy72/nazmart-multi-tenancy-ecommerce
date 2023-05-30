@@ -66,7 +66,6 @@ class TenantExceptionController extends Controller
             'exception_id' => 'required'
         ]);
 
-
         $id = $request->exception_id;
         $manual_database = $request->database_name;
 
@@ -94,10 +93,10 @@ class TenantExceptionController extends Controller
         LandlordPricePlanAndTenantCreate::update_database($payment_log->id, $payment_log->transaction_id); //update payment log  information with transaction id
 
         try{
-            $current_tenant = \DB::table('tenants')->where('id',$tenant->id)->first();
+            $current_tenant = DB::table('tenants')->where('id',$tenant->id)->first();
             $format = (array) json_decode($current_tenant->data);
             $format['tenancy_db_name'] = $manual_database;
-            \Illuminate\Support\Facades\DB::table('tenants')->where('id',$tenant->id)->update(['data'=> json_encode($format)]);
+            DB::table('tenants')->where('id',$tenant->id)->update(['data'=> json_encode($format)]);
 
 
         }catch(\Exception $e){
