@@ -117,10 +117,15 @@ class ReGenerateTenant
                 '--force' => true
             ]);
 
-            TenantException::find($tenant->id)->update([
-                'domain_create_status' => 1,
-                'seen_status' => 1
-            ]);
+            TenantException::updateOrCreate(
+                [
+                    'tenant_id' => $tenant->id
+                ],
+                [
+                    'domain_create_status' => 1,
+                    'seen_status' => 1
+                ]
+            );
         }catch(\Exception $e){
 
             //Duplicate entry
@@ -141,6 +146,11 @@ class ReGenerateTenant
         }
 
         return $response;
+    }
+
+    public function createPaymentLog()
+    {
+
     }
 
     public function modifyTenant(): bool

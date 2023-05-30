@@ -68,9 +68,18 @@
                                     </x-modal.button>
 
                                     <x-modal.button target="user_add_subscription" extra="user_add_subscription"
-                                                    type="success" dataid="{{$user->id}}" datauser="{{ !empty($user?->payment_log?->user_id) }}">
+                                                    type="success" dataid="{{$user->id}}"
+                                                    datauser="{{ !empty($user?->payment_log?->user_id) }}">
                                         {{__('Regenerate')}}
                                     </x-modal.button>
+
+                                    @if(empty($user->payment_log))
+                                        <x-modal.button target="tenant_create_payment_log_modal"
+                                                        extra="tenant_create_payment_log_modal"
+                                                        type="primary" dataid="{{$user->id}}">
+                                            {{__('Create Payment Log')}}
+                                        </x-modal.button>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
@@ -90,75 +99,76 @@
                     <button type="button" class="close" data-bs-dismiss="modal"><span>×</span></button>
                 </div>
 
-                <form action="{{route('landlord.admin.tenant.failed.assign.subscription')}}" id="user_add_subscription_form"
+                <form action="{{route('landlord.admin.tenant.failed.assign.subscription')}}"
+                      id="user_add_subscription_form"
                       method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" name="subs_tenant_id" id="subs_user_id">
                         <input type="hidden" name="subs_pack_id" id="subs_pack_id">
 
-{{--                        <div class="form-group user-select-wrapper" style="display: none">--}}
-{{--                            <label for="subdomain">{{__('User')}}</label>--}}
-{{--                            <select class="form-select user" id="user" name="user">--}}
-{{--                                <option value="" selected disabled>{{__('Select an user')}}</option>--}}
-{{--                                @foreach($users as $user)--}}
-{{--                                    <option value="{{$user->id}}">{{$user->name}}</option>--}}
-{{--                                @endforeach--}}
-{{--                            </select>--}}
-{{--                        </div>--}}
+                        {{--                        <div class="form-group user-select-wrapper" style="display: none">--}}
+                        {{--                            <label for="subdomain">{{__('User')}}</label>--}}
+                        {{--                            <select class="form-select user" id="user" name="user">--}}
+                        {{--                                <option value="" selected disabled>{{__('Select an user')}}</option>--}}
+                        {{--                                @foreach($users as $user)--}}
+                        {{--                                    <option value="{{$user->id}}">{{$user->name}}</option>--}}
+                        {{--                                @endforeach--}}
+                        {{--                            </select>--}}
+                        {{--                        </div>--}}
 
-{{--                        <div class="form-group custom_subdomain_wrapper mt-3">--}}
-{{--                            <label for="custom-subdomain">Add new subdomain</label>--}}
-{{--                            <input class="form--control custom_subdomain" id="custom-subdomain" type="text"--}}
-{{--                                   autocomplete="off" value="{{old('subdomain')}}"--}}
-{{--                                   placeholder="{{__('Subdomain')}}"--}}
-{{--                                   style="border:0;border-bottom: 1px solid #595959;width: 100%">--}}
-{{--                            <div id="subdomain-wrap"></div>--}}
-{{--                        </div>--}}
+                        {{--                        <div class="form-group custom_subdomain_wrapper mt-3">--}}
+                        {{--                            <label for="custom-subdomain">Add new subdomain</label>--}}
+                        {{--                            <input class="form--control custom_subdomain" id="custom-subdomain" type="text"--}}
+                        {{--                                   autocomplete="off" value="{{old('subdomain')}}"--}}
+                        {{--                                   placeholder="{{__('Subdomain')}}"--}}
+                        {{--                                   style="border:0;border-bottom: 1px solid #595959;width: 100%">--}}
+                        {{--                            <div id="subdomain-wrap"></div>--}}
+                        {{--                        </div>--}}
 
-{{--                        <div class="form-group mt-3">--}}
-{{--                            @php--}}
-{{--                                $themes = getAllThemeSlug();--}}
-{{--                            @endphp--}}
-{{--                            <label for="custom-theme">{{__('Add Theme')}}</label>--}}
-{{--                            <select class="form-select text-capitalize" name="custom_theme" id="custom-theme">--}}
-{{--                                @foreach($themes as $theme)--}}
-{{--                                    <option value="{{$theme}}">{{$theme}}</option>--}}
-{{--                                @endforeach--}}
-{{--                            </select>--}}
-{{--                        </div>--}}
+                        {{--                        <div class="form-group mt-3">--}}
+                        {{--                            @php--}}
+                        {{--                                $themes = getAllThemeSlug();--}}
+                        {{--                            @endphp--}}
+                        {{--                            <label for="custom-theme">{{__('Add Theme')}}</label>--}}
+                        {{--                            <select class="form-select text-capitalize" name="custom_theme" id="custom-theme">--}}
+                        {{--                                @foreach($themes as $theme)--}}
+                        {{--                                    <option value="{{$theme}}">{{$theme}}</option>--}}
+                        {{--                                @endforeach--}}
+                        {{--                            </select>--}}
+                        {{--                        </div>--}}
 
-{{--                        <div class="form-group">--}}
-{{--                            <label for="">{{__('Select A Package')}}</label>--}}
-{{--                            <select class="form-control package_id_selector" name="package">--}}
-{{--                                <option value="">{{__('Select Package')}}</option>--}}
-{{--                                @foreach(\App\Models\PricePlan::all() as $price)--}}
-{{--                                    <option value="{{$price->id}}" data-id="{{$price->id}}">--}}
-{{--                                        {{$price->title}} {{ '('.float_amount_with_currency_symbol($price->price).')' }}--}}
-{{--                                        - {{\App\Enums\PricePlanTypEnums::getText($price->type)}}--}}
-{{--                                    </option>--}}
-{{--                                @endforeach--}}
-{{--                            </select>--}}
-{{--                        </div>--}}
+                        {{--                        <div class="form-group">--}}
+                        {{--                            <label for="">{{__('Select A Package')}}</label>--}}
+                        {{--                            <select class="form-control package_id_selector" name="package">--}}
+                        {{--                                <option value="">{{__('Select Package')}}</option>--}}
+                        {{--                                @foreach(\App\Models\PricePlan::all() as $price)--}}
+                        {{--                                    <option value="{{$price->id}}" data-id="{{$price->id}}">--}}
+                        {{--                                        {{$price->title}} {{ '('.float_amount_with_currency_symbol($price->price).')' }}--}}
+                        {{--                                        - {{\App\Enums\PricePlanTypEnums::getText($price->type)}}--}}
+                        {{--                                    </option>--}}
+                        {{--                                @endforeach--}}
+                        {{--                            </select>--}}
+                        {{--                        </div>--}}
 
-{{--                        <div class="form-group">--}}
-{{--                            <label for="">{{__('Database Name')}}</label>--}}
-{{--                            <input class="form-control database-name" type="text" name="database_name" id="database-name" autocomplete="off" placeholder="Database name">--}}
-{{--                            <p class="bg-warning">--}}
-{{--                                <small class="text-dark ms-2">{{__('Set your database name here.')}}</small>--}}
-{{--                            </p>--}}
-{{--                        </div>--}}
+                        {{--                        <div class="form-group">--}}
+                        {{--                            <label for="">{{__('Database Name')}}</label>--}}
+                        {{--                            <input class="form-control database-name" type="text" name="database_name" id="database-name" autocomplete="off" placeholder="Database name">--}}
+                        {{--                            <p class="bg-warning">--}}
+                        {{--                                <small class="text-dark ms-2">{{__('Set your database name here.')}}</small>--}}
+                        {{--                            </p>--}}
+                        {{--                        </div>--}}
 
-{{--                        <div class="form-group">--}}
-{{--                            <label for="">{{__('Payment Status')}}</label>--}}
-{{--                            <select class="form-control" name="payment_status">--}}
-{{--                                <option value="complete">{{__('Complete')}}</option>--}}
-{{--                                <option value="pending">{{__('Pending')}}</option>--}}
-{{--                            </select>--}}
-{{--                            <p>--}}
-{{--                                <small class="text-primary">{{__('You can set payment status pending or complete from here')}}</small>--}}
-{{--                            </p>--}}
-{{--                        </div>--}}
+                        {{--                        <div class="form-group">--}}
+                        {{--                            <label for="">{{__('Payment Status')}}</label>--}}
+                        {{--                            <select class="form-control" name="payment_status">--}}
+                        {{--                                <option value="complete">{{__('Complete')}}</option>--}}
+                        {{--                                <option value="pending">{{__('Pending')}}</option>--}}
+                        {{--                            </select>--}}
+                        {{--                            <p>--}}
+                        {{--                                <small class="text-primary">{{__('You can set payment status pending or complete from here')}}</small>--}}
+                        {{--                            </p>--}}
+                        {{--                        </div>--}}
 
                         <div class="form-group">
                             <label for="">{{__('Account Status')}}</label>
@@ -168,7 +178,8 @@
                                 <option value="trial">{{__('Trial')}}</option>
                             </select>
                             <p>
-                                <small class="text-primary">{{__('You can set account status pending or complete from here')}}</small>
+                                <small
+                                    class="text-primary">{{__('You can set account status pending or complete from here')}}</small>
                             </p>
                         </div>
 
@@ -226,6 +237,98 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">{{__('Close')}}</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    {{--Create Payment Log Modal--}}
+    <div class="modal fade" id="tenant_create_payment_log_modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{__('Create Tenant Payment Log')}}</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal"><span>×</span></button>
+                </div>
+
+                <form action="{{route('landlord.admin.tenant.failed.manual.paymentlog')}}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" name="tenant_id" id="tenant_id">
+
+                        <div class="form-group user-select-wrapper">
+                            <label for="subdomain">{{__('User')}}</label>
+                            <select class="form-select user" id="user" name="user">
+                                <option value="" selected disabled>{{__('Select an user')}}</option>
+                                @foreach($users as $user)
+                                    <option value="{{$user->id}}">{{$user->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group custom_subdomain_wrapper mt-3">
+                            <label for="custom-subdomain">{{__('Add new subdomain')}}</label>
+                            <input class="form--control custom_subdomain" id="custom-subdomain" type="text"
+                                   autocomplete="off" value="{{old('subdomain')}}"
+                                   placeholder="{{__('Subdomain')}}"
+                                   style="border:0;border-bottom: 1px solid #595959;width: 100%">
+                            <div id="subdomain-wrap"></div>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            @php
+                                $themes = getAllThemeSlug();
+                            @endphp
+                            <label for="custom-theme">{{__('Add Theme')}}</label>
+                            <select class="form-select text-capitalize" name="custom_theme" id="custom-theme">
+                                @foreach($themes as $theme)
+                                    <option value="{{$theme}}">{{$theme}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">{{__('Select A Package')}}</label>
+                            <select class="form-control package_id_selector" name="package">
+                                <option value="">{{__('Select Package')}}</option>
+                                @foreach(\App\Models\PricePlan::all() as $price)
+                                    <option value="{{$price->id}}" data-id="{{$price->id}}">
+                                        {{$price->title}} {{ '('.float_amount_with_currency_symbol($price->price).')' }}
+                                        - {{\App\Enums\PricePlanTypEnums::getText($price->type)}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">{{__('Payment Status')}}</label>
+                            <select class="form-control" name="payment_status">
+                                <option value="complete">{{__('Complete')}}</option>
+                                <option value="pending">{{__('Pending')}}</option>
+                            </select>
+                            <p>
+                                <small
+                                    class="text-primary">{{__('You can set payment status pending or complete from here')}}</small>
+                            </p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">{{__('Account Status')}}</label>
+                            <select class="form-control" name="status">
+                                <option value="complete">{{__('Complete')}}</option>
+                                <option value="pending">{{__('Pending')}}</option>
+                            </select>
+                            <p>
+                                <small
+                                    class="text-primary">{{__('You can set payment status pending or complete from here')}}</small>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">{{__('Close')}}</button>
+                        <button type="submit" class="btn btn-success">{{__('Create')}}</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -318,8 +421,7 @@
                 markup += `<p>{{__('Package:')}} ${package}</p>`;
                 markup += `<p>{{__('Payment Gateway:')}} ${gateway}</p>`;
                 let color = 'text-danger';
-                if(payment_status === 'complete')
-                {
+                if (payment_status === 'complete') {
                     color = 'text-success';
                 }
                 markup += `<p class='${color}'>{{__('Payment Status:')}} ${payment_status}</p>`;
@@ -328,6 +430,14 @@
 
                 modal.find('.modal-body').children().remove();
                 modal.find('.modal-body').append(markup);
+            });
+
+            $(document).on('click', '.tenant_create_payment_log_modal', function (){
+                let el = $(this);
+                let tenant_id = el.data('id');
+                let modal = $('#tenant_create_payment_log_modal');
+
+                modal.find('input#tenant_id').val(tenant_id);
             });
 
             //Assign Subscription Modal Code
@@ -339,8 +449,7 @@
                 let user_wrapper = $('.user-select-wrapper');
                 user_wrapper.hide();
 
-                if (!user)
-                {
+                if (!user) {
                     user_wrapper.show();
                 }
             });
