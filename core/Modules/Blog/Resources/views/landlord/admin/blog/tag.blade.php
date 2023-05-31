@@ -141,8 +141,6 @@
                 let slug = el.data('slug');
                 let action = el.data('action');
 
-                console.log(slug);
-
                 let form = $('.category_edit_modal_form');
                 form.attr('action', action);
                 form.find('.category_id').val(id);

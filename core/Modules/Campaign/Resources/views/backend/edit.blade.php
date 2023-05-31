@@ -90,7 +90,6 @@
                                         </div>
                                     </div>
                                     <div class="col-xl-8 col-md-7">
-{{--                                        @dd($campaign->products)--}}
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div id="product_repeater_container">

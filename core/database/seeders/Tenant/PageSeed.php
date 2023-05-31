@@ -85,7 +85,12 @@ class PageSeed extends Seeder
         $page_data_2->metainfo()->create($Metas_2);
 
         // Uploading page layout
-        $file_name = 'hexfashion/assets/page_layout/about-layout.json';
+        if (session()->get('theme'))
+        {
+            $file_name = session()->get('theme').'/assets/page_layout/about-layout.json';
+        } else {
+            $file_name = 'hexfashion/assets/page_layout/about-layout.json';
+        }
         $this->upload_layout($file_name, $page_data_2->id);
 
         $page_data_5 = new Page();
@@ -117,7 +122,13 @@ class PageSeed extends Seeder
         $page_data_5->metainfo()->create($Metas_5);
 
         // Uploading page layout
-        $file_name = 'hexfashion/assets/page_layout/contact-layout.json';
+        if (session()->get('theme'))
+        {
+            $file_name = session()->get('theme').'/assets/page_layout/contact-layout.json';
+        } else {
+            $file_name = 'hexfashion/assets/page_layout/contact-layout.json';
+        }
+
         $this->upload_layout($file_name, $page_data_5->id);
 
 
@@ -204,8 +215,6 @@ class PageSeed extends Seeder
 
         $page_data_8->save();
         $page_data_8->metainfo()->create($Metas_8);
-
-        session()->forget('theme');
     }
 
     private function upload_layout($file, $page_id)

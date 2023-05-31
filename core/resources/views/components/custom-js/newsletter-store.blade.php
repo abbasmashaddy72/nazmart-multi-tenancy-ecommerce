@@ -3,7 +3,6 @@
         e.preventDefault();
 
         var email = $('.footer-widget input.email').val();
-        console.log(email);
 
         var errrContaner = $(this).parent().parent().find('.form-message-show');
         errrContaner.html('');

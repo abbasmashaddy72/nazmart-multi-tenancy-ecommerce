@@ -448,3 +448,6 @@ table.dataTable thead td {
     height: 30px;
     line-height: 30px;
 }
+.manual_database_btn {
+    margin-top: 8px;
+}

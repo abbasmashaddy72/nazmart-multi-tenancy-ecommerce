@@ -244,21 +244,21 @@
             Isotope
         -----------------------*/
 
-        $('.imageloaded').imagesLoaded(function() {
-            var $grid = $('.grid').isotope({
-                itemSelector: '.grid-item',
-                percentPosition: true,
-                masonry: {
-                    columnWidth: '.grid-item',
-                }
-            });
-            $('.isootope-button').on('click', '.list', function() {
-                var filterValue = $(this).attr('data-filter');
-                $grid.isotope({ filter: filterValue });
-                $(this).siblings().removeClass('active');
-                $(this).addClass('active');
-            });
-        });
+        // $('.imageloaded').imagesLoaded(function() {
+        //     var $grid = $('.grid').isotope({
+        //         itemSelector: '.grid-item',
+        //         percentPosition: true,
+        //         masonry: {
+        //             columnWidth: '.grid-item',
+        //         }
+        //     });
+        //     $('.isootope-button').on('click', '.list', function() {
+        //         var filterValue = $(this).attr('data-filter');
+        //         $grid.isotope({ filter: filterValue });
+        //         $(this).siblings().removeClass('active');
+        //         $(this).addClass('active');
+        //     });
+        // });
 
         $('.imageloaded-two').imagesLoaded(function() {
             var $gridtwo = $('.grid-two').isotope({

@@ -57,7 +57,7 @@ class CheckoutPaymentController extends Controller
         if (!\auth('web')->user())
         {
             $cartData = Cart::content('default')->where('options.type', ProductTypeEnum::DIGITAL);
-            return !empty($cartData);
+            return count($cartData) > 0;
         }
 
         return false;

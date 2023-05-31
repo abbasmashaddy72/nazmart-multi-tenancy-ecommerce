@@ -117,8 +117,8 @@
                                             @endphp
                                             <td class="{{$status[$data->payment_status]}} text-capitalize">{{$data->payment_status}}</td>
                                             <td class="{{$data->status != 'trial' ? $status[$data->payment_status] : 'text-primary'}} text-capitalize">{{$data->status}}</td>
-                                            <td>{{$data->created_at->diffForHumans()}}</td>
-                                            <td>{{$data->updated_at->diffForHumans()}}</td>
+                                            <td>{{$data->created_at?->diffForHumans()}}</td>
+                                            <td>{{$data->updated_at?->diffForHumans()}}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>
