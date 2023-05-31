@@ -52,6 +52,7 @@
                                            data-gateway="{{$payment_log?->package_gateway}}"
                                            data-tenant="{{$payment_log?->tenant_id}}"
                                            data-theme="{{$payment_log?->theme_slug}}"
+                                           data-status="{{$payment_log?->status}}"
                                            data-payment_status="{{$payment_log?->payment_status}}"
                                            data-transaction_id="{{$payment_log?->transaction_id}}"
                                            data-created_at="{{$payment_log?->created_at}}"
@@ -68,7 +69,7 @@
                                     </x-modal.button>
 
                                     <x-modal.button target="user_add_subscription" extra="user_add_subscription"
-                                                    type="success" dataid="{{$user->id}}"
+                                                    type="success" dataid="{{$user->id}}" datastatus="{{$user?->payment_log?->status}}"
                                                     datauser="{{ !empty($user?->payment_log?->user_id) }}">
                                         {{__('Regenerate')}}
                                     </x-modal.button>
@@ -399,6 +400,7 @@
                 let gateway = el.data('gateway');
                 let tenant = el.data('tenant');
                 let theme = el.data('theme');
+                let status = el.data('status');
                 let payment_status = el.data('payment_status');
                 let transaction_id = el.data('transaction_id');
                 let created_at = el.data('created_at');
@@ -411,6 +413,7 @@
                 markup += `<p>{{__('User Email:')}} ${email}</p>`;
                 markup += `<p>{{__('User Name:')}} ${name}</p>`;
                 markup += `<p>{{__('Tenant:')}} ${tenant}</p>`;
+                markup += `<p>{{__('Account Status:')}} ${status}</p>`;
 
                 markup += `<h4 class='mt-5'>{{__('Theme Information')}}</h4>`;
                 markup += `<hr class="my-2">`;
@@ -444,6 +447,7 @@
             $(document).on('click', '.user_add_subscription', function () {
                 let user_id = $(this).data('id');
                 let user = $(this).data('user');
+                let status = $(this).data('status');
 
                 $('#subs_user_id').val(user_id);
                 let user_wrapper = $('.user-select-wrapper');
@@ -451,6 +455,14 @@
 
                 if (!user) {
                     user_wrapper.show();
+                }
+
+                let modal = $('#user_add_subscription');
+                modal.find(`select option`).attr('selected', false);
+
+                if (status !== undefined)
+                {
+                    modal.find(`select option[value=${status}]`).attr('selected', true);
                 }
             });
 

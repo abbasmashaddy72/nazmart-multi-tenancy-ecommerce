@@ -100,7 +100,7 @@
 
     <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/shop-order-custom.css')}}">
     @if(getSelectedThemeSlug() == 'bookpoint')
-        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/shop-common.css')}}">
+{{--        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/shop-common.css')}}">--}}
         <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/digital-shop-common.css')}}">
     @else
         <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/digital-shop-common.css')}}">

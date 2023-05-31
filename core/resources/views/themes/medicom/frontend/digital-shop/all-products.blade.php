@@ -271,7 +271,6 @@
                         $('.loader').show();
                     },
                     success: function (data) {
-                        console.log(data)
                         $(".grid-product-list").html(data.grid)
 
                         $(".shop-icons.active").trigger('click');
