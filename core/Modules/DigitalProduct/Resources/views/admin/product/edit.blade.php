@@ -329,7 +329,6 @@
                     $(document).on('click', '.custom-minus', function (){
                         let custom_wrapper = $('.custom-additional-field-row');
 
-                        console.log(custom_wrapper.length)
                         if(custom_wrapper.length > 1)
                         {
                             $(this).closest('.row').remove();

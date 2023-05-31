@@ -344,7 +344,10 @@
                                             </div>
                                             <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 theme-row mb-5">
 
-                                                @foreach(getAllThemeData() as $theme)
+                                                @php
+                                                    $theme_list = $order_details?->plan_themes?->pluck('theme_slug')->toArray() ?? [];
+                                                @endphp
+                                                @foreach(getPricePlanBasedAllThemeData($theme_list) as $theme)
                                                     @php
                                                         $theme_slug = $theme->slug;
                                                         $theme_data = getIndividualThemeDetails($theme_slug);

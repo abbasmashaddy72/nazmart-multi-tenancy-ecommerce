@@ -494,13 +494,39 @@ class LandlordFrontendController extends Controller
         }
 
         try{
-            TenantCreateEventWithMail::tenant_create_event_with_credential_mail($user, $subdomain, $theme);
-            TenantTrialPaymentLog::trial_payment_log($user,$plan,$subdomain);
+            TenantTrialPaymentLog::trial_payment_log($user,$plan,$subdomain,$theme);
+
+        }catch(\Exception $ex){}
+
+        try{
+            TenantCreateEventWithMail::tenant_create_event_with_credential_mail($user, $subdomain);
+
+            $log = PaymentLogs::where('tenant_id',$subdomain)->first();
+            DB::table('tenants')->where('id',$subdomain)->update([
+                'start_date' => $log->start_date,
+                'expire_date' => $log->expire_date,
+                'theme_slug' => $theme,
+            ]);
 
         }catch(\Exception $ex){
             $message = $ex->getMessage();
+
+            $log = PaymentLogs::where('tenant_id',$subdomain)->first();
+
+            try {
+                $admin_mail_message = sprintf(__('Database Crating failed for user id %1$s , please checkout admin panel and generate database for this user trial from admin panel manually'),$log->user_id);
+                $admin_mail_subject = sprintf(__('Database Crating failed on trial request for user id %1$s'),$log->user_id);
+                Mail::to(get_static_option('site_global_email'))->send(new BasicMail($admin_mail_message,$admin_mail_subject));
+            } catch (\Exception $exception) {}
+
+
             LandlordPricePlanAndTenantCreate::store_exception($subdomain,'domain failed on trial',$message,0);
-            return response()->json(['msg' => __('something went wrong, we have notified to admin regarding this issue, please try after sometime'), 'type'=>'danger']);
+
+            //Event Notification
+            //todo tenant event notification
+            //Event Notification
+
+            return response()->json(['msg' => __('Your trial website is not ready yet, we have notified to admin regarding your request, it is in admin approval stage..! please try later..!'), 'type'=>'danger']);
         }
 
         $domain_details = DB::table('domains')->where('tenant_id',$subdomain)->first(); //domain; //issue in this line

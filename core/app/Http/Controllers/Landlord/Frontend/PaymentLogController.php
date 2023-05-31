@@ -601,7 +601,7 @@ class PaymentLogController extends Controller
                 }
                 LandlordPricePlanAndTenantCreate::store_exception($payment_details->tenant_id,'Domain create',$exception->getMessage(), 0);
 
-                //todo: send an email to admin that this user databse could not able to create automatically
+                //todo: send an email to admin that this user database could not able to create automatically
 
                 try {
                     $message = sprintf(__('Database Creating failed for user id %1$s , please checkout admin panel and generate database for this user from admin panel manually'),

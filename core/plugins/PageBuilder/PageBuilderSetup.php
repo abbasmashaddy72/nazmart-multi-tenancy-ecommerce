@@ -23,6 +23,10 @@ use Plugins\PageBuilder\Addons\Landlord\Common\WhyChooseUs;
 use Plugins\PageBuilder\Addons\Landlord\Header\AboutHeaderStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\FeaturesStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\HeaderStyleOne;
+use Plugins\PageBuilder\Addons\Tenants\Aromatic\About\AboutImage;
+use Plugins\PageBuilder\Addons\Tenants\Aromatic\Common\BrandTwo;
+use Plugins\PageBuilder\Addons\Tenants\Aromatic\Common\InstagramWidget;
+use Plugins\PageBuilder\Addons\Tenants\Aromatic\Product\BestProduct;
 use Plugins\PageBuilder\Addons\Tenants\Bookpoint\Blog\RecentBlog;
 use Plugins\PageBuilder\Addons\Tenants\Bookpoint\Common\TopAuthor;
 use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Contact\ContactAreaOne;
@@ -44,7 +48,7 @@ use Plugins\PageBuilder\Addons\Tenants\Hexfashion\About\AboutCounter;
 use Plugins\PageBuilder\Addons\Tenants\Furnito\Blog\BlogOne;
 use Plugins\PageBuilder\Addons\Tenants\Furnito\Common\CategoriesSlider;
 use Plugins\PageBuilder\Addons\Tenants\Furnito\Common\CollectionCard;
-use Plugins\PageBuilder\Addons\Tenants\Furnito\Product\TrendingProducts;
+use Plugins\PageBuilder\Addons\Tenants\Furnito\Product\NewCollection;
 
 
 class PageBuilderSetup
@@ -87,7 +91,7 @@ class PageBuilderSetup
                 $addons = [
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Header\HeaderOne::class,
                     CollectionCard::class,
-                    TrendingProducts::class,
+                    NewCollection::class,
                     CategoriesSlider::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\Brand::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\Testimonial::class,
@@ -97,7 +101,7 @@ class PageBuilderSetup
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Contact\ContactAreaOne::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Contact\GoogleMap::class,
                     BlogOne::class,
-                    \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutCounter::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutImage::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutStory::class,
                 ];
             } elseif ($theme == 'medicom') {
@@ -123,11 +127,25 @@ class PageBuilderSetup
                     \Plugins\PageBuilder\Addons\Tenants\Bookpoint\Product\FeaturedProductSlider::class,
 
                     //temporary addons
-                    \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutCounter::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutImage::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutStory::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\Testimonial::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\Services::class,
                     ContactAreaOne::class,
+                ];
+            } elseif($theme == 'aromatic') {
+                $addons = [
+                    \Plugins\PageBuilder\Addons\Tenants\Aromatic\Header\HeaderOne::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Aromatic\Product\NewCollection::class,
+                    BestProduct::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Aromatic\Product\ProductTypeList::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Aromatic\Common\Brand::class,
+                    BrandTwo::class,
+                    InstagramWidget::class,
+                    AboutImage::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Aromatic\Common\Services::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Aromatic\Contact\GoogleMap::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Aromatic\Contact\ContactArea::class
                 ];
             }
 

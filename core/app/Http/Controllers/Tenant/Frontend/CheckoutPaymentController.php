@@ -13,6 +13,7 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Auth;
 use Modules\CountryManage\Entities\Country;
 use Modules\CountryManage\Entities\State;
+use function GuzzleHttp\Promise\all;
 
 class CheckoutPaymentController extends Controller
 {
@@ -36,7 +37,7 @@ class CheckoutPaymentController extends Controller
 
         if ($this->terminateIfUnauthenticated())
         {
-            return back()->withErrors('Your cart contains digital products. Please login first to purchase.');
+            return back()->withErrors(__('Your cart contains digital products. Please login first to purchase.'));
         }
 
         $checkout_service = new ProductCheckoutService();
@@ -56,7 +57,7 @@ class CheckoutPaymentController extends Controller
         if (!\auth('web')->user())
         {
             $cartData = Cart::content('default')->where('options.type', ProductTypeEnum::DIGITAL);
-            return !empty($cartData);
+            return count($cartData) > 0;
         }
 
         return false;

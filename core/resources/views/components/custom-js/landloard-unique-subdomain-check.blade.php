@@ -24,6 +24,8 @@
         let msgWrap = $('#subdomain-wrap');
         msgWrap.html('');
         msgWrap.append('<span class="text-warning">{{__('availability checking..')}}</span>');
+        let trial_button = $('#create-trial-account-button');
+        trial_button.attr('disabled', true);
 
         axios({
             url: "{{route('landlord.subdomain.check')}}",
@@ -48,8 +50,9 @@
             {
                 msgWrap.html('');
                 msgWrap.append('<span class="text-success"> ' + value+'.'+base_url + ' {{__('is available')}}</span>');
-                $('#login_button').attr('disabled', false)
-                $('.order-btn').attr('disabled', false)
+                $('#login_button').attr('disabled', false);
+                $('.order-btn').attr('disabled', false);
+                trial_button.attr('disabled', false);
             } else {
                 msgWrap.html('');
                 msgWrap.append('<span class="text-danger">{{__('This subdomain is not available')}}</span>');
@@ -61,6 +64,7 @@
             msgWrap.append('<span class="text-danger"> ' + responseData.subdomain + '</span>');
             $('#login_button').attr('disabled', true)
             $('.order-btn').attr('disabled', true)
+            //
         });
     });
     //subdomain check

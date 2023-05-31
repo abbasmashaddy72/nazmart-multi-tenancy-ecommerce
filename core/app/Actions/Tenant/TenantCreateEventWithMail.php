@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class TenantCreateEventWithMail
 {
-    public static function tenant_create_event_with_credential_mail($user, $subdomain, $theme='hexfashion')
+    public static function tenant_create_event_with_credential_mail($user, $subdomain, $theme = 'hexfashion')
     {
         event(new TenantRegisterEvent($user, $subdomain, $theme));
         try {

@@ -989,6 +989,8 @@ class TenantFrontendController extends Controller
                 'subcategory' => $subcategory
             ];
 
+            $options['type'] = ProductTypeEnum::PHYSICAL;
+
             Cart::add(['id' => $cart_data['product_id'], 'name' => $product->name, 'qty' => $cart_data['quantity'], 'price' => $final_sale_price, 'weight' => '0', 'options' => $options]);
             DB::commit();
 
@@ -1188,8 +1190,6 @@ class TenantFrontendController extends Controller
                     $product_tax = $country_tax->toArray()['tax_percentage'];
                 }
             }
-        } else {
-            $product_tax = $country_tax->toArray()['tax_percentage'];
         }
 
         return $product_tax;
@@ -1204,6 +1204,22 @@ class TenantFrontendController extends Controller
         ]);
 
         $user = Auth::guard('web')->user();
+
+        $if_not_bought = OrderProducts::where('product_id', 233)->first();
+
+        dd($if_not_bought);
+
+//        $if_not_bought = OrderProducts::where('product_id', $request->product_id)->where(function ($query) use ($request, $user){
+//            $order = ProductOrder::find($request->product_id);
+//            dd($order);
+//            if ($order->user_id == $user->id)
+//            {
+//                return $query;
+//            }
+//        })->first();
+
+        dd($if_not_bought);
+
         $existing_record = ProductReviews::where(['user_id' => $user->id, 'product_id' => $request->product_id])->select('id')->first();
 
         if (!$existing_record) {
@@ -1811,6 +1827,41 @@ HTML;
         }
 
         $markup = view('pagebuilder::tenant.bookpoint.product.partials.product_list_markup', compact('products'))->render();
+
+        return response()->json([
+            'markup' => $markup,
+            'category' => $request->category
+        ]);
+    }
+
+    public function product_by_category_ajax_aromatic(Request $request)
+    {
+        (string)$markup = '';
+
+        $products = Product::with('badge')->where('status_id', 1);
+
+        if ($request->category != 'all') {
+            $category_id = Category::where('slug', $request->category)->firstOrFail();
+
+            $products_id = ProductCategory::where('category_id', $category_id->id)->pluck('product_id')->toArray();
+            $products->whereIn('id', $products_id);
+
+            $products = $products->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
+                ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
+                ->take($request->limit ?? 8)
+                ->get();
+        } else {
+            $allId = explode(',', $request->allId);
+            $category_id = ProductCategory::whereIn('category_id', $allId)->pluck('product_id')->toArray();
+
+            $products = $products->whereIn('id', $category_id)
+                ->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
+                ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
+                ->take($request->limit ?? 8)
+                ->get();
+        }
+
+        $markup = view('pagebuilder::tenant.aromatic.product.partials.product_list_markup', compact('products'))->render();
 
         return response()->json([
             'markup' => $markup,

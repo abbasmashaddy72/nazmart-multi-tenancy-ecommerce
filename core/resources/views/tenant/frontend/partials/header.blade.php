@@ -34,20 +34,49 @@
     </title>
 
     {!! render_favicon_by_id(filter_static_option_value('site_favicon', $global_static_field_data)) !!}
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/bootstrap.min.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/animate.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/slick.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/nice-select.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/line-awesome.min.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/common/css/jquery.ihavecookies.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/odometer.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/common.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/magnific-popup.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/helpers.css')}}">
-    <link rel="stylesheet" href="{{ global_asset('assets/common/css/toastr.css') }}">
-    <link rel="stylesheet" href="{{global_asset('assets/common/css/loader-01.css')}}">
 
-{{--    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/style.css')}}">--}}
+    @php
+        $loadCoreStyle = loadCoreStyle();
+    @endphp
+
+    @if(in_array('bootstrap.min', $loadCoreStyle))
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/bootstrap.min.css')}}">
+    @endif
+    @if(in_array('animate', $loadCoreStyle))
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/animate.css')}}">
+    @endif
+    @if(in_array('slick', $loadCoreStyle))
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/slick.css')}}">
+    @endif
+    @if(in_array('nice-select', $loadCoreStyle))
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/nice-select.css')}}">
+    @endif
+    @if(in_array('line-awesome.min', $loadCoreStyle))
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/line-awesome.min.css')}}">
+    @endif
+    @if(in_array('jquery.ihavecookies', $loadCoreStyle))
+        <link rel="stylesheet" href="{{global_asset('assets/common/css/jquery.ihavecookies.css')}}">
+    @endif
+    @if(in_array('odometer', $loadCoreStyle))
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/odometer.css')}}">
+    @endif
+    @if(in_array('common', $loadCoreStyle))
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/common.css')}}">
+    @endif
+    @if(in_array('magnific-popup', $loadCoreStyle))
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/magnific-popup.css')}}">
+    @endif
+    @if(in_array('helpers', $loadCoreStyle))
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/helpers.css')}}">
+    @endif
+    @if(in_array('toastr', $loadCoreStyle))
+        <link rel="stylesheet" href="{{ global_asset('assets/common/css/toastr.css') }}">
+    @endif
+    @if(in_array('loader', $loadCoreStyle))
+        <link rel="stylesheet" href="{{global_asset('assets/common/css/loader.css')}}">
+    @endif
+
+    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/footer-style.css')}}">
 
     @foreach($theme_header_css_files ?? [] as $cssFile)
         <link rel="stylesheet" href="{{ loadCss($cssFile) }}" type="text/css" />
@@ -68,8 +97,16 @@
     @endif
 
     @include('tenant.frontend.partials.css-variable', ['theme_slug' => $theme_slug])
+
     <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/shop-order-custom.css')}}">
-    <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/digital-shop-common.css')}}">
+    @if(getSelectedThemeSlug() == 'bookpoint')
+{{--        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/shop-common.css')}}">--}}
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/digital-shop-common.css')}}">
+    @else
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/digital-shop-common.css')}}">
+        <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/shop-common.css')}}">
+    @endif
+
 
     @yield('style')
 

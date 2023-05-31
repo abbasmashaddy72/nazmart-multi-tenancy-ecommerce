@@ -232,4 +232,24 @@ class ProductController extends Controller
         $review_list = ProductReviews::paginate(10);
         return view('product::review', compact('review_list'));
     }
+
+    public function settings()
+    {
+        return view('product::settings');
+    }
+
+    public function settings_update(Request $request)
+    {
+        $validated = $request->validate([
+            'product_title_length' => 'nullable|integer',
+            'product_description_length' => 'nullable|integer'
+        ]);
+
+        foreach ($validated as $index => $value)
+        {
+            update_static_option($index, $value);
+        }
+
+        return back()->with(FlashMsg::update_succeed('Product global settings'));
+    }
 }

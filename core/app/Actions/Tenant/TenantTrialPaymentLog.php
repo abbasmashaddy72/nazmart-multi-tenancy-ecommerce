@@ -8,39 +8,7 @@ use Illuminate\Support\Str;
 
 class TenantTrialPaymentLog
 {
-//    public static function trial_payment_log($user, $plan)
-//    {
-//        $package_start_date = Carbon::now()->format('d-m-Y h:i:s');
-//        $package_expire_date = Carbon::now()->addDays($plan->trial_days)->format('d-m-Y h:i:s');;
-//
-//        $tenant = \DB::table('tenants')->where('user_id', $user->id)->latest()->select('id')->first();
-//        PaymentLogs::create([
-//            'email' => $user->email,
-//            'name' => $user->name,
-//            'package_name' => $plan->title,
-//            'package_price' => $plan->price,
-//            'package_id' => $plan->id,
-//            'user_id' => $user->id ?? null,
-//            'tenant_id' => $tenant->id ?? null,
-//            'status' => 'trial',
-//            'payment_status' => 'pending',
-//            'is_renew' => 0,
-//            'track' => Str::random(10) . Str::random(10),
-//            'created_at' => \Illuminate\Support\Carbon::now(),
-//            'updated_at' => Carbon::now(),
-//            'start_date' => $package_start_date,
-//            'expire_date' => $package_expire_date,
-//        ]);
-//
-//        \DB::table('tenants')->where('id', $tenant->id)->update([
-//            'start_date' => $package_start_date,
-//            'expire_date' => $package_expire_date,
-//        ]);
-//
-//        return true;
-//    }
-
-    public static function trial_payment_log($user, $plan,$subdomain = null)
+    public static function trial_payment_log($user, $plan,$subdomain = null, $theme = 'hexfashion')
     {
         $trial_start_date = '';
         $trial_expire_date =  '';
@@ -77,13 +45,12 @@ class TenantTrialPaymentLog
             'updated_at' => Carbon::now(),
             'start_date' => $trial_start_date,
             'expire_date' => $trial_expire_date,
-            'theme' => session()->get('theme'),
+            'theme_slug' => $theme,
         ]);
 
         \DB::table('tenants')->where('id', $subdomain)->update([
             'start_date' => $trial_start_date,
-            'expire_date' => $trial_expire_date,
-//          'theme_slug' => session()->get('theme'),
+            'expire_date' => $trial_expire_date
         ]);
 
         return true;

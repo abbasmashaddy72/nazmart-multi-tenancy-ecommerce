@@ -57,7 +57,7 @@ function tenant_has_digital_product()
     $digital_product = false;
     if (tenant())
     {
-        $plan_features = tenant()->payment_log->package->plan_features;
+        $plan_features = tenant()?->payment_log?->package?->plan_features;
         if (!empty($plan_features))
         {
             $features = $plan_features->pluck('feature_name');
@@ -341,7 +341,7 @@ function get_theme_image($slug)
     //Info - Theme image path - assets/img/theme
     $themes = [];
 
-    foreach (range(1, 12) as $item) {
+    foreach (range(1, 14) as $item) {
         $themes['theme-' . $item] = global_asset('assets/img/theme/th-' . $item . '.jpg');
     }
 
@@ -435,6 +435,19 @@ function render_star($rating, $class = '')
         }
     }
     $markup .= '</div>';
+
+    return $markup;
+}
+
+function mares_product_star_rating($rating, $class='')
+{
+    $markup = '<ul class="'.$class.'">';
+    if (!empty($rating)) {
+        for ($i = 0; $i < $rating; $i++) {
+            $markup .= '<li> <i class="las la-star"></i> </li>';
+        }
+    }
+    $markup .= '</ul>';
 
     return $markup;
 }
@@ -1392,6 +1405,32 @@ function render_payment_gateway_for_form($cash_on_delivery = false)
     return $output;
 }
 
+function render_payment_gateway_for_price_plan($cash_on_delivery = false)
+{
+    $output = '<div class="payment-gateway-wrapper">';
+    $output .= '<input type="hidden" name="selected_payment_gateway" value="' . get_static_option('site_default_payment_gateway') . '">';
+
+    $all_gateway = \App\Models\PaymentGateway::all();
+
+    $output .= '<ul>';
+    if ($cash_on_delivery) {
+        $output .= '<li data-gateway="cash_on_delivery" ><div class="img-select">';
+        $output .= render_image_markup_by_attachment_id(get_static_option('cash_on_delivery_preview_logo'));
+        $output .= '</div></li>';
+    }
+    foreach ($all_gateway as $gateway) {
+        $class = (get_static_option('site_default_payment_gateway') == $gateway->name) ? 'class="selected"' : '';
+
+        $output .= '<li data-gateway="' . $gateway->name . '" ' . $class . '><div class="img-select">';
+        $output .= render_image_markup_by_attachment_id($gateway->image);
+        $output .= '</div></li>';
+    }
+    $output .= '</ul>';
+
+    $output .= '</div>';
+    return $output;
+}
+
 function get_user_name_by_id($id)
 {
     $user = \App\Models\User::find($id);
@@ -1577,6 +1616,12 @@ function get_module_view($moduleName, $fileName)
     return strtolower($moduleName) . '::payment-gateway-view.' . $fileName;
 }
 
+/**
+ * @method theme_assets
+ * @param $file
+ * @param $theme
+ * @return string
+ */
 function theme_assets($file, $theme = ''): string
 {
     $name = \App\Facades\ThemeDataFacade::getSelectedThemeSlug();
@@ -1650,39 +1695,19 @@ function externalAddonImagepath($moduleName)
     return 'core/Modules/' . $moduleName . '/assets/addon-image/'; // 'assets/plugins/PageBuilder/images'
 }
 
-function getSelectedThemeSlug()
+function getPricePlanBasedAllThemeData($themeNameArray)
 {
-    return \App\Facades\ThemeDataFacade::getSelectedThemeSlug();
-}
+    $themeList = [];
+    $all_theme =  \App\Facades\ThemeDataFacade::getAllThemeData();
+    foreach($all_theme as $key => $theme)
+    {
+        if (in_array($key, $themeNameArray))
+        {
+            $themeList[] = $theme;
+        }
+    }
 
-function getSelectedThemeData()
-{
-    return \App\Facades\ThemeDataFacade::getSelectedThemeData();
-}
-
-function getAllThemeDataForAdmin()
-{
-    return \App\Facades\ThemeDataFacade::getAllThemeDataForAdmin();
-}
-
-function getAllThemeData()
-{
-    return \App\Facades\ThemeDataFacade::getAllThemeData();
-}
-
-function getIndividualThemeDetails($theme_slug)
-{
-    return \App\Facades\ThemeDataFacade::getIndividualThemeDetails($theme_slug);
-}
-
-function renderPrimaryThemeScreenshot($theme_slug)
-{
-    return \App\Facades\ThemeDataFacade::renderPrimaryThemeScreenshot($theme_slug);
-}
-
-function renderFooterHookBladeFile()
-{
-    return \App\Facades\ThemeDataFacade::renderFooterHookBladeFile();
+    return $themeList;
 }
 
 function theme_custom_name($theme_data)
@@ -1761,4 +1786,47 @@ function tenant_plan_theme_list()
     }
 
     return $themes;
+}
+
+function product_limited_text($text, $type)
+{
+    switch ($type) {
+        case 'title':
+            $limit = get_static_option('product_title_length') ?? 15;
+            $product_text = Str::words($text, $limit);
+            break;
+
+        case 'description';
+            $limit = get_static_option('product_description_length') ?? 30;
+            $product_text = Str::words($text, $limit);
+            break;
+    }
+
+    return $product_text;
+}
+
+function title_underline_image_src()
+{
+    $title_line = get_attachment_image_by_id(get_static_option('title_shape_image'));
+    return !empty($title_line) ? $title_line['img_url'] : '';
+}
+
+/**
+ * @param integer $number
+ * @return mixed
+ * @see number_to_word
+ */
+function number_to_word(int $number)
+{
+    return (new \App\Helpers\NumberToWordHelper())->convertNumber($number) ?? '';
+}
+
+function esc_html($text)
+{
+    return \App\Helpers\SanitizeInput::esc_html($text);
+}
+
+function esc_url($text)
+{
+    return \App\Helpers\SanitizeInput::esc_url($text);
 }

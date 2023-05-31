@@ -254,7 +254,6 @@
         // open modal with product quick view
         $(document).on("click",".product-quick-view-ajax",function (){
             let action_route = $(this).data('action-route');
-            console.log(action_route);
 
             let icon = $(this).find("i");
             let oldIconClass = icon.attr("class");

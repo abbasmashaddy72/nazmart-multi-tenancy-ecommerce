@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        update_static_option_central('get_script_version','1.1.1');
+        update_static_option_central('get_script_version','1.1.2');
 
 //        $payment_gateway_markup = [
 //            [
@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
 //                        'sandbox_app_id'  => '',
 //                        'live_client_id'  => '',
 //                        'live_client_secret'  => '',
-//                        'live_app_id'  => ''
+//                        'live_access_token'  => ''
 //                    ]
 //                )
 //            ],

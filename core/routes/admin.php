@@ -87,6 +87,7 @@ Route::group(['middleware' => ['auth:admin','adminglobalVariable', 'set_lang'],'
     Route::controller(\App\Http\Controllers\Landlord\Admin\TenantExceptionController::class)->name('landlord.')->prefix('website-issues')->group(function (){
         Route::get('/','website_issues')->name('admin.tenant.website.issues');
         Route::post('/','generate_domain')->name('admin.failed.domain.generate');
+        Route::post('/manual-database','manual_database')->name('admin.failed.database.generate');
     });
 
 
@@ -262,6 +263,11 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::get('/edit-profile/{id}','edit_profile')->name('admin.tenant.edit.profile');
         Route::post('/update-profile','update_edit_profile')->name('admin.tenant.update.profile');
         Route::post('/delete/{id}','delete')->name('admin.tenant.delete');
+
+        Route::get('/trash/delete','trash')->name('admin.tenant.trash');
+        Route::get('/trash/delete/restore/{id}','trash_restore')->name('admin.tenant.trash.restore');
+        Route::post('/trash/delete/delete/{id}','trash_delete')->name('admin.tenant.trash.delete');
+
         Route::post('/change-password','update_change_password')->name('admin.tenant.change.password');
         Route::get('/view/{id}','view_profile')->name('admin.tenant.view');
         Route::post('/send-mail','send_mail')->name('admin.tenant.send.mail');
@@ -274,6 +280,15 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::get('/account-settings','account_settings')->name('admin.tenant.settings');
         Route::post('/account-settings','account_settings_update');
         Route::post('/verify-account','verify_account')->name('admin.tenant.verify.account');
+        Route::post('/check-subdomain-theme','check_subdomain_theme')->name('admin.tenant.check.subdomain.theme');
+
+        Route::name('admin.tenant.failed.')->prefix('failed')->group(function (){
+            Route::get('/tenants', 'failed_tenants')->name('index');
+            Route::post('/edit', 'failed_tenants_edit')->name('edit');
+            Route::post('/delete/{id}', 'failed_tenants_delete')->name('delete');
+            Route::post('/assign-subscription','failed_regenerate_subscription')->name('assign.subscription');
+            Route::post('/manual-payment-log','create_payment_log')->name('manual.paymentlog');
+        });
     });
 
 /*----------------------------------------------------------------------------------------------------------------------------

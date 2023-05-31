@@ -58,13 +58,19 @@
             @endforeach
 
             @if(get_static_option('up_coming_themes_frontend'))
-                @foreach(range(3, 12) as $item)
-                    @if($item == 3)
+                @foreach(range(4, 14) as $item)
+                    @if($item == 4)
+                        @php
+                            $base_url = URL::to('/');
+                            $base_url = str_replace(['http://','https://'], '', $base_url);
+                        @endphp
+                        @if($base_url == 'nazmart.net' || $base_url == 'nazmart-test.test')
                             <div class="col-lg-4 col-sm-6 mt-4">
                                 <div class="single-themes">
                                     <div class="single-themes-thumb">
                                         <a href="http://zamila.nazmart.net" target="_blank">
-                                            <img class="rounded" src="{{global_asset('assets/img/theme/th-zamila.jpg')}}" alt="">
+                                            <img class="rounded"
+                                                 src="{{global_asset('assets/img/theme/th-zamila.jpg')}}" alt="">
                                         </a>
                                     </div>
                                     <div class="single-themes-content mt-3">
@@ -79,27 +85,28 @@
                                     </div>
                                 </div>
                             </div>
-                        @else
-                            <div class="col-lg-4 col-sm-6 mt-4">
-                                <div class="single-themes">
-                                    <div class="single-themes-thumb coming_soon">
-                                        <a href="javascript:void(0)">
-                                            <img class="rounded" src="{{get_theme_image('theme-'.$item)}}" alt="">
+                        @endif
+                    @else
+                        <div class="col-lg-4 col-sm-6 mt-4">
+                            <div class="single-themes">
+                                <div class="single-themes-thumb coming_soon">
+                                    <a href="javascript:void(0)">
+                                        <img class="rounded" src="{{get_theme_image('theme-'.$item)}}" alt="">
+                                    </a>
+                                    <div class="coming-soon-theme">{{__('Coming Soon')}}</div>
+                                </div>
+                                <div class="single-themes-content mt-3">
+                                    <div class="single-themes-content-flex">
+                                        <h3 class="single-themes-content-title">
+                                            {{__('Theme')}} {{$item}}
+                                        </h3>
+                                        <a href="javascript:void(0)" class="single-themes-content-title-icon">
+                                            <i class="las la-arrow-right"></i>
                                         </a>
-                                        <div class="coming-soon-theme">{{__('Coming Soon')}}</div>
-                                    </div>
-                                    <div class="single-themes-content mt-3">
-                                        <div class="single-themes-content-flex">
-                                            <h3 class="single-themes-content-title">
-                                                {{__('Theme')}} {{$item}}
-                                            </h3>
-                                            <a href="javascript:void(0)" class="single-themes-content-title-icon">
-                                                <i class="las la-arrow-right"></i>
-                                            </a>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
                     @endif
                 @endforeach
             @endif

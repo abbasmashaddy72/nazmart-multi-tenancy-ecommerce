@@ -44,8 +44,8 @@ class PlaceOrder extends Mailable
         $canvas->set_opacity(.2);
         $canvas->page_text($width/5, $height/2, __('Paid'), null, 55, array(0,0,0),2,2,-30);
 
-        $mail = $this->from(get_static_option('site_global_email'), get_static_option('site_'.get_default_language().'_title'))
-                 ->subject(__('Order For').' '. $this->package->package_name  .' From '.get_static_option('site_'.get_default_language().'_title'))
+        $mail = $this->from(get_static_option('site_global_email'), get_static_option('site_title'))
+                 ->subject(__('Order For').' '. $this->package->package_name  .' From '.get_static_option('site_title'))
                  ->markdown('emails.order')
                  ->attachData($invoice_details->output(), "invoice.pdf");
 

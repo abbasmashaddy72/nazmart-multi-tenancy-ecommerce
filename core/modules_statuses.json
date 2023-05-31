@@ -19,5 +19,6 @@
     "NewsLetter": true,
     "MobileApp": true,
     "TestManage": true,
-    "DigitalProduct": true
+    "DigitalProduct": true,
+    "PluginManage": true
 }

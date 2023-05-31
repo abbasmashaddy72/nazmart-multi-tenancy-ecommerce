@@ -145,6 +145,22 @@ Route::middleware([
         Route::post('/topbar/delete-social-item/{id}', 'delete_social_item')->name('admin.delete.social.item');
     });
 
+    /*--------------------------
+      SECTION TITLE SETTING ROUTE
+    ----------------------------*/
+    Route::controller(\App\Http\Controllers\Tenant\Admin\SectionTitleManageController::class)->group(function (){
+        Route::get('/section-title','index')->name('admin.section.manage');
+        Route::post('/section-title/update','update')->name('admin.section.manage.update');
+    });
+
+    /* ------------------------------------------
+    Breadcrumb Settings ROUTES
+    -------------------------------------------- */
+    Route::controller(GeneralSettingsController::class)->group(function (){
+        Route::get('/breadcrumb','breadcrumb')->name('admin.breadcrumb.manage');
+        Route::post('/breadcrumb/update','breadcrumb_update')->name('admin.breadcrumb.update');
+    });
+
     /* ------------------------------------------
      PAGES MANAGE ROUTES
     -------------------------------------------- */

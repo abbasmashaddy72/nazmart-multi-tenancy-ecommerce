@@ -34,6 +34,9 @@ Route::middleware([
             Route::post("bulk/destroy", "bulk_destroy")->name("bulk.destroy");
             Route::get("search","productSearch")->name("search");
 
+            Route::get("settings","settings")->name("settings");
+            Route::post("settings","settings_update");
+
             Route::get("review","productReview")->name("review");
 
             Route::prefix('trash')->name('trash.')->group(function (){
