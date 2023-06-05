@@ -13,7 +13,6 @@
     "headerHook": [
         {
             "loadCoreStyle": {
-                "jquery.ihavecookies": false,
                 "odometer": false,
                 "common": false,
                 "magnific-popup": false
