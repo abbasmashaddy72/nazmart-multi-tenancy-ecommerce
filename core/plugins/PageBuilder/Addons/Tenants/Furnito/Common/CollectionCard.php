@@ -101,6 +101,6 @@ class CollectionCard extends PageBuilderBase
 
     public function addon_title()
     {
-        return __('Theme 2 : Collection Card (01)');
+        return __('Theme Furnito : Collection Card (01)');
     }
 }

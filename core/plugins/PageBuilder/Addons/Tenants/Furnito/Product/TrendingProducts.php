@@ -109,6 +109,6 @@ class TrendingProducts extends PageBuilderBase
 
     public function addon_title()
     {
-        return __('Theme 2: Trending Products');
+        return __('Theme Furnito: Trending Products');
     }
 }

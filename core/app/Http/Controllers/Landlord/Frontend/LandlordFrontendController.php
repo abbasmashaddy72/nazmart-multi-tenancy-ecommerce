@@ -167,10 +167,8 @@ class LandlordFrontendController extends Controller
     public function view_plan($id, $trial = null)
     {
         $order_details = PricePlan::findOrFail($id);
-        $themes = Themes::where('status', 1)->get();
 
         return view('landlord.frontend.pages.package.view-plan')->with([
-            'themes' => $themes,
             'order_details' => $order_details,
             'trial' => $trial != null ? true : false,
         ]);

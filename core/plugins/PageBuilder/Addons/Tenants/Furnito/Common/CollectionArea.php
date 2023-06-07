@@ -120,6 +120,6 @@ class CollectionArea extends PageBuilderBase
 
     public function addon_title()
     {
-        return __('Theme 2: Collection(01)');
+        return __('Theme Furnito: Collection(01)');
     }
 }

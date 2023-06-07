@@ -14,7 +14,7 @@ use Plugins\PageBuilder\Fields\Text;
 use Plugins\PageBuilder\PageBuilderBase;
 use Symfony\Component\Console\Input\Input;
 
-class FeaturedProductSlider extends PageBuilderBase
+class FeaturedPhysicalProductSlider extends PageBuilderBase
 {
 
     public function preview_image()
@@ -35,10 +35,7 @@ class FeaturedProductSlider extends PageBuilderBase
             'value' => $widget_saved_values['title'] ?? null,
         ]);
 
-        $products = DigitalProduct::where(['status_id' => 1])
-            ->where('promotional_date', '>', now())
-            ->where('promotional_price', '!=', null)
-            ->get()->mapWithKeys(function ($item){
+        $products = Product::where(['status_id' => 1])->get()->mapWithKeys(function ($item){
             return [$item->id => $item->name];
         })->toArray();
 
@@ -74,13 +71,11 @@ class FeaturedProductSlider extends PageBuilderBase
         $padding_top = SanitizeInput::esc_html($this->setting_item('padding_top'));
         $padding_bottom = SanitizeInput::esc_html($this->setting_item('padding_bottom'));
 
-        $products = DigitalProduct::where('status_id', 1);
+        $products = Product::where('status_id', 1);
 
         if (!empty($products_id))
         {
             $products->whereIn('id', $products_id);
-        } else {
-            $products->where('promotional_date', '>', now())->where('promotional_price', '!=', null);
         }
 
         if(!empty($item_show)){
@@ -98,11 +93,11 @@ class FeaturedProductSlider extends PageBuilderBase
             'products'=> $products
         ];
 
-        return self::renderView('tenant.bookpoint.product.featured_product_slider',$data);
+        return self::renderView('tenant.bookpoint.product.featured_physical_product_slider',$data);
     }
 
     public function addon_title()
     {
-        return __('Theme Bookpoint: Featured Product Slider (Digital Product)');
+        return __('Theme Bookpoint: Featured Product Slider (Normal Product)');
     }
 }

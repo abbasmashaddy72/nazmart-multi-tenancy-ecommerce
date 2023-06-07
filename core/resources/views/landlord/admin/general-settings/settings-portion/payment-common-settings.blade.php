@@ -30,7 +30,7 @@
     <label for="site_default_payment_gateway">{{__('Default Payment Gateway')}}</label>
     <select name="site_default_payment_gateway" class="form-control">
         @php
-            $all_gateways = ['paypal','manual_payment','mollie','paytm','stripe','razorpay','flutterwave','paystack','midtranse','marcedopago','instamojo','cashfree', 'toyyibpay', 'zitopay', 'squareup', 'cinetpay', 'paytabs', 'billplz', 'payfast'];
+            $all_gateways = ['paypal','manual_payment','mollie','paytm','stripe','razorpay','flutterwave','paystack','midtranse','marcadopago','instamojo','cashfree', 'toyyibpay', 'zitopay', 'squareup', 'cinetpay', 'paytabs', 'billplz', 'payfast'];
         @endphp
         @foreach($all_gateways as $gateway)
                 <option value="{{$gateway}}" @if(get_static_option('site_default_payment_gateway') == $gateway) selected @endif>{{ucwords(str_replace('_',' ',$gateway))}}</option>

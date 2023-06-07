@@ -43,7 +43,6 @@
                         </div>
 
                         <div class="collection-contents">
-
                             <!--Product rating markup-->
                             {!! mares_product_star_rating($product?->rating, 'collection-review color-three justify-content-center margin-bottom-10') !!}
 

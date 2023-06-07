@@ -12,7 +12,6 @@ use App\Http\Controllers\Tenant\Admin\NewsletterController;
 use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 
 
-
 Route::middleware([
     'web',
 //    InitializeTenancyByDomain::class,

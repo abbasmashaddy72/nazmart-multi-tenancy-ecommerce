@@ -77,7 +77,7 @@
     <x-pagebuilder::script :page="$page"/>
     <script>
         $(document).ready(function(){
-            //additional js code
+
         });
     </script>
 @endsection
