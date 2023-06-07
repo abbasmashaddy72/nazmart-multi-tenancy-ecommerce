@@ -9,6 +9,7 @@ use Modules\DigitalProduct\Entities\DigitalProduct;
 use Modules\Product\Entities\Product;
 use Plugins\PageBuilder\Fields\NiceSelect;
 use Plugins\PageBuilder\Fields\Number;
+use Plugins\PageBuilder\Fields\Select;
 use Plugins\PageBuilder\Fields\Text;
 use Plugins\PageBuilder\PageBuilderBase;
 use Symfony\Component\Console\Input\Input;
@@ -34,12 +35,6 @@ class FeaturedProductSlider extends PageBuilderBase
             'value' => $widget_saved_values['title'] ?? null,
         ]);
 
-        $output .= Number::get([
-            'name' => 'item_show',
-            'label' => __('Item Show'),
-            'value' => $widget_saved_values['item_show'] ?? null,
-        ]);
-
         $products = DigitalProduct::where(['status_id' => 1])
             ->where('promotional_date', '>', now())
             ->where('promotional_price', '!=', null)
@@ -54,6 +49,12 @@ class FeaturedProductSlider extends PageBuilderBase
             'options' => $products,
             'value' => $widget_saved_values['products'] ?? null,
             'info' => __('you can select your desired products or leave it empty')
+        ]);
+
+        $output .= Number::get([
+            'name' => 'item_show',
+            'label' => __('Item Show'),
+            'value' => $widget_saved_values['item_show'] ?? null,
         ]);
 
         // add padding option
@@ -102,6 +103,6 @@ class FeaturedProductSlider extends PageBuilderBase
 
     public function addon_title()
     {
-        return __('Theme Bookpoint: Featured Product Slider(01)');
+        return __('Theme Bookpoint: Featured Product Slider (Digital Product)');
     }
 }

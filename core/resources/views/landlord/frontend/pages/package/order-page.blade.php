@@ -340,6 +340,7 @@
                                             <div class="row">
                                                 <div class="col">
                                                     <h4 class="mb-3">{{__('Themes')}}</h4>
+                                                    <span></span>
                                                 </div>
                                             </div>
                                             <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 theme-row mb-5">

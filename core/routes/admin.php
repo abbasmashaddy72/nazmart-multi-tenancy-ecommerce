@@ -242,7 +242,7 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::post('/user-password-change','user_password_change')->name('admin.user.password.change');
         Route::post('/delete-user/{id}','new_user_delete')->name('admin.delete.user');
         /*----------------------------
-         ALL ADMIN ROLE ROUTES
+            ALL ADMIN ROLE ROUTES
         -----------------------------*/
         Route::get('/role','all_admin_role')->name('admin.all.admin.role');
         Route::get('/role/new','new_admin_role_index')->name('admin.role.new');

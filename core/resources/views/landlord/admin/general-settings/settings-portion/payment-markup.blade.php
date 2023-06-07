@@ -108,7 +108,7 @@
 
            'marcadopago'=> [
             [
-                'title'=> 'Marcedopago Settings',
+                'title'=> 'Marcadopago Settings',
                 'name'=> 'marcadopago',
                 'logo'=> 'marcadopago_logo',
                 'fields'=> ['marcado_pago_client_id','marcado_pago_client_secret']
@@ -124,5 +124,4 @@
             ]
         ],
     ];
-
 @endphp

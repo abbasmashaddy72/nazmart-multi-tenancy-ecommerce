@@ -46,7 +46,7 @@
                                 </div>
 
                             </form>
-                            <p class="info">{{__("Don'/t have an account")}} <a href="{{route('tenant.user.register')}}" class="active">{{__('Sign up')}}</a></p>
+                            <p class="info">{{__("Do not have an account")}} <a href="{{route('tenant.user.register')}}" class="active">{{__('Sign up')}}</a></p>
                         </div>
                     </div>
                 </div>

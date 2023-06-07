@@ -47,7 +47,7 @@
                                     <button type="submit" id="login_btn" class="cmn-btn cmn-btn-bg-1 w-100">{{__('Sign In')}}</button>
                                 </div>
                             </form>
-                            <p class="info mt-3">{{__("Don'/t have an account")}} <a href="{{route('tenant.user.register')}}" class="active"> <strong>{{__('Sign up')}}</strong> </a></p>
+                            <p class="info mt-3">{{__("Do not have an account")}} <a href="{{route('tenant.user.register')}}" class="active"> <strong>{{__('Sign up')}}</strong> </a></p>
                         </div>
                     </div>
                 </div>

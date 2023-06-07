@@ -29,6 +29,7 @@ use Plugins\PageBuilder\Addons\Tenants\Aromatic\Common\InstagramWidget;
 use Plugins\PageBuilder\Addons\Tenants\Aromatic\Product\BestProduct;
 use Plugins\PageBuilder\Addons\Tenants\Bookpoint\Blog\RecentBlog;
 use Plugins\PageBuilder\Addons\Tenants\Bookpoint\Common\TopAuthor;
+use Plugins\PageBuilder\Addons\Tenants\Furnito\Product\TrendingProducts;
 use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Contact\ContactAreaOne;
 use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Contact\GoogleMap;
 use Plugins\PageBuilder\Addons\Tenants\Medicom\Header\Header;
@@ -91,7 +92,7 @@ class PageBuilderSetup
                 $addons = [
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Header\HeaderOne::class,
                     CollectionCard::class,
-                    NewCollection::class,
+                    TrendingProducts::class,
                     CategoriesSlider::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\Brand::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\Testimonial::class,
@@ -101,8 +102,8 @@ class PageBuilderSetup
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Contact\ContactAreaOne::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Contact\GoogleMap::class,
                     BlogOne::class,
-                    \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutImage::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutStory::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutCounter::class
                 ];
             } elseif ($theme == 'medicom') {
                 // Theme Medicom
@@ -125,9 +126,10 @@ class PageBuilderSetup
                     RecentBlog::class,
                     \Plugins\PageBuilder\Addons\Tenants\Bookpoint\Common\Services::class,
                     \Plugins\PageBuilder\Addons\Tenants\Bookpoint\Product\FeaturedProductSlider::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Bookpoint\Product\FeaturedPhysicalProductSlider::class,
 
                     //temporary addons
-                    \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutImage::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutCounter::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\About\AboutStory::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\Testimonial::class,
                     \Plugins\PageBuilder\Addons\Tenants\Furnito\Common\Services::class,

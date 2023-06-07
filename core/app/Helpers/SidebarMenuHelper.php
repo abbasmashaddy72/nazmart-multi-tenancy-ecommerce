@@ -60,7 +60,7 @@ class SidebarMenuHelper
             $this->support_ticket_settings_menus($menu_instance);
         }
 
-        if (isPluginActive('Newsletter'))
+        if (isPluginActive('NewsLetter'))
         {
             $this->newsletter_settings_menus($menu_instance);
         }
@@ -503,12 +503,6 @@ class SidebarMenuHelper
             'parent' => 'general-settings-menu-items',
             'permissions' => ['general-settings-seo-settings'],
         ]);
-        $menu_instance->add_menu_item('general-settings-payment-gateway-settings', [
-            'route' => 'landlord.admin.general.payment.settings',
-            'label' => __('Currency Settings'),
-            'parent' => 'general-settings-menu-items',
-            'permissions' => ['general-settings-payment-settings'],
-        ]);
         $menu_instance->add_menu_item('general-settings-third-party-script-settings', [
             'route' => 'landlord.admin.general.third.party.script.settings',
             'label' => __('Third Party Script'),
@@ -579,6 +573,12 @@ class SidebarMenuHelper
             'parent' => null,
             'permissions' => ['paypal-payment-settings'],
             'icon' => 'mdi mdi-coin',
+        ]);
+        $menu_instance->add_menu_item('payment-currency-settings', [
+            'route' => 'landlord.admin.general.payment.settings',
+            'label' => __('Currency Settings'),
+            'parent' => 'payment-settings-menu-items',
+            'permissions' => ['payment-currency-settings'],
         ]);
         $menu_instance->add_menu_item('paypal-settings-page-settings', [
             'route' => 'landlord.admin.payment.settings.paypal',
