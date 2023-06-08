@@ -262,7 +262,7 @@ class UserDashboardController extends Controller
         $all_tickets = SupportTicket::where('user_id',$this->logged_user_details()->id)->paginate(10);
         $departments = SupportDepartment::where('status', 1)->get();
 
-        return themeView('pages.support-ticket.support-ticket')->with([ 'all_tickets' => $all_tickets, 'departments' => $departments]);
+        return view('tenant.frontend.user.dashboard.support-tickets')->with([ 'all_tickets' => $all_tickets, 'departments' => $departments]);
     }
 
     public function support_ticket_priority_change(Request $request){

@@ -316,7 +316,7 @@
                                     <h5 class="title">{{__('Replay To Message')}}</h5>
                                     <x-error-msg/>
                                     <x-flash-msg/>
-                                    <form action="{{route('tenant.user.dashboard.support.ticket.message')}}" method="post"
+                                    <form action="{{route('landlord.user.dashboard.support.ticket.message')}}" method="post"
                                           enctype="multipart/form-data">
                                         @csrf
                                         <input type="hidden" value="{{$ticket_details->id}}" name="ticket_id">
@@ -327,18 +327,20 @@
                                                       rows="5"></textarea>
                                             <div class="summernote"></div>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group my-3">
                                             <label for="file">{{__('File')}}</label>
                                             <input type="file" name="file" accept="zip">
-                                            <small class="info-text d-block text-danger">{{__('max file size 200mb, only zip file is allowed')}}</small>
+                                            <small class="info-text d-block text-danger mt-2">{{__('max file size 200mb, only zip file is allowed')}}</small>
                                         </div>
                                         <div class="form-group">
                                             <input type="checkbox" name="send_notify_mail"
                                                    id="send_notify_mail">
                                             <label for="send_notify_mail">{{__('Notify Via Mail')}}</label>
                                         </div>
-                                        <button class="btn-primary btn btn-md"
-                                                type="submit">{{__('Send Message')}}</button>
+                                        <div class="text-end">
+                                            <button class="btn-primary btn btn-md mt-3"
+                                                    type="submit">{{__('Send Message')}}</button>
+                                        </div>
                                     </form>
                                 </div>
                             @else

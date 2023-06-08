@@ -316,8 +316,10 @@
                                                id="send_notify_mail">
                                         <label for="send_notify_mail">{{__('Notify Via Mail')}}</label>
                                     </div>
-                                    <button class="btn-primary btn btn-md"
-                                            type="submit">{{__('Send Message')}}</button>
+                                    <div class="text-end">
+                                        <button class="btn-primary btn btn-md"
+                                                type="submit">{{__('Send Message')}}</button>
+                                    </div>
                                 </form>
                             </div>
                         </div>

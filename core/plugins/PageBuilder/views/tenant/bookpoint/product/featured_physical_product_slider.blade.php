@@ -1,5 +1,5 @@
 <!-- Featured area starts -->
-<section class="featured-area padding-top-100 padding-bottom-50" data-padding-top="{{$data['padding_top']}}" data-padding-bottom="{{$data['padding_bottom']}}">
+<section class="featured-area featured-area-physical padding-top-100 padding-bottom-50" data-padding-top="{{$data['padding_top']}}" data-padding-bottom="{{$data['padding_bottom']}}">
     <div class="custom-container-one">
         <div class="section-title text-left">
             <h2 class="title"> {{$data['title'] ?? ''}} </h2>
