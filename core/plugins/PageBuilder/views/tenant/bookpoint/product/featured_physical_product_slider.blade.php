@@ -43,7 +43,6 @@
 
                             <a href="{{route('tenant.shop.product.details', $product->slug)}}" class="cart-details-btn cart-details-absolute radius-5"> {{__('View Details')}} </a>
                             <div class="global-flex-card-contents">
-
                                 @if($discount > 0)
                                     <div class="global-badge">
                                         <span class="global-badge-box bg-one"> {{$discount}}% {{__('off')}} </span>
@@ -57,7 +56,6 @@
                                 <h6 class="global-flex-card-contents-title">
                                     <a href="{{route('tenant.shop.product.details', $product->slug)}}"> {{product_limited_text($product->name, 'title')}} </a>
                                 </h6>
-                                <span class="global-flex-card-contents-subtitle mt-2"> {{$product->additionalFields?->author?->name}} </span>
 
                                 {!! render_product_star_rating_markup_with_count($product) !!}
 
