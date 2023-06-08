@@ -3,11 +3,11 @@
     <div class="custom-container-one">
         <div class="section-title text-left">
             <h2 class="title"> {{$data['title'] ?? ''}} </h2>
-            <div class="append-featured"></div>
+            <div class="append-product"></div>
         </div>
         <div class="row mt-5">
             <div class="col-lg-12">
-                <div class="global-slick-init recent-slider nav-style-one slider-inner-margin" data-appendArrows=".append-featured" data-infinite="true" data-arrows="true" data-dots="false" data-slidesToShow="3" data-swipeToSlide="true" data-autoplay="true" data-autoplaySpeed="2500"
+                <div class="global-slick-init recent-slider nav-style-one slider-inner-margin" data-appendArrows=".append-product" data-infinite="true" data-arrows="true" data-dots="false" data-slidesToShow="3" data-swipeToSlide="true" data-autoplay="true" data-autoplaySpeed="2500"
                      data-prevArrow='<div class="prev-icon"><i class="las la-angle-left"></i></div>' data-nextArrow='<div class="next-icon"><i class="las la-angle-right"></i></div>' data-responsive='[{"breakpoint": 1400,"settings": {"slidesToShow": 2}},{"breakpoint": 1200,"settings": {"slidesToShow": 2}},{"breakpoint": 992,"settings": {"slidesToShow": 1}},{"breakpoint": 768, "settings": {"slidesToShow": 1} }]'
                      data-rtl="{{get_user_lang_bool_direction()}}">
                     @foreach($data['products'] ?? [] as $product)
@@ -61,6 +61,7 @@
 
                                 <div class="price-update-through mt-3">
                                     <span class="fs-24 fw-500 flash-prices color-one"> {{float_amount_with_currency_symbol($sale_price)}} </span>
+                                    <s class="old-prices"> {{float_amount_with_currency_symbol($regular_price)}} </s>
                                 </div>
                             </div>
                         </div>

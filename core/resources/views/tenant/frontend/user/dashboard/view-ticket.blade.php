@@ -73,28 +73,12 @@
             background-color: #fbf9f9;
             padding: 40px;
         }
-
-        .single-message-item {
-            background-color: #e7ebec;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            margin-right: 80px;
-        }
-
         .reply-message-wrap .title {
             font-size: 22px;
             line-height: 32px;
             margin-bottom: 40px;
             font-weight: 600;
         }
-
-        .single-message-item.customer {
-            background-color: #dadde0;
-            text-align: left;
-            margin-right: 0;
-        }
-
         .reply-message-wrap .title {
             font-size: 22px;
             line-height: 32px;
@@ -140,7 +124,14 @@
             border-radius: 5px;
             text-align: center;
         }
-
+        .single-message-item.admin .top-part {
+            flex-direction: row-reverse;
+        }
+        .single-message-item.admin .top-part .content {
+            flex: 1;
+            margin-left: 0;
+            margin-right: 15px;
+        }
         .single-message-item .title {
             font-size: 16px;
             line-height: 20px;
@@ -258,7 +249,7 @@
                                     @endif
 
                                     @forelse($all_messages as $msg)
-                                        <div class="single-message-item @if($msg->type == 'customer') customer @endif">
+                                        <div class="single-message-item {{$msg->type == 'customer' ? 'customer' : 'admin' }}">
                                             <div class="top-part">
                                                 <div class="thumb">
                                                 <span class="title">

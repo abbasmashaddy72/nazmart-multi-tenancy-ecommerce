@@ -1724,6 +1724,7 @@
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
   -webkit-transition: 300ms;
   transition: 300ms;
+  padding-right: 75px;
 }
 .single-shop-left-search-input .form--control:focus {
   -webkit-box-shadow: 0 0 20px rgba(var(--main-color-one-rgb), 0.1);

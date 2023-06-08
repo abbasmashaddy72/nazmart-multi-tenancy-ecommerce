@@ -1004,6 +1004,7 @@ textarea {
 }
 
 .append-featured,
+.append-product,
 .append-sold,
 .append-author,
 .append-upcoming,
@@ -1019,6 +1020,8 @@ textarea {
 }
 .append-featured .prev-icon,
 .append-featured .next-icon,
+.append-product .prev-icon,
+.append-product .next-icon,
 .append-sold .prev-icon,
 .append-sold .next-icon,
 .append-author .prev-icon,
@@ -1051,6 +1054,8 @@ textarea {
 }
 .append-featured .prev-icon:hover,
 .append-featured .next-icon:hover,
+.append-product .prev-icon:hover,
+.append-product .next-icon:hover,
 .append-sold .prev-icon:hover,
 .append-sold .next-icon:hover,
 .append-author .prev-icon:hover,
@@ -1066,8 +1071,10 @@ textarea {
   color: #fff;
 }
 @media (min-width: 300px) and (max-width: 991.98px) {
-  .append-featured .prev-icon,
+.append-featured .prev-icon,
 .append-featured .next-icon,
+.append-product .prev-icon,
+.append-product .next-icon,
 .append-sold .prev-icon,
 .append-sold .next-icon,
 .append-author .prev-icon,
@@ -1084,8 +1091,10 @@ textarea {
   }
 }
 @media only screen and (max-width: 375px) {
-  .append-featured .prev-icon,
+.append-featured .prev-icon,
 .append-featured .next-icon,
+.append-product .prev-icon,
+.append-product .next-icon,
 .append-sold .prev-icon,
 .append-sold .next-icon,
 .append-author .prev-icon,
@@ -1102,6 +1111,7 @@ textarea {
   }
 }
 .append-featured .prev-icon,
+.append-product .prev-icon,
 .append-sold .prev-icon,
 .append-author .prev-icon,
 .append-upcoming .prev-icon,
@@ -1112,6 +1122,8 @@ textarea {
 
 .color-two .append-featured .prev-icon:hover,
 .color-two .append-featured .next-icon:hover,
+.color-two .append-product .prev-icon:hover,
+.color-two .append-product .next-icon:hover,
 .color-two .append-sold .prev-icon:hover,
 .color-two .append-sold .next-icon:hover,
 .color-two .append-author .prev-icon:hover,
@@ -11294,4 +11306,15 @@ textarea {
 
 .topbar-logo img{
     max-width: 160px;
+}
+.physical-explore-category-area .global-flex-card-thumb,
+.featured-area-physical .global-flex-card-thumb {
+    max-width: 130px;
+    background-color: #ddd;
+}
+.old-prices {
+    text-decoration: line-through;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--extra-light-color);
 }
