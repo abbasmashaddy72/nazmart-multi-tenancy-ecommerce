@@ -77,62 +77,41 @@
         }
 
         .single-message-item {
-            background-color: #e7ebec94;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            margin-right: 80px;
-
-            width: 90%;
             border-radius: 5px 2px 35px 2px;
         }
-
         .reply-message-wrap .title {
             font-size: 22px;
             line-height: 32px;
             margin-bottom: 40px;
             font-weight: 600;
         }
-
-        .single-message-item.customer {
-            background-color: #dadde0;
-            text-align: left;
-            margin-right: 0;
-        }
-
         .reply-message-wrap .title {
             font-size: 22px;
             line-height: 32px;
             margin-bottom: 40px;
             font-weight: 600;
         }
-
         .gig-message-start-wrap .boxed-btn {
             padding: 8px 10px;
         }
-
         .reply-message-wrap .boxed-btn {
             padding: 8px 20px;
             font-size: 14px;
             font-weight: 500;
         }
-
         .reply-message-wrap textarea:focus {
             outline: none;
             box-shadow: none;
         }
-
         .reply-message-wrap textarea {
             border: 1px solid #e2e2e2;
         }
-
         .gig-message-start-wrap .title {
             font-size: 20px;
             line-height: 30px;
             margin-bottom: 40px;
             font-weight: 600;
         }
-
         .single-message-item .thumb .title {
             font-size: 16px;
             font-weight: 600;
@@ -145,13 +124,11 @@
             border-radius: 5px;
             text-align: center;
         }
-
         .single-message-item .title {
             font-size: 16px;
             line-height: 20px;
             margin: 10px 0 0px 0;
         }
-
         .single-message-item .time {
             display: block;
             font-size: 13px;
@@ -159,59 +136,46 @@
             font-weight: 500;
             font-style: italic;
         }
-
         .single-message-item .thumb i {
             display: block;
             width: 100%;
         }
-
         .single-message-item.customer .thumb .title {
             background-color: #efd2d2;
         }
-
         .single-message-item .top-part {
             display: flex;
             margin-bottom: 25px;
         }
-
         .single-message-item .top-part .content {
             margin-left: 15px;
         }
-
         .single-message-item.admin .top-part .content {
             margin-left: auto;
             margin-right: 15px;
         }
-
         .single-message-item.admin .top-part {
             flex-direction: row-reverse;
         }
-
         .single-message-item.admin .content {
             text-align: right;
         }
-
         .single-message-item.admin  {
             border-radius: 5px 0px 10px 35px;
-            width: 100%;
         }
-
         .anchor-btn {
             border-bottom: 1px solid var(--main-color-one);
             color: var(--main-color-one);
             display: inline-block;
         }
-
         .all-message-wrap.msg-row-reverse {
             display: flex;
             flex-direction: column-reverse;
             position: relative;
         }
-
         .load_all_conversation:focus {
             outline: none;
         }
-
         .load_all_conversation {
             border: none;
             background-color: #111D5C;
@@ -228,11 +192,9 @@
             transform: translateX(-50%);
             font-weight: 500;
         }
-
         .single-message-item ol, .single-message-item ul {
             padding-left: 15px;
         }
-
         .anchor-btn {
             color: #345990;
             text-decoration: underline;
@@ -316,7 +278,7 @@
                                     <h5 class="title">{{__('Replay To Message')}}</h5>
                                     <x-error-msg/>
                                     <x-flash-msg/>
-                                    <form action="{{route('tenant.user.dashboard.support.ticket.message')}}" method="post"
+                                    <form action="{{route('landlord.user.dashboard.support.ticket.message')}}" method="post"
                                           enctype="multipart/form-data">
                                         @csrf
                                         <input type="hidden" value="{{$ticket_details->id}}" name="ticket_id">
@@ -327,18 +289,20 @@
                                                       rows="5"></textarea>
                                             <div class="summernote"></div>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group my-3">
                                             <label for="file">{{__('File')}}</label>
                                             <input type="file" name="file" accept="zip">
-                                            <small class="info-text d-block text-danger">{{__('max file size 200mb, only zip file is allowed')}}</small>
+                                            <small class="info-text d-block text-danger mt-2">{{__('max file size 200mb, only zip file is allowed')}}</small>
                                         </div>
                                         <div class="form-group">
                                             <input type="checkbox" name="send_notify_mail"
                                                    id="send_notify_mail">
                                             <label for="send_notify_mail">{{__('Notify Via Mail')}}</label>
                                         </div>
-                                        <button class="btn-primary btn btn-md"
-                                                type="submit">{{__('Send Message')}}</button>
+                                        <div class="text-end">
+                                            <button class="btn-primary btn btn-md mt-3"
+                                                    type="submit">{{__('Send Message')}}</button>
+                                        </div>
                                     </form>
                                 </div>
                             @else

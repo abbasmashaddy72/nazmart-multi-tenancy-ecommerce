@@ -98,6 +98,6 @@ class FeaturedPhysicalProductSlider extends PageBuilderBase
 
     public function addon_title()
     {
-        return __('Theme Bookpoint: Featured Product Slider (Normal Product)');
+        return __('Theme BookPoint: Featured Product Slider (Normal Product)');
     }
 }

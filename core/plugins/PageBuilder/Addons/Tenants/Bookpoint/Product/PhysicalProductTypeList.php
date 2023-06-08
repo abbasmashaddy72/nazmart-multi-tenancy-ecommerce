@@ -1,10 +1,13 @@
 <?php
 
-namespace Plugins\PageBuilder\Addons\Tenants\Hexfashion\Product;
+namespace Plugins\PageBuilder\Addons\Tenants\Bookpoint\Product;
 
 use App\Enums\StatusEnums;
 use App\Helpers\SanitizeInput;
 use Modules\Attributes\Entities\Category;
+use Modules\DigitalProduct\Entities\DigitalCategories;
+use Modules\DigitalProduct\Entities\DigitalProduct;
+use Modules\DigitalProduct\Entities\DigitalProductCategories;
 use Modules\Product\Entities\Product;
 use Modules\Product\Entities\ProductCategory;
 use Plugins\PageBuilder\Fields\NiceSelect;
@@ -13,7 +16,7 @@ use Plugins\PageBuilder\Fields\Select;
 use Plugins\PageBuilder\Fields\Text;
 use Plugins\PageBuilder\PageBuilderBase;
 
-class ProductTypeList extends PageBuilderBase
+class PhysicalProductTypeList extends PageBuilderBase
 {
 
     public function preview_image()
@@ -34,7 +37,7 @@ class ProductTypeList extends PageBuilderBase
             'value' => $widget_saved_values['title'] ?? null,
         ]);
 
-        $categories = Category::where(['status_id' => 1])->get()->mapWithKeys(function ($item){
+        $categories = Category::where(['status_id' => StatusEnums::PUBLISH])->get()->mapWithKeys(function ($item){
             return [$item->id => $item->name];
         })->toArray();
 
@@ -60,7 +63,7 @@ class ProductTypeList extends PageBuilderBase
             'options' => [
                 'id' => 'ID',
                 'created_at' => 'Created Date',
-                'sale_price' => 'Price'
+                'regular_price' => 'Price'
             ],
             'value' => $widget_saved_values['sort_by'] ?? null,
         ]);
@@ -73,6 +76,13 @@ class ProductTypeList extends PageBuilderBase
                 'asc' => 'Ascending'
             ],
             'value' => $widget_saved_values['sort_to'] ?? null,
+        ]);
+
+        $output .= Text::get([
+            'name' => 'view_all_text',
+            'label' => __('View All Text'),
+            'value' => $widget_saved_values['view_all_text'] ?? 'View All',
+            'info' => 'Place your view all button text'
         ]);
 
         $output .= Text::get([
@@ -96,6 +106,7 @@ class ProductTypeList extends PageBuilderBase
         $categories_id = $this->setting_item('categories');
         $title = SanitizeInput::esc_html($this->setting_item('title') ?? '');
         $item_show = SanitizeInput::esc_html($this->setting_item('item_show') ?? '');
+        $view_all_text = SanitizeInput::esc_html($this->setting_item('view_all_text') ?? '');
         $view_all_url = SanitizeInput::esc_html($this->setting_item('view_all_url') ?? '');
         $padding_top = SanitizeInput::esc_html($this->setting_item('padding_top'));
         $padding_bottom = SanitizeInput::esc_html($this->setting_item('padding_bottom'));
@@ -104,38 +115,44 @@ class ProductTypeList extends PageBuilderBase
         $sort_to = SanitizeInput::esc_html($this->setting_item('sort_to') ?? 'desc');
 
         $categories = Category::where('status_id',StatusEnums::PUBLISH);
-        $products = Product::with('badge')->where('status_id', StatusEnums::PUBLISH);
+        $products = Product::where('status_id', StatusEnums::PUBLISH);
 
         if (!empty($categories_id))
         {
-            $categories = $categories->whereIn('id', $categories_id)->select('id', 'name', 'slug')->get();
+            $categories = $categories->whereIn('id', $categories_id);
             $products_id = ProductCategory::whereIn('category_id', $categories_id)->pluck('product_id')->toArray();
             $products->whereIn('id', $products_id);
         }
 
+        $categories = $categories->select('id', 'name', 'slug')->get();
+        $products->orderBy($sort_by, $sort_to);
+
         if(!empty($item_show)){
-            $products = $products->orderBy($sort_by, $sort_to)->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')->take($item_show)->get();
+            $products->take($item_show);
         }else{
-            $products = $products->orderBy($sort_by, $sort_to)->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')->take(6)->get();
+            $products->take(6);
         }
+
+        $products = $products->get();
 
         $data = [
             'padding_top'=> $padding_top,
             'padding_bottom'=> $padding_bottom,
             'title' => $title,
+            'view_all_text' => $view_all_text,
             'view_all_url' => $view_all_url,
-            'categories'=> $categories,
-            'products'=> $products,
+            'categories' => $categories,
+            'products' => $products,
             'product_limit' => $item_show ?? 6,
             'sort_by' => $sort_by,
             'sort_to' => $sort_to
         ];
 
-        return self::renderView('tenant.hexfashion.product.product_type_list',$data);
+        return self::renderView('tenant.bookpoint.product.physical_product_type_list', $data);
     }
 
     public function addon_title()
     {
-        return __('Product Type List: 01');
+        return __('Theme BookPoint: Product Type List (Normal Product)');
     }
 }

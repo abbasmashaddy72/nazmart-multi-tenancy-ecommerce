@@ -19,7 +19,6 @@
             font-size: 10px;
             margin: 3px;
         }
-
         span.high,
         span.status-close {
             display: inline-block;
@@ -33,7 +32,6 @@
             font-size: 10px;
             margin: 3px;
         }
-
         span.medium {
             display: inline-block;
             background-color: #70b9ae;
@@ -46,7 +44,6 @@
             font-size: 10px;
             margin: 3px;
         }
-
         span.urgent {
             display: inline-block;
             background-color: #bfb55a;
@@ -59,76 +56,50 @@
             font-size: 10px;
             margin: 3px;
         }
-
         /* support ticket  */
-
         .reply-message-wrap {
             padding: 40px;
             background-color: #fbf9f9;
         }
-
         .gig-message-start-wrap {
             margin-top: 60px;
             margin-bottom: 60px;
             background-color: #fbf9f9;
             padding: 40px;
         }
-
-        .single-message-item {
-            background-color: #e7ebec;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            margin-right: 80px;
-            width: 100%;
-        }
-
         .reply-message-wrap .title {
             font-size: 22px;
             line-height: 32px;
             margin-bottom: 40px;
             font-weight: 600;
         }
-
-        .single-message-item.customer {
-            background-color: #dadde0;
-            text-align: left;
-            margin-right: 0;
-        }
-
         .reply-message-wrap .title {
             font-size: 22px;
             line-height: 32px;
             margin-bottom: 40px;
             font-weight: 600;
         }
-
         .gig-message-start-wrap .boxed-btn {
             padding: 8px 10px;
         }
-
         .reply-message-wrap .boxed-btn {
             padding: 8px 20px;
             font-size: 14px;
             font-weight: 500;
         }
-
         .reply-message-wrap textarea:focus {
             outline: none;
             box-shadow: none;
         }
-
         .reply-message-wrap textarea {
             border: 1px solid #e2e2e2;
         }
-
         .gig-message-start-wrap .title {
             font-size: 20px;
             line-height: 30px;
             margin-bottom: 40px;
             font-weight: 600;
         }
-
         .single-message-item .thumb .title {
             font-size: 16px;
             font-weight: 600;
@@ -141,13 +112,11 @@
             border-radius: 5px;
             text-align: center;
         }
-
         .single-message-item .title {
             font-size: 16px;
             line-height: 20px;
             margin: 10px 0 0px 0;
         }
-
         .single-message-item .time {
             display: block;
             font-size: 13px;
@@ -155,42 +124,33 @@
             font-weight: 500;
             font-style: italic;
         }
-
         .single-message-item .thumb i {
             display: block;
             width: 100%;
         }
-
         .single-message-item.customer .thumb .title {
             background-color: #efd2d2;
         }
-
         .single-message-item .top-part {
             display: flex;
             margin-bottom: 25px;
         }
-
         .single-message-item .top-part .content {
             margin-left: 15px;
         }
-
-
         .anchor-btn {
             border-bottom: 1px solid var(--main-color-one);
             color: var(--main-color-one);
             display: inline-block;
         }
-
         .all-message-wrap.msg-row-reverse {
             display: flex;
             flex-direction: column-reverse;
             position: relative;
         }
-
         .load_all_conversation:focus {
             outline: none;
         }
-
         .load_all_conversation {
             border: none;
             background-color: #111D5C;
@@ -207,27 +167,18 @@
             transform: translateX(-50%);
             font-weight: 500;
         }
-
         .single-message-item ol, .single-message-item ul {
             padding-left: 15px;
         }
-
         .anchor-btn {
             color: #345990;
             text-decoration: underline;
             margin: 5px 0;
         }
-
-        .single-message-item.admin {
-            /*text-align: right;*/
-        }
-
-
         .single-message-item.admin .top-part {
             display: flex;
             flex-direction: row-reverse;
         }
-
         .single-message-item.admin .top-part .content {
             margin-left: auto;
             margin-right: 15px;
@@ -236,7 +187,30 @@
         .single-message-item.admin .message-content {
             text-align: right;
         }
-
+        .all-message-wrap {
+            display: flex;
+            flex-direction: column;
+        }
+        .single-message-item {
+            background-color: #e7ebec;
+            padding: 20px 50px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .single-message-item.admin {
+            text-align: right;
+            margin-left: auto;
+            margin-right: 0;
+        }
+        .single-message-item.customer {
+            background-color: #dadde0;
+            text-align: left;
+            margin-right: auto;
+        }
+        .single-message-item .message-content p {
+            word-break: break-all;
+        }
     </style>
 @endsection
 

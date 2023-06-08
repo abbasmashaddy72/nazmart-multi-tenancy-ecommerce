@@ -154,6 +154,6 @@ class ProductTypeList extends PageBuilderBase
 
     public function addon_title()
     {
-        return __('Theme Bookpoint: Product Type List');
+        return __('Theme BookPoint: Product Type List (Digital Product)');
     }
 }

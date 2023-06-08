@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Tenant\Frontend;
 
 use App\Enums\ProductTypeEnum;
+use App\Enums\StatusEnums;
 use App\Facades\ThemeDataFacade;
 use App\Helpers\EmailHelpers\VerifyUserMailSend;
 use App\Helpers\ResponseMessage;
@@ -1827,6 +1828,38 @@ HTML;
         }
 
         $markup = view('pagebuilder::tenant.bookpoint.product.partials.product_list_markup', compact('products'))->render();
+
+        return response()->json([
+            'markup' => $markup,
+            'category' => $request->category
+        ]);
+    }
+
+    public function product_by_category_ajax_bookpoint_physical(Request $request)
+    {
+        (string)$markup = '';
+        $products = Product::where('status_id', StatusEnums::PUBLISH);
+
+        if ($request->category != 'all') {
+            $category_id = Category::where('slug', $request->category)->firstOrFail();
+
+            $products_id = ProductCategory::where('category_id', $category_id->id)->pluck('product_id')->toArray();
+            $products->whereIn('id', $products_id);
+
+            $products = $products->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
+                ->take($request->limit ?? 8)
+                ->get();
+        } else {
+            $allId = explode(',', $request->allId);
+            $category_id = ProductCategory::whereIn('category_id', $allId)->pluck('product_id')->toArray();
+
+            $products = $products->whereIn('id', $category_id)
+                ->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
+                ->take($request->limit ?? 8)
+                ->get();
+        }
+
+        $markup = view('pagebuilder::tenant.bookpoint.product.partials.physical_product_list_markup', compact('products'))->render();
 
         return response()->json([
             'markup' => $markup,

@@ -11320,3 +11320,35 @@ blockquote .blockquote-contents-title {
   display: initial;
   vertical-align: middle;
 }
+.all-message-wrap {
+  display: flex;
+  flex-direction: column;
+}
+.single-message-item {
+  background-color: #e7ebec;
+  padding: 20px 50px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+.single-message-item.admin .top-part {
+  flex-direction: row-reverse;
+}
+.single-message-item.admin .top-part .content {
+  flex: 1;
+  margin-left: 0;
+  margin-right: 15px;
+}
+.single-message-item.admin {
+  text-align: right;
+  margin-left: auto;
+  margin-right: 0;
+}
+.single-message-item.customer {
+  background-color: #dadde0;
+  text-align: left;
+  margin-right: auto;
+}
+.single-message-item .message-content p {
+  word-break: break-all;
+}

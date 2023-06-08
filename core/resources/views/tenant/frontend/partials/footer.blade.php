@@ -145,6 +145,7 @@
 <x-custom-js.newsletter-store/>
 <x-custom-js.contact-form-store/>
 <x-custom-js.lang-change/>
+<x-tenant-addon-custom-js/>
 
 <script>
     toastr.options = {

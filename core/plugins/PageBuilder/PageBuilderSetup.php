@@ -121,6 +121,7 @@ class PageBuilderSetup
                 $addons = [
                     \Plugins\PageBuilder\Addons\Tenants\Bookpoint\Header\Header::class,
                     \Plugins\PageBuilder\Addons\Tenants\Bookpoint\Product\ProductTypeList::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Bookpoint\Product\PhysicalProductTypeList::class,
                     \Plugins\PageBuilder\Addons\Tenants\Bookpoint\Common\CollectionCard::class,
                     TopAuthor::class,
                     RecentBlog::class,

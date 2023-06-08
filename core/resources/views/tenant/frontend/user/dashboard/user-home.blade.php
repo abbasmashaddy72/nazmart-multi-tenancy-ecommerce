@@ -29,7 +29,7 @@
                         <i class="las la-money-bill"></i>
                     </div>
                     <div class="contents">
-                        <h2 class="order-titles"> {{float_amount_with_currency_symbol($order_purchase)}} </h2>
+                        <h2 class="order-titles"> {{amount_with_currency_symbol($order_purchase)}} </h2>
                         <span class="order-para">{{__('Total Purchase')}}</span>
                     </div>
                 </div>
