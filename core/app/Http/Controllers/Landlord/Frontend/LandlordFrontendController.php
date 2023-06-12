@@ -65,12 +65,15 @@ class LandlordFrontendController extends Controller
     }
 
     /* -------------------------
-        TENENT EMAIL VERIFY
+        TENANT EMAIL VERIFY
     -------------------------- */
     public function verify_user_email()
     {
-        if (empty(get_static_option('user_email_verify_status')) || Auth::guard('web')->user()->email_verified == 1) {
-            return redirect()->route('landlord.user.home');
+        if (empty(get_static_option('user_email_verify_status')) || Auth::guard('web')->user()) {
+            if (Auth::guard('web')->user()->email_verified == 1)
+            {
+                return redirect()->route('landlord.user.home');
+            }
         }
 
         return view('landlord.frontend.auth.email-verify');

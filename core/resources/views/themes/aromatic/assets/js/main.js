@@ -284,25 +284,25 @@
         ========================================
         */
 
-        $(function() {
-
-            $('<span class="plus"><i class="las la-plus"></i></span>').insertAfter('.product-quantity .quantity-input');
-            $('<span class="substract"><i class="las la-minus"></i></span>').insertBefore('.product-quantity .quantity-input');
-
-            $(document).on('click', '.plus', function() {
-                var selectedInput = $(this).prev('.quantity-input');
-                if (selectedInput.val() < 50) {
-                    selectedInput[0].stepUp(1);
-                }
-            });
-            $(document).on('click', '.substract', function() {
-                var selectedInput = $(this).next('.quantity-input');
-                if (selectedInput.val() > 1) {
-                    selectedInput[0].stepDown(1);
-                }
-            });
-
-        });
+        // $(function() {
+        //
+        //     // $('<span class="plus"><i class="las la-plus"></i></span>').insertAfter('.product-quantity .quantity-input');
+        //     // $('<span class="substract"><i class="las la-minus"></i></span>').insertBefore('.product-quantity .quantity-input');
+        //
+        //     // $(document).on('click', '.plus', function() {
+        //     //     var selectedInput = $(this).prev('.quantity-input');
+        //     //     if (selectedInput.val() < 50) {
+        //     //         selectedInput[0].stepUp(1);
+        //     //     }
+        //     // });
+        //     // $(document).on('click', '.substract', function() {
+        //     //     var selectedInput = $(this).next('.quantity-input');
+        //     //     if (selectedInput.val() > 1) {
+        //     //         selectedInput[0].stepDown(1);
+        //     //     }
+        //     // });
+        //
+        // });
 
         /*-------------------------------
             Click Value Add

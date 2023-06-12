@@ -80,14 +80,20 @@ class TestimonialController extends Controller
 
     public function clone(Request $request){
         $testimonial = Testimonial::find($request->item_id);
-        Testimonial::create([
-            'name' => $testimonial->name,
-            'description' => $testimonial->description,
-            'status' => 0,
-            'designation' => $testimonial->designation,
-            'company' => $testimonial->company,
-            'image' => $testimonial->image
-        ]);
+
+        $new_testimonial = new Testimonial();
+        $new_testimonial->name = SanitizeInput::esc_html($testimonial->name);
+        $new_testimonial->description = SanitizeInput::esc_html($testimonial->description);
+        $new_testimonial->designation = SanitizeInput::esc_html($testimonial->designation);
+        $new_testimonial->company = SanitizeInput::esc_html($testimonial->company);
+        $new_testimonial->image = $testimonial->image;
+        if (tenant())
+        {
+            $new_testimonial->rating = 5;
+        }
+        $new_testimonial->status = $testimonial->status;
+        $new_testimonial->save();
+
         return response()->success(ResponseMessage::SettingsSaved());
     }
 

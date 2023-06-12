@@ -10,5 +10,5 @@ class Testimonial extends Model
 {
     use HasFactory;
     protected $table = 'testimonials';
-    protected $fillable = ['name','designation','description','company','image','status'];
+    protected $fillable = ['name','designation','description','company','image','status','rating'];
 }
