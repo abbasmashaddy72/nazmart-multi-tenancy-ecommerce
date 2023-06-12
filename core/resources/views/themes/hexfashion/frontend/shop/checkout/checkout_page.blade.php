@@ -456,6 +456,7 @@
 
                 let gateway = $(this).data('gateway');
                 let manual_transaction_div = $('.manual_transaction_id');
+                let manual_description = $('.manual_description');
                 let summernot_wrap_div = $('.summernot_wrap');
 
                 customFormParent.children().hide();
@@ -463,6 +464,8 @@
                     manual_transaction_div.fadeIn();
                     summernot_wrap_div.fadeIn();
                     manual_transaction_div.removeClass('d-none');
+
+                    manual_description.text($(this).data('description'));
                 } else {
                     manual_transaction_div.addClass('d-none');
                     summernot_wrap_div.fadeOut();

@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Enums\StatusEnums;
 use App\Facades\ModuleDataFacade;
 use App\Models\PaymentGateway;
 use Xgenious\Paymentgateway\Facades\XgPaymentGateway;
@@ -16,6 +17,7 @@ class PaymentGatewayRenderHelper
         {
             $payment_gateway_list->whereIn('name', $plan_based_payment_gateway);
         }
+
         $payment_gateway_list = $payment_gateway_list->select(['name', 'image'])->get();
 
         $payment_gateway_list = !empty($payment_gateway_list) ? $payment_gateway_list->toArray() : $payment_gateway_list;
@@ -43,7 +45,7 @@ class PaymentGatewayRenderHelper
         return $output;
     }
 
-    public static function renderPaymentGatewayForForm($cash_on_delivery_show = true)
+    public static function renderPaymentGatewayForForm()
     {
         $output = '<div class="payment-gateway-wrapper payment_getway_image">';
 
@@ -52,16 +54,16 @@ class PaymentGatewayRenderHelper
         $all_gateway = self::listOfPaymentGateways();
 
         $output .= '<ul>';
-//        $cash_on_delivery = (bool)get_static_option('cash_on_delivery_gateway');
-//        if ($cash_on_delivery && $cash_on_delivery_show) {
-//            $output .= '<li data-gateway="cash_on_delivery" ><div class="img-select">';
-//            $output .= render_image_markup_by_attachment_id(get_static_option('cash_on_delivery_preview_logo'));
-//            $output .= '</div></li>';
-//        }
         foreach ($all_gateway as $gateway) {
-            $class = (get_static_option('site_default_payment_gateway') == $gateway['name']) ? 'class="selected"' : '';
+            if ($gateway['name'] == 'manual_payment')
+            {
+                $manual_payment_gateway = PaymentGateway::where(['status' => StatusEnums::PUBLISH, 'name' => $gateway['name']])->first();
+                $description = json_decode($manual_payment_gateway->credentials);
+                $description = $description->description;
+            }
 
-            $output .= '<li data-gateway="' . $gateway['name'] . '" ' . $class . '><div class="img-select">';
+            $class = (get_static_option('site_default_payment_gateway') == $gateway['name']) ? 'class="selected"' : '';
+            $output .= '<li data-gateway="' . $gateway['name'] . '" ' . $class . ' data-description="'.(isset($description) ? $description : '').'"><div class="img-select">';
 
             if (array_key_exists('module', $gateway))
             {
@@ -76,7 +78,13 @@ class PaymentGatewayRenderHelper
         //extra field data for payment gateway
         $output .= '<div class="payment_gateway_extra_field_information_wrap">';
         if (!empty(get_static_option('manual_payment_gateway'))) {
-            $output .= '<div class="manual_payment_gateway_extra_field"><div class="form-group"> <div class="label mt-3 mb-2">' . get_static_option('site_manual_payment_name') . __('Receipt') . '</div> <input type="file" name="manual_payment_image" class="form-control" style="line-height: 1.15"></div><div class="manual_description">' . get_static_option('site_manual_payment_description') . '</div></div>';
+            $output .= '<div class="manual_payment_gateway_extra_field">
+                            <div class="form-group">
+                                <div class="label mt-3 mb-2">' . get_static_option('site_manual_payment_name') . __('Receipt') . '</div>
+                                    <input type="file" name="manual_payment_image" class="form-control" style="line-height: 1.15">
+                                </div>
+                            <div class="manual_description">' . get_static_option('site_manual_payment_description') . '</div>
+                       </div>';
         }
         //todo write code for all module extra info markup
         $output .= renderAllPaymentGatewayExtraInfoBlade();
