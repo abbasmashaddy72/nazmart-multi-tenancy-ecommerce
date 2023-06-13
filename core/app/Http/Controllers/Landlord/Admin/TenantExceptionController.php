@@ -67,7 +67,7 @@ class TenantExceptionController extends Controller
         ]);
 
         $id = $request->exception_id;
-        $manual_database = $request->database_name;
+        $manual_database = trim($request->database_name);
 
         $exception = TenantException::findOrFail($id);
         $tenant = Tenant::find($exception->tenant_id);

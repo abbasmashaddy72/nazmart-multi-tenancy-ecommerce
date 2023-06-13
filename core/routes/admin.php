@@ -128,7 +128,7 @@ Route::group(['middleware' => ['auth:admin','adminglobalVariable', 'set_lang'],'
 |----------------------------------------------------------------------------------------------------------------------------*/
     Route::controller(TestimonialController::class)->name('landlord.')->prefix('testimonial')->group(function (){
         Route::get('/all','index')->name('admin.testimonial');
-        Route::post('/all','store');
+        Route::post('/all','store')->name('admin.testimonial.store');
         Route::post('/clone','clone')->name('admin.testimonial.clone');
         Route::post('/update','update')->name('admin.testimonial.update');
         Route::post('/delete/{id}','delete')->name('admin.testimonial.delete');

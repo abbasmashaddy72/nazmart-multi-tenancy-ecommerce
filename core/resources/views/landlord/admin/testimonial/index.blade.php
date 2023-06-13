@@ -101,7 +101,7 @@
                         <h5 class="modal-title" id="staticBackdropLabel">{{__('New Testimonial')}}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="{{route(route_prefix().'admin.testimonial')}}" method="post" enctype="multipart/form-data">
+                    <form action="{{route(route_prefix().'admin.testimonial.store')}}" method="post" enctype="multipart/form-data">
                         <div class="modal-body">
                             @csrf
                             <input type="hidden" name="lang" value="{{$default_lang}}">
