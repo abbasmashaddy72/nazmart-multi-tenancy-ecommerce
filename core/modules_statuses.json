@@ -20,5 +20,6 @@
     "MobileApp": true,
     "TestManage": true,
     "DigitalProduct": true,
-    "PluginManage": true
+    "PluginManage": true,
+    "SalesReport": true
 }

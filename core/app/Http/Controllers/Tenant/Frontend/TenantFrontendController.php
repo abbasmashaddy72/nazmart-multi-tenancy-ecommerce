@@ -473,10 +473,11 @@ class TenantFrontendController extends Controller
                 'category' => $category,
                 'subcategory' => $subcategory
             ];
+            $options['base_cost'] = $product->cost;
             $options['type'] = ProductTypeEnum::PHYSICAL;
 
             Cart::instance("default")->add(['id' => $cart_data['product_id'], 'name' => $product->name, 'qty' => $cart_data['quantity'], 'price' => $final_sale_price, 'weight' => '0', 'options' => $options]);
-
+            
             return response()->json([
                 'type' => 'success',
                 'msg' => __('Item added to cart')

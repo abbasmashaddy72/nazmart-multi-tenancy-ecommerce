@@ -205,7 +205,7 @@ Route::middleware([
     |----------------------------------------------------------------------------------------------------------------------------*/
     Route::controller(\App\Http\Controllers\Landlord\Admin\TestimonialController::class)->middleware('tenant_feature_permission')->prefix('testimonial')->group(function () {
         Route::get('/all', 'index')->name('admin.testimonial');
-        Route::post('/all', 'store');
+        Route::post('/all', 'store')->name('admin.testimonial.store');
         Route::post('/clone', 'clone')->name('admin.testimonial.clone');
         Route::post('/update', 'update')->name('admin.testimonial.update');
         Route::post('/delete/{id}', 'delete')->name('admin.testimonial.delete');

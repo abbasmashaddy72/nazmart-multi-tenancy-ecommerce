@@ -28,7 +28,6 @@ class TestimonialController extends Controller
         ]);
     }
     public function store(Request $request){
-
         $this->validate($request,[
             'name' => 'required|string|max:191',
             'description' => 'required',

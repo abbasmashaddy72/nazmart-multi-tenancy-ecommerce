@@ -76,7 +76,6 @@ class PaymentLogController extends Controller
             'track' => Str::random(10) . Str::random(10),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
-
         ])->id;
 
         $payment_details = PaymentLogs::find($payment_log_id);
