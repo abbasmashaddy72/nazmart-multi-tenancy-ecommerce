@@ -47,6 +47,11 @@ class ProductOrder extends Model
         'selected_shipping_option'
     ];
 
+    public function scopeCompleted()
+    {
+        return $this->where(['status'=> 'complete', 'payment_status'=> 'success']);
+    }
+
     public function shipping()
     {
         return $this->hasOne(UserShippingAddress::class, 'id', 'shipping_address_id');

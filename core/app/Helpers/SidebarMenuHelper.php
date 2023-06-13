@@ -820,7 +820,7 @@ class SidebarMenuHelper
             'label' => __('User Website'),
             'parent' => null,
             'permissions' => [],
-            'icon' => 'mdi mdi-account-multiple',
+            'icon' => 'mdi mdi-bug-check-outline',
         ]);
         $menu_instance->add_menu_item('users-website-manage-settings-list-menu-items', [
             'route' => 'landlord.admin.tenant.website.issues',
@@ -857,6 +857,8 @@ class SidebarMenuHelper
         }
 
         $this->tenant_order_manage_settings_menus($menu_instance);
+
+        $this->tenant_sales_report_settings_menus($menu_instance);
 
         $this->tenant_pages_settings_menus($menu_instance);
 
@@ -1026,6 +1028,23 @@ class SidebarMenuHelper
             'label' => __('Invoice Settings'),
             'parent' => 'product-order-manage-settings',
             'permissions' => ['product-order-invoice-settings'],
+        ]);
+    }
+
+    private function tenant_sales_report_settings_menus(MenuWithPermission $menu_instance): void
+    {
+        $menu_instance->add_menu_item('sales-report-settings', [
+            'route' => '#',
+            'label' => __('Sales Report'),
+            'parent' => null,
+            'permissions' => ['sales-report-all-settings', 'product-order-pending-order'],
+            'icon' => 'mdi mdi-chart-line',
+        ]);
+        $menu_instance->add_menu_item('sales-report-all-settings', [
+            'route' => 'tenant.admin.sales.dashboard',
+            'label' => __('All Report'),
+            'parent' => 'sales-report-settings',
+            'permissions' => ['product-order-all-order'],
         ]);
     }
 
