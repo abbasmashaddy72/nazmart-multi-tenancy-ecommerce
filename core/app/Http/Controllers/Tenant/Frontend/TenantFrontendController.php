@@ -441,6 +441,7 @@ class TenantFrontendController extends Controller
 
             if ($product_inventory_details) {
                 $additional_price = $product_inventory_details->additional_price;
+                $additional_cost = $product_inventory_details->add_cost;
             }
 
             $final_sale_price = $sale_price + $additional_price;
@@ -473,11 +474,11 @@ class TenantFrontendController extends Controller
                 'category' => $category,
                 'subcategory' => $subcategory
             ];
-            $options['base_cost'] = $product->cost;
+            $options['base_cost'] = $product->cost + ($additional_cost ?? 0);
             $options['type'] = ProductTypeEnum::PHYSICAL;
 
             Cart::instance("default")->add(['id' => $cart_data['product_id'], 'name' => $product->name, 'qty' => $cart_data['quantity'], 'price' => $final_sale_price, 'weight' => '0', 'options' => $options]);
-            
+
             return response()->json([
                 'type' => 'success',
                 'msg' => __('Item added to cart')
@@ -957,6 +958,7 @@ class TenantFrontendController extends Controller
 
             if ($product_inventory_details) {
                 $additional_price = $product_inventory_details->additional_price;
+                $additional_cost = $product_inventory_details->add_cost;
             }
 
             $final_sale_price = $sale_price + $additional_price;
@@ -992,6 +994,7 @@ class TenantFrontendController extends Controller
             ];
 
             $options['type'] = ProductTypeEnum::PHYSICAL;
+            $options['base_cost'] = $product->cost + ($additional_cost ?? 0);
 
             Cart::add(['id' => $cart_data['product_id'], 'name' => $product->name, 'qty' => $cart_data['quantity'], 'price' => $final_sale_price, 'weight' => '0', 'options' => $options]);
             DB::commit();

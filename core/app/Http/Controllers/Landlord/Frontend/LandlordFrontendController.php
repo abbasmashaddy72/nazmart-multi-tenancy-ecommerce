@@ -474,7 +474,7 @@ class LandlordFrontendController extends Controller
         }
 
         $subdomain = $request->subdomain;
-        $theme = $request->theme ?? 'hexfashion';
+        $theme = $request->theme ?? get_static_option('default_theme');
 
         session()->put('theme',$theme);
 
@@ -500,7 +500,7 @@ class LandlordFrontendController extends Controller
         }catch(\Exception $ex){}
 
         try{
-            TenantCreateEventWithMail::tenant_create_event_with_credential_mail($user, $subdomain);
+            TenantCreateEventWithMail::tenant_create_event_with_credential_mail($user, $subdomain, $theme);
 
             $log = PaymentLogs::where('tenant_id',$subdomain)->first();
             DB::table('tenants')->where('id',$subdomain)->update([
