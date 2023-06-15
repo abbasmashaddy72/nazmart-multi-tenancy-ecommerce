@@ -167,7 +167,7 @@ class PaymentGatewayIpn
 
             if ($digital_count == $total_count)
             {
-                $order->status = 'success';
+                $order->status = 'complete';
             }
 
             $order->payment_status = 'success';
