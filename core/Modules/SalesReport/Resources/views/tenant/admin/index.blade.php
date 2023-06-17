@@ -80,6 +80,24 @@
                     <div class="col-lg-6">
                         <div class="card">
                             <div class="card-body">
+                                <div class="my-2" id="chart-daily"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="my-2" id="chart-weekly"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
                                 <div class="my-2" id="chart-monthly"></div>
                             </div>
                         </div>
@@ -147,18 +165,18 @@
                                         </tbody>
                                     </table>
                                 </div>
-
-                                <div class="pagination">
-                                    <ul class="pagination-list">
-                                        @foreach($products["links"] as $link)
-                                            @php if($loop->iteration == 1):  continue; endif @endphp
-                                            <li><a href="{{ $link }}"
-                                                   class="page-number {{ ($loop->iteration - 1) == $products["current_page"] ? "current" : "" }}">{{ $loop->iteration - 1 }}</a>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
                             </div>
+                        </div>
+
+                        <div class="pagination mt-4">
+                            <ul class="pagination-list">
+                                @foreach($products["links"] as $link)
+                                    @php if($loop->iteration == 1):  continue; endif @endphp
+                                    <li><a href="{{ $link }}"
+                                           class="page-number {{ ($loop->iteration - 1) == $products["current_page"] ? "current" : "" }}">{{ $loop->iteration - 1 }}</a>
+                                    </li>
+                                @endforeach
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -172,45 +190,185 @@
     <x-table.btn.swal.js/>
 
     @php
+        $today = $today_report;
+        $weekly = $weekly_report;
         $monthly = $monthly_report;
         $yearly = $yearly_report;
     @endphp
 
     <script>
         $(document).ready(function () {
-            function chartByMonth() {
+            const chartByToday = () => {
                 return {
                     series: [
                         {
-                            name: 'Total Revenue',
+                            name: '{{__('Total Sale')}}',
+                            data: {{json_encode($today['salesData'])}}
+                        },
+                        {
+                            name: '{{__('Total Revenue')}}',
+                            data: {{json_encode($today['revenueData'])}}
+                        },
+                        {
+                            name: '{{__('Total Cost')}}',
+                            data: {{json_encode($today['costData'])}}
+                        },
+                        {
+                            name: '{{__('Total Profit')}}',
+                            data: {{json_encode($today['profitData'])}}
+                        },
+                    ],
+                    chart: {
+                        height: 350,
+                        type: 'line',
+                        toolbar: {
+                            show: false
+                        },
+                        zoom: {
+                            enabled: false
+                        }
+                    },
+                    colors: ['#ff5252', '#0079FF', '#8F43EE', '#22A699'],
+                    dataLabels: {
+                        enabled: true,
+                    },
+                    stroke: {
+                        curve: 'smooth'
+                    },
+                    title: {
+                        text: '{{__('Today Revenue, Cost and Profit')}}',
+                        align: 'left'
+                    },
+                    grid: {
+                        borderColor: '#e7e7e7',
+                        row: {
+                            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                            opacity: 0.5
+                        },
+                    },
+                    markers: {
+                        size: 1
+                    },
+                    xaxis: {
+                        categories: <?php echo json_encode($today['categories']) ?>,
+                        title: {
+                            text: '{{__('Time')}}'
+                        }
+                    },
+                    yaxis: {
+                        title: {
+                            text: '{{__('Amount')}}'
+                        },
+                        min: 0,
+                        max: {{$monthly['max_value']}}
+                    },
+                    legend: {
+                        position: 'top',
+                        horizontalAlign: 'right',
+                        floating: true,
+                        offsetY: -25,
+                        offsetX: -5
+                    }
+                };
+            }
+            const chartByWeekly = () => {
+                return {
+                    series: [
+                        {
+                            name: '{{__('Total Sale')}}',
+                            data: {{json_encode($weekly['salesData'])}}
+                        },
+                        {
+                            name: '{{__('Total Revenue')}}',
+                            data: {{json_encode($weekly['revenueData'])}}
+                        },
+                        {
+                            name: '{{__('Total Cost')}}',
+                            data: {{json_encode($weekly['costData'])}}
+                        },
+                        {
+                            name: '{{__('Total Profit')}}',
+                            data: {{json_encode($weekly['profitData'])}}
+                        },
+                    ],
+                    chart: {
+                        height: 350,
+                        type: 'line',
+                        toolbar: {
+                            show: false
+                        },
+                        zoom: {
+                            enabled: false
+                        }
+                    },
+                    colors: ['#ff5252', '#0079FF', '#8F43EE', '#22A699'],
+                    dataLabels: {
+                        enabled: true,
+                    },
+                    stroke: {
+                        curve: 'smooth'
+                    },
+                    title: {
+                        text: '{{__('Current Week Revenue, Cost and Profit')}}',
+                        align: 'left'
+                    },
+                    grid: {
+                        borderColor: '#e7e7e7',
+                        row: {
+                            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                            opacity: 0.5
+                        },
+                    },
+                    markers: {
+                        size: 1
+                    },
+                    xaxis: {
+                        categories: <?php echo json_encode($weekly['categories']) ?>,
+                        title: {
+                            text: '{{__('Days')}}'
+                        }
+                    },
+                    yaxis: {
+                        title: {
+                            text: '{{__('Amount')}}'
+                        },
+                        min: 0,
+                        max: {{$monthly['max_value']}}
+                    },
+                    legend: {
+                        position: 'top',
+                        horizontalAlign: 'right',
+                        floating: true,
+                        offsetY: -25,
+                        offsetX: -5
+                    }
+                };
+            }
+            const chartByMonth = () => {
+                return {
+                    series: [
+                        {
+                            name: '{{__('Total Revenue')}}',
                             data: {{json_encode($monthly['revenueData'])}}
                         },
                         {
-                            name: 'Total Cost',
+                            name: '{{__('Total Cost')}}',
                             data: {{json_encode($monthly['costData'])}}
                         },
                         {
-                            name: 'Total Profit',
+                            name: '{{__('Total Profit')}}',
                             data: {{json_encode($monthly['profitData'])}}
                         },
                     ],
                     chart: {
                         height: 500,
                         type: 'line',
-                        dropShadow: {
-                            enabled: true,
-                            color: '#000',
-                            top: 18,
-                            left: 7,
-                            blur: 10,
-                            opacity: 0.1
-                        },
                         toolbar: {
                             show: false
                         },
                         zoom: {
-                            enabled: false,
-                        },
+                            enabled: false
+                        }
                     },
                     colors: ['#0079FF', '#8F43EE', '#22A699'],
                     dataLabels: {
@@ -220,7 +378,7 @@
                         curve: 'smooth'
                     },
                     title: {
-                        text: 'Monthly Revenue, Cost & Profit',
+                        text: '{{__('Monthly Revenue, Cost and Profit')}}',
                         align: 'left'
                     },
                     grid: {
@@ -255,37 +413,30 @@
                     }
                 };
             }
-
-            function chartByYear()
-            {
+            const chartByYear = () => {
                 return {
                     series: [
                         {
-                            name: 'Total Revenue',
+                            name: '{{__('Total Revenue')}}',
                             data: {{json_encode($yearly['revenueData'])}}
                         },
                         {
-                            name: 'Total Cost',
+                            name: '{{__('Total Cost')}}',
                             data: {{json_encode($yearly['costData'])}}
                         },
                         {
-                            name: 'Total Profit',
+                            name: '{{__('Total Profit')}}',
                             data: {{json_encode($yearly['profitData'])}}
                         },
                     ],
                     chart: {
                         height: 500,
                         type: 'line',
-                        dropShadow: {
-                            enabled: true,
-                            color: '#000',
-                            top: 18,
-                            left: 7,
-                            blur: 10,
-                            opacity: 0.1
-                        },
                         toolbar: {
                             show: false
+                        },
+                        zoom: {
+                            enabled: false
                         }
                     },
                     colors: ['#0079FF', '#8F43EE', '#22A699'],
@@ -296,7 +447,7 @@
                         curve: 'smooth'
                     },
                     title: {
-                        text: 'Yearly Revenue, Cost & Profit',
+                        text: '{{__('Yearly Revenue, Cost and Profit')}}',
                         align: 'left'
                     },
                     grid: {
@@ -332,6 +483,8 @@
                 };
             }
 
+            new ApexCharts(document.querySelector("#chart-daily"), chartByToday()).render();
+            new ApexCharts(document.querySelector("#chart-weekly"), chartByWeekly()).render();
             new ApexCharts(document.querySelector("#chart-monthly"), chartByMonth()).render();
             new ApexCharts(document.querySelector("#chart-yearly"), chartByYear()).render();
         });

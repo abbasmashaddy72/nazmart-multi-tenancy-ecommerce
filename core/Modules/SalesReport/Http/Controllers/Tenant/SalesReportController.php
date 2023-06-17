@@ -2,22 +2,35 @@
 
 namespace Modules\SalesReport\Http\Controllers\Tenant;
 
+use App\Helpers\FlashMsg;
 use App\Http\Services\CustomPaginationService;
+use App\Models\OrderProducts;
 use App\Models\ProductOrder;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\Rule;
 use Modules\SalesReport\Http\Services\SalesReport;
 use phpDocumentor\Reflection\Types\This;
 
 class SalesReportController extends Controller
 {
+    public array $daysOfWeek = [
+        "sunday" => "Sunday",
+        "monday" => "Monday",
+        "tuesday" => "Tuesday",
+        "wednesday" => "Wednesday",
+        "thursday" => "Thursday",
+        "friday" => "Friday",
+        "saturday" => "Saturday"
+    ];
+
     /**
-     * 01847111881
      * Display a listing of the resource.
      * @return Renderable
      */
@@ -25,11 +38,16 @@ class SalesReportController extends Controller
     {
         $orders = ProductOrder::completed()->orderBy('id','desc')->get();
 
-        $start_date = Carbon::parse('2023-01-01');
-        $end_date = Carbon::parse('2023-06-15');
-        $orders_weekly = ProductOrder::completed()
-            ->whereBetween('created_at', [$start_date, $end_date])
-            ->orderBy('id','desc')->get();
+        $orders_today = ProductOrder::completed()->whereDate('updated_at', today())->orderBy('updated_at','asc')->get()
+            ->groupBy(function ($query){
+                // 'D = day name'
+                // 'h = hour number'
+                // 'A = AM/PM'
+                return Carbon::parse($query->updated_at)->format('D h A');
+            });
+
+        $first_workday = get_static_option('first_workday') ?? 'sunday';
+        $orders_weekly = $this->getWeeklyReport($first_workday);
 
         $orders_months = ProductOrder::completed()->orderBy('updated_at','asc')->get()
             ->groupBy(function ($query){
@@ -45,7 +63,6 @@ class SalesReportController extends Controller
             return Carbon::parse($query->updated_at)->format('Y');
         });
 
-
         $reports = SalesReport::reports($orders);
         $total_report = [
             'total_sale' => $reports['total_sale'],
@@ -55,15 +72,8 @@ class SalesReportController extends Controller
             'products' => $reports['products']
         ];
 
-        $reports = SalesReport::reports($orders_weekly);
-        $weekly_report = [
-            'total_sale' => $reports['total_sale'],
-            'total_profit' => $reports['total_profit'],
-            'total_revenue' => $reports['total_revenue'],
-            'total_cost' => $reports['total_cost'],
-            'products' => $reports['products']
-        ];
-
+        $today_report = $this->prepareDataForChart($orders_today);
+        $weekly_report = $this->prepareDataForChart($orders_weekly);
         $monthly_report = $this->prepareDataForChart($orders_months);
         $yearly_report = $this->prepareDataForChart($orders_years);
 
@@ -73,7 +83,7 @@ class SalesReportController extends Controller
         $route = 'tenant.admin';
 
         $products = $this->pagination_type($total_report['products'], $display_item_count, 'custom', route($route . ".sales.dashboard") . '?' . $create_query);
-        return view('salesreport::tenant.admin.index', compact('total_report', 'weekly_report', 'monthly_report', 'yearly_report', 'products'));
+        return view('salesreport::tenant.admin.index', compact('total_report', 'today_report', 'weekly_report', 'monthly_report', 'yearly_report', 'products'));
     }
 
     private function prepareDataForChart($orders_months)
@@ -81,86 +91,34 @@ class SalesReportController extends Controller
         $data = SalesReport::reportByMonthsOrYears($orders_months);
 
         $categories = [];
+        $salesData = [];
         $profitData = [];
         $revenueData = [];
         $costData = [];
 
-        foreach ($data as $month => $values) {
+        foreach ($data ?? [] as $month => $values) {
             $categories[] = $month;
+            $salesData[] = $values['total_sale'];
             $profitData[] = $values['total_profit'];
             $revenueData[] = $values['total_revenue'];
             $costData[] = $values['total_cost'];
         }
 
-        $max_value = max(array_merge($profitData,$revenueData, $costData) ?? []);
+        if (!empty($profitData) && !empty($revenueData) && !empty($costData))
+        {
+            $max_value = max(array_merge($profitData, $revenueData, $costData));
+        } else {
+            $max_value = 0;
+        }
 
         return [
             'categories' => $categories,
+            'salesData' => $salesData,
             'profitData' => $profitData,
             'revenueData' => $revenueData,
             'costData' => $costData,
             'max_value' => $max_value
         ];
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     * @return Renderable
-     */
-    public function create()
-    {
-        return view('salesreport::create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function show($id)
-    {
-        return view('salesreport::show');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function edit($id)
-    {
-        return view('salesreport::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Renderable
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
-     */
-    public function destroy($id)
-    {
-        //
     }
 
     public function paginate($items, $perPage = 50, $page = null, $options = [])
@@ -201,5 +159,61 @@ class SalesReportController extends Controller
         }else{
             return $all_products;
         }
+    }
+
+    public function getWeeklyReport($dayOfWeek)
+    {
+        $dayOfWeek = ucfirst(strtolower($dayOfWeek));
+
+        // Get the current date and time
+        $now = Carbon::now();
+
+        // Find the last occurrence of the day
+        $startDate = $now->copy();
+        while($startDate->format('l') !== $dayOfWeek) {
+            $startDate->subDay();
+        }
+
+        // Set the end date as 7 days from the start date
+        $endDate = $startDate->copy()->addDays(7);
+
+        return ProductOrder::whereBetween('created_at', [$startDate->startOfDay(), $endDate->endOfDay()])
+            ->orderBy('updated_at', 'asc')->get()
+            ->groupBy(function ($query){
+                // 'D' if day name if needed, eg Sun
+                return Carbon::parse($query->updated_at)->format('D');
+            });
+    }
+
+    public function weekly_report()
+    {
+
+    }
+
+    public function monthly_report()
+    {
+
+    }
+
+    public function yearly_report()
+    {
+
+    }
+
+    public function settings()
+    {
+        return view('salesreport::tenant.admin.settings', ['daysOfWeek' => $this->daysOfWeek]);
+    }
+
+    public function settings_update(Request $request)
+    {
+        $request->validate([
+            'first_workday' => 'required|min:6|max:9'
+        ]);
+        abort_if(!array_key_exists($request->first_workday, $this->daysOfWeek), 404);
+
+        update_static_option('first_workday', trim($request->first_workday));
+
+        return back()->with(FlashMsg::settings_update(__('First Day of The Week is Updated')));
     }
 }
