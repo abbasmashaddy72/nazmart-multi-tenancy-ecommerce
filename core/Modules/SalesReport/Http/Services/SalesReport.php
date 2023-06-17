@@ -13,17 +13,17 @@ class SalesReport
 
         $products = [];
 
-        foreach ($orders as $key => $order)
+        foreach ($orders ?? [] as $key => $order)
         {
             $order_details = json_decode($order->order_details);
 
             $index = 0;
-            foreach ($order_details as $item)
+            foreach ($order_details ?? [] as $item)
             {
                 $product_cost = ($item->options->base_cost ?? 0) * $item->qty;
                 $product_price = $item->price * $item->qty;
 
-                $total_sale += 1;
+                $total_sale += $item->qty;
                 $total_cost += $product_cost;
                 $total_profit += ($product_price - $product_cost);
 
@@ -34,7 +34,7 @@ class SalesReport
                     'qty' => $item->qty,
                     'cost' => $product_cost,
                     'price' => $product_price,
-                    'profit' => ($product_price - $product_cost) * $item->qty,
+                    'profit' => ($product_price - $product_cost),
                     'sale_date' => $order->updated_at,
                     'variant' => [
                         'color' => $item->options->color_name ?? '',
@@ -67,7 +67,7 @@ class SalesReport
     {
         $monthly_reports = [];
 
-        foreach($orders_months as $month => $orders){
+        foreach($orders_months ?? [] as $month => $orders){
             $reports = self::reports($orders);
             $monthly_reports[$month] = [
                 'total_sale' => $reports['total_sale'],

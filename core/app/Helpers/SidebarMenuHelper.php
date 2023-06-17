@@ -1037,14 +1037,44 @@ class SidebarMenuHelper
             'route' => '#',
             'label' => __('Sales Report'),
             'parent' => null,
-            'permissions' => ['sales-report-all-settings', 'product-order-pending-order'],
+            'permissions' => ['sales-report-all-settings', 'sales-report-manage-settings','sales-report-weekly'],
             'icon' => 'mdi mdi-chart-line',
         ]);
         $menu_instance->add_menu_item('sales-report-all-settings', [
             'route' => 'tenant.admin.sales.dashboard',
             'label' => __('All Report'),
             'parent' => 'sales-report-settings',
-            'permissions' => ['product-order-all-order'],
+            'permissions' => ['sales-report-all-settings'],
+        ]);
+        $menu_instance->add_menu_item('sales-report-weekly', [
+            'route' => 'tenant.admin.sales.report.weekly',
+            'label' => __('Weekly Report'),
+            'parent' => 'sales-report-settings',
+            'permissions' => ['sales-report-weekly'],
+        ]);
+        $menu_instance->add_menu_item('sales-report-monthly', [
+            'route' => 'tenant.admin.sales.report.monthly',
+            'label' => __('Monthly Report'),
+            'parent' => 'sales-report-settings',
+            'permissions' => ['sales-report-monthly'],
+        ]);
+        $menu_instance->add_menu_item('sales-report-yearly', [
+            'route' => 'tenant.admin.sales.report.yearly',
+            'label' => __('Yearly Report'),
+            'parent' => 'sales-report-settings',
+            'permissions' => ['sales-report-yearly'],
+        ]);
+        $menu_instance->add_menu_item('sales-report-yearly', [
+            'route' => '#',
+            'label' => __('Range Report (Coming Soon)'),
+            'parent' => 'sales-report-settings',
+            'permissions' => [],
+        ]);
+        $menu_instance->add_menu_item('sales-report-manage-settings', [
+            'route' => 'tenant.admin.sales.settings',
+            'label' => __('Report Settings'),
+            'parent' => 'sales-report-settings',
+            'permissions' => ['sales-report-manage-settings'],
         ]);
     }
 
