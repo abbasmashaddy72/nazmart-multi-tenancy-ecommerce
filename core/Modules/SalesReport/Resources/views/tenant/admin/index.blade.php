@@ -76,7 +76,7 @@
                     </div>
                 </div>
 
-                <div class="row my-3">
+                <div class="row g-3 my-3">
                     <div class="col-lg-6">
                         <div class="card">
                             <div class="card-body">
@@ -94,7 +94,7 @@
                     </div>
                 </div>
 
-                <div class="row my-3">
+                <div class="row g-3">
                     <div class="col-lg-6">
                         <div class="card">
                             <div class="card-body">
@@ -260,7 +260,7 @@
                             text: '{{__('Amount')}}'
                         },
                         min: 0,
-                        max: {{$monthly['max_value']}}
+                        max: {{$today['max_value']}}
                     },
                     legend: {
                         position: 'top',
@@ -333,7 +333,7 @@
                             text: '{{__('Amount')}}'
                         },
                         min: 0,
-                        max: {{$monthly['max_value']}}
+                        max: {{$weekly['max_value']}}
                     },
                     legend: {
                         position: 'top',

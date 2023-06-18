@@ -1064,11 +1064,19 @@ class SidebarMenuHelper
             'parent' => 'sales-report-settings',
             'permissions' => ['sales-report-yearly'],
         ]);
-        $menu_instance->add_menu_item('sales-report-yearly', [
+        $menu_instance->add_menu_item('sales-report-range', [
             'route' => '#',
             'label' => __('Range Report (Coming Soon)'),
             'parent' => 'sales-report-settings',
             'permissions' => [],
+            'class' => 'submenu-disabled'
+        ]);
+        $menu_instance->add_menu_item('sales-report-export', [
+            'route' => '#',
+            'label' => __('Export Report (Coming Soon)'),
+            'parent' => 'sales-report-settings',
+            'permissions' => [],
+            'class' => 'submenu-disabled'
         ]);
         $menu_instance->add_menu_item('sales-report-manage-settings', [
             'route' => 'tenant.admin.sales.settings',
