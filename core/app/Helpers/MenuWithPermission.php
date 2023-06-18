@@ -185,7 +185,7 @@ class MenuWithPermission
             $li_classes[] = 'submenu-item-'.Str::slug($id);
             $route = 'javascript:void(0)';
         }
-        $output.= ' class="'.implode(' ',$li_classes).'"';
+        $output.= ' class="'.implode(' ',$li_classes).' '.($item['class'] ?? '').' "';
         $output .= '>';
 
         $output .= '<a class="nav-link"';

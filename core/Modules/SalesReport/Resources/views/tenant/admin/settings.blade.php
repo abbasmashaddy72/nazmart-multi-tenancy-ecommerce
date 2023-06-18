@@ -25,7 +25,7 @@
                                     <label for="workday">{{__('Week Starting Day')}}</label>
                                     <select class="form-control mt-3" name="first_workday" id="workday">
                                         @foreach($daysOfWeek as $key => $day)
-                                            <option value="{{$key}}">{{__($day)}}</option>
+                                            <option value="{{$key}}" {{get_static_option('first_workday') == $key ? 'selected' : ''}}>{{__($day)}}</option>
                                         @endforeach
                                     </select>
 
@@ -41,7 +41,5 @@
     </div>
 @endsection
 @section('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <x-datatable.js/>
-    <x-table.btn.swal.js/>
+    <script src="{{asset('landlord/admin/js/apexcharts.js')}}"></script>
 @endsection

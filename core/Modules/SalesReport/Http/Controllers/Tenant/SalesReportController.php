@@ -177,7 +177,7 @@ class SalesReportController extends Controller
         // Set the end date as 7 days from the start date
         $endDate = $startDate->copy()->addDays(7);
 
-        return ProductOrder::whereBetween('created_at', [$startDate->startOfDay(), $endDate->endOfDay()])
+        return ProductOrder::whereBetween('updated_at', [$startDate->startOfDay(), $endDate->endOfDay()])
             ->orderBy('updated_at', 'asc')->get()
             ->groupBy(function ($query){
                 // 'D' if day name if needed, eg Sun
@@ -190,14 +190,77 @@ class SalesReportController extends Controller
 
     }
 
-    public function monthly_report()
+    public function dynamic_report()
     {
+        $current_url = \request()->url();
+        $url_array = explode('/', $current_url);
 
+        $orders = ProductOrder::completed();
+
+        $era = last($url_array);
+        if ($era == 'weekly')
+        {
+            $workDay = get_static_option('first_workday') ?? 'sunday';
+            $workDay = $this->getCarbonDays($workDay);
+
+            $weekStartDate = Carbon::now()->startOfWeek($workDay);
+            $weekEndDate = Carbon::now()->endOfWeek();
+
+            $orders->whereBetween('updated_at', [$weekStartDate, $weekEndDate]);
+        }
+        elseif ($era == 'monthly')
+        {
+            $orders->whereMonth('updated_at', now()->month);
+        }
+        elseif ($era == 'yearly')
+        {
+            $orders->whereYear('updated_at', now()->year);
+        } else {
+            return to_route('tenant.admin.sales.dashboard');
+        }
+
+        $orders = $orders->orderBy('updated_at','desc')->get();
+        $page_title = $era ?? 'all';
+
+        $reports = SalesReport::reports($orders);
+        $total_report = [
+            'total_sale' => $reports['total_sale'],
+            'total_profit' => $reports['total_profit'],
+            'total_revenue' => $reports['total_revenue'],
+            'total_cost' => $reports['total_cost'],
+            'products' => $reports['products']
+        ];
+
+        $display_item_count = request()->count ?? 20;
+        $current_query = request()->all();
+        $create_query = http_build_query($current_query);
+        $route = 'tenant.admin';
+
+        $products = $this->pagination_type($total_report['products'], $display_item_count, 'custom', route($route . ".sales.report.".$page_title) . '?' . $create_query);
+
+        return view('salesreport::tenant.admin.monthly_report', compact('total_report','products', 'page_title'));
     }
 
-    public function yearly_report()
+    private function getCarbonDays($day_name)
     {
-
+        switch (strtoupper($day_name)) {
+            case 'SUNDAY':
+                return Carbon::SUNDAY;
+            case 'MONDAY':
+                return Carbon::MONDAY;
+            case 'TUESDAY':
+                return Carbon::TUESDAY;
+            case 'WEDNESDAY':
+                return Carbon::WEDNESDAY;
+            case 'THURSDAY':
+                return Carbon::THURSDAY;
+            case 'FRIDAY':
+                return Carbon::FRIDAY;
+            case 'SATURDAY':
+                return Carbon::SATURDAY;
+            default:
+                throw new Exception('Invalid day name');
+        }
     }
 
     public function settings()

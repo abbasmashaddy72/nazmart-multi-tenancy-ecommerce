@@ -32,6 +32,12 @@
             color: #8F43EE;
             background: rgba(143, 67, 238, 0.1);
         }
+        .product-type-item-para {
+            font-size: 11px;
+            font-weight: 400;
+            position: relative;
+        }
+
     </style>
 
     <div class="col-lg-12 col-ml-12">
@@ -76,7 +82,7 @@
                     </div>
                 </div>
 
-                <div class="row my-3">
+                <div class="row g-3 my-3">
                     <div class="col-lg-6">
                         <div class="card">
                             <div class="card-body">
@@ -94,7 +100,7 @@
                     </div>
                 </div>
 
-                <div class="row my-3">
+                <div class="row g-3">
                     <div class="col-lg-6">
                         <div class="card">
                             <div class="card-body">
@@ -138,17 +144,23 @@
                                                     <td>{{$item['sale_date']->format('m/d/Y')}}</td>
                                                     <td class="text-capitalize">{{\App\Enums\ProductTypeEnum::getText($item['product_type'])}}</td>
                                                     <td>
-                                                        <span>{{$item['name']}}</span>
-                                                        @if(!empty($item['variant']))
-                                                            <span>
-                                                                    <p>{{$item['variant']['color']}}</p>
-                                                                    <p>{{$item['variant']['size']}}</p>
+                                                        <div class="product-type">
+                                                            <h6 class="product-type-title">{{$item['name']}}</h6>
+                                                            @if(!empty($item['variant']))
+                                                                <div class="product-type-inner mt-2">
+                                                                    <div class="product-type-item">
+                                                                        <span class="product-type-item-para">{{$item['variant']['color']}}</span>
+                                                                        <span class="product-type-item-para">{{$item['variant']['size']}}</span>
+                                                                    </div>
 
                                                                     @foreach($item['variant']['attributes'] as $attribute_name => $attribute_vale)
-                                                                    <p>{{$attribute_name}}: {{$attribute_vale}}</p>
-                                                                @endforeach
-                                                                </span>
-                                                        @endif
+                                                                        <div class="product-type-item mt-1">
+                                                                            <span class="product-type-item-para">{{$attribute_name}}: {{$attribute_vale}}</span>
+                                                                        </div>
+                                                                    @endforeach
+                                                                </div>
+                                                            @endif
+                                                        </div>
 
                                                     </td>
                                                     <td>{{$item['qty']}}</td>
@@ -260,7 +272,7 @@
                             text: '{{__('Amount')}}'
                         },
                         min: 0,
-                        max: {{$monthly['max_value']}}
+                        max: {{$today['max_value']}}
                     },
                     legend: {
                         position: 'top',
@@ -333,7 +345,7 @@
                             text: '{{__('Amount')}}'
                         },
                         min: 0,
-                        max: {{$monthly['max_value']}}
+                        max: {{$weekly['max_value']}}
                     },
                     legend: {
                         position: 'top',

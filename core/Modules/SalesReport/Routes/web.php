@@ -17,9 +17,9 @@ Route::middleware([
 ])->prefix('admin-home')->name('tenant.')->group(function () {
     Route::controller(SalesReportController::class)->prefix('sales-report')->name('admin.sales.')->group(function (){
         Route::get('/', 'index')->name('dashboard');
-        Route::get('/weekly', 'weekly_report')->name('report.weekly');
-        Route::get('/monthly', 'monthly_report')->name('report.monthly');
-        Route::get('/year', 'year_report')->name('report.yearly');
+        Route::get('/weekly', 'dynamic_report')->name('report.weekly');
+        Route::get('/monthly', 'dynamic_report')->name('report.monthly');
+        Route::get('/yearly', 'dynamic_report')->name('report.yearly');
         Route::get('/settings', 'settings')->name('settings');
         Route::post('/settings', 'settings_update');
     });

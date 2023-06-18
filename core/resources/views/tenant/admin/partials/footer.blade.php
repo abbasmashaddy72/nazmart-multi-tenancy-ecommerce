@@ -22,7 +22,7 @@
 <script src="{{global_asset('assets/common/js/toastr.min.js')}}"></script>
 <script src="{{global_asset('assets/common/js/select2.min.js')}}"></script>
 <script>
-    function translatedDataTable() {
+    const translatedDataTable = () => {
         return {
             "decimal": "",
             "emptyTable": "{{__('No data available in table')}}",
@@ -53,7 +53,6 @@
         "use strict";
 
         $(document).ready(function ($) {
-
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl)
@@ -127,6 +126,21 @@
                     $('.tenant_info_list').removeClass('open-info');
                     light = false;
                 }
+            });
+
+            $(document).on('click', '.submenu-disabled', function (e){
+                e.preventDefault();
+
+                let text = $(this).text();
+
+                Swal.fire({
+                    title: '{{__("Coming Soon")}}'+'\n'+text,
+                    text: '{{__("This feature is currently under development and will be available soon. We are committed to continuously enhancing our application to provide you with the best possible user experience.")}}',
+                    icon: 'info',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3fc3ee',
+                    confirmButtonText: "{{__('Got it')}}",
+                });
             });
         });
     })(jQuery);
