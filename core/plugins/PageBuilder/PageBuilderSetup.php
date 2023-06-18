@@ -150,6 +150,10 @@ class PageBuilderSetup
                     \Plugins\PageBuilder\Addons\Tenants\Aromatic\Contact\GoogleMap::class,
                     \Plugins\PageBuilder\Addons\Tenants\Aromatic\Contact\ContactArea::class
                 ];
+            } elseif($theme == 'casual') {
+                $addons = [
+                    \Plugins\PageBuilder\Addons\Tenants\Casual\Header\Header::class
+                ];
             }
 
             // Global addons for all theme

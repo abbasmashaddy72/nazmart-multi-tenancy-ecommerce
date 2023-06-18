@@ -53,6 +53,7 @@ class ModuleMetaData
         $allMetaInformation = $this->getAllMetaData();
         foreach ($allMetaInformation as $metaInfo) {
             $paymentMeta = $this->getPaymentMetaInfo($metaInfo);
+            if (empty($paymentMeta)){continue;}
             if ($gateway !== strtolower(current($paymentMeta)->slug)) {
                 continue;
             }
@@ -67,6 +68,7 @@ class ModuleMetaData
         $allMetaInformation = $this->getAllMetaData();
         foreach ($allMetaInformation as $metaInfo) {
             $paymentMeta = $this->getPaymentMetaInfo($metaInfo);
+            if (empty($paymentMeta)){continue;}
             if ($gateway !== strtolower(current($paymentMeta)->slug)) {
                 continue;
             }
