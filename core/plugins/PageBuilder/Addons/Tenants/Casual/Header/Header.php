@@ -2,12 +2,17 @@
 
 namespace Plugins\PageBuilder\Addons\Tenants\Casual\Header;
 
+use App\Enums\StatusEnums;
 use App\Facades\GlobalLanguage;
 use App\Helpers\SanitizeInput;
+use Modules\Attributes\Entities\Category;
+use Modules\Product\Entities\Product;
 use Plugins\PageBuilder\Fields\ColorPicker;
 use Plugins\PageBuilder\Fields\Image;
+use Plugins\PageBuilder\Fields\NiceSelect;
 use Plugins\PageBuilder\Fields\Number;
 use Plugins\PageBuilder\Fields\Repeater;
+use Plugins\PageBuilder\Fields\Switcher;
 use Plugins\PageBuilder\Fields\Text;
 use Plugins\PageBuilder\Helpers\RepeaterField;
 use Plugins\PageBuilder\PageBuilderBase;
@@ -56,6 +61,40 @@ class Header extends PageBuilderBase
             'label' => __('Background Color'),
             'value' => $widget_saved_values['background_color'] ?? null,
             'info' => '<div class="text-primary mt-1">' . __('Keep empty if you want to keep theme default colors') . '</div>'
+        ]);
+
+        $output .= Repeater::get([
+            'multi_lang' => false,
+            'settings' => $widget_saved_values,
+            'id' => 'social_repeater',
+            'fields' => [
+                [
+                    'type' => RepeaterField::TEXT,
+                    'label' => __('Social Media Name'),
+                    'name' => 'name',
+                ],
+                [
+                    'type' => RepeaterField::TEXT,
+                    'label' => __('Social Media URL'),
+                    'name' => 'url',
+                ]
+            ]
+        ]);
+
+        $output .= Switcher::get([
+            'name' => 'new_tab',
+            'label' => __('Open Social Media in a new Tab'),
+            'value' => $widget_saved_values['new_tab'] ?? false,
+        ]);
+
+        $products = Product::where('status_id', StatusEnums::PUBLISH)->pluck('name', 'id')->toArray();
+        $output .= NiceSelect::get([
+            'multiple' => true,
+            'name' => 'products',
+            'label' => __('Select Products'),
+            'options' => $products,
+            'value' => $widget_saved_values['products'] ?? '',
+            'info' => __('Leave empty if you do not want to show any product')
         ]);
 
         $output .= Image::get([
@@ -110,13 +149,21 @@ class Header extends PageBuilderBase
         $button_url = SanitizeInput::esc_url($this->setting_item('button_url'));
         $background_color = $this->setting_item('background_color');
 
+        $social_repeater = $this->setting_item('social_repeater');
+        $new_tab = $this->setting_item('new_tab');
+
+        $products_id = $this->setting_item('products');
+        $products = [];
+        if (!empty($products_id)){
+            $products = Product::whereIn('id', $products_id)->orderBy('id', 'desc')->get();
+        }
+
         $primary_image = $this->setting_item('primary_image');
         $particle_image_one = $this->setting_item('floating_particle_one');
         $particle_image_two = $this->setting_item('floating_particle_two');
         $particle_image_three = $this->setting_item('floating_particle_three');
         $particle_image_four = $this->setting_item('floating_particle_four');;
 
-        $repeater_data = $this->setting_item('header_repeater');
         $padding_top = SanitizeInput::esc_html($this->setting_item('padding_top'));
         $padding_bottom = SanitizeInput::esc_html($this->setting_item('padding_bottom'));
 
@@ -126,6 +173,9 @@ class Header extends PageBuilderBase
             'button_text' => $button_text,
             'button_url' => $button_url,
             'background_color' => $background_color,
+            'social_repeater' => $social_repeater,
+            'new_tab' => $new_tab,
+            'products' => $products,
             'primary_image' => $primary_image,
             'particle_image_one' => $particle_image_one,
             'particle_image_two' => $particle_image_two,

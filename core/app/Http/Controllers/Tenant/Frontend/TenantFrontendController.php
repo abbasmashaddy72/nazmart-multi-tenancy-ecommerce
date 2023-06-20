@@ -1375,7 +1375,6 @@ class TenantFrontendController extends Controller
         return view('tenant.frontend.user.login');
     }
 
-
     public function ajax_login(Request $request)
     {
         $this->validate($request, [

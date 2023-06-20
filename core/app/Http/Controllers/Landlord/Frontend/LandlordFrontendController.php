@@ -269,7 +269,7 @@ class LandlordFrontendController extends Controller
             'terms_condition' => ['required']
         ],
         [
-            'terms_condition.required' => 'Please mark on our terms and condition to agree and proceed'
+            'terms_condition.required' => __('Please mark on our terms and condition to agree and proceed')
         ]);
 
         $user_id = DB::table('users')->insertGetId([

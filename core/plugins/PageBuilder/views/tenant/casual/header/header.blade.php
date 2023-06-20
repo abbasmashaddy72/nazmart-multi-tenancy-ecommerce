@@ -15,15 +15,11 @@
     $particle_image_four = !empty($particle_image_four) ? $particle_image_four['img_url'] : theme_assets('img/shape4.png');
 @endphp
 
-<!-- Banner area Starts -->
-{{--@if(!empty($data['background_color']))--}}
-{{--    <style>--}}
-{{--        .banner-five .banner-five-shapes::before{--}}
-{{--            background: {{$data['background_color']}}--}}
-{{--    }--}}
-{{--    </style>--}}
-{{--@endif--}}
-
+<style>
+    .banner-left-products.banner-left-products-slider {
+        display: unset;
+    }
+</style>
 <!-- Banner area end -->
 
 <div class="banner-area banner-two position-relative">
@@ -36,49 +32,64 @@
                 <img src="{{$particle_image_four}}" alt="">
             </div>
             <div class="banner-contents">
-                <span class="banner-store color-heading fs-26"> {{$data['pre_title']}} </span>
+                <span class="banner-store color-heading fs-26"> {{$data['pre_title'] ?? ''}} </span>
                 <h2 class="title ff-jost fw-600"> {{$data['title']}} </h2>
-                @if(!empty($data['button_text']) && !empty($data['button_url']))
+                @if(!empty($data['button_text']) && !empty($data['button_url'] ?? ''))
                     <div class="comingsoon-btn margin-top-40">
-                        <a href="{{$data['button_url']}}" class="comingsoon-order brows-category"> {{$data['button_text']}} </a>
+                        <a href="{{$data['button_url'] ?? ''}}"
+                           class="comingsoon-order brows-category"> {{$data['button_text'] ?? ''}} </a>
                     </div>
                 @endif
-                <div class="banner-left-products">
-                    <div class="banner-single-products bg-white radius-20 margin-top-30">
-                        <div class="banner-product-thumb radius-10">
-                            <a href="javascript:void(0)"> <img class="lazyloads" data-src="assets/img/banner/bl1.jpg" alt=""> </a>
-                        </div>
-                        <div class="banner-product-flex">
-                            <div class="single-flex-banner">
-                                <h6 class="banner_title ff-jost"> <a href="javascript:void(0)"> Women Tops </a> </h6>
-                                <span class="common-price-title color-one fs-18 fw-700"> $20.00 </span>
+                <div class="banner-left-products banner-left-products-slider">
+                    <div class="global-slick-init slider-inner-margin-10 nav-style-one" data-slidesToShow="2" data-infinite="true" data-arrows="false"
+                         data-dots="false" data-swipeToSlide="true" data-centerMode="false" data-centerPadding="30px" data-autoplay="false" data-autoplaySpeed="6000"
+                         data-prevArrow='<div class="prev-icon"><i class="las la-angle-left"></i></div>'
+                         data-nextArrow='<div class="next-icon"><i class="las la-angle-right"></i></div>'
+                         data-rtl="{{get_user_lang_direction() == 1 ? 'true' : 'false'}}">
+                        @foreach($data['products']?? [] as $key => $product)
+                            @php
+                                $price_data = get_product_dynamic_price($product);
+                                $regular_price = $price_data['regular_price'];
+                                $sale_price = $price_data['sale_price'];
+                            @endphp
+
+                            <div class="banner-single-products bg-white radius-20 margin-top-30">
+                                <div class="banner-product-thumb radius-10">
+                                    <a href="{{to_product_details($product->slug)}}">
+                                        {!! render_image_markup_by_attachment_id($product->image_id) !!}
+                                    </a>
+                                </div>
+                                <div class="banner-product-flex">
+                                    <div class="single-flex-banner">
+                                        <h6 class="banner_title ff-jost">
+                                            <a href="{{to_product_details($product->slug)}}"> {{Str::limit($product->name ,12,'..')}} </a>
+                                        </h6>
+                                        <span
+                                            class="common-price-title color-one fs-18 fw-700"> {{amount_with_currency_symbol($sale_price)}} </span>
+                                    </div>
+                                    <div class="banner-iconlist">
+                                        <a href="{{to_product_details($product->slug)}}"
+                                           class="banner-icon popup-modal"> <i class="lar la-eye"></i>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="banner-iconlist">
-                                <a href="javascript:void(0)" class="banner-icon popup-modal"> <i class="lar la-eye"></i> </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="banner-single-products bg-white radius-20 margin-top-30">
-                        <div class="banner-product-thumb radius-10">
-                            <a href="javascript:void(0)"> <img class="lazyloads" data-src="assets/img/banner/bl2.jpg" alt=""> </a>
-                        </div>
-                        <div class="banner-product-flex">
-                            <div class="single-flex-banner">
-                                <h6 class="banner_title ff-jost"> <a href="javascript:void(0)"> Women T-Shirt </a> </h6>
-                                <span class="common-price-title color-one fs-18 fw-700"> $30.00 </span>
-                            </div>
-                            <div class="banner-iconlist">
-                                <a href="javascript:void(0)" class="banner-icon popup-modal"> <i class="lar la-eye"></i> </a>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
             <div class="banner-socials">
                 <ul class="social-lists">
-                    <li><a href="javascript:void(0)"> Facebook </a></li>
-                    <li><a href="javascript:void(0)"> Instagram </a></li>
-                    <li><a href="javascript:void(0)"> Youtube </a></li>
+                    @foreach($data['social_repeater']['name_'] ?? [] as $key => $value)
+                        @continue(empty($value))
+                        <li>
+                            @php
+                                $title = $data['social_repeater']['name_'][$key] ?? '';
+                                $url = $data['social_repeater']['url_'][$key] ?? '#';
+                            @endphp
+                            <a href="{{esc_url($url)}}" {{!empty($data['new_tab']) ? 'target=""_blank' : ''}}> {{esc_html($title)}} </a>
+                        </li>
+                    @endforeach
                 </ul>
             </div>
             <div class="banner-right-contents-all">
