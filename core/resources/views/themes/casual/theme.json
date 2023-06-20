@@ -1,7 +1,7 @@
 {
-    "name": "Aromatic",
-    "slug": "aromatic",
-    "description": "Perfume Theme",
+    "name": "Casual",
+    "slug": "casual",
+    "description": "Casual Fashion Theme",
     "author": "Mazharul Islam Suzon",
     "version": "1.0.3",
     "status": true,
@@ -18,7 +18,6 @@
                 "magnific-popup": false
             },
             "style": [
-
                 "style"
             ],
             "rtl_style": [

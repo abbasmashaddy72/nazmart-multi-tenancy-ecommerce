@@ -1830,3 +1830,8 @@ function esc_url($text)
 {
     return \App\Helpers\SanitizeInput::esc_url($text);
 }
+
+function to_product_details($slug, $id = null)
+{
+    return route('tenant.shop.product.details', $slug);
+}

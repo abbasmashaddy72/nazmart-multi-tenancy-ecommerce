@@ -1,5 +1,3 @@
-{{--@include('tenant.frontend.partials.pages-portion.navbars.navbar-01')--}}
-
 @php
     $current_theme_slug = getSelectedThemeSlug();
     $navbar_area_name = getHeaderNavbarArea();

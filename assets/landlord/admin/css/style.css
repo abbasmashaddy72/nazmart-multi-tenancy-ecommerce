@@ -20036,7 +20036,10 @@ dl li {
 
 /* Sidebar */
 .sidebar {
-    min-height: calc(100vh - 70px);
+    position: fixed;
+    top: 70px;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
     background: #ffffff;
     font-family: "ubuntu-regular", sans-serif;
     padding: 0;
@@ -20321,6 +20324,9 @@ dl li {
 
     .sidebar-icon-only .sidebar {
         width: 70px;
+        overflow-y: unset;
+        position: unset;
+        height: unset;
     }
 
     .sidebar-icon-only .sidebar .nav {
@@ -20526,6 +20532,7 @@ dl li {
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
+    margin-left: auto;
 }
 
 @media (max-width: 991px) {
@@ -21422,4 +21429,8 @@ table .attachment-preview {
 
 .swal2-container {
     z-index: 19900 !important;
+}
+
+.sales_table_wrapper {
+    overflow-x: auto;
 }

@@ -11,10 +11,10 @@
                           data-rtl="{{get_user_lang_direction() == 1 ? 'true' : 'false'}}">
                          @foreach($data['repeater_data']['title_'] as $key => $value)
                              @php
-                                 $title = \App\Helpers\SanitizeInput::esc_html($value) ?? '';
-                                 $subtitle = \App\Helpers\SanitizeInput::esc_html($data['repeater_data']['subtitle_'][$key]) ?? '';
-                                 $button_text = \App\Helpers\SanitizeInput::esc_html($data['repeater_data']['shop_button_text_'][$key]) ?? '';
-                                 $button_url = \App\Helpers\SanitizeInput::esc_url($data['repeater_data']['shop_button_url_'][$key]) ?? '';
+                                 $title = esc_html($value) ?? '';
+                                 $subtitle = esc_html($data['repeater_data']['subtitle_'][$key]) ?? '';
+                                 $button_text = esc_html($data['repeater_data']['shop_button_text_'][$key]) ?? '';
+                                 $button_url = esc_url($data['repeater_data']['shop_button_url_'][$key]) ?? '';
                                  $figure_image = $data['repeater_data']['figure_image_'][$key] ?? '';
                              @endphp
 
