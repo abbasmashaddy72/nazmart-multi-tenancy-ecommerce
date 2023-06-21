@@ -2,7 +2,6 @@
 
 namespace Modules\Product\Entities;
 
-use App\MediaUpload;
 use App\Models\MediaUploader;
 use App\Models\MetaInfo;
 use App\Models\ProductReviews;
@@ -34,6 +33,10 @@ class Product extends Model
     protected $withCount = ['inventoryDetail'];
     protected $fillable = ["name","slug","summary","description","brand_id","status_id","cost","price","sale_price","image_id","badge_id","min_purchase","max_purchase","is_refundable","is_inventory_warn_able","is_in_house"];
 
+    public function scopePublished()
+    {
+        return $this->where('status_id', 1);
+    }
     public function category() : HasOneThrough {
         return $this->hasOneThrough(Category::class,ProductCategory::class,'product_id','id','id','category_id');
     }

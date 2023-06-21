@@ -340,15 +340,15 @@ class PaymentLogController extends Controller
             DB::commit(); // Committing all the actions
         } catch (\Exception $exception) {
             DB::rollBack(); // Rollback all the actions
-            return back()->with('msg', 'Something went wrong');
+            return back()->with('msg', __('Something went wrong'));
         }
 
         if(!isset($this->payment_details))
         {
             TenantException::create([
                 'tenant_id' => $is_tenant->id,
-                'issue_type' => 'Payment log creation unsuccessful',
-                'description' => 'Payment log creation unsuccessful but tenant and domain created',
+                'issue_type' => __('Payment log creation unsuccessful'),
+                'description' => __('Payment log creation unsuccessful but tenant and domain created'),
                 'domain_create_status' => 1,
                 'seen_status' => 0
             ]);
@@ -500,8 +500,14 @@ class PaymentLogController extends Controller
     public function mollie_ipn()
     {
         $mollie = PaymentGatewayCredential::get_mollie_credential();
-        $payment_data = $mollie->ipn_response();
-        return $this->common_ipn_data($payment_data);
+
+        // todo: Implement it to every ipn method
+//        try{
+            $payment_data = $mollie->ipn_response();
+            return $this->common_ipn_data($payment_data);
+//        }catch(\Exception $e){
+//            $this->cancel_page();
+//        }
     }
 
     public function midtrans_ipn()
@@ -527,8 +533,14 @@ class PaymentLogController extends Controller
     public function marcadopago_ipn()
     {
         $marcadopago = PaymentGatewayCredential::get_marcadopago_credential();
-        $payment_data = $marcadopago->ipn_response();
-        return $this->common_ipn_data($payment_data);
+
+        try {
+            $payment_data = $marcadopago->ipn_response();
+            return $this->common_ipn_data($payment_data);
+        } catch (\Exception $exception)
+        {
+            $this->cancel_page();
+        }
     }
     public function squareup_ipn()
     {

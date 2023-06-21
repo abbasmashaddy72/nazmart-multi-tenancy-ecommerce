@@ -344,6 +344,9 @@
                         </div>
 
                         <div class="row">
+                            @php
+                                $site_name = env('APP_URL');
+                            @endphp
                             <div class="col-6">
                                 <h5>{{__('Personal Information')}}</h5>
                                 <hr>
@@ -351,7 +354,7 @@
                                 <p><strong>{{__('Email:')}}</strong> <span>{{$user->email}}</span></p>
                                 <p class="mt-4">{{__('Subdomain:')}} <input class="form--control" type="text"
                                                                             name="subdomain" autocomplete="off" value=""
-                                                                            placeholder="{{__('example.nazmart.com')}}"
+                                                                            placeholder="{{__("example.{$site_name}.com")}}"
                                                                             style="border:0;border-bottom: 1px solid #595959">
                                 </p>
                                 <div id="subdomain-wrap"></div>
