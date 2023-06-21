@@ -29,6 +29,9 @@ use Plugins\PageBuilder\Addons\Tenants\Aromatic\Common\InstagramWidget;
 use Plugins\PageBuilder\Addons\Tenants\Aromatic\Product\BestProduct;
 use Plugins\PageBuilder\Addons\Tenants\Bookpoint\Blog\RecentBlog;
 use Plugins\PageBuilder\Addons\Tenants\Bookpoint\Common\TopAuthor;
+use Plugins\PageBuilder\Addons\Tenants\Casual\Common\Categories;
+use Plugins\PageBuilder\Addons\Tenants\Casual\Product\PopularCollection;
+use Plugins\PageBuilder\Addons\Tenants\Casual\Product\PopularProduct;
 use Plugins\PageBuilder\Addons\Tenants\Furnito\Product\TrendingProducts;
 use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Contact\ContactAreaOne;
 use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Contact\GoogleMap;
@@ -152,7 +155,10 @@ class PageBuilderSetup
                 ];
             } elseif($theme == 'casual') {
                 $addons = [
-                    \Plugins\PageBuilder\Addons\Tenants\Casual\Header\Header::class
+                    \Plugins\PageBuilder\Addons\Tenants\Casual\Header\Header::class,
+                    Categories::class,
+                    PopularCollection::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Casual\Product\ProductTypeList::class
                 ];
             }
 

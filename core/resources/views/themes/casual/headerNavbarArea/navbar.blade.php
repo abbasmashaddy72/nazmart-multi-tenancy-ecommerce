@@ -1,8 +1,8 @@
 <header class="header-style-01">
     <div class="searchbar-area">
         <!-- Menu area Starts -->
-        <nav class="navbar navbar-area index-05 nav-absolute nav-two navbar-expand-lg navbar-border">
-            <div class="container container-three nav-container">
+        <nav class="navbar navbar-area index-02 nav-two navbar-expand-lg navbar-border">
+            <div class="container container-two nav-container">
                 <div class="responsive-mobile-menu">
                     <div class="logo-wrapper">
                         @if(\App\Facades\GlobalLanguage::user_lang_dir() == 'rtl')
@@ -19,8 +19,7 @@
                             </a>
                         @endif
                     </div>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#bizcoxx_main_menu"
-                            aria-expanded="false" aria-label="Toggle navigation">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bizcoxx_main_menu" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                 </div>
@@ -210,133 +209,6 @@
                         </ul>
                     </div>
                 </div>
-            </form>
-        </div>
-    </div>
-</header>
-
-
-
-<header class="header-style-01">
-    <div class="searchbar-area">
-        <!-- Menu area Starts -->
-        <nav class="navbar navbar-area index-02 nav-two navbar-expand-lg navbar-border">
-            <div class="container container-two nav-container">
-                <div class="responsive-mobile-menu">
-                    <div class="logo-wrapper">
-                        <a href="index.html" class="logo">
-                            <img src="assets/img/logo-03.png" alt="">
-                        </a>
-                    </div>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bizcoxx_main_menu" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                </div>
-                <div class="collapse navbar-collapse" id="bizcoxx_main_menu">
-                    <ul class="navbar-nav">
-                        {!! render_frontend_menu($primary_menu) !!}
-                    </ul>
-                </div>
-                <div class="nav-right-content">
-                    <ul>
-                        <li>
-                            <div class="info-bar-item">
-                                <div class="track-icon-list style-02">
-                                    <div class="single-icon search-open">
-                                        <span class="icon"> <i class="las la-search"></i> </span>
-                                    </div>
-                                    <div class="single-icon">
-                                        <a href="javascript:void(0)" class="icon"> <i class="lar la-heart"></i> </a>
-                                        <a href="javascript:void(0)" class="icon-notification"> 0 </a>
-                                    </div>
-                                    <div class="single-icon cart-shopping">
-                                        <a href="javascript:void(0)" class="icon"> <i class="las la-shopping-cart"></i> </a>
-                                        <a href="javascript:void(0)" class="icon-notification"> 0 </a>
-                                        <div class="addto-cart-contents">
-                                            <div class="single-addto-cart-wrappers">
-                                                <div class="single-addto-carts">
-                                                    <div class="addto-cart-flex-contents">
-                                                        <div class="addto-cart-thumb">
-                                                            <img src="assets/img/single-page/cart1.jpg" alt="img">
-                                                        </div>
-                                                        <div class="addto-cart-img-contents">
-                                                            <h6 class="addto-cart-title fs-18"> Women Dress </h6>
-                                                            <div class="price-updates margin-top-10">
-                                                                <span class="price-title fs-16 fw-500 color-heading"> $60.00 </span>
-                                                                <span class="old-price"> $70.00 </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <span class="addto-cart-counts color-heading fw-500"> 1 </span>
-                                                    <a href="javascript:void(0)" class="close-cart">
-                                                        <span class="icon-close color-heading"> <i class="las la-times"></i> </span>
-                                                    </a>
-                                                </div>
-                                                <div class="single-addto-carts">
-                                                    <div class="addto-cart-flex-contents">
-                                                        <div class="addto-cart-thumb">
-                                                            <img src="assets/img/single-page/cart2.jpg" alt="img">
-                                                        </div>
-                                                        <div class="addto-cart-img-contents">
-                                                            <h6 class="addto-cart-title"> Man Dress </h6>
-                                                            <div class="price-updates margin-top-10">
-                                                                <span class="price-title fs-16 fw-500 color-heading"> $40.00 </span>
-                                                                <span class="old-price"> $50.00 </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <span class="addto-cart-counts color-heading fw-500"> 1 </span>
-                                                    <a href="javascript:void(0)" class="close-cart">
-                                                        <span class="icon-close color-heading"> <i class="las la-times"></i> </span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div class="cart-total-amount">
-                                                <h6 class="amount-title"> Total Amount: </h6> <span class="fs-18 fw-500 color-light"> $70.00 </span></div>
-                                            <div class="btn-wrapper margin-top-20">
-                                                <a href="checkout.html" class="cmn-btn btn-bg-1 radius-0 w-100"> CheckOut </a>
-                                            </div>
-                                            <div class="btn-wrapper margin-top-20">
-                                                <a href="02_cart.html" class="cmn-btn btn-outline-one radius-0 w-100"> View Cart </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="login-account">
-                                    <a href="javascript:void(0)" class="accounts">
-                                        <i class="las la-user"></i>
-                                    </a>
-                                    <ul class="account-list-item">
-                                        @auth('web')
-                                            <li class="list">
-                                                <a href="{{route('tenant.user.home')}}"> {{__('Dashboard')}} </a>
-                                            </li>
-                                            <li class="list">
-                                                <a href="{{route('tenant.user.logout')}}"> {{__('Log Out')}} </a>
-                                            </li>
-                                        @else
-                                            <li class="list">
-                                                <a href="{{route('tenant.user.login')}}"> {{__('Sign In')}} </a>
-                                            </li>
-                                            <li class="list">
-                                                <a href="{{route('tenant.user.register')}}"> {{__('Sign Up')}} </a>
-                                            </li>
-                                        @endauth
-                                    </ul>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <!-- Menu area end -->
-        <!-- SearcBar -->
-        <div class="search-bar">
-            <form class="menu-search-form" action="#">
-                <div class="search-close"> <i class="las la-times"></i> </div>
-                <input class="item-search" type="text" placeholder="Search Here.....">
-                <button type="submit"> Search Now </button>
             </form>
         </div>
     </div>

@@ -29,6 +29,7 @@
                         <th>{{__('ID')}}</th>
                         <th>{{__('Name')}}</th>
                         <th>{{__('Email')}}</th>
+                        <th>{{__('Shops')}}</th>
                         <th>{{__('Action')}}</th>
                     </x-slot>
                     <x-slot name="tr">
@@ -43,6 +44,7 @@
                                     <i class="text-success mdi mdi-check-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="{{__('Email  Verified')}}"></i>
                                    @endif
                                </td>
+                               <td class="text-center">{{$user->tenant_details->count()}}</td>
                                <td>
                                    <x-delete-popover url="{{route('landlord.admin.tenant.delete',$user->id)}}" popover="{{__('Delete')}}"/>
 

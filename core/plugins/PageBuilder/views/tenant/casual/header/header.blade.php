@@ -22,7 +22,7 @@
 </style>
 <!-- Banner area end -->
 
-<div class="banner-area banner-two position-relative">
+<div class="banner-area banner-two position-relative" data-padding-top="{{$data['padding_top']}}" data-padding-bottom="{{$data['padding_bottom']}}">
     <div class="container-two">
         <div class="banner-contents-wrappers bg-item-four radius-30">
             <div class="banner-shapes">

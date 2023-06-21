@@ -18,6 +18,7 @@ use App\Models\PaymentLogs;
 use App\Models\PricePlan;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Models\ZeroPricePlanHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
@@ -134,6 +135,7 @@ class TenantManageController extends Controller
 
         PaymentLogs::where('user_id',$user->id)->delete();
         CustomDomain::where('user_id',$user->id)->delete();
+        ZeroPricePlanHistory::where('user_id', $user->id)->delete();
 
         if(!empty($tenants)){
             foreach ($tenants as $tenant)

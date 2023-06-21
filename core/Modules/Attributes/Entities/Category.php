@@ -20,6 +20,11 @@ class Category extends Model
     protected $table = 'categories';
     protected $fillable = ["name","slug","description","image_id","status_id"];
 
+    public function scopePublished()
+    {
+        return $this->where('status_id', 1);
+    }
+
     public function image(): HasOne
     {
         return $this->hasOne(MediaUploader::class,"id","image_id");
