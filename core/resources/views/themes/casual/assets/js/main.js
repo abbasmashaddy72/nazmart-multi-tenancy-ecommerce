@@ -94,13 +94,20 @@
             CountDown Timer
         ========================================
         */
-        $('.global-timer').syotimer({
-            year: 2022,
-            month: 8,
-            day: 20,
-            hour: 20,
-            minute: 30
-        });
+        const timerClass = $('.global-timer')
+        const year = timerClass.data('year')
+        const month = timerClass.data('month')
+        const day = timerClass.data('day')
+
+        const end_dates = {
+            year: year ?? 0,
+            month: parseInt(month) ?? 0,
+            day: day ?? 0,
+            hour: 0,
+            minute: 0
+        }
+
+        $(timerClass).syotimer(end_dates);
 
         /*
         ========================================

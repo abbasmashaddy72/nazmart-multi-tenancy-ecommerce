@@ -354,8 +354,8 @@
                                 <p><strong>{{__('Email:')}}</strong> <span>{{$user->email}}</span></p>
                                 <p class="mt-4">{{__('Subdomain:')}} <input class="form--control" type="text"
                                                                             name="subdomain" autocomplete="off" value=""
-                                                                            placeholder="{{__("example.{$site_name}.com")}}"
-                                                                            style="border:0;border-bottom: 1px solid #595959">
+                                                                            placeholder="{{__("example.{$site_name}")}}"
+                                                                            style="border:0;border-bottom: 1px solid #595959; width: 60%">
                                 </p>
                                 <div id="subdomain-wrap"></div>
                             </div>

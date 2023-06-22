@@ -37,7 +37,9 @@ class TenantManageController extends Controller
     const BASE_PATH = 'landlord.admin.tenant.';
     public function all_tenants(){
         $all_users = User::latest()->get();
-        return view(self::BASE_PATH.'index',compact('all_users'));
+        $deleted_users = User::onlyTrashed()->count();
+
+        return view(self::BASE_PATH.'index',compact('all_users','deleted_users'));
     }
 
     public function new_tenant()

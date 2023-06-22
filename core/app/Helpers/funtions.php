@@ -1805,6 +1805,23 @@ function product_limited_text($text, $type)
     return $product_text;
 }
 
+function blog_limited_text($text, $type = 'title')
+{
+    switch ($type) {
+        case 'title':
+            $limit = get_static_option('blog_title_length') ?? 15;
+            $product_text = Str::words($text, $limit);
+            break;
+
+        case 'description';
+            $limit = get_static_option('blog_description_length') ?? 30;
+            $product_text = Str::words($text, $limit);
+            break;
+    }
+
+    return $product_text;
+}
+
 function title_underline_image_src()
 {
     $title_line = get_attachment_image_by_id(get_static_option('title_shape_image'));

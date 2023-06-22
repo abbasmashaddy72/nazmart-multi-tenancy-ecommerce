@@ -29,6 +29,7 @@ use Plugins\PageBuilder\Addons\Tenants\Aromatic\Common\InstagramWidget;
 use Plugins\PageBuilder\Addons\Tenants\Aromatic\Product\BestProduct;
 use Plugins\PageBuilder\Addons\Tenants\Bookpoint\Blog\RecentBlog;
 use Plugins\PageBuilder\Addons\Tenants\Bookpoint\Common\TopAuthor;
+use Plugins\PageBuilder\Addons\Tenants\Casual\Common\CampaignSale;
 use Plugins\PageBuilder\Addons\Tenants\Casual\Common\Categories;
 use Plugins\PageBuilder\Addons\Tenants\Casual\Product\PopularCollection;
 use Plugins\PageBuilder\Addons\Tenants\Casual\Product\PopularProduct;
@@ -158,7 +159,11 @@ class PageBuilderSetup
                     \Plugins\PageBuilder\Addons\Tenants\Casual\Header\Header::class,
                     Categories::class,
                     PopularCollection::class,
-                    \Plugins\PageBuilder\Addons\Tenants\Casual\Product\ProductTypeList::class
+                    \Plugins\PageBuilder\Addons\Tenants\Casual\Product\ProductTypeList::class,
+                    CampaignSale::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Casual\Product\FlashStore::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Casual\Blog\BlogOne::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Casual\Common\Brand::class
                 ];
             }
 
