@@ -52,6 +52,11 @@ class Campaign extends Model
         'type'
     ];
 
+    protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime'
+    ];
+
     public function campaignImage(): HasOne
     {
         return $this->hasOne(MediaUploader::class,"id","image");

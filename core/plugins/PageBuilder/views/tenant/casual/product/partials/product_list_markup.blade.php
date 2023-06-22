@@ -5,6 +5,15 @@
         $regular_price = $data_info['regular_price'];
         $sale_price = $data_info['sale_price'];
         $discount = $data_info['discount'];
+
+        $delay = '.1s';
+        $class = 'fadeInUp';
+
+        if ($loop->even)
+        {
+             $delay = '.2s';
+             $class = 'fadeInDown';
+        }
     @endphp
 
     <div class="col-xl-4 col-md-6 margin-top-30">
@@ -27,13 +36,16 @@
                             <a href="{{to_product_details($product->slug)}}"> {{product_limited_text($product->name, 'title')}} </a>
                         </h2>
                         <div class="price-update-through margin-top-15">
-                            <span class="fs-22 ff-roboto fw-500 flash-prices color-one"> {{amount_with_currency_symbol($sale_price)}} </span>
-                            <span class="fs-18 flash-old-prices"> {{amount_with_currency_symbol($regular_price)}} </span>
+                            <span
+                                class="fs-22 ff-roboto fw-500 flash-prices color-one"> {{amount_with_currency_symbol($sale_price)}} </span>
+                            <span
+                                class="fs-18 flash-old-prices"> {{amount_with_currency_symbol($regular_price)}} </span>
                         </div>
                     </div>
                     <div class="collection-flex-icon">
                         @if($product->inventory_detail_count < 1)
-                            <a href="javascript:void(0)" class="shopping-icon cart-loading add-to-cart-btn" data-product_id="{{ $product->id }}">
+                            <a href="javascript:void(0)" class="shopping-icon cart-loading add-to-cart-btn"
+                               data-product_id="{{ $product->id }}">
                                 <i class="las la-shopping-bag"></i>
                             </a>
                         @else

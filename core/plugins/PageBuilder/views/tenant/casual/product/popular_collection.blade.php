@@ -67,7 +67,6 @@
                                             <i class="las la-shopping-bag"></i>
                                         </a>
                                     @endif
-
                                 </div>
                             </div>
                         </div>

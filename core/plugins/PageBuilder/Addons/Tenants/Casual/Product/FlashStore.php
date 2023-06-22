@@ -4,7 +4,6 @@ namespace Plugins\PageBuilder\Addons\Tenants\Casual\Product;
 
 use App\Helpers\LanguageHelper;
 use App\Helpers\SanitizeInput;
-use App\Models\OrderProducts;
 use Modules\Blog\Entities\BlogCategory;
 use Modules\Product\Entities\Product;
 use Plugins\PageBuilder\Fields\NiceSelect;
@@ -13,7 +12,7 @@ use Plugins\PageBuilder\Fields\Text;
 use Plugins\PageBuilder\PageBuilderBase;
 use Symfony\Component\Console\Input\Input;
 
-class PopularCollection extends PageBuilderBase
+class FlashStore extends PageBuilderBase
 {
     public function preview_image()
     {
@@ -45,16 +44,9 @@ class PopularCollection extends PageBuilderBase
             'value' => $widget_saved_values['see_all_url'] ?? ''
         ]);
 
-        $products_id = OrderProducts::query()->distinct('product_id')->orderBy('product_id', 'desc')->pluck('product_id')->toArray();
-
-        $products = [];
-        if (!empty($products_id))
-        {
-            $products = Product::published()->whereIn('id', $products_id)->get()->mapWithKeys(function ($item){
-                return [$item->id => $item->name];
-            })->toArray();
-        }
-
+        $products = Product::published()->get()->mapWithKeys(function ($item){
+            return [$item->id => $item->name];
+        })->toArray();
 
         $output .= NiceSelect::get([
             'multiple' => true,
@@ -62,7 +54,7 @@ class PopularCollection extends PageBuilderBase
             'label' => __('Select Products'),
             'options' => $products,
             'value' => $widget_saved_values['products'] ?? null,
-            'info' => __('You can select your desired popular products based on sale or leave it empty to randomize')
+            'info' => __('you can select your desired products or leave it empty')
         ]);
 
         $output .= Number::get([
@@ -82,14 +74,15 @@ class PopularCollection extends PageBuilderBase
 
     public function frontend_render()
     {
-        $title = esc_html($this->setting_item('title') ?? __('POPULAR COLLECTION'));
+        $title = SanitizeInput::esc_html($this->setting_item('title') ?? __('Featured Products'));
         $products_id = $this->setting_item('products');
-        $item_show = esc_html($this->setting_item('item_show') ?? '');
+        $item_show = SanitizeInput::esc_html($this->setting_item('item_show') ?? '');
+
         $see_all_text = esc_html($this->setting_item('see_all_text') ?? '');
         $see_all_url = esc_html($this->setting_item('see_all_url') ?? '');
 
-        $padding_top = esc_html($this->setting_item('padding_top'));
-        $padding_bottom = esc_html($this->setting_item('padding_bottom'));
+        $padding_top = SanitizeInput::esc_html($this->setting_item('padding_top'));
+        $padding_bottom = SanitizeInput::esc_html($this->setting_item('padding_bottom'));
 
         $products = Product::where('status_id',1);
 
@@ -98,7 +91,7 @@ class PopularCollection extends PageBuilderBase
             $products->whereIn('id', $products_id);
         }
 
-        $products = $products->take($item_show ?? 4)->get();
+        $products = $products->take($item_show ?? 6)->get();
 
         $data = [
             'title' => $title,
@@ -109,11 +102,11 @@ class PopularCollection extends PageBuilderBase
             'products'=> $products
         ];
 
-        return self::renderView('tenant.casual.product.popular_collection',$data);
+        return self::renderView('tenant.casual.product.flash_store',$data);
     }
 
     public function addon_title()
     {
-        return __('Casual : Popular Collection');
+        return __('Casual: Flash Store');
     }
 }
