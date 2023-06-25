@@ -16,7 +16,7 @@
                             ></div>
                             <div class="campaign-content">
                                 <div class="campaign-content-inner">
-                                    <a href="{{ route('frontend.products.campaign', $campaign->id) }}" class="campaign-tags">{{ Str::limit($campaign->title, 27) }}</p>
+                                    <a href="{{ route('frontend.products.campaign', $campaign->id) }}" class="campaign-tags">{{ Str::limit($campaign->title, 27) }}</a>
                                     <h3 class="campaign-offer-title"> <a href="{{ route('frontend.products.campaign', $campaign->id) }}">{{ Str::limit($campaign->subtitle, 27) }}</a> </h3>
                                     <div class="btn-wrapper">
                                         <a href="{{ route('frontend.products.campaign', $campaign->id) }}" class="default-btn"> {{ __('Shop Now') }} </a>

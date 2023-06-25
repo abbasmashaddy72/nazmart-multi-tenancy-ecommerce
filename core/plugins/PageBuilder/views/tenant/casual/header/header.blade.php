@@ -40,12 +40,12 @@
                            class="comingsoon-order brows-category"> {{$data['button_text'] ?? ''}} </a>
                     </div>
                 @endif
-                <div class="banner-left-products banner-left-products-slider">
-                    <div class="global-slick-init slider-inner-margin-10 nav-style-one" data-slidesToShow="2" data-infinite="true" data-arrows="false"
-                         data-dots="false" data-swipeToSlide="true" data-centerMode="false" data-centerPadding="30px" data-autoplay="false" data-autoplaySpeed="6000"
+                <div class="banner-left-products banner-left-products-slider mt-4">
+                    <div class="global-slick-init slider-inner-margin nav-style-one" data-slidesToShow="2" data-infinite="true" data-arrows="false"
+                         data-dots="false" data-swipeToSlide="true" data-centerMode="false" data-centerPadding="40px" data-autoplay="false" data-autoplaySpeed="6000"
                          data-prevArrow='<div class="prev-icon"><i class="las la-angle-left"></i></div>'
                          data-nextArrow='<div class="next-icon"><i class="las la-angle-right"></i></div>'
-                         data-rtl="{{get_user_lang_direction() == 1 ? 'true' : 'false'}}">
+                         data-rtl="{{get_user_lang_direction() == 1 ? 'true' : 'false'}}" data-responsive='[{"breakpoint": 1400,"settings": {"slidesToShow": 2}},{"breakpoint": 1200,"settings": {"slidesToShow": 2}},{"breakpoint": 992,"settings": {"slidesToShow": 2}},{"breakpoint": 575, "settings": {"slidesToShow": 1} }]'>
                         @foreach($data['products']?? [] as $key => $product)
                             @php
                                 $price_data = get_product_dynamic_price($product);

@@ -74,13 +74,26 @@
                             </div>
                         </div>
                     </div>
+{{--                    <div class="col-xl-4 col-md-6 stretch-card">--}}
+{{--                        <div class="card bg-gradient-warning card-img-holder text-white">--}}
+{{--                            <div class="card-body">--}}
+{{--                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}" class="card-img-absolute" alt="circle-image">--}}
+{{--                                <h4 class="font-weight-normal mb-3">{{__('Total Brand')}} <i class="mdi mdi-diamond mdi-24px float-right"></i>--}}
+{{--                                </h4>--}}
+{{--                                <h2 class="mb-5">{{$total_brand}}</h2>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+                    @php
+                        $themes = getAllThemeSlug();
+                    @endphp
                     <div class="col-xl-4 col-md-6 stretch-card">
                         <div class="card bg-gradient-warning card-img-holder text-white">
                             <div class="card-body">
                                 <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}" class="card-img-absolute" alt="circle-image">
-                                <h4 class="font-weight-normal mb-3">{{__('Total Brand')}} <i class="mdi mdi-diamond mdi-24px float-right"></i>
+                                <h4 class="font-weight-normal mb-3">{{__('Total Theme')}} <i class="mdi mdi-diamond mdi-24px float-right"></i>
                                 </h4>
-                                <h2 class="mb-5">{{$total_brand}}</h2>
+                                <h2 class="mb-5">{{count($themes)}}</h2>
                             </div>
                         </div>
                     </div>

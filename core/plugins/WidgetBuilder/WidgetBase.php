@@ -100,8 +100,9 @@ abstract class WidgetBase
 
     public function get_settings()
     {
-        $widget_data = !empty($this->args['id']) ? Widgets::find($this->args['id']) : [];
-        $widget_data = !empty($widget_data) ? unserialize($widget_data->widget_content,['class' => false]) : [];
+        $widget_data = !empty($this->args['id']) ? Widgets::find($this->args['id']) : null;
+        $widget_content_data = $this->repairSerializeString($widget_data?->widget_content);
+        $widget_data = !empty($widget_data) ? unserialize($widget_content_data,['class' => false]) : [];
         return $widget_data;
     }
     /**
@@ -249,5 +250,19 @@ abstract class WidgetBase
             $markup .= '</li>';
         }
         return $markup;
+    }
+
+    public function repairSerializeString($value)
+    {
+
+        $data = preg_replace_callback(
+            '/(?<=^|\{|;)s:(\d+):\"(.*?)\";(?=[asbdiO]\:\d|N;|\}|$)/s',
+            function($m){
+                return 's:' . strlen($m[2]) . ':"' . $m[2] . '";';
+            },
+            $value
+        );
+
+        return $data;
     }
 }

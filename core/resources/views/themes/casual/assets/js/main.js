@@ -95,16 +95,18 @@
         ========================================
         */
         const timerClass = $('.global-timer')
-        const year = timerClass.data('year')
-        const month = timerClass.data('month')
-        const day = timerClass.data('day')
+        const year = timerClass.data('year') ?? 0
+        const month = parseInt(timerClass.data('month')) ?? 0
+        const day = timerClass.data('day') ?? 0
+        const hour = 0
+        const minute = 0
 
         const end_dates = {
-            year: year ?? 0,
-            month: parseInt(month) ?? 0,
-            day: day ?? 0,
-            hour: 0,
-            minute: 0
+            year,
+            month,
+            day,
+            hour,
+            minute
         }
 
         $(timerClass).syotimer(end_dates);

@@ -9,6 +9,7 @@
 @php
     $item_style = request()->s ?? 'grid';
 @endphp
+
 <div class="shop-grid-area-wrapper shop-campaing">
     <div class="container custom-container-1318">
         <div class="row">

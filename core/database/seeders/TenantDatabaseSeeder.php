@@ -47,5 +47,7 @@ class TenantDatabaseSeeder extends Seeder
             TenantModifySeeder::class,
             ThemeModifySeeder::class
         ]);
+
+        session()->forget('theme');
     }
 }
