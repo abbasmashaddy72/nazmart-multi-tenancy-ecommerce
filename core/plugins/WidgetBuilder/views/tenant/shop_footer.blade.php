@@ -1,4 +1,4 @@
-<section class="promo-area padding-top-100">
+<section class="promo-area my-5">
     <div class="container container-one">
         <div class="row">
             @foreach($data['repeater_title_'] ?? [] as $key => $title)
@@ -8,8 +8,8 @@
                             <i class="{{$data['repeater_icon_'][$key] ?? ''}}"></i>
                         </div>
                         <div class="single-promo-contents mt-2">
-                            <h4 class="single-promo-contents-title fw-500"> <a href="javascript:void(0)"> {{\App\Helpers\SanitizeInput::esc_html($title)}}</a> </h4>
-                            <p class="single-promo-contents-para mt-2"> {{\App\Helpers\SanitizeInput::esc_html($data['repeater_subtitle_'][$key]) ?? ''}} </p>
+                            <h4 class="single-promo-contents-title fw-500"> <a href="javascript:void(0)"> {{esc_html($title)}}</a> </h4>
+                            <p class="single-promo-contents-para mt-2"> {{esc_html($data['repeater_subtitle_'][$key]) ?? ''}} </p>
                         </div>
                     </div>
                 </div>

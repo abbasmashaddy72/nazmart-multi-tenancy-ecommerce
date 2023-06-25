@@ -24,17 +24,17 @@ class GeneralData extends Seeder
     private function insertStaticOptionData()
     {
         DB::statement("INSERT INTO `static_options` (`id`, `option_name`, `option_value`, `created_at`, `updated_at`) VALUES
-        (1,'site_title','Aromatic','2022-08-11 01:14:21','2023-05-23 13:11:37'),
-        (3,'site_tag_line','Perfume Shop','2022-08-11 01:14:21','2023-05-23 13:11:37'),
+        (1,'site_title','Casual','2022-08-11 01:14:21','2023-06-21 18:47:43'),
+        (3,'site_tag_line','Fashion Shop','2022-08-11 01:14:21','2023-06-21 18:47:43'),
         (5,'home_one_header_button_text','Join With Us','2022-08-11 01:14:21','2022-08-11 01:14:21'),
         (7,'language_selector_status',NULL,'2022-08-11 01:14:21','2023-05-23 13:11:37'),
         (8,'home_page','1','2022-08-11 01:14:21','2022-08-11 01:14:21'),
         (10,'global_footer_variant','01','2022-08-11 01:14:21','2022-11-10 14:29:08'),
         (11,'order_form','02','2022-08-11 01:14:21','2022-08-11 01:14:21'),
-        (12,'site_logo','494','2022-08-11 01:14:21','2023-05-23 13:03:36'),
-        (13,'site_white_logo','494','2022-08-11 01:14:21','2023-05-23 13:03:36'),
+        (12,'site_logo','514','2022-08-11 01:14:21','2023-06-18 18:40:47'),
+        (13,'site_white_logo','514','2022-08-11 01:14:21','2023-06-18 18:40:47'),
         (14,'site_favicon','496','2022-08-11 01:14:21','2023-05-23 13:10:40'),
-        (15,'site_footer_copyright_text','{copy} {year} Copyright All Right Reserved by Aromatic','2022-08-11 01:45:38','2023-05-23 13:11:37'),
+        (15,'site_footer_copyright_text','{copy} {year} Copyright All Right Reserved by Casual','2022-08-11 01:45:38','2023-06-21 18:47:43'),
         (17,'dark_mode_for_admin_panel',NULL,'2022-08-11 01:45:38','2022-08-11 01:45:53'),
         (18,'maintenance_mode',NULL,'2022-08-11 01:45:38','2022-08-11 01:45:38'),
         (19,'backend_preloader',NULL,'2022-08-11 01:45:38','2022-08-11 01:45:38'),
@@ -212,7 +212,7 @@ class GeneralData extends Seeder
         (206,'placeholder_image',NULL,'2023-05-23 13:11:37','2023-05-23 13:11:37'),
         (207,'mysql_database_engine',NULL,'2023-05-23 13:11:37','2023-05-23 13:11:37'),
         (208,'title_shape_image','498','2023-05-23 16:19:21','2023-05-23 16:19:21'),
-        (209,'product_title_length','10','2023-05-23 19:20:14','2023-05-24 11:20:04'),
+        (209,'product_title_length','4','2023-05-23 19:20:14','2023-06-24 18:34:15'),
         (210,'product_description_length','30','2023-05-23 19:20:14','2023-05-23 19:20:14'),
         (211,'currency_amount_type_status','on','2023-05-24 15:44:34','2023-05-24 15:47:43'),
         (212,'site_custom_currency_symbol',NULL,'2023-05-24 15:44:34','2023-05-24 15:44:34'),
@@ -231,7 +231,32 @@ class GeneralData extends Seeder
         (225,'background_image_two','508','2023-05-25 19:07:13','2023-05-25 19:07:13'),
         (226,'background_image_three','510','2023-05-25 19:07:13','2023-05-25 19:07:13'),
         (227,'background_image_four','511','2023-05-25 19:07:13','2023-05-25 19:07:13'),
-        (228,'background_image_five','512','2023-05-25 19:07:13','2023-05-25 19:07:13')");
+        (228,'background_image_five','512','2023-05-25 19:07:13','2023-05-25 19:07:13'),
+        (229,'main_color_one_casual','rgb(248, 58, 38)','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (230,'main_color_two_casual','rgb(255, 186, 0)','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (231,'main_color_three_casual','rgb(255, 106, 58)','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (232,'main_color_four_casual','rgb(255, 105, 92)','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (233,'secondary_color_casual','#F7A3A8','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (234,'secondary_color_two_casual','#ffdcd2','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (235,'section_bg_1_casual','#FFFBFB','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (236,'section_bg_2_casual','#FFF6EE','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (237,'section_bg_3_casual','#F4F8FB','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (238,'section_bg_4_casual','#F2F3FB','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (239,'section_bg_5_casual','#F9F5F2','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (240,'section_bg_6_casual','#E5EFF8','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (241,'breadcrumb_bg_casual','#E5EFF8','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (242,'heading_color_casual','rgb(27, 28, 37)','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (243,'body_color_casual','#666666','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (244,'light_color_casual','#666666','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (245,'extra_light_color_casual','rgb(153, 153, 153)','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (246,'review_color_casual','#FABE50','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (247,'feedback_bg_item_casual','#333333','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (248,'new_color_casual','#5AB27E','2023-06-20 19:40:34','2023-06-20 19:40:34'),
+        (249,'body_font_family_casual','Roboto','2023-06-20 19:42:50','2023-06-20 19:42:50'),
+        (250,'heading_font_family_casual','Rubik','2023-06-20 19:42:50','2023-06-20 19:42:50'),
+        (251,'heading_font_casual','on','2023-06-20 19:42:50','2023-06-20 19:42:50'),
+        (252,'body_font_variant_casual','a:6:{i:0;s:5:\"0,100\";i:1;s:5:\"0,300\";i:2;s:5:\"0,400\";i:3;s:5:\"0,500\";i:4;s:5:\"0,700\";i:5;s:5:\"0,900\";}','2023-06-20 19:42:50','2023-06-20 19:42:50'),
+        (253,'heading_font_variant_casual','a:5:{i:0;s:5:\"0,300\";i:1;s:5:\"0,400\";i:2;s:5:\"0,500\";i:3;s:5:\"0,700\";i:4;s:5:\"0,900\";}','2023-06-20 19:42:50','2023-06-20 19:42:50')");
     }
 
     private function seed_topbar_info()
@@ -245,6 +270,6 @@ class GeneralData extends Seeder
 
     private function central_data()
     {
-        update_static_option_central('get_script_version', '1.1.2');
+        update_static_option_central('get_script_version', '1.1.3');
     }
 }

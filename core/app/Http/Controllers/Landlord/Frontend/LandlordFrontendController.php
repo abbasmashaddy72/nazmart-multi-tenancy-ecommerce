@@ -170,6 +170,10 @@ class LandlordFrontendController extends Controller
     public function view_plan($id, $trial = null)
     {
         $order_details = PricePlan::findOrFail($id);
+        if ($order_details->has_trial != 1)
+        {
+            return redirect()->route('landlord.frontend.plan.order', $id);
+        }
 
         return view('landlord.frontend.pages.package.view-plan')->with([
             'order_details' => $order_details,

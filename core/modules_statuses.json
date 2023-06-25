@@ -18,7 +18,7 @@
     "RefundModule": true,
     "NewsLetter": true,
     "MobileApp": true,
-    "TestManage": true,
+    "TestManage": false,
     "DigitalProduct": true,
     "PluginManage": true,
     "SalesReport": true

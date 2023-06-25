@@ -71,6 +71,11 @@
             line-height: 28px;
             padding-inline: 3px;
         }
+        #create-trial-account-button[disabled] {
+            border-color: #2c2c2c;
+            background: #2c2c2c;
+            cursor: no-drop;
+        }
     </style>
 @endsection
 

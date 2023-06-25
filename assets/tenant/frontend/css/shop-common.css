@@ -265,37 +265,37 @@
   color: #FFBA5C;
 }
 
-.footer-bg {
-  background: #010104;
-}
+/*.footer-bg {*/
+/*  background: #010104;*/
+/*}*/
 
-.bg-color-one {
-  background-color: rgba(255, 107, 127, 0.1);
-}
+/*.bg-color-one {*/
+/*  background-color: rgba(255, 107, 127, 0.1);*/
+/*}*/
 
-.bg-color-two {
-  background-color: rgba(58, 184, 235, 0.1);
-}
+/*.bg-color-two {*/
+/*  background-color: rgba(58, 184, 235, 0.1);*/
+/*}*/
 
-.bg-color-three {
-  background-color: rgba(0, 194, 117, 0.1);
-}
+/*.bg-color-three {*/
+/*  background-color: rgba(0, 194, 117, 0.1);*/
+/*}*/
 
-.bg-color-four {
-  background-color: rgba(123, 97, 255, 0.1);
-}
+/*.bg-color-four {*/
+/*  background-color: rgba(123, 97, 255, 0.1);*/
+/*}*/
 
-.bg-one {
-  background-color: var(--main-color-one);
-}
+/*.bg-one {*/
+/*  background-color: var(--main-color-one);*/
+/*}*/
 
-.bg-two {
-  background-color: var(--main-color-one);
-}
+/*.bg-two {*/
+/*  background-color: var(--main-color-one);*/
+/*}*/
 
-.bg-three {
-  background-color: var(--main-color-three);
-}
+/*.bg-three {*/
+/*  background-color: var(--main-color-three);*/
+/*}*/
 
 .shop-color-1 {
   background: #F83A26 !important;

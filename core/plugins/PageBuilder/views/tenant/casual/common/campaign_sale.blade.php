@@ -19,16 +19,17 @@
             <div class="flash-sale-contents">
                 <h2 class="flas-sale-title ff-jost"> {{$title}} </h2>
                 <div class="flash-countdown margin-top-20">
-                    @if(\Carbon\Carbon::parse($campaign->start_date) > now())
-                        <h4>{{__('The campaign has not started yet. Please check back later for updates')}}</h4>
-                    @else
-                        <div class="global-timer simple-timer-two"
-                             data-year="{{$campaign->end_date->format('Y') ?? ''}}"
-                             data-month="{{$campaign->end_date->format('m') ?? ''}}"
-                             data-day="{{$campaign->end_date->format('d') ?? ''}}"
-                        ></div>
+                    @if(!empty($campaign))
+                        @if(\Carbon\Carbon::parse($campaign->start_date) > now())
+                            <h4>{{__('The campaign has not started yet. Please check back later for updates')}}</h4>
+                        @else
+                            <div class="global-timer simple-timer-two"
+                                 data-year="{{$campaign->end_date->format('Y') ?? ''}}"
+                                 data-month="{{$campaign->end_date->format('m') ?? ''}}"
+                                 data-day="{{$campaign->end_date->format('d') ?? ''}}"
+                            ></div>
+                        @endif
                     @endif
-
                 </div>
                 <div class="flash-btn">
                     <a href="{{$button_url}}" class="flash-store"> {{$data['button_text'] ?? ''}} </a>
