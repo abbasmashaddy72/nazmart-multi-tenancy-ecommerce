@@ -563,6 +563,14 @@ class SidebarMenuHelper
             'parent' => 'general-settings-menu-items',
             'permissions' => ['general-settings-license-settings'],
         ]);
+
+        $menu_instance->add_menu_item('general-settings-check-update-settings', [
+            'route' => 'landlord.admin.general.software.update.settings',
+            'label' => __('Check Update'),
+            'parent' => 'general-settings-menu-items',
+            'permissions' => ['general-settings-license-settings'],
+        ]);
+
     }
 
     private function payment_settings_menus(MenuWithPermission $menu_instance): void

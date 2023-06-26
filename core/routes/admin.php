@@ -404,6 +404,12 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::get('/license-settings','license_settings')->name('landlord.admin.general.license.settings');
         Route::post('/license-settings','update_license_settings');
 
+        //new auto update features route
+        Route::post('/license-setting-verify', 'license_key_generate')->name('landlord.admin.general.license.key.generate');
+        Route::get('/update-check', 'update_version_check')->name('landlord.admin.general.update.version.check');
+        Route::post('/download-update/{productId}/{tenant}', 'updateDownloadLatestVersion')->name('landlord.admin.general.update.download.settings');
+        Route::get('/software-update-setting', 'software_update_check_settings')->name('landlord.admin.general.software.update.settings');
+
     });
 
     Route::controller(PaymentSettingsController::class)->name('landlord.admin.payment.settings.')->prefix('payment-settings/payment')->group(function (){
