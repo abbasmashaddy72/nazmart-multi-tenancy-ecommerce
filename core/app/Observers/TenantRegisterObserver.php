@@ -7,7 +7,9 @@ use App\Helpers\EmailHelpers\VerifyUserMailSend;
 use App\Mail\BasicMail;
 use App\Models\CustomDomain;
 use App\Models\User;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
+use Modules\WebHook\Events\WebhookEventFire;
 
 class TenantRegisterObserver
 {
@@ -19,6 +21,7 @@ class TenantRegisterObserver
         /* send email verify mail to user */
         VerifyUserMailSend::sendMail($user);
         CustomDomain::create(['user_id' => $user->id]);
+        Event::dispatch(new WebhookEventFire('user:register', $user));
     }
 
     private function mailToAdminAboutUserRegister(User $user)
