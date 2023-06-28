@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Helpers\SanitizeInput;
 use Illuminate\Support\Facades\URL;
 use Xgenious\XgApiClient\Facades\XgApiClient;
+use Illuminate\Support\Facades\DB;
 
 class GeneralSettingsController extends Controller
 {
