@@ -124,6 +124,11 @@ function get_attachment_image_by_id($id, $size = null, $default = false): array
                     $image_url = $path . '/thumb/thumb-' . $image_details->path;
                 }
                 break;
+            case "tiny":
+                if ($base_path . 'tiny/tiny-' . $image_details->path && !is_dir($base_path . 'tiny/tiny-' . $image_details->path)) {
+                    $image_url = $path . '/tiny/tiny-' . $image_details->path;
+                }
+                break;
             default:
                 if (is_numeric($id) && file_exists($base_path . $image_details->path) && !is_dir($base_path . $image_details->path)) {
                     $image_url = $path . '/' . $image_details->path;

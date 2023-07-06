@@ -158,7 +158,7 @@ class MediaUploaderController extends Controller
             $image_query->where(['user_type' => 1,'user_id' => \Auth::guard('web')->id()]);
         }
         $get_image_details = $image_query->where('id',$request->img_id)->first();
-        $this->deleteOldFile($get_image_details);
+        $this->deleteOldFile($get_image_details->path);
 
         $get_image_details->delete();
 
@@ -222,7 +222,6 @@ class MediaUploaderController extends Controller
         $request
     )
     {
-
         $image_dimension = getimagesize($image);
         $image_width = $image_dimension[0];
         $image_height = $image_dimension[1];
@@ -232,6 +231,7 @@ class MediaUploaderController extends Controller
         $image_grid = 'grid-'.$image_db ;
         $image_large = 'large-'. $image_db;
         $image_thumb = 'thumb-'. $image_db;
+        $image_tiny = 'tiny-'. $image_db;
 
         $resize_grid_image = Image::make($image)->resize(350, null,function ($constraint) {
             $constraint->aspectRatio();
@@ -240,6 +240,7 @@ class MediaUploaderController extends Controller
             $constraint->aspectRatio();
         });
         $resize_thumb_image = Image::make($image)->resize(150, 150);
+        $resize_tiny_image = Image::make($image)->resize(10, 10)->blur(20);
         $request->file->move($folder_path, $image_db);
 
         $imageData = [
@@ -265,12 +266,13 @@ class MediaUploaderController extends Controller
             $resize_thumb_image->save($folder_path .'thumb/'. $image_thumb);
             $resize_grid_image->save($folder_path .'grid/'. $image_grid);
             $resize_large_image->save($folder_path .'large/'. $image_large);
+            $resize_tiny_image->save($folder_path .'tiny/'. $image_tiny, 10);
         }
     }
 
     private function deleteOldFile($get_image_details) : void
     {
-        $file_type_list = ['','grid/grid-','large/large-','thumb/thumb-'];
+        $file_type_list = ['','grid/grid-','large/large-','thumb/thumb-','tiny/tiny-'];
         foreach ($file_type_list as $file_type){
             if ($this->check_file_exists($file_type.$get_image_details)){
                 unlink($this->getUploadBasePath($file_type.$get_image_details));

@@ -18,7 +18,7 @@
                 <div class="col-lg-12">
                     <div class="blog-details-wrapper">
                         <div class="single-blog-details">
-                            <div class="single-blog-details-thumb">
+                            <div class="single-blog-details-thumb blurred-img" style="background-image: url('{{get_attachment_image_by_id($blog_post->image, 'tiny')['img_url']}}')">
                                 {!! render_image_markup_by_attachment_id($blog_post->image, '', 'full', false) !!}
                             </div>
                             <div class="single-blog-details-content">
