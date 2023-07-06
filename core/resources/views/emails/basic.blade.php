@@ -218,7 +218,7 @@
         {!! $msg !!}
     </div>
     <footer>
-        {!! get_footer_copyright_text(\App\Facades\GlobalLanguage::default_slug()) !!}
+        {!! get_footer_copyright_text() !!}
     </footer>
 </div>
 
