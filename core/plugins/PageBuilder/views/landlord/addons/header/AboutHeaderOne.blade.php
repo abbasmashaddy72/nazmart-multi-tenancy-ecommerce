@@ -24,11 +24,8 @@
                 </div>
             </div>
             <div class="col-lg-10 mt-4">
-                <div class="about-thumb center-text">
-                    {!! render_image_markup_by_attachment_id($data['image']) !!}
-                </div>
+                {!! \App\Facades\ImageRenderFacade::getParent($data['image'], 'about-thumb center-text blurred-img')->getGrandChild(is_lazy: true)->render() !!}
             </div>
         </div>
-
     </div>
 </section>

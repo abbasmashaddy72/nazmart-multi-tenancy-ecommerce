@@ -240,7 +240,7 @@ class MediaUploaderController extends Controller
             $constraint->aspectRatio();
         });
         $resize_thumb_image = Image::make($image)->resize(150, 150);
-        $resize_tiny_image = Image::make($image)->resize(10, 10)->blur(20);
+        $resize_tiny_image = Image::make($image)->resize(15, 15)->blur(50);
         $request->file->move($folder_path, $image_db);
 
         $imageData = [
@@ -266,7 +266,13 @@ class MediaUploaderController extends Controller
             $resize_thumb_image->save($folder_path .'thumb/'. $image_thumb);
             $resize_grid_image->save($folder_path .'grid/'. $image_grid);
             $resize_large_image->save($folder_path .'large/'. $image_large);
-            $resize_tiny_image->save($folder_path .'tiny/'. $image_tiny, 10);
+
+            $tiny_path = $folder_path .'tiny';
+            if (!is_dir($tiny_path))
+            {
+                mkdir($tiny_path, 0777);
+            }
+            $resize_tiny_image->save($folder_path .'tiny/'. $image_tiny);
         }
     }
 
