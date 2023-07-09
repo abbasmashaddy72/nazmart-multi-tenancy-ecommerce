@@ -25,12 +25,12 @@ class LandlordAdminController extends Controller
 
     public function dashboard(){
         $total_admin= Admin::count();
-        
+
         $total_user = 0;
         try{
              $total_user= User::count();
         }catch(\Exception $e){
-            
+
         }
 
         $all_blogs = Blog::count();

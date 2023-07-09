@@ -2,6 +2,8 @@
 
 namespace Modules\SalesReport\Http\Services;
 
+use App\Enums\ProductTypeEnum;
+
 class SalesReport
 {
     public static function reports($orders)
@@ -29,7 +31,7 @@ class SalesReport
 
                 $products[$key][$index++] = [
                     'product_id' => $item->id,
-                    'product_type' => $item->options->type,
+                    'product_type' => $item->options->type ?? ProductTypeEnum::PHYSICAL,
                     'name' => $item->name,
                     'qty' => $item->qty,
                     'cost' => $product_cost,

@@ -124,6 +124,11 @@ function get_attachment_image_by_id($id, $size = null, $default = false): array
                     $image_url = $path . '/thumb/thumb-' . $image_details->path;
                 }
                 break;
+            case "tiny":
+                if ($base_path . 'tiny/tiny-' . $image_details->path && !is_dir($base_path . 'tiny/tiny-' . $image_details->path)) {
+                    $image_url = $path . '/tiny/tiny-' . $image_details->path;
+                }
+                break;
             default:
                 if (is_numeric($id) && file_exists($base_path . $image_details->path) && !is_dir($base_path . $image_details->path)) {
                     $image_url = $path . '/' . $image_details->path;
@@ -322,7 +327,7 @@ function render_image_markup_by_attachment_path($id, $alt, $path, $class = null,
     return $output;
 }
 
-function render_image_markup_by_attachment_id($id, $class = null, $size = 'full', $default = false): string
+function render_image_markup_by_attachment_id($id, $class = null, $size = 'full', $default = false, $is_lazy = false): string
 {
     if (empty($id) && !$default) return '';
     $output = '';
@@ -330,7 +335,8 @@ function render_image_markup_by_attachment_id($id, $class = null, $size = 'full'
     $image_details = get_attachment_image_by_id($id, $size, $default);
     if (!empty($image_details)) {
         $class_list = !empty($class) ? 'class="' . $class . '"' : '';
-        $output = '<img src="' . $image_details['img_url'] . '" ' . $class_list . ' alt="' . $image_details['img_alt'] . '"/>';
+        $lazy = $is_lazy ? 'loading="lazy"' : '';
+        $output = '<img src="' . $image_details['img_url'] . '" ' . $class_list . ' alt="' . $image_details['img_alt'] .'" '.$lazy.'/>';
     }
 
     return $output;
@@ -1851,4 +1857,10 @@ function esc_url($text)
 function to_product_details($slug, $id = null)
 {
     return route('tenant.shop.product.details', $slug);
+}
+
+function render_preloaded_image($image, $styles = '')
+{
+    $image = get_attachment_image_by_id($image, 'tiny')['img_url'];
+    return 'style="background-image: url('.$image.');'.$styles.'"';
 }

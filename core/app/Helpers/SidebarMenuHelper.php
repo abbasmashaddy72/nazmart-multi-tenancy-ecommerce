@@ -1847,12 +1847,6 @@ class SidebarMenuHelper
             'parent' => 'general-settings-menu-items',
             'permissions' => ['general-settings-seo-settings'],
         ]);
-        $menu_instance->add_menu_item('general-settings-payment-gateway-settings', [
-            'route' => 'tenant.admin.general.payment.settings',
-            'label' => __('Currency Settings'),
-            'parent' => 'general-settings-menu-items',
-            'permissions' => ['general-settings-payment-settings'],
-        ]);
         $menu_instance->add_menu_item('general-settings-third-party-script-settings', [
             'route' => 'tenant.admin.general.third.party.script.settings',
             'label' => __('Third Party Script'),
@@ -1941,120 +1935,27 @@ class SidebarMenuHelper
             'permissions' => ['paypal-payment-settings'],
             'icon' => 'mdi mdi-coin',
         ]);
-        $menu_instance->add_menu_item('paypal-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.paypal',
-            'label' => __('Paypal'),
+
+        $menu_instance->add_menu_item('general-settings-payment-gateway-settings', [
+            'route' => 'tenant.admin.general.payment.settings',
+            'label' => __('Currency Settings'),
             'parent' => 'payment-settings-menu-items',
-            'permissions' => ['paypal-payment-settings'],
+            'permissions' => ['currency-settings-payment-settings'],
         ]);
-        $menu_instance->add_menu_item('paytm-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.paytm',
-            'label' => __('Paytm'),
-            'parent' => 'payment-settings-menu-items',
-            'permissions' => ['paytm-payment-settings'],
-        ]);
-        $menu_instance->add_menu_item('stripe-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.stripe',
-            'label' => __('Stripe'),
-            'parent' => 'payment-settings-menu-items',
-            'permissions' => ['stripe-payment-settings'],
-        ]);
-        $menu_instance->add_menu_item('razorpay-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.razorpay',
-            'label' => __('Razorpay'),
-            'parent' => 'payment-settings-menu-items',
-            'permissions' => ['razorpay-payment-settings'],
-        ]);
-        $menu_instance->add_menu_item('paystack-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.paystack',
-            'label' => __('Paystack'),
-            'parent' => 'payment-settings-menu-items',
-            'permissions' => ['paystack-payment-settings'],
-        ]);
-        $menu_instance->add_menu_item('mollie-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.mollie',
-            'label' => __('Mollie'),
-            'parent' => 'payment-settings-menu-items',
-            'permissions' => ['mollie-payment-settings'],
-        ]);
-        $menu_instance->add_menu_item('midtrans-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.midtrans',
-            'label' => __('Midtrans'),
-            'parent' => 'payment-settings-menu-items',
-            'permissions' => ['midtrans-payment-settings'],
-        ]);
-        $menu_instance->add_menu_item('cashfree-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.cashfree',
-            'label' => __('Cashfree'),
-            'parent' => 'payment-settings-menu-items',
-            'permissions' => ['cashfree-payment-settings'],
-        ]);
-        $menu_instance->add_menu_item('instamojo-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.instamojo',
-            'label' => __('Instamojo'),
-            'parent' => 'payment-settings-menu-items',
-            'permissions' => ['instamojo-payment-settings'],
-        ]);
-        $menu_instance->add_menu_item('marcadopago-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.marcadopago',
-            'label' => __('Marcadopago'),
-            'parent' => 'payment-settings-menu-items',
-            'permissions' => ['marcadopago-payment-settings'],
-        ]);
-        $menu_instance->add_menu_item('zitopay-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.zitopay',
-            'label' => __('Zitopay'),
-            'parent' => 'payment-settings-menu-items',
-            'permissions' => ['zitopay-payment-settings'],
-        ]);
-        $menu_instance->add_menu_item('squareup-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.squareup',
-            'label' => __('Squareup'),
-            'parent' => 'payment-settings-menu-items',
-            'permissions' => ['squareup-payment-settings'],
-        ]);
-        $menu_instance->add_menu_item('cinetpay-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.cinetpay',
-            'label' => __('Cinetpay'),
-            'parent' => 'payment-settings-menu-items',
-            'permissions' => ['cinetpay-payment-settings'],
-        ]);
-        $menu_instance->add_menu_item('paytabs-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.paytabs',
-            'label' => __('Paytabs'),
-            'parent' => 'payment-settings-menu-items',
-            'permissions' => ['paytabs-payment-settings'],
-        ]);
-        $menu_instance->add_menu_item('billplz-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.billplz',
-            'label' => __('Billplz'),
-            'parent' => 'payment-settings-menu-items',
-            'permissions' => ['billplz-payment-settings'],
-        ]);
-        $menu_instance->add_menu_item('toyyibpay-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.toyyibpay',
-            'label' => __('Toyyibpay'),
-            'parent' => 'payment-settings-menu-items',
-            'permissions' => ['toyyibpay-payment-settings'],
-        ]);
-        $menu_instance->add_menu_item('flutterwave-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.flutterwave',
-            'label' => __('Flutterwave'),
-            'parent' => 'payment-settings-menu-items',
-            'permissions' => ['flutterwave-payment-settings'],
-        ]);
-        $menu_instance->add_menu_item('payfast-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.payfast',
-            'label' => __('Payfast'),
-            'parent' => 'payment-settings-menu-items',
-            'permissions' => ['payfast-payment-settings'],
-        ]);
-        $menu_instance->add_menu_item('manual_payment-settings-page-settings', [
-            'route' => 'tenant.admin.payment.settings.manual_payment',
-            'label' => __('Manual Payment'),
-            'parent' => 'payment-settings-menu-items',
-            'permissions' => ['manual_payment-payment-settings'],
-        ]);
+
+        $payment_gateway_list = tenant_plan_payment_gateway_list();
+        foreach ($payment_gateway_list as $name)
+        {
+            try {
+                $menu_instance->add_menu_item($name.'-settings-page-settings', [
+                    'route' => 'tenant.admin.payment.settings.'.$name,
+                    'label' => __(ucwords(str_replace('_', ' ', $name))),
+                    'parent' => 'payment-settings-menu-items',
+                    'permissions' => [$name.'-payment-settings'],
+                ]);
+            } catch (\Exception $exception) {}
+        }
+
         $menu_instance->add_menu_item('cod-settings-page-settings', [
             'route' => 'tenant.admin.payment.settings.cod',
             'label' => __('Cash On Delivery'),

@@ -2,27 +2,20 @@
 
 namespace App\Http\Controllers\Landlord\Admin;
 
-use App\Facades\GlobalLanguage;
 use App\Helpers\FlashMsg;
-use App\Helpers\ImageDataSeedingHelper;
-use App\Helpers\LanguageHelper;
 use App\Helpers\ResponseMessage;
 use App\Http\Controllers\Controller;
 use App\Mail\BasicMail;
 use App\Models\Page;
 use App\Models\PaymentGateway;
-use App\Models\StaticOption;
-use App\Models\Tenant;
 use Database\Seeders\ThemeModifySeeder;
 use Database\Seeders\ThemeModifySeederTenant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use App\Helpers\SanitizeInput;
-use Illuminate\Support\Facades\URL;
 use Xgenious\XgApiClient\Facades\XgApiClient;
+use Illuminate\Support\Facades\DB;
 
 class GeneralSettingsController extends Controller
 {

@@ -242,3 +242,25 @@ body > .alert.alert-warning {
 .modal-header .btn-close {
     margin: 0px 0px auto;
 }
+.sidebar .nav {
+    padding-right: 0;
+}
+.main-panel {
+    margin-left: 0;
+    margin-right: auto;
+}
+.sidebar-icon-only .sidebar .nav .nav-item.hover-open .sub-menu .nav-link .menu-title {
+    left: auto;
+    right: 10px;
+}
+@media (min-width: 992px) {
+    .sidebar-icon-only .sidebar .nav .nav-item.hover-open .collapse, .sidebar-icon-only .sidebar .nav .nav-item.hover-open .collapsing {
+        left: auto;
+        right: 70px;
+        top: 0;
+    }
+    .sidebar-icon-only .sidebar .nav.sub-menu {
+        padding: 0 1.5rem 0 0;
+    }
+
+}

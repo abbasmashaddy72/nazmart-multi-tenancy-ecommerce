@@ -5,9 +5,9 @@
                 @forelse($data['blogs'] ?? [] as $key=> $blog)
                     <div class="col-lg-4 col-md-6 mt-4">
                         <div class="single-blog">
-                            <div class="single-blog-thumb">
+                            <div class="single-blog-thumb blurred-img" {!! render_preloaded_image($blog->image) !!}>
                                 <a href="{{route('landlord.frontend.blog.single',$blog['slug'])}}">
-                                    {!! render_image_markup_by_attachment_id($blog->image ?? '', '', 'full', false) !!}
+                                    {!! render_image_markup_by_attachment_id($blog->image ?? '', '', 'full', false, is_lazy: true) !!}
                                 </a>
                             </div>
                             <div class="single-blog-contents mt-4">

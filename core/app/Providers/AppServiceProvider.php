@@ -6,6 +6,7 @@ use App\Helpers\LanguageHelper;
 use App\Helpers\ModuleMetaData;
 use App\Helpers\SidebarMenuHelper;
 use App\Helpers\ThemeMetaData;
+use App\Http\Services\RenderImageMarkupService;
 use App\Models\Themes;
 use App\Observers\WalletBalanceObserver;
 use Illuminate\Pagination\Paginator;
@@ -37,6 +38,9 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->singleton('ModuleDataFacade', function (){
             return new ModuleMetaData();
+        });
+        $this->app->singleton('ImageRenderFacade', function (){
+            return new RenderImageMarkupService();
         });
     }
 

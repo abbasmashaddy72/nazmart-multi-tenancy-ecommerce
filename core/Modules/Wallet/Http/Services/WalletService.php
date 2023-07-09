@@ -226,7 +226,7 @@ class WalletService
             $i=1;
             for ($key=0; $key<count(current($completed_packages)); $key++)
             {
-                $message .= '<span>'.$i++.'</span>. <span>'.$completed_packages['tenant_id'][$key].'</span> - <span>'.$completed_packages['price_plan_title'][$key].'</span> - <span>'.$completed_packages['price_plan_price'][$key].site_currency_symbol().'</span></br>';
+                $message .= '<span>'.$i++.'</span>. <span>'.$completed_packages['tenant_id'][$key].'</span> - <span>'.$completed_packages['price_plan_title'][$key].'</span> - <span>'.amount_with_currency_symbol($completed_packages['price_plan_price'][$key] ?? 000).'</span></br>';
             }
             $message .= '<br><p>'.__('To check it out please visit the website').'</p>';
 

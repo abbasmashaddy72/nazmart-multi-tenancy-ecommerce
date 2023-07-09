@@ -18,8 +18,8 @@
                 <div class="col-lg-12">
                     <div class="blog-details-wrapper">
                         <div class="single-blog-details">
-                            <div class="single-blog-details-thumb">
-                                {!! render_image_markup_by_attachment_id($blog_post->image, '', 'full', false) !!}
+                            <div class="single-blog-details-thumb blurred-img" {!! render_preloaded_image($blog_post->image) !!}>
+                                {!! render_image_markup_by_attachment_id($blog_post->image, '', 'full', false, is_lazy: true) !!}
                             </div>
                             <div class="single-blog-details-content">
                                 <h2 class="single-blog-details-content-title"> {{$blog_post->title}} </h2>
