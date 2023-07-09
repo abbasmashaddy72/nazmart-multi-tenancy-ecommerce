@@ -177,6 +177,7 @@ class OrderManageController extends Controller
         $payment_logs->payment_status = 'complete';
         $payment_logs->save();
 
+
         $msg = __('Payment status changed successfully..!');
         if ($payment_logs->payment_status == 'complete') {
             (new PaymentGateways())->tenant_create_event_with_credential_mail($payment_logs->id);

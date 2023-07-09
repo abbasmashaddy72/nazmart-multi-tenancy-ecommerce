@@ -7,9 +7,7 @@
         <div class="row align-items-center justify-content-center mt-4">
             <div class="col-xl-5 mt-4">
                 <div class="question-thumb-wrapper">
-                    <div class="thumb center-text">
-                        {!! render_image_markup_by_attachment_id($data['left_image']) !!}
-                    </div>
+                    {!! \App\Facades\ImageRenderFacade::getParent($data['left_image'] ?? '', 'thumb center-text')->getGrandChild(is_lazy: true)->render() !!}
                 </div>
             </div>
             <div class="col-xl-7 col-lg-9 mt-4">

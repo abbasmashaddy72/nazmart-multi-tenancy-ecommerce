@@ -1028,7 +1028,7 @@
 
 
 
-/* custom */
+/* custom image preload */
 .blurred-img {
     background-repeat: no-repeat;
     background-size: cover;
@@ -1060,6 +1060,9 @@
 .blurred-img.loaded::before {
     animation: none;
     content: none;
+}
+.blurred-img.loaded{
+    background-image: none !important;
 }
 .blurred-img.loaded img {
     opacity: 1;

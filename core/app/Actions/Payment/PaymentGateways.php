@@ -643,7 +643,7 @@ class PaymentGateways
         $tenant = Tenant::find($log->tenant_id);
 
         if (!empty($log) && $log->payment_status == 'complete' && is_null($tenant)) {
-            event(new TenantRegisterEvent($user, $log->tenant_id));
+            event(new TenantRegisterEvent($user, $log->tenant_id, $log->theme_slug));
             try {
                 $raw_pass = get_static_option('tenant_admin_default_password') ?? '12345678';
                 $credential_password = $raw_pass;

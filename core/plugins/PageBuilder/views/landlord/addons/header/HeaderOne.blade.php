@@ -57,9 +57,8 @@
                                 {!! render_image_markup_by_attachment_id($data['right_floating_image_2']) !!}
                                 {!! render_image_markup_by_attachment_id($data['right_floating_image_3']) !!}
                             </div>
-                            <div class="banner-thumb">
-                                {!! render_image_markup_by_attachment_id($data['right_foreground_image']) !!}
-                            </div>
+
+                            {!! \App\Facades\ImageRenderFacade::getParent($data['right_foreground_image'], 'banner-thumb')->getGrandChild(is_lazy: true)->render() !!}
                         </div>
                     </div>
                 </div>
