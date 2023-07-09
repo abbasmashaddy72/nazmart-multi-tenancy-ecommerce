@@ -7,10 +7,14 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @see RenderImageMarkupService
- * @method getParent($image, $class_list)
  * */
 class ImageRenderFacade extends Facade
 {
+    /**
+     * Get the registered name of the component.
+     *
+     * @return string
+     */
    public static function getFacadeAccessor(){
        return 'ImageRenderFacade';
    }

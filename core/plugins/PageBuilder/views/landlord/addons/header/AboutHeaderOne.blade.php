@@ -24,7 +24,11 @@
                 </div>
             </div>
             <div class="col-lg-10 mt-4">
-                {!! \App\Facades\ImageRenderFacade::getParent($data['image'], 'about-thumb center-text blurred-img')->getGrandChild(is_lazy: true)->render() !!}
+                {!!
+                    \App\Facades\ImageRenderFacade::getParent($data['image'], 'about-thumb center-text')
+                    ->getGrandChild(is_lazy: true)
+                    ->render()
+                !!}
             </div>
         </div>
     </div>

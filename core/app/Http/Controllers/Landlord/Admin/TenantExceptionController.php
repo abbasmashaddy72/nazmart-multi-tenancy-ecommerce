@@ -117,7 +117,7 @@ class TenantExceptionController extends Controller
         }
 
         try{
-            $tenant->domains()->create(['domain' => $tenant->getTenantKey().'.'.getenv('CENTRAL_DOMAIN')]);
+            $tenant->domains()->create(['domain' => $tenant->getTenantKey().'.'.env('CENTRAL_DOMAIN')]);
         }catch(\Exception $e){
             $message = $e->getMessage();
             if(!str_contains($message,'occupied by another tenant')){

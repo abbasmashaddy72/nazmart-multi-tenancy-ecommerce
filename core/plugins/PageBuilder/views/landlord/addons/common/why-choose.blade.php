@@ -17,9 +17,7 @@
         <div class="row align-items-center justify-content-center">
             <div class="col-xl-5 mt-4">
                 <div class="choose-thumb-content">
-                    <div class="thumb">
-                        {!! render_image_markup_by_attachment_id($data['section_image'] ?? '', '', 'full', false) !!}
-                    </div>
+                    {!! \App\Facades\ImageRenderFacade::getParent($data['section_image'] ?? '', 'thumb')->getGrandChild(is_lazy: true)->render() !!}
                 </div>
             </div>
             <div class="col-xl-7 col-lg-9 mt-4">

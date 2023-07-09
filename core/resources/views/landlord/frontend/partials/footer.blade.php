@@ -57,12 +57,14 @@
         if (img.complete)
         {
             e.classList.add("loaded")
+            // e.setAttribute("style", "")
         }
         else
         {
             // if the img.complete is not true then wait until image loaded
             img.addEventListener("load", function () {
                 e.classList.add("loaded")
+                // e.setAttribute("style", "")
             });
         }
     });

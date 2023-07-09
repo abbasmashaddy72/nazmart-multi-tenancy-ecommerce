@@ -26,21 +26,21 @@
                 <div class="global-slick-init slider-inner-margin dot-style-one" data-rtl="{{$lang_rtl_con}}" data-infinite="true" data-arrows="false" data-dots="true" data-slidesToShow="3" data-swipeToSlide="true" data-autoplay="true" data-autoplaySpeed="2500" data-responsive='[{"breakpoint": 1600,"settings": {"slidesToShow": 3}},{"breakpoint": 1200,"settings": {"slidesToShow": 2}},{"breakpoint": 992,"settings": {"slidesToShow": 2}},{"breakpoint": 768, "settings": {"slidesToShow": 1}},{"breakpoint": 576, "settings": {"slidesToShow": 1}}]'>
                     @foreach($data['blogs'] ?? [] as $key=> $blog)
                         <div class="slick-slider-item">
-                        <div class="single-blog">
-                            <div class="single-blog-thumb">
-                                {!! render_image_markup_by_attachment_id($blog->image ?? '', '', 'full', false) !!}
-                            </div>
-                            <div class="single-blog-contents mt-4">
-                                <h2 class="single-blog-contents-title">
-                                    <a href="{{route('landlord.frontend.blog.single',$blog['slug'])}}"> {{$blog->title}} </a>
-                                </h2>
-                                <div class="single-blog-contents-bottom mt-4">
-                                    <a href="{{route('landlord.frontend.blog.single',$blog['slug'])}}" class="reading-btn"> {{__('Keep Reading')}} <i class="las la-arrow-right"></i> </a>
-                                    <span class="min-reading"> {{$blog->created_at->format('d M Y')}} </span>
+                            <div class="single-blog">
+                                <div class="single-blog-thumb">
+                                    {!! render_image_markup_by_attachment_id($blog->image ?? '', '', 'full', false) !!}
+                                </div>
+                                <div class="single-blog-contents mt-4">
+                                    <h2 class="single-blog-contents-title">
+                                        <a href="{{route('landlord.frontend.blog.single',$blog['slug'])}}"> {{$blog->title}} </a>
+                                    </h2>
+                                    <div class="single-blog-contents-bottom mt-4">
+                                        <a href="{{route('landlord.frontend.blog.single',$blog['slug'])}}" class="reading-btn"> {{__('Keep Reading')}} <i class="las la-arrow-right"></i> </a>
+                                        <span class="min-reading"> {{$blog->created_at->format('d M Y')}} </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                     @endforeach
                 </div>
             </div>
