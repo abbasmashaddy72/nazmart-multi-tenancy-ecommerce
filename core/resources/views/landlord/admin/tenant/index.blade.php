@@ -73,7 +73,6 @@
                                        {{__('Send Mail')}}
                                    </x-modal.button>
 
-
                                    @if($user->email_verified < 1)
                                        <div class="verify d-flex gap-1">
                                            <form action="{{route(route_prefix().'admin.tenant.resend.verify.mail')}}" method="post" enctype="multipart/form-data">
@@ -103,7 +102,7 @@
     </div>
 
 
-{{--Assign Subscription Modal--}}
+    {{--Assign Subscription Modal--}}
     <div class="modal fade" id="user_add_subscription" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -126,7 +125,7 @@
                         </div>
 
                         <div class="form-group custom_subdomain_wrapper mt-3">
-                            <label for="custom-subdomain">Add new subdomain</label>
+                            <label for="custom-subdomain">{{__('Add new subdomain')}}</label>
                             <input class="form--control custom_subdomain" id="custom-subdomain" type="text" autocomplete="off" value="{{old('subdomain')}}"
                                    placeholder="{{__('Subdomain')}}" style="border:0;border-bottom: 1px solid #595959;width: 100%">
                             <div id="subdomain-wrap"></div>
@@ -280,7 +279,6 @@
                 let form = $('.user_add_subscription_form');
                  $('#subs_pack_id').val(el.val());
             });
-
 
             let custom_subdomain_wrapper = $('.custom_subdomain_wrapper');
             custom_subdomain_wrapper.hide();

@@ -13,6 +13,25 @@
             font-size: 15px;
         }
     </style>
+    <style>
+        .payment_getway_image ul {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .payment_getway_image ul li {
+            width: calc(100% / 5 - 8px);
+            transition: 0.3s;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+        .payment_getway_image ul li:is(:hover, .selected){
+            border: 2px solid red;
+        }
+    </style>
+
 @endsection
 
 @section('section')
@@ -22,11 +41,10 @@
     <div class="row g-4">
         <div class="col-md-12">
             <div class="btn-wrapper mb-3 mt-2" style="float: right">
-                @php
-                    $price_page = get_page_slug(get_static_option('pricing_plan'));
-                @endphp
-                <a href="{{url($price_page)}}"
-                   class="cmn-btn cmn-btn-bg-1 cmn-btn-small mx-2">{{__('Create a Website')}}</a>
+                <a href="javascript:void(0)" class="cmn-btn cmn-btn-bg-1 cmn-btn-small mx-2"
+                   data-bs-toggle="modal"
+                   data-bs-target="#user_add_subscription"
+                >{{__('Create a Website')}}</a>
             </div>
         </div>
         <div class="col-xl-6 col-md-6 orders-child">
@@ -122,11 +140,147 @@
                 </div>
             </div>
         </div>
+    </div>
 
+    <!-- Assign Subscription Modal -->
+    <div class="modal fade" id="user_add_subscription" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{__('Assign Subscription')}}</h5>
+                    <button type="button" class="close rounded" data-bs-dismiss="modal"><span>×</span></button>
+                </div>
+
+                <form action="{{route('landlord.admin.tenant.assign.subscription')}}" id="user_add_subscription_form" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" name="subs_user_id" id="subs_user_id" value="{{$user->id}}">
+                        <input type="hidden" name="subs_pack_id" id="subs_pack_id">
+
+                        <div class="form-group">
+                            <label for="subdomain">{{__('Subdomain')}}</label>
+                            <select class="form-select subdomain" id="subdomain" name="subdomain">
+                                <option value="" selected disabled>{{__('Select a subdomain')}}</option>
+                                    @foreach($user->tenant_details ?? [] as $tenant)
+                                        <option value="{{$tenant->id}}">{{optional($tenant->domain)->domain}}</option>
+                                    @endforeach
+                                <option value="custom_domain__dd">{{__('Add new subdomain')}}</option>;
+                            </select>
+                        </div>
+
+                        <div class="form-group custom_subdomain_wrapper mt-3">
+                            <label for="custom-subdomain">{{__('Add new subdomain')}}</label>
+                            <input class="form--control custom_subdomain" id="custom-subdomain" type="text" autocomplete="off" value="{{old('subdomain')}}"
+                                   placeholder="{{__('Subdomain')}}" style="border:0;border-bottom: 1px solid #595959;width: 100%">
+                            <div id="subdomain-wrap"></div>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            @php
+                                $themes = getAllThemeSlug();
+                            @endphp
+                            <label for="custom-theme">{{__('Add Theme')}}</label>
+                            <select class="form-select text-capitalize" name="custom_theme" id="custom-theme">
+                                @foreach($themes as $theme)
+                                    <option value="{{$theme}}">{{$theme}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label for="">{{__('Select A Package')}}</label>
+                            <select class="form-control package_id_selector" name="package">
+                                <option value="">{{__('Select Package')}}</option>
+                                @foreach(\App\Models\PricePlan::all() as $price)
+                                    <option value="{{$price->id}}" data-id="{{$price->id}}">
+                                        {{$price->title}} {{ '('.amount_with_currency_symbol($price->price).')' }} - {{\App\Enums\PricePlanTypEnums::getText($price->type)}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            {!! \App\Helpers\PaymentGatewayRenderHelper::renderPaymentGatewayForForm() !!}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('Close')}}</button>
+                        <button type="submit" class="btn btn-primary">{{__('Submit')}}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 @endsection
 
+@section('scripts')
+    <x-custom-js.landloard-unique-subdomain-check :name="'custom_subdomain'"/>
 
+    <script>
+        let theme_selected_first = false; // if theme selected first then after domain selection do not change theme again
 
+        $(document).on('change','.package_id_selector',function (){
+            let el = $(this);
+            let form = $('.user_add_subscription_form');
+            $('#subs_pack_id').val(el.val());
+        });
 
+        let custom_subdomain_wrapper = $('.custom_subdomain_wrapper');
+        custom_subdomain_wrapper.hide();
+        $(document).on('change', '#subdomain', function (e){
+            let el = $(this);
+            let subdomain_type = el.val();
 
+            if(subdomain_type === 'custom_domain__dd')
+            {
+                custom_subdomain_wrapper.slideDown();
+                custom_subdomain_wrapper.find('#custom-subdomain').attr('name', 'custom_subdomain');
+            } else {
+                custom_subdomain_wrapper.slideUp();
+                custom_subdomain_wrapper.removeAttr('#custom-subdomain').attr('name', 'custom_subdomain');
+            }
+        });
+
+        $(document).on('change', '#subdomain', function (){
+            let el = $(this).parent().parent().find(".form-group #custom-theme");
+            let subdomain = $(this).val();
+
+            if(!theme_selected_first)
+            {
+                $.ajax({
+                    url: '{{route('landlord.admin.tenant.check.subdomain.theme')}}',
+                    type: 'POST',
+                    data: {
+                        _token : '{{csrf_token()}}',
+                        subdomain : subdomain
+                    },
+                    beforeSend: function () {
+                        el.find('option').attr('selected', false);
+                    },
+                    success: function (res) {
+                        if(res.theme_slug !== '')
+                        {
+                            el.find(`option[value="${res.theme_slug}"]`).attr('selected', true);
+                        }
+                    }
+                });
+            }
+        });
+
+        $(document).on('change', '#custom-theme', function () {
+            theme_selected_first = true;
+        });
+
+        $(document).on('submit', '#user_add_subscription_form', function () {
+            $(this).find('button[type=submit]').attr('disabled', true);
+        });
+
+        const each_payment_gateway = '.payment_getway_image ul li';
+        $(document).on('click', each_payment_gateway, function () {
+            let el = $(this);
+
+            $(each_payment_gateway).removeClass('selected');
+            el.addClass('selected');
+        });
+    </script>
+@endsection
