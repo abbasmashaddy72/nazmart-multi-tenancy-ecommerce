@@ -11,6 +11,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Benchmark;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Modules\Attributes\Entities\Brand;
@@ -54,9 +55,10 @@ class ProductController extends Controller
     public function index(Request $request): Renderable
     {
         $products = AdminProductServices::productSearch($request);
+        $trash = Product::onlyTrashed()->count();
         $statuses = Status::all();
 
-        return view('product::index',compact("products","statuses"));
+        return view('product::index',compact("products","statuses", "trash"));
     }
 
     /**

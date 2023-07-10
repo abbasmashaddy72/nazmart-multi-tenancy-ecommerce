@@ -38,21 +38,21 @@
                                 </li>
 
                                 <li class="list @if(request()->routeIs('tenant.user.dashboard.download.list')) active @endif">
-                                    <a href="{{route('tenant.user.dashboard.download.list')}}"> <i class="las la-tasks"></i> {{__('Downloads')}} </a>
+                                    <a href="{{route('tenant.user.dashboard.download.list')}}"> <i class="las la-download"></i> {{__('Downloads')}} </a>
                                 </li>
 
                                 <li class="list @if(request()->routeIs('tenant.user.dashboard.package.order.refund')) active @endif">
-                                    <a href="{{route('tenant.user.dashboard.package.order.refund')}}"> <i class="las la-tasks"></i> {{__('Refund Products')}} </a>
+                                    <a href="{{route('tenant.user.dashboard.package.order.refund')}}"> <i class="las la-undo-alt"></i> {{__('Refund Products')}} </a>
                                 </li>
 
                                 <li class="list @if(request()->routeIs('tenant.user.home.support.tickets') || request()->routeIs('tenant.frontend.support.ticket')) active @endif">
-                                    <a href="{{route('tenant.user.home.support.tickets')}}"> <i class="las la-tasks"></i> {{__('Support Tickets')}} </a>
+                                    <a href="{{route('tenant.user.home.support.tickets')}}"> <i class="las la-ticket-alt"></i> {{__('Support Tickets')}} </a>
                                 </li>
                                 <li class="list @if(request()->routeIs('tenant.user.home.manage.account')) active @endif">
-                                    <a href="{{route('tenant.user.home.manage.account')}}"> <i class="las la-tasks"></i> {{__('Manage My Account')}} </a>
+                                    <a href="{{route('tenant.user.home.manage.account')}}"> <i class="las la-user"></i> {{__('Manage My Account')}} </a>
                                 </li>
                                 <li class="list @if(request()->routeIs('tenant.user.home.change.password')) active @endif ">
-                                    <a href="{{route('tenant.user.home.change.password')}}"> <i class="las la-tasks"></i> {{__('Change Password')}} </a>
+                                    <a href="{{route('tenant.user.home.change.password')}}"> <i class="las la-lock"></i> {{__('Change Password')}} </a>
                                 </li>
 
                                 <li class="list">

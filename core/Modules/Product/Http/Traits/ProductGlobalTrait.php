@@ -239,7 +239,7 @@ trait ProductGlobalTrait {
     private function childCategoryData($data, $id): array
     {
         $cl_category = [];
-        foreach ($data["child_category"] as $item) {
+        foreach ($data["child_category"] ?? [] as $item) {
             $cl_category[] = ["child_category_id" => $item, "product_id" => $id];
         }
 

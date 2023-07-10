@@ -138,7 +138,7 @@
                                 </select>
                             </div>
                             <div class="btn-wrapper-trash">
-                                <a class="btn btn-danger btn-sm" href="{{route('tenant.admin.product.trash.all')}}">{{__('Trash')}}</a>
+                                <a class="btn btn-danger btn-sm" href="{{route('tenant.admin.product.trash.all')}}">{{__('Trash')}} {{$trash ? "({$trash})" : ""}}</a>
                             </div>
                             <a class="btn btn-info btn-sm" href="{{route('tenant.admin.product.create')}}">{{__('Add New Product')}}</a>
                         </div>
