@@ -142,5 +142,6 @@
     @if(file_exists($dynamic_style))
         <script src="{{asset($dynamic_style)}}"></script>
     @endif
+    {{--    hook from plugin--}}
 </body>
 </html>

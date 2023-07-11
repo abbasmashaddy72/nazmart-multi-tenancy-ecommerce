@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Landlord\Frontend;
 
+use App\Enums\PricePlanTypEnums;
 use App\Events\SupportMessage;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ResponseMessage;
@@ -19,6 +20,7 @@ use App\Models\SupportTicketMessage;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -397,5 +399,55 @@ class UserDashboardController extends Controller
         );
 
         return response()->success(ResponseMessage::SettingsSaved(__('Custom domain change request sent successfully..!')));
+    }
+
+    public function package_check(Request $request)
+    {
+        $validated = $request->validate([
+            'package_id' => 'required|integer|exists:price_plans,id'
+        ]);
+
+        $price_plan = PricePlan::findOrFail($validated['package_id']);
+        $price = $price_plan->price;
+        $type = PricePlanTypEnums::getText($price_plan->type);
+        $validity = $this->getValidity($price_plan)['package_expire_date'] ?? __('Lifetime');
+
+        $markup = '';
+        $plan_themes = $price_plan->plan_themes;
+        foreach ($plan_themes ?? [] as $theme)
+        {
+            $markup .= "<option value=".$theme->theme_slug.">".$theme->theme_slug."</option>";
+        }
+
+        return response()->json([
+            'price' => $price,
+            'type' => $type,
+            'validity' => $validity,
+            'theme_list' => $markup
+        ]);
+    }
+
+    private function getValidity($package)
+    {
+        $package_start_date = '';
+        $package_expire_date =  '';
+        if(!empty($package)){
+            if($package->type == 0){ //monthly
+                $package_start_date = Carbon::now()->format('d-m-Y h:i:s');
+                $package_expire_date = Carbon::now()->addMonth(1)->format('d-m-Y h:i:s');
+
+            }elseif ($package->type == 1){ //yearly
+                $package_start_date = Carbon::now()->format('d-m-Y h:i:s');
+                $package_expire_date = Carbon::now()->addYear(1)->format('d-m-Y h:i:s');
+            }else{ //lifetime
+                $package_start_date = Carbon::now()->format('d-m-Y h:i:s');
+                $package_expire_date = null;
+            }
+        }
+
+        return [
+            'package_start_date' => $package_start_date,
+            'package_expire_date' => $package_expire_date
+        ];
     }
 }

@@ -19,16 +19,55 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 10px;
+            align-items: stretch;
         }
-
         .payment_getway_image ul li {
             width: calc(100% / 5 - 8px);
             transition: 0.3s;
             border: 2px solid transparent;
             cursor: pointer;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            border-color: #ddd;
+            overflow: hidden;
+            height: 50px;
         }
         .payment_getway_image ul li:is(:hover, .selected){
             border: 2px solid red;
+        }
+    </style>
+
+    <style>
+        .text-center .confirm-details--icon {
+            margin-inline: auto;
+        }
+        .confirm-details--icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            background-color: var(--main-color-three);
+            color: #fff;
+            font-size: 24px;
+        }
+        .confirm-details--title {
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 1.2;
+            color: var(--heading-color);
+        }
+        .confirm-details--para {
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 24px;
+            color: var(--paragraph-color);
+            text-align: left;
+        }
+        .confirm-details--para span:first-child{
+            font-weight: 800;
         }
     </style>
 
@@ -44,7 +83,7 @@
                 <a href="javascript:void(0)" class="cmn-btn cmn-btn-bg-1 cmn-btn-small mx-2"
                    data-bs-toggle="modal"
                    data-bs-target="#user_add_subscription"
-                >{{__('Create a Website')}}</a>
+                >{{__('Create Shop')}}</a>
             </div>
         </div>
         <div class="col-xl-6 col-md-6 orders-child">
@@ -147,12 +186,13 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{__('Assign Subscription')}}</h5>
+                    <h5 class="modal-title">{{__('Create Shop')}}</h5>
                     <button type="button" class="close rounded" data-bs-dismiss="modal"><span>×</span></button>
                 </div>
 
                 <form action="{{route('landlord.admin.tenant.assign.subscription')}}" id="user_add_subscription_form" method="post" enctype="multipart/form-data">
                     @csrf
+
                     <div class="modal-body">
                         <input type="hidden" name="subs_user_id" id="subs_user_id" value="{{$user->id}}">
                         <input type="hidden" name="subs_pack_id" id="subs_pack_id">
@@ -162,7 +202,7 @@
                             <select class="form-select subdomain" id="subdomain" name="subdomain">
                                 <option value="" selected disabled>{{__('Select a subdomain')}}</option>
                                     @foreach($user->tenant_details ?? [] as $tenant)
-                                        <option value="{{$tenant->id}}">{{optional($tenant->domain)->domain}}</option>
+                                        <option value="{{$tenant->id}}" {{$tenant->payment_log->package->type == \App\Enums\PricePlanTypEnums::LIFETIME ? 'selected' : ''}}>{{optional($tenant->domain)->domain}}</option>
                                     @endforeach
                                 <option value="custom_domain__dd">{{__('Add new subdomain')}}</option>;
                             </select>
@@ -176,6 +216,18 @@
                         </div>
 
                         <div class="form-group mt-3">
+                            <label for="">{{__('Select A Package')}}</label>
+                            <select class="form-control package_id_selector" name="package">
+                                <option value="">{{__('Select Package')}}</option>
+                                @foreach(\App\Models\PricePlan::all() as $price)
+                                    <option value="{{$price->id}}" data-id="{{$price->id}}" data-title="{{$price->title}}">
+                                        {{$price->title}} {{ '('.amount_with_currency_symbol($price->price).')' }} - {{\App\Enums\PricePlanTypEnums::getText($price->type)}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group mt-3" style="display: none">
                             @php
                                 $themes = getAllThemeSlug();
                             @endphp
@@ -188,26 +240,83 @@
                         </div>
 
                         <div class="form-group mt-3">
-                            <label for="">{{__('Select A Package')}}</label>
-                            <select class="form-control package_id_selector" name="package">
-                                <option value="">{{__('Select Package')}}</option>
-                                @foreach(\App\Models\PricePlan::all() as $price)
-                                    <option value="{{$price->id}}" data-id="{{$price->id}}">
-                                        {{$price->title}} {{ '('.amount_with_currency_symbol($price->price).')' }} - {{\App\Enums\PricePlanTypEnums::getText($price->type)}}
-                                    </option>
-                                @endforeach
-                            </select>
+                            {!! \App\Helpers\PaymentGatewayRenderHelper::renderPaymentGatewayForForm() !!}
                         </div>
 
-                        <div class="form-group mt-3">
-                            {!! \App\Helpers\PaymentGatewayRenderHelper::renderPaymentGatewayForForm() !!}
+                        <div class="form-group single-input d-none manual_transaction_id mt-4">
+                            @if(!empty($payment_gateways))
+                                <p class="alert alert-info ">{{json_decode($payment_gateways->credentials)->description ?? ''}}</p>
+                            @endif
+
+                            <input type="text" name="trasaction_id"
+                                   class="form-control form--control mt-2"
+                                   placeholder="{{__('Transaction ID')}}">
+
+                            <input type="file" name="trasaction_attachment"
+                                   class="form-control form--control mt-2"
+                                   placeholder="{{__('Transaction Attachment')}}" accept="image/*">
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('Close')}}</button>
-                        <button type="submit" class="btn btn-primary">{{__('Submit')}}</button>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#final_result">{{__('Submit')}}</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="final_result" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{__('Confirm Details')}}</h5>
+                    <button type="button" class="close rounded" data-bs-dismiss="modal"><span>×</span></button>
+                </div>
+
+                    <div class="modal-body">
+                        <div class="confirm-details text-center">
+                            <div class="confirm-details--icon"><i class="las la-check"></i></div>
+                            <h4 class="confirm-details--title mt-3">{{__('New Purchase')}}</h4>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <p class="confirm-details--para mt-3">
+                                        <span>Shop Name:</span>
+                                        <span class="shop_name">Null</span>
+                                    </p>
+                                    <p class="confirm-details--para mt-3">
+                                        <span>Package Name:</span>
+                                        <span class="package_name">Null</span>
+                                    </p>
+                                    <p class="confirm-details--para mt-3">
+                                        <span>Theme:</span>
+                                        <span class="theme"></span>
+                                    </p>
+                                </div>
+
+                                <div class="col-6">
+                                    <p class="confirm-details--para mt-3">
+                                        <span>Price:</span>
+                                        <span class="price"></span>
+                                    </p>
+                                    <p class="confirm-details--para mt-3">
+                                        <span>Validity:</span>
+                                        <span class="validity"></span>
+                                    </p>
+                                    <p class="confirm-details--para mt-3">
+                                        <span>Payment Gateway:</span>
+                                        <span class="payment_gateway"></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('Close')}}</button>
+                        <button type="submit" class="btn btn-primary">{{__('Submit')}}</button>
+                    </div>
             </div>
         </div>
     </div>
@@ -217,6 +326,7 @@
     <x-custom-js.landloard-unique-subdomain-check :name="'custom_subdomain'"/>
 
     <script>
+        const final_detail = {};
         let theme_selected_first = false; // if theme selected first then after domain selection do not change theme again
 
         $(document).on('change','.package_id_selector',function (){
@@ -238,7 +348,12 @@
             } else {
                 custom_subdomain_wrapper.slideUp();
                 custom_subdomain_wrapper.removeAttr('#custom-subdomain').attr('name', 'custom_subdomain');
+                final_detail.subdomain = $('#subdomain').val();
             }
+        });
+
+        $(document).on('change','#custom-subdomain',function () {
+            final_detail.subdomain = $(this).val();
         });
 
         $(document).on('change', '#subdomain', function (){
@@ -262,6 +377,13 @@
                         {
                             el.find(`option[value="${res.theme_slug}"]`).attr('selected', true);
                         }
+
+                        let custom_theme_wrapper = $('#custom-theme').parent();
+                        custom_theme_wrapper.hide();
+                        if (res.new_tenant)
+                        {
+                            custom_theme_wrapper.show();
+                        }
                     }
                 });
             }
@@ -275,12 +397,84 @@
             $(this).find('button[type=submit]').attr('disabled', true);
         });
 
-        const each_payment_gateway = '.payment_getway_image ul li';
-        $(document).on('click', each_payment_gateway, function () {
-            let el = $(this);
+        const customFormParent = $('.payment_gateway_extra_field_information_wrap');
+        customFormParent.children().hide();
 
-            $(each_payment_gateway).removeClass('selected');
-            el.addClass('selected');
+        $(document).on('click', '.payment_getway_image ul li', function () {
+            let gateway = $(this).data('gateway');
+            let manual_transaction_div = $('.manual_transaction_id');
+
+            customFormParent.children().hide();
+            if (gateway === 'manual_payment') {
+                manual_transaction_div.removeClass('d-none');
+            } else {
+                manual_transaction_div.addClass('d-none');
+
+                let wrapper = customFormParent.find('#'+gateway+'-parent-wrapper');
+                if (wrapper.length > 0)
+                {
+                    wrapper.fadeIn();
+                }
+            }
+
+            $(this).addClass('selected').siblings().removeClass('selected');
+            $('.payment-gateway-wrapper').find(('input')).val($(this).data('gateway'));
+            final_detail.payment_gateway = gateway;
+        });
+
+        $(document).on('change', 'select[name="package"]', function () {
+            let el = $(this);
+            let package_id = el.val();
+            let package_name = el.find(':selected').text().trim();
+
+            $.ajax({
+                url: '{{route('landlord.frontend.package.check')}}',
+                type: 'POST',
+                data: {
+                    _token : '{{csrf_token()}}',
+                    package_id : package_id
+                },
+                success: function (data) {
+                    let payment_gateway_wrapper = $('.payment-gateway-wrapper');
+                    let selected_payment_gateway = $('input[name="selected_payment_gateway"]');
+                    let manual_transaction_id = $('.manual_transaction_id');
+
+                    if(data.price <= 0)
+                    {
+                        payment_gateway_wrapper.hide();
+                        if(selected_payment_gateway.val() === 'manual_payment')
+                        {
+                            manual_transaction_id.addClass('d-none');
+                        }
+                    } else {
+                        payment_gateway_wrapper.slideDown();
+                        if(selected_payment_gateway.val() === 'manual_payment')
+                        {
+                            manual_transaction_id.removeClass('d-none');
+                        }
+                    }
+
+                    $('#custom-theme').html(data.theme_list);
+                    final_detail.package_id = package_id;
+                    final_detail.package_name = package_name;
+                    final_detail.price = data.price;
+                    final_detail.validity = data.validity;
+                    final_detail.payment_gateway = selected_payment_gateway.val();
+                }
+            });
+        });
+
+        const modal_id = '#final_result';
+        $(document).on('click' ,'button[data-bs-target="'+modal_id+'"]', function () {
+            const modal = $(modal_id).find('.modal-body');
+
+            console.log(final_detail)
+            modal.find('.shop_name').text(final_detail.subdomain);
+            modal.find('.package_name').text(final_detail.package_name);
+            modal.find('.theme').text(final_detail.theme);
+            modal.find('.price').text(final_detail.price);
+            modal.find('.validity').text(final_detail.validity);
+            modal.find('.payment_gateway').text(final_detail.payment_gateway);
         });
     </script>
 @endsection

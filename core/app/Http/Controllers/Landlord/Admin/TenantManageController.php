@@ -559,14 +559,19 @@ class TenantManageController extends Controller
             'subdomain' => 'required'
         ]);
 
+        $new_tenant = true;
         $theme = '';
         $tenant = Tenant::find($request->subdomain);
         if (!empty($tenant))
         {
             $theme = $tenant->theme_slug ?? '';
+            $new_tenant = false;
         }
 
-        return response()->json(['theme_slug' => $theme]);
+        return response()->json([
+            'theme_slug' => $theme,
+            'new_tenant' => $new_tenant
+        ]);
     }
 
     public function failed_tenants()
