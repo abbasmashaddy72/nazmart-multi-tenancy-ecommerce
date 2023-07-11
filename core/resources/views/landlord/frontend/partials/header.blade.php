@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html dir="{{ \App\Facades\GlobalLanguage::user_lang_dir() }}" lang="{{ \App\Facades\GlobalLanguage::user_lang_slug() }}">
 <head>
+    {{--    hook from plugin--}}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -74,9 +75,10 @@
             background-image: url("{{$highlighted_image}}") !important;
         }
     </style>
+{{--    hook from plugin--}}
 </head>
 <body>
-
+{{--    hook from plugin--}}
 @include('tenant.frontend.partials.loader')
 @include('landlord.frontend.partials.navbar')
 

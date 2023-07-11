@@ -8,7 +8,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{get_static_option('site_'.$default_lang.'_title').' '. __('Mail')}}</title>
+    <title>{{get_static_option('site_title').' '. __('Mail')}}</title>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -211,7 +211,13 @@
 <div class="mail-container">
     <div class="logo-wrapper">
         <a href="{{url('/')}}">
-            {!! render_image_markup_by_attachment_id(get_static_option('site_logo')) !!}
+            @php
+                $site_logo = get_static_option('site_logo');
+                $image = get_attachment_image_by_id($site_logo);
+                $image_url = !empty($image) ? $image['img_url'] : '';
+            @endphp
+
+            <img src="{{$image_url}}" alt="logo" style="width: 200px;height: auto">
         </a>
     </div>
     <div class="inner-wrap">

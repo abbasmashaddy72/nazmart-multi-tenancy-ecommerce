@@ -122,6 +122,8 @@ Route::controller(\App\Http\Controllers\Landlord\Frontend\UserDashboardControlle
     Route::post('/custom-domain', 'submit_custom_domain');
     Route::post('/package-order/cancel', 'package_order_cancel')->name('user.dashboard.package.order.cancel');
     Route::post('/package-user/generate-invoice', 'generate_package_invoice')->name('frontend.package.invoice.generate');
+
+    Route::post('/package/check', 'package_check')->name('frontend.package.check');
 });
 
 //User Support Ticket Routes
