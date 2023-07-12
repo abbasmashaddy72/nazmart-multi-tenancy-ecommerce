@@ -550,4 +550,34 @@ class LandlordFrontendController extends Controller
             'type' => 'danger'
         ]);
     }
+
+    public function loginUsingToken($token, Request $request){
+        if(empty($token)){
+            return redirect()->to(route('landlord.user.login'));
+        }
+
+        $user = null;
+        if(!empty($request->user_id)){
+            $user = User::find($request->user_id);
+        }
+
+        $hash_token = hash_hmac(
+            'sha512',
+            $user->username,
+            $user->id
+        );
+        if(!hash_equals($hash_token,$token)){
+
+            return redirect()->to(route('landlord.user.login'));
+        }
+
+        //login using super admin id
+        if (Auth::guard('web')->loginUsingId($user->id)){
+            return redirect()->to(route('landlord.user.home'));
+        }
+        //pic a random super admin account...
+
+        return redirect()->to(route('landlord.user.login'));
+        //redirect to admin panel home page
+    }
 }

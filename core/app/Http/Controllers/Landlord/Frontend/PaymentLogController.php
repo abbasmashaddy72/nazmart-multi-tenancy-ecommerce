@@ -87,10 +87,10 @@ class PaymentLogController extends Controller
             'subdomain' => "required_if:custom_subdomain,!=,null",
             'custom_subdomain' => "required_if:subdomain,==,custom_domain__dd",
         ], [
-            "custom_subdomain.required_if" => "Custom Sub Domain Required.",
-            "trasaction_id" => "Transaction ID Required.",
-            "trasaction_attachment" => "Transaction Attachment Required.",
-            "theme_slug.in" => "The selected theme is invalid."
+            "custom_subdomain.required_if" => __("Custom Sub Domain Required."),
+            "trasaction_id" => __("Transaction ID Required."),
+            "trasaction_attachment" => __("Transaction Attachment Required."),
+            "theme_slug.in" => __("The selected theme is invalid.")
         ]);
 
         if ($request->custom_subdomain == null) {

@@ -116,7 +116,7 @@
 
         <div class="col-md-12">
             <div class="subdomains custom_domain_wrap mt-4">
-                <h4 class="custom_domain_title">{{__('Your Subdomains')}}</h4>
+                <h4 class="custom_domain_title">{{__('Your Shops')}}</h4>
                 <div class="payment custom_domain_table mt-4">
                     <table class="table table-bordered recent_payment_table">
                         <thead>
@@ -130,16 +130,28 @@
                         @endphp
 
                         @foreach($user->tenant_details ?? [] as $key => $data)
+                            @php
+                                $url = '';
+                                $central = '.'.env('CENTRAL_DOMAIN');
+
+                                if(!empty($data->custom_domain?->custom_domain) && $data->custom_domain?->custom_domain_status == 'connected'){
+                                    $custom_url = $data->custom_domain?->custom_domain ;
+                                    $url = tenant_url_with_protocol($custom_url);
+                                }else{
+                                    $local_url = $data->id .$central ;
+                                    $url = tenant_url_with_protocol($local_url);
+                                }
+
+                                 $hash_token = hash_hmac('sha512',$user->username.'_'.$data->id, $data->unique_key);
+                            @endphp
+
                             <tr>
                                 <td>{{$key +1}}</td>
-                                <td>
-                                    {{optional($data->domain)->domain}}
-                                </td>
+                                <td>{{$url}}</td>
                                 <td>
                                     <a class="badge rounded bg-primary px-4 visitweb"
-                                       href="{{tenant_url_with_protocol(optional($data->domain)->domain)}}">{{__('Visit Website')}}</a>
-                                    <a class="badge rounded bg-danger px-4"
-                                       href="{{tenant_url_with_protocol(optional($data->domain)->domain).'/admin'}}">{{__('Visit Admin Panel')}}</a>
+                                       href="{{tenant_url_with_protocol(optional($data->domain)->domain)}}" target="_blank">{{__('Visit Website')}}</a>
+                                    <a class="badge rounded bg-danger px-4" href="{{$url.'/token-login/'.$hash_token}}" target="_blank">{{__('Login Admin Panel')}}</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -190,12 +202,15 @@
                     <button type="button" class="close rounded" data-bs-dismiss="modal"><span>×</span></button>
                 </div>
 
-                <form action="{{route('landlord.admin.tenant.assign.subscription')}}" id="user_add_subscription_form" method="post" enctype="multipart/form-data">
+                <form action="{{route('landlord.frontend.order.payment.form')}}" id="user_add_subscription_form" method="post" enctype="multipart/form-data">
                     @csrf
 
                     <div class="modal-body">
                         <input type="hidden" name="subs_user_id" id="subs_user_id" value="{{$user->id}}">
-                        <input type="hidden" name="subs_pack_id" id="subs_pack_id">
+                        <input type="hidden" name="package_id" id="subs_pack_id">
+                        <input type="hidden" name="name" id="name" value="{{$auth_user->name}}">
+                        <input type="hidden" name="email" id="email" value="{{$auth_user->email}}">
+                        <input type="hidden" name="payment_gateway" value="manual_payment" class="payment_gateway_passing_clicking_name">
 
                         <div class="form-group">
                             <label for="subdomain">{{__('Subdomain')}}</label>
@@ -232,7 +247,7 @@
                                 $themes = getAllThemeSlug();
                             @endphp
                             <label for="custom-theme">{{__('Add Theme')}}</label>
-                            <select class="form-select text-capitalize" name="custom_theme" id="custom-theme">
+                            <select class="form-select text-capitalize" name="theme_slug" id="custom-theme">
                                 @foreach($themes as $theme)
                                     <option value="{{$theme}}">{{$theme}}</option>
                                 @endforeach
@@ -259,7 +274,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('Close')}}</button>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#final_result">{{__('Submit')}}</button>
+                        <button type="button" class="btn btn-primary" data-bs-target="#final_result">{{__('Submit')}}</button>
                     </div>
                 </form>
             </div>
@@ -315,7 +330,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('Close')}}</button>
-                        <button type="submit" class="btn btn-primary">{{__('Submit')}}</button>
+                        <button type="button" class="btn btn-primary" id="final-submit">{{__('Submit')}}</button>
                     </div>
             </div>
         </div>
@@ -327,7 +342,6 @@
 
     <script>
         const final_detail = {};
-        let theme_selected_first = false; // if theme selected first then after domain selection do not change theme again
 
         $(document).on('change','.package_id_selector',function (){
             let el = $(this);
@@ -345,23 +359,24 @@
             {
                 custom_subdomain_wrapper.slideDown();
                 custom_subdomain_wrapper.find('#custom-subdomain').attr('name', 'custom_subdomain');
+                final_detail.subdomain = undefined;
             } else {
                 custom_subdomain_wrapper.slideUp();
                 custom_subdomain_wrapper.removeAttr('#custom-subdomain').attr('name', 'custom_subdomain');
                 final_detail.subdomain = $('#subdomain').val();
+                final_detail.renew_status = true;
             }
         });
 
         $(document).on('change','#custom-subdomain',function () {
             final_detail.subdomain = $(this).val();
+            final_detail.renew_status = false;
         });
 
         $(document).on('change', '#subdomain', function (){
             let el = $(this).parent().parent().find(".form-group #custom-theme");
             let subdomain = $(this).val();
 
-            if(!theme_selected_first)
-            {
                 $.ajax({
                     url: '{{route('landlord.admin.tenant.check.subdomain.theme')}}',
                     type: 'POST',
@@ -386,11 +401,11 @@
                         }
                     }
                 });
-            }
         });
 
         $(document).on('change', '#custom-theme', function () {
             theme_selected_first = true;
+            final_detail.theme = $(this).val();
         });
 
         $(document).on('submit', '#user_add_subscription_form', function () {
@@ -417,8 +432,10 @@
                 }
             }
 
+            let gateway_name = $(this).data('gateway');
             $(this).addClass('selected').siblings().removeClass('selected');
-            $('.payment-gateway-wrapper').find(('input')).val($(this).data('gateway'));
+            $('.payment-gateway-wrapper').find(('input')).val(gateway_name);
+            $('.payment_gateway_passing_clicking_name').val(gateway_name);
             final_detail.payment_gateway = gateway;
         });
 
@@ -466,15 +483,42 @@
 
         const modal_id = '#final_result';
         $(document).on('click' ,'button[data-bs-target="'+modal_id+'"]', function () {
+            if (final_detail.subdomain !== undefined && final_detail.package_id !== undefined)
+            {
+                if (final_detail.price > 0 && final_detail.payment_gateway === undefined)
+                {
+                    toastr.error(`{{__('Please provide all the required information in the provided fields.')}}`);
+                    return;
+                }
+
+                if (!final_detail.renew_status && final_detail.theme === undefined)
+                {
+                    toastr.error(`{{__('Please provide all the required information in the provided fields.')}}`);
+                    return;
+                }
+            } else {
+                toastr.error(`{{__('Please provide all the required information in the provided fields.')}}`);
+                return;
+            }
+
+
+
             const modal = $(modal_id).find('.modal-body');
+            $('#user_add_subscription').modal('hide');
+            $(modal_id).modal('show');
 
             console.log(final_detail)
+            modal.find('.confirm-details--title').text(final_detail.renew_status ? `{{__('Renew Plan')}}` : `{{__('New Purchase')}}`);
             modal.find('.shop_name').text(final_detail.subdomain);
             modal.find('.package_name').text(final_detail.package_name);
             modal.find('.theme').text(final_detail.theme);
             modal.find('.price').text(final_detail.price);
             modal.find('.validity').text(final_detail.validity);
-            modal.find('.payment_gateway').text(final_detail.payment_gateway);
+            modal.find('.payment_gateway').text(final_detail.payment_gateway.replace('_',' '));
+        });
+
+        $(document).on('click', '#final-submit', () => {
+            $('#user_add_subscription_form').submit();
         });
     </script>
 @endsection

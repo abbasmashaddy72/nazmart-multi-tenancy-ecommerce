@@ -197,8 +197,11 @@ Route::middleware([
     'tenant_glvar',
     'set_lang'
 ])->group(function () {
+    // LOGIN USING TOKEN
+    Route::get('/token-login/{token}', [TenantFrontendController::class,'loginAsSuperAdminUsingToken'])->name('user.login.with.token');
+
     //TENANT USER LOGIN - REGISTRATION
-    Route::middleware(['maintenance_mode','package_expire'])->controller(\App\Http\Controllers\Tenant\Frontend\TenantFrontendController::class)->name('tenant.')->group(function () {
+    Route::middleware(['maintenance_mode','package_expire'])->controller(TenantFrontendController::class)->name('tenant.')->group(function () {
         Route::get('/login', 'showTenantLoginForm')->name('user.login');
         Route::post('store-login','ajax_login')->name('user.ajax.login');
         Route::get('/register','showTenantRegistrationForm')->name('user.register');

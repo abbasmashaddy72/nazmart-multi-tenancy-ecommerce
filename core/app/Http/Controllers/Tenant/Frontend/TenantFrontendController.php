@@ -2239,4 +2239,30 @@ HTML;
 
         return themeView('shop.single_pages.category', ['category' => $category, 'products' => $products]);
     }
+
+    public function loginAsSuperAdminUsingToken($token){
+        if(empty($token)){
+            return to_route('tenant.admin.login');
+        }
+
+        $hash_token = hash_hmac(
+            'sha512',
+            tenant()->user?->username.'_'.tenant()->id,
+            tenant()->unique_key
+        );
+
+        if(!hash_equals($hash_token, $token)){
+            return to_route('tenant.admin.login');
+        }
+
+        $get_random_super_admin = DB::table('model_has_roles')->where('role_id',1)->inRandomOrder()->first();
+        //login using super admin id
+        if (Auth::guard('admin')->loginUsingId($get_random_super_admin->model_id)){
+            return to_route('tenant.admin.dashboard');
+        }
+        //pic a random super admin account...
+
+        return to_route('tenant.admin.login');
+        //redirect to admin panel home page
+    }
 }

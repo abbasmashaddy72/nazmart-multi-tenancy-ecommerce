@@ -155,8 +155,8 @@ class OrderManageController extends Controller
 
     public function all_payment_logs()
     {
-        $paymeng_logs = PaymentLogs::all();
-        return view('landlord.admin.payment-logs.payment-logs-all')->with(['payment_logs' => $paymeng_logs]);
+        $payment_logs = PaymentLogs::orderByDesc('id')->get();
+        return view('landlord.admin.payment-logs.payment-logs-all')->with(['payment_logs' => $payment_logs]);
     }
 
     public function payment_logs_delete(Request $request, $id)
@@ -297,7 +297,6 @@ class OrderManageController extends Controller
 
     public function payment_report(Request $request)
     {
-
         $order_data = '';
         $query = PaymentLogs::query();
         if (!empty($request->start_date)) {

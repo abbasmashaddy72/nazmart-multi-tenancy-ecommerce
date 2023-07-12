@@ -7,11 +7,12 @@
 @section('style')
     <style>
         .auth-form-light-wrap {
-            max-width: 500px;
+            max-width: 550px;
             margin-inline: auto;
             background-color: #fff;
-            padding: 50px 30px;
-            box-shadow: 0 0 20px #f3f3f3;
+            padding: 70px 40px;
+            border: 2px solid var(--main-color-one);
+            border-radius: 5px;
         }
         .brand-logo-restricted {
             max-width: 250px;
