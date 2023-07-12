@@ -28,6 +28,7 @@
 <script src="{{asset('assets/landlord/frontend/js/jquery.lazy.min.js')}}"></script>
 <script src="{{asset('assets/landlord/frontend/js/bootstrap.bundle.min.js')}}"></script>
 <script src="{{asset('assets/landlord/common/js/axios.min.js')}}"></script>
+<script src="{{asset('assets/common/js/toastr.min.js')}}"></script>
 <script src="{{asset('assets/landlord/frontend/js/slick.js')}}"></script>
 <script src="{{asset('assets/landlord/frontend/js/odometer.js')}}"></script>
 <script src="{{asset('assets/landlord/frontend/js/wow.js')}}"></script>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Landlord\Frontend\LandlordFrontendController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Landlord\Frontend\PaymentLogController;
 
@@ -10,7 +11,7 @@ Route::middleware(['landlord_glvar','maintenance_mode'])->group(function (){
 /* ---------------------------------
     landlord frontend login routes
 ----------------------------------- */
-Route::middleware(['landlord_glvar','maintenance_mode','set_lang'])->controller(\App\Http\Controllers\Landlord\Frontend\LandlordFrontendController::class)->group(function (){
+Route::middleware(['landlord_glvar','maintenance_mode','set_lang'])->controller(LandlordFrontendController::class)->group(function (){
     Route::get('/', 'homepage')->name('landlord.homepage');
     Route::post('/subdomain-check',  'subdomain_check')->name('landlord.subdomain.check');
     Route::get('/verify-email','verify_user_email')->name('tenant.email.verify');
@@ -19,6 +20,11 @@ Route::middleware(['landlord_glvar','maintenance_mode','set_lang'])->controller(
     Route::post('store-login','ajax_login')->name('landlord.ajax.login');
     Route::get('/logout-from-landlord','logout_tenant_from_landlord')->name('tenant.admin.logout.from.landlord.home');
 });
+
+/* ---------------------------------------
+    LANDLORD TO TENANT ADMIN TOKEN LOGIN
+----------------------------------------- */
+Route::get('/token-login/{token}', [LandlordFrontendController::class,'loginUsingToken'])->name('landlord.user.login.with.token');
 
 
 /* -----------------------------

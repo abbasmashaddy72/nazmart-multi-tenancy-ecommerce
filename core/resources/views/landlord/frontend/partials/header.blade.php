@@ -43,6 +43,7 @@
     <link rel="stylesheet" href="{{asset('assets/common/css/jquery.ihavecookies.css')}}">
     <link rel="stylesheet" href="{{asset('assets/landlord/frontend/css/odometer.css')}}">
     <link rel="stylesheet" href="{{asset('assets/landlord/frontend/css/common.css')}}">
+    <link rel="stylesheet" href="{{global_asset('assets/common/css/toastr.css')}}">
     <link rel="stylesheet" href="{{global_asset('assets/common/css/loader.css')}}">
     <link rel="stylesheet" href="{{asset('assets/landlord/frontend/css/style.css')}}">
     <link rel="stylesheet" href="{{asset('assets/landlord/common/css/helpers.css')}}">

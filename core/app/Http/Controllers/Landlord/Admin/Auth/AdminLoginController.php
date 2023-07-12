@@ -62,6 +62,12 @@ class AdminLoginController extends Controller
 
     public function restricted()
     {
+        $tenant_log = tenant()->payment_log;
+
+        if ($tenant_log->status == 'complete')
+        {
+            return to_route('tenant.admin.dashboard');
+        }
         return view('tenant.frontend.pages.restricted');
     }
 
