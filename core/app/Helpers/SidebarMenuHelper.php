@@ -734,6 +734,12 @@ class SidebarMenuHelper
             'parent' => 'users-manage-settings-menu-items',
             'permissions' => [],
         ]);
+        $menu_instance->add_menu_item('tenants-manage-settings-list-menu-items', [
+            'route' => 'landlord.admin.tenant.all',
+            'label' => __('All Shops'),
+            'parent' => 'users-manage-settings-menu-items',
+            'permissions' => [],
+        ]);
         $menu_instance->add_menu_item('users-manage-settings-add-new-menu-items', [
             'route' => 'landlord.admin.tenant.new',
             'label' => __('Add New'),
@@ -757,7 +763,7 @@ class SidebarMenuHelper
 
         $menu_instance->add_menu_item('users-manage-failed-tenant-settings', [
             'route' => 'landlord.admin.tenant.failed.index',
-            'label' => __('Failed Tenants'),
+            'label' => __('Failed Shops'),
             'parent' => 'users-manage-settings-menu-items',
             'permissions' => [],
         ]);

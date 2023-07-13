@@ -8,6 +8,7 @@ use App\Actions\Tenant\TenantTrialPaymentLog;
 use App\Events\TenantRegisterEvent;
 use App\Facades\GlobalLanguage;
 use App\Helpers\FlashMsg;
+use App\Helpers\GenerateTenantToken;
 use App\Helpers\ImageDataSeedingHelper;
 use App\Helpers\EmailHelpers\VerifyUserMailSend;
 use App\Helpers\LanguageHelper;
@@ -553,8 +554,10 @@ class LandlordFrontendController extends Controller
 
     public function loginUsingToken($token, Request $request){
         if(empty($token)){
-            return redirect()->to(route('landlord.user.login'));
+            return to_route('landlord.user.login');
         }
+
+        abort_if(empty(Auth::guard('admin')->user()), 404);
 
         $user = null;
         if(!empty($request->user_id)){
@@ -567,17 +570,16 @@ class LandlordFrontendController extends Controller
             $user->id
         );
         if(!hash_equals($hash_token,$token)){
-
-            return redirect()->to(route('landlord.user.login'));
+            return to_route('landlord.user.login');
         }
 
         //login using super admin id
         if (Auth::guard('web')->loginUsingId($user->id)){
-            return redirect()->to(route('landlord.user.home'));
+            return to_route('landlord.user.home');
         }
         //pic a random super admin account...
 
-        return redirect()->to(route('landlord.user.login'));
+        return to_route('landlord.user.login');
         //redirect to admin panel home page
     }
 }

@@ -6,6 +6,7 @@ use App\Helpers\EmailHelpers\MarkupGenerator;
 use App\Helpers\EmailHelpers\VerifyUserMailSend;
 use App\Mail\BasicMail;
 use App\Models\CustomDomain;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
@@ -35,7 +36,5 @@ class TenantRegisterObserver
         }catch (\Exception $e){
             //handle exception
         }
-
     }
-
 }

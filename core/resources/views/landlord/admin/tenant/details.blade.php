@@ -101,6 +101,7 @@
                                                 {{ \App\Enums\PricePlanTypEnums::getText(optional(optional($tenant->payment_log)->package)->type ?? 5) }}
                                             </span>
                                             <span class="d-block mb-2"><span>{{__('Package Price:')}}</span> {{amount_with_currency_symbol(optional(optional($tenant->payment_log)->package)->price)}}</span>
+                                            <span class="d-block mb-2 text-capitalize"><span>{{__('Theme:')}}</span> {{$tenant?->theme_slug}}</span>
 
                                             @if(optional($tenant->payment_log)->payment_status == 'pending' && optional($tenant->payment_log)->status != 'trial')
                                                 <span class="text-danger">{{__('*Last payment requires an action')}}</span>
@@ -149,7 +150,23 @@
                                             </span>
                                         </td>
                                         <td>
+                                            @php
+                                                $url = '';
+                                                $central = '.'.env('CENTRAL_DOMAIN');
+
+                                                if(!empty($tenant->custom_domain?->custom_domain) && $tenant->custom_domain?->custom_domain_status == 'connected'){
+                                                    $custom_url = $tenant->custom_domain?->custom_domain ;
+                                                    $url = tenant_url_with_protocol($custom_url);
+                                                }else{
+                                                    $local_url = $tenant->id .$central ;
+                                                    $url = tenant_url_with_protocol($local_url);
+                                                }
+
+                                                $hash_token = hash_hmac('sha512',$user->username.'_'.$tenant->id, $tenant->unique_key);
+                                            @endphp
+
                                             <a href="{{tenant_url_with_protocol(optional($tenant->domain)->domain)}}" target="_blank">{{$tenant->id . '.'. env('CENTRAL_DOMAIN')}}</a>
+                                            <a class="badge rounded bg-danger px-4" href="{{$url.'/token-login/'.$hash_token}}" target="_blank">{{__('Login as Super Admin')}}</a>
                                         </td>
                                         <td>{{$tenant->renew_status ?? 0}}</td>
                                         <td>

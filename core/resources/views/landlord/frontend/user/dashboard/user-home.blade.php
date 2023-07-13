@@ -142,7 +142,7 @@
                                     $url = tenant_url_with_protocol($local_url);
                                 }
 
-                                 $hash_token = hash_hmac('sha512',$user->username.'_'.$data->id, $data->unique_key);
+                                $hash_token = hash_hmac('sha512',$user->username.'_'.$data->id, $data->unique_key);
                             @endphp
 
                             <tr>
@@ -151,7 +151,7 @@
                                 <td>
                                     <a class="badge rounded bg-primary px-4 visitweb"
                                        href="{{tenant_url_with_protocol(optional($data->domain)->domain)}}" target="_blank">{{__('Visit Website')}}</a>
-                                    <a class="badge rounded bg-danger px-4" href="{{$url.'/token-login/'.$hash_token}}" target="_blank">{{__('Login Admin Panel')}}</a>
+                                    <a class="badge rounded bg-danger px-4" href="{{$url.'/token-login/'.$hash_token}}" target="_blank">{{__('Login as Super Admin')}}</a>
                                 </td>
                             </tr>
                         @endforeach

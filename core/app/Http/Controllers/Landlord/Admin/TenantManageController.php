@@ -42,6 +42,11 @@ class TenantManageController extends Controller
         return view(self::BASE_PATH.'index',compact('all_users','deleted_users'));
     }
 
+    public function all_tenants_list()
+    {
+
+    }
+
     public function new_tenant()
     {
         return view(self::BASE_PATH.'new');

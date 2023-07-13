@@ -6,6 +6,7 @@ use App\Enums\ProductTypeEnum;
 use App\Enums\StatusEnums;
 use App\Facades\ThemeDataFacade;
 use App\Helpers\EmailHelpers\VerifyUserMailSend;
+use App\Helpers\GenerateTenantToken;
 use App\Helpers\ResponseMessage;
 use App\Http\Controllers\Controller;
 use App\Http\Services\CheckoutCouponService;
@@ -2258,9 +2259,10 @@ HTML;
         $get_random_super_admin = DB::table('model_has_roles')->where('role_id',1)->inRandomOrder()->first();
         //login using super admin id
         if (Auth::guard('admin')->loginUsingId($get_random_super_admin->model_id)){
+            GenerateTenantToken::regenerate(tenant());
             return to_route('tenant.admin.dashboard');
         }
-        //pic a random super admin account...
+        //pick a random super admin account...
 
         return to_route('tenant.admin.login');
         //redirect to admin panel home page
