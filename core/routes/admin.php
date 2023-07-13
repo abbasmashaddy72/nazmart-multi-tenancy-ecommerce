@@ -258,6 +258,7 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
     -------------------------------------------- */
     Route::controller(TenantManageController::class)->name('landlord.')->prefix('tenant')->group(function (){
         Route::get('/','all_tenants')->name('admin.tenant');
+        Route::get('/all-tenants','all_tenants_list')->name('admin.tenant.all');
         Route::get('/new','new_tenant')->name('admin.tenant.new');
         Route::post('/new','new_tenant_store');
         Route::get('/edit-profile/{id}','edit_profile')->name('admin.tenant.edit.profile');

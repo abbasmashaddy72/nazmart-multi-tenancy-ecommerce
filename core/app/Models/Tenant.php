@@ -34,4 +34,9 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     {
         return $this->hasOne(CustomDomain::class, 'old_domain', 'id');
     }
+
+    public function tenant_unique_key(): HasOne
+    {
+        return $this->hasOne(TenantUniqueKey::class, 'tenant_id', 'id');
+    }
 }
