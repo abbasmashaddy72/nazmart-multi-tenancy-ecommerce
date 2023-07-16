@@ -42,7 +42,9 @@
                 "isotope.pkgd.min",
                 "main"
             ],
-            "blade": [],
+            "blade": [
+                "footer"
+            ],
             "widgetArea": "footer"
         }
     ]

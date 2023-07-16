@@ -77,6 +77,7 @@ class SidebarMenuHelper
             foreach ($externalMenu as $individual_menu_item){
                 $convert_to_array = (array) $individual_menu_item;
                 $routeName = $convert_to_array['route'];
+
                 if (isset($routeName) && !empty($routeName) && Route::has($routeName)){
                     $menu_instance->add_menu_item($convert_to_array['id'], $convert_to_array);
                 }

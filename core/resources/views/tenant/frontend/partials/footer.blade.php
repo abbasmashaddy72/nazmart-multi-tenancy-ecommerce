@@ -132,6 +132,8 @@
     <script src="{{global_asset('assets/tenant/frontend/js/'.$tenant_id.'/dynamic-script.js')}}"></script>
 @endif
 
+{!! \App\Facades\ThemeDataFacade::renderFooterHookBladeFile() !!}
+
 <script>
     let site_currency_symbol = '{{ site_currency_symbol() }}';
 
