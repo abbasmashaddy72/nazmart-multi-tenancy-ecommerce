@@ -523,7 +523,7 @@ class TenantManageController extends Controller
 
         if($request->account_remove_day_within_expiration >= $limit_days){
 
-            return redirect()->back()->with(['type'=> 'danger', 'msg' => sprintf('You can not set remove account day avobe %d',$limit_days)]);
+            return redirect()->back()->with(['type'=> 'danger', 'msg' => sprintf('You can not set remove account day above %d',$limit_days)]);
         }
 
         update_static_option('tenant_account_delete_notify_mail_days',json_encode($request->tenant_account_delete_notify_mail_days));

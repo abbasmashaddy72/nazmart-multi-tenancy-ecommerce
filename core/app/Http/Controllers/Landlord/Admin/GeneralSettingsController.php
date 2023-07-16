@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Mail\BasicMail;
 use App\Models\Page;
 use App\Models\PaymentGateway;
+use App\Models\Tenant;
+use Config;
 use Database\Seeders\ThemeModifySeeder;
 use Database\Seeders\ThemeModifySeederTenant;
 use Illuminate\Http\Request;
@@ -607,7 +609,19 @@ class GeneralSettingsController extends Controller
     {
         setEnvValue(['APP_ENV' => 'local']);
         Artisan::call('migrate', ['--force' => true]);
-        Artisan::call('tenants:migrate', ['--force' => true]);
+
+        //todo run a query to get all the tenant then run migrate one by one...
+        Tenant::latest()->chunk(50,function ($tenants){
+            foreach ($tenants as $tenant){
+                try {
+                    Config::set("database.connections.mysql.engine","InnoDB");
+                    Artisan::call('tenants:migrate', ['--force' => true,'--tenants'=>$tenant->id]);
+                }catch (\Exception $e){
+                    //if issue is related to the mysql database engine,
+                }
+            }
+        });
+
         Artisan::call('db:seed', ['--force' => true]);
 
         if (!get_static_option('theme_modify_seeder_ran') && (get_static_option('get_script_version_for_seed') < get_static_option_central('get_script_version'))) {
