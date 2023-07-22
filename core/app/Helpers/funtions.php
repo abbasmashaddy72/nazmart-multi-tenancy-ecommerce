@@ -13,8 +13,6 @@ use Artesaos\SEOTools\SEOTools;
 use Illuminate\Support\Str;
 use Modules\Campaign\Entities\CampaignProduct;
 use Modules\Campaign\Entities\CampaignSoldProduct;
-use Modules\ShippingModule\Entities\CountryShipping;
-use Modules\ShippingModule\Entities\StateShipping;
 use Modules\TaxModule\Entities\CountryTax;
 use Modules\TaxModule\Entities\StateTax;
 
@@ -1863,4 +1861,46 @@ function render_preloaded_image($image, $styles = '')
 {
     $image = get_attachment_image_by_id($image, 'tiny')['img_url'];
     return 'style="background-image: url('.$image.');'.$styles.'"';
+}
+
+function render_site_seo()
+{
+    $site_meta_author = get_static_option('site_meta_author');
+    $site_meta_keywords = get_static_option('site_meta_keywords');
+    $site_meta_description = get_static_option('site_meta_description');
+
+    $site_og_meta_title = get_static_option('site_og_meta_title');
+    $site_og_meta_description = get_static_option('site_og_meta_description');
+    $image = get_static_option('site_og_meta_image');
+    $image = get_attachment_image_by_id($image);
+    $site_og_meta_image = !empty($image) ? $image['img_url'] : "";
+
+    $site_tw_meta_title = get_static_option('site_tw_meta_title');
+    $site_tw_meta_description = get_static_option('site_tw_meta_description');
+    $image = get_static_option('site_tw_meta_image');
+    $image = get_attachment_image_by_id($image);
+    $site_tw_meta_image = !empty($image) ? $image['img_url'] : "";
+
+    $site_url = url('/');
+    $canonical_url = canonical_url();
+    return <<<HTML
+        <link rel="canonical" href="{$canonical_url}"/>
+
+        <meta name="description" content="{$site_meta_description}">
+        <meta name="keywords" content="{$site_meta_keywords}">
+        <meta name="author" content="{$site_meta_author}">
+
+       <!--Facebook-->
+       <meta property="og:url" content="{$site_url}" >
+       <meta property="og:type" content="{$site_og_meta_title}" >
+       <meta property="og:title" content="{$site_og_meta_title}" >
+       <meta property="og:description" content="{$site_og_meta_description}" >
+       <meta property="og:image" content="{$site_og_meta_image}">
+
+       <!--Twitter-->
+       <meta name="twitter:site" content="{$site_url}" >
+       <meta name="twitter:title" content="{$site_tw_meta_title}" >
+       <meta name="twitter:description" content="$site_tw_meta_description">
+       <meta name="twitter:image" content="{$site_tw_meta_image}">
+HTML;
 }

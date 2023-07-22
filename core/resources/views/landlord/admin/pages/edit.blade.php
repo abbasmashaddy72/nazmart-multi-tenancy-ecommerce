@@ -67,35 +67,45 @@
                             <x-summernote.textarea label="{{__('Page Content')}}" name="page_content" value="{!! $page->page_content !!}"/>
 
                             <div class="meta-information-wrapper">
+                                @php
+                                    $selected_page = get_static_option($page->slug.'_page');
+                                @endphp
+
                                 <h4 class="mb-4">{{__('Meta Information For SEO')}}</h4>
-                                <div class="d-flex align-items-start mb-8 metainfo-inner-wrap">
-                                    <div class="nav flex-column nav-pills me-3" role="tablist" aria-orientation="vertical">
-                                        <button class="nav-link active"  data-bs-toggle="pill" data-bs-target="#v-general-meta-info" type="button" role="tab"  aria-selected="true">
-                                            {{__('General Meta Info')}}</button>
-                                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#v-facebook-meta-info" type="button" role="tab"  aria-selected="false">
-                                            {{__('Facebook Meta Info')}}</button>
-                                        <button class="nav-link"  data-bs-toggle="pill" data-bs-target="#v-twitter-meta-info" type="button" role="tab"  aria-selected="false">
-                                            {{__('Twitter Meta Info')}}
-                                        </button>
+
+                                @if($selected_page != $page->id)
+                                    <div class="d-flex align-items-start mb-8 metainfo-inner-wrap">
+                                        <div class="nav flex-column nav-pills me-3" role="tablist" aria-orientation="vertical">
+                                            <button class="nav-link active"  data-bs-toggle="pill" data-bs-target="#v-general-meta-info" type="button" role="tab"  aria-selected="true">
+                                                {{__('General Meta Info')}}</button>
+                                            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#v-facebook-meta-info" type="button" role="tab"  aria-selected="false">
+                                                {{__('Facebook Meta Info')}}</button>
+                                            <button class="nav-link"  data-bs-toggle="pill" data-bs-target="#v-twitter-meta-info" type="button" role="tab"  aria-selected="false">
+                                                {{__('Twitter Meta Info')}}
+                                            </button>
+                                        </div>
+                                        <div class="tab-content">
+                                            <div class="tab-pane fade show active" id="v-general-meta-info" role="tabpanel" >
+                                                <x-fields.input name="meta_title" label="{{__('Meta Title')}}"  value="{{optional($page->metainfo)->title}}" />
+                                                <x-fields.textarea name="meta_description" label="{{__('Meta Description')}}"  value="{{optional($page->metainfo)->description}}" />
+                                                <x-fields.media-upload name="meta_image" title="{{__('Meta Image')}}" dimentions="1200x1200" id="{{optional($page->metainfo)->image}}" />
+                                            </div>
+                                            <div class="tab-pane fade" id="v-facebook-meta-info" role="tabpanel" >
+                                                <x-fields.input name="meta_fb_title" label="{{__('Meta Title')}}" value="{{optional($page->metainfo)->fb_title}}" />
+                                                <x-fields.textarea name="meta_fb_description" label="{{__('Meta Description')}}"  value="{{optional($page->metainfo)->fb_description}}" />
+                                                <x-fields.media-upload name="fb_image" title="{{__('Meta Image')}}" dimentions="1200x1200" id="{{optional($page->metainfo)->fb_image}}"/>
+                                            </div>
+                                            <div class="tab-pane fade" id="v-twitter-meta-info" role="tabpanel" >
+                                                <x-fields.input name="meta_tw_title" label="{{__('Meta Title')}}"  value="{{optional($page->metainfo)->tw_title}}"  />
+                                                <x-fields.textarea name="meta_tw_description" label="{{__('Meta Description')}}" value="{{optional($page->metainfo)->tw_description}}"  />
+                                                <x-fields.media-upload name="tw_image" title="{{__('Meta Image')}}" dimentions="1200x1200" id="{{optional($page->metainfo)->tw_image}}"/>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="tab-content">
-                                        <div class="tab-pane fade show active" id="v-general-meta-info" role="tabpanel" >
-                                            <x-fields.input name="meta_title" label="{{__('Meta Title')}}"  value="{{optional($page->metainfo)->title}}" />
-                                            <x-fields.textarea name="meta_description" label="{{__('Meta Description')}}"  value="{{optional($page->metainfo)->description}}" />
-                                            <x-fields.media-upload name="meta_image" title="{{__('Meta Image')}}" dimentions="1200x1200" id="{{optional($page->metainfo)->image}}" />
-                                        </div>
-                                        <div class="tab-pane fade" id="v-facebook-meta-info" role="tabpanel" >
-                                            <x-fields.input name="meta_fb_title" label="{{__('Meta Title')}}" value="{{optional($page->metainfo)->fb_title}}" />
-                                            <x-fields.textarea name="meta_fb_description" label="{{__('Meta Description')}}"  value="{{optional($page->metainfo)->fb_description}}" />
-                                            <x-fields.media-upload name="fb_image" title="{{__('Meta Image')}}" dimentions="1200x1200" id="{{optional($page->metainfo)->fb_image}}"/>
-                                        </div>
-                                        <div class="tab-pane fade" id="v-twitter-meta-info" role="tabpanel" >
-                                            <x-fields.input name="meta_tw_title" label="{{__('Meta Title')}}"  value="{{optional($page->metainfo)->tw_title}}"  />
-                                            <x-fields.textarea name="meta_tw_description" label="{{__('Meta Description')}}" value="{{optional($page->metainfo)->tw_description}}"  />
-                                            <x-fields.media-upload name="tw_image" title="{{__('Meta Image')}}" dimentions="1200x1200" id="{{optional($page->metainfo)->tw_image}}"/>
-                                        </div>
-                                    </div>
-                                </div>
+                                @else
+                                    <p class="alert alert-info">{{__('This page is selected for front page. To update SEO please click the button below,')}}</p>
+                                    <a class="btn btn-primary" href="{{route(route_prefix().'admin.general.seo.settings')}}">{{__('Global SEO Settings')}}</a>
+                                @endif
                             </div>
                         </div>
                         <div class="col-lg-3">

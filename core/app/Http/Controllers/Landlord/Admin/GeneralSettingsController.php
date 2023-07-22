@@ -332,15 +332,19 @@ class GeneralSettingsController extends Controller
 
     public function update_seo_settings(Request $request)
     {
-
         $fields = [
-            'site_meta_title' => 'nullable|string',
-            'site_meta_tags' => 'nullable|string',
+            'site_meta_author' => 'nullable|string',
             'site_meta_keywords' => 'nullable|string',
             'site_meta_description' => 'nullable|string',
             'site_og_meta_title' => 'nullable|string',
             'site_og_meta_description' => 'nullable|string',
             'site_og_meta_image' => 'nullable|string',
+            'site_fb_meta_title' => 'nullable|string',
+            'site_fb_meta_description' => 'nullable|string',
+            'site_fb_meta_image' => 'nullable|string',
+            'site_tw_meta_title' => 'nullable|string',
+            'site_tw_meta_description' => 'nullable|string',
+            'site_tw_meta_image' => 'nullable|string',
         ];
 
         $this->validate($request, $fields);

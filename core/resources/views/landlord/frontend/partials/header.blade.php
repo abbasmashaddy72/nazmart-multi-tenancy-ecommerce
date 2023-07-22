@@ -1,39 +1,35 @@
 <!DOCTYPE html>
-<html dir="{{ \App\Facades\GlobalLanguage::user_lang_dir() }}" lang="{{ \App\Facades\GlobalLanguage::user_lang_slug() }}">
+<html dir="{{ \App\Facades\GlobalLanguage::user_lang_dir() }}"
+      lang="{{ \App\Facades\GlobalLanguage::user_lang_slug() }}">
 <head>
     {{--    hook from plugin--}}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    @if(!empty(SEOMeta::generate()))
-        {!! SEOMeta::generate() !!}
+    @if(isset($page_post) && $page_post->id == get_static_option('home_page'))
+        <title>
+            {{get_static_option('site_title')}}
+            @if(!empty(get_static_option('site_tag_line')))
+                - {{get_static_option('site_tag_line')}}
+            @endif
+        </title>
+        {!! render_site_seo() !!}
     @else
-        <title>@yield('page-title')</title>
+        @if(!empty(SEOMeta::generate()))
+            {!! SEOMeta::generate() !!}
+        @else
+            <title>@yield('page-title')</title>
+            <link rel="canonical" href="{{canonical_url()}}"/>
+        @endif
+
+        {!! OpenGraph::generate() !!}
+        {!! Twitter::generate() !!}
+        {!! JsonLd::generate() !!}
     @endif
-
-    {!! OpenGraph::generate() !!}
-    {!! Twitter::generate() !!}
-    {!! JsonLd::generate() !!}
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="canonical" href="{{canonical_url()}}" />
 
     {!! load_google_fonts() !!}
     {!! render_favicon_by_id(get_static_option('site_favicon')) !!}
-
-{{--    <title>--}}
-{{--        @if(!request()->routeIs('landlord.homepage'))--}}
-{{--            @yield('title')--}}
-{{--            ---}}
-{{--            {{get_static_option('site_title')}}--}}
-{{--        @else--}}
-{{--            {{get_static_option('site_title')}}--}}
-{{--            @if(!empty(get_static_option('site_tag_line')))--}}
-{{--                - {{get_static_option('site_tag_line')}}--}}
-{{--            @endif--}}
-{{--        @endif--}}
-{{--    </title>--}}
 
     <link rel="stylesheet" href="{{global_asset('assets/landlord/frontend/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{asset('assets/landlord/frontend/css/animate.css')}}">
@@ -57,7 +53,7 @@
     @include('landlord.frontend.partials.color-font-variable')
     @yield('style')
 
-    @yield('seo_data')
+{{--    @yield('seo_data')--}}
 
     @php
         $dynamic_style = 'assets/landlord/frontend/css/dynamic-style.css';
@@ -72,11 +68,11 @@
         $highlighted_image = !empty($highlighted_image) ? $highlighted_image['img_url'] : '';
     @endphp
     <style>
-        .title-shape::before{
+        .title-shape::before {
             background-image: url("{{$highlighted_image}}") !important;
         }
     </style>
-{{--    hook from plugin--}}
+    {{--    hook from plugin--}}
 </head>
 <body>
 {{--    hook from plugin--}}
