@@ -15,10 +15,15 @@ use App\Mail\PlaceOrder;
 use App\Models\Order;
 use App\Models\PaymentLogs;
 use App\Models\PricePlan;
+use App\Models\ProductOrder;
 use App\Models\Tenant;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use LaravelDaily\Invoices\Classes\InvoiceItem;
+use LaravelDaily\Invoices\Classes\Party;
+use LaravelDaily\Invoices\Invoice;
 
 class OrderManageController extends Controller
 {
@@ -347,15 +352,79 @@ class OrderManageController extends Controller
 
     public function generate_package_invoice(Request $request)
     {
-        $payment_details = PaymentLogs::find($request->id);
-        if (empty($payment_details)) {
-            return abort(404);
-        }
-
-        $pdf = PDF::loadview('landlord.frontend.invoice.package-order', ['payment_details' => $payment_details])->setOptions(['defaultFont' => 'sans-serif']);
-        return $pdf->download('package-invoice.pdf');
+        $payment_details = PaymentLogs::findOrFail($request->id);
+        $invoice = $this->invoice_design($payment_details);
+        return $invoice->stream();
     }
 
+    private function invoice_design($payment_details)
+    {
+        $client = new Party([
+            'name' => site_title(),
+            'custom_fields' => [
+                'email' => get_static_option('site_global_email'),
+                'website' => str_replace(['http://', 'https://'], '', url('/'))
+            ]
+        ]);
+
+        $user = User::find($payment_details->user_id);
+        $customer = new Party([
+            'name' => $payment_details->name,
+            'phone' => $payment_details->phone,
+            'custom_fields' => [
+                'username' => $user->username,
+                'email' => $payment_details->email
+            ]
+        ]);
+
+        $currency_symbol = site_currency_symbol();
+        $currency = site_currency_symbol();
+        $currency_symbol_position = get_static_option('site_currency_symbol_position');
+
+        $payment_status = $payment_details->payment_status == 'success' ? __('Paid') : __('Unpaid');
+        if ($payment_details->status == 'cancel') {
+            $payment_status = __('Cancel');
+        }
+
+        $invoice_number_padding = get_static_option('invoice_number_padding') ?? 2;
+        $thousand_separator = get_static_option('site_custom_currency_thousand_separator') ?? ',';
+        $decimal_separator = get_static_option('site_custom_currency_decimal_separator') ?? '.';
+
+        $site_logo = get_attachment_image_by_id(get_static_option('site_logo'))['img_url'] ?? '';
+
+//        $taxPosition = get_static_option('invoice_tax_position') ?? 'total';
+//        $taxInfo = json_decode($payment_details->payment_meta);
+//        $tax_rate = array_key_exists('product_tax', (array)$taxInfo) ? $taxInfo->product_tax : 0;
+
+        $package_details = PricePlan::find($payment_details->package_id);
+
+        $InvoiceItem = (new InvoiceItem())
+            ->title($package_details->title)
+            ->description($package_details->description)
+            ->pricePerUnit($package_details->price);
+
+        $invoiceInstance = Invoice::make(site_title() . ' - Order Invoice')
+            // ability to include translated invoice status
+            // in case it was paid
+            ->status($payment_status)
+            ->sequence($payment_details->id)
+            ->sequencePadding($invoice_number_padding)
+            ->serialNumberFormat('{SEQUENCE}')
+            ->seller($client)
+            ->buyer($customer)
+            ->date(now()->subWeeks(3))
+            ->dateFormat('m/d/Y')
+            ->currencySymbol($currency_symbol)
+            ->currencyCode($currency)
+            ->currencyFormat($currency_symbol_position == 'left' ? '{SYMBOL}{VALUE}' : '{VALUE}{SYMBOL}')
+            ->currencyThousandsSeparator($thousand_separator)
+            ->currencyDecimalPoint($decimal_separator)
+            ->addItem($InvoiceItem)
+            ->logo($site_logo);
+        // You can additionally save generated invoice to configured disk
+
+        return $invoiceInstance->save();
+    }
 
     public function payment_log_payment_status_change($id)
     {
