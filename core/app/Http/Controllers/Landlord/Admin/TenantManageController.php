@@ -44,7 +44,19 @@ class TenantManageController extends Controller
 
     public function all_tenants_list()
     {
+        $all_tenants = \Cache::remember('all_tenants', 60*60, function (){
+            $every = [];
+            Tenant::chunk(100, function ($tenants) use (&$every) {
+                foreach ($tenants as $tenant)
+                {
+                    $every[] = $tenant;
+                }
+            });
 
+            return $every;
+        });
+
+        return view(self::BASE_PATH.'shop-list', compact('all_tenants'));
     }
 
     public function new_tenant()

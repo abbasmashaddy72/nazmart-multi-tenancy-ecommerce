@@ -6,9 +6,9 @@
         $highlighted_word = explode('{/h}', $text[1])[0];
 
         $highlighted_text = '<span class="section-shape title-shape">'. $highlighted_word .'</span>';
-        $final_title = '<h1 class="title">'.str_replace('{h}'.$highlighted_word.'{/h}', $highlighted_text, $data['title']).'</h1>';
+        $final_title = '<h2 class="title">'.str_replace('{h}'.$highlighted_word.'{/h}', $highlighted_text, $data['title']).'</h2>';
     } else {
-        $final_title = '<h1 class="title">'. $data['title'] .'</h1>';
+        $final_title = '<h2 class="title">'. $data['title'] .'</h2>';
     }
 @endphp
 
