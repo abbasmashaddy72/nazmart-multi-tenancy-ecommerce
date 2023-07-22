@@ -393,10 +393,7 @@ class OrderManageController extends Controller
 
     public function generate_order_invoice(Request $request)
     {
-        $payment_details = ProductOrder::find($request->id);
-        if (empty($payment_details)) {
-            return abort(404);
-        }
+        $payment_details = ProductOrder::findOrFail($request->id);
 
         $client = new Party([
             'name' => site_title(),
@@ -482,27 +479,18 @@ class OrderManageController extends Controller
             ->currencyThousandsSeparator($thousand_separator)
             ->currencyDecimalPoint($decimal_separator)
             ->addItems($items)
-            ->shipping($shipping_cost)
+            ->shipping($shipping_cost ?? 0)
             ->logo($site_logo);
         // You can additionally save generated invoice to configured disk
 
         if ($taxPosition == 'total') {
-            $invoiceInstance->totalTaxes($tax_rate, true);
+            $invoiceInstance->totalTaxes($tax_rate ?? 0, true);
         }
 
         $invoice = $invoiceInstance->save();
 
 
         return $invoice->stream();
-
-
-        dd($payment_details, $customer);
-//
-////        return view('tenant.frontend.invoice.order', ['payment_details' => $payment_details]);
-//        $pdf = PDF::loadview('tenant.frontend.invoice.order', ['payment_details' => $payment_details])->setOptions(['defaultFont' => 'sans-serif']);
-//        return $pdf->download('package-invoice.pdf');
-
-
     }
 
     public function order_manage_settings(Request $request)
