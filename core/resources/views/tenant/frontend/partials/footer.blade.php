@@ -953,9 +953,11 @@
 @yield('scripts')
 
 {!! get_static_option('site_third_party_tracking_code') !!}
-{!! get_static_option('site_google_analytics') !!}
-{!! get_static_option('tawk_api_key') !!}
+{{--{!! get_static_option('site_google_analytics') !!}--}}
+{{--{!! get_static_option('tawk_api_key') !!}--}}
 
-<x-google-recaptcha/>
+{{--<x-google-recaptcha/>--}}
+
+{!! renderBodyEndHooks() !!}
 </body>
 </html>

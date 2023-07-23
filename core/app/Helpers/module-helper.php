@@ -76,3 +76,20 @@ function isPluginActive($moduleName)
 {
     return (new PluginJsonFileHelper($moduleName))->isPluginActive();
 }
+
+function renderHeadStartHooks()
+{
+    return ModuleDataFacade::renderHeadStartHooks();
+}
+function renderHeadEndHooks()
+{
+    return ModuleDataFacade::renderHeadEndHooks();
+}
+function renderBodyStartHooks()
+{
+    return ModuleDataFacade::renderBodyStartHooks();
+}
+function renderBodyEndHooks()
+{
+    return ModuleDataFacade::renderBodyEndHooks();
+}

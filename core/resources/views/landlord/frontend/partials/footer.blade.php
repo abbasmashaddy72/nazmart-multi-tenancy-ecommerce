@@ -132,10 +132,10 @@
     @yield('scripts')
 
     {!! get_static_option('site_third_party_tracking_code') !!}
-    {!! get_static_option('site_google_analytics') !!}
-    {!! get_static_option('tawk_api_key') !!}
+{{--    {!! get_static_option('site_google_analytics') !!}--}}
+{{--    {!! get_static_option('tawk_api_key') !!}--}}
 
-    <x-google-recaptcha/>
+{{--    <x-google-recaptcha/>--}}
 
     @php
         $dynamic_style = 'assets/landlord/frontend/js/dynamic-script.js';
@@ -143,6 +143,7 @@
     @if(file_exists($dynamic_style))
         <script src="{{asset($dynamic_style)}}"></script>
     @endif
-    {{--    hook from plugin--}}
+
+    {!! renderBodyEndHooks() !!}
 </body>
 </html>

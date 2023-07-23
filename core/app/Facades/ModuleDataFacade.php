@@ -19,6 +19,10 @@ use Illuminate\Support\Facades\Facade;
  * @method static renderPaymentGatewayImage($imageName, $moduleName)
  * @method static getChargeCustomerMethodNameByPaymentGatewayName
  * @method static getChargeCustomerMethodNameByPaymentGatewayNameSpace
+ * @method static renderHeadStartHooks
+ * @method static renderHeadEndHooks
+ * @method static renderBodyStartHooks
+ * @method static renderBodyEndHooks
  * */
 class ModuleDataFacade extends Facade
 {
