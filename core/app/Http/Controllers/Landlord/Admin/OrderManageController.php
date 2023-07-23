@@ -19,6 +19,7 @@ use App\Models\ProductOrder;
 use App\Models\Tenant;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade as PDF;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use LaravelDaily\Invoices\Classes\InvoiceItem;
@@ -385,6 +386,10 @@ class OrderManageController extends Controller
         if ($payment_details->status == 'cancel') {
             $payment_status = __('Cancel');
         }
+        if ($payment_details->status == 'trial')
+        {
+            $payment_status = __('Unpaid').'-'.__('Trial');
+        }
 
         $invoice_number_padding = get_static_option('invoice_number_padding') ?? 2;
         $thousand_separator = get_static_option('site_custom_currency_thousand_separator') ?? ',';
@@ -396,11 +401,18 @@ class OrderManageController extends Controller
 //        $taxInfo = json_decode($payment_details->payment_meta);
 //        $tax_rate = array_key_exists('product_tax', (array)$taxInfo) ? $taxInfo->product_tax : 0;
 
+        $tenant = Tenant::find($payment_details->tenant_id);
         $package_details = PricePlan::find($payment_details->package_id);
+
+        $description = '';
+        if ($tenant)
+        {
+            $description = $tenant->id .' - '. Carbon::parse($tenant->expire_date)->format('Y-m-d');
+        }
 
         $InvoiceItem = (new InvoiceItem())
             ->title($package_details->title)
-            ->description($package_details->description)
+            ->description($description)
             ->pricePerUnit($package_details->price);
 
         $invoiceInstance = Invoice::make(site_title() . ' - Order Invoice')
