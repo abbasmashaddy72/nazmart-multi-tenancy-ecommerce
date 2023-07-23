@@ -155,7 +155,7 @@
                                                 @endif
                                             @endcan
 
-                                            <form action="{{route('landlord.package.invoice.generate')}}" method="post" enctype="multipart/form-data">
+                                            <form action="{{route('landlord.package.invoice.generate')}}" method="post" enctype="multipart/form-data" target="_blank">
                                                 @csrf
                                                 <input type="hidden" name="id" value="{{$data->id}}">
                                                 <button class="btn btn-dark btn-sm" type="submit">{{__('Invoice')}}</button>
