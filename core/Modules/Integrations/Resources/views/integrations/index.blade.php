@@ -78,7 +78,7 @@
             max-width: 60px;
         }
 
-        .plugin-card .thumb-bg-color.google_analytics {
+        .plugin-card .thumb-bg-color.google_analytics, .plugin-card .thumb-bg-color.captcha {
             background-color: #F9AB00;
         }
         .plugin-card .thumb-bg-color.google_tags {
@@ -107,6 +107,10 @@
 
         .plugin-card .thumb-bg-color.messenger {
             background-color: #A334FA;
+        }
+
+        .plugin-card .thumb-bg-color.instagram {
+            background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
         }
 
         .plugin-card .plugin-meta {
@@ -180,7 +184,6 @@
                 line-height: 20px;
             }
         }
-
 
     </style>
 @endsection
@@ -343,7 +346,35 @@
                             </div>
                         </div>
 
+                        <div class="plugin-card">
+                            <div class="thumb-bg-color captcha">
+                                <strong class="captcha">{{__("Google Captcha V3")}}</strong>
+                            </div>
+                            <p class="plugin-meta">
+                                {{__("you can configure Google Captcha into the website.")}}
+                            </p>
+                            <div class="btn-group-wrap">
+                                <a href="#" data-option="captcha_status" data-status="{{$method("captcha_status")}}"
+                                   class="pl-btn pl_active_deactive">{{$method("captcha_status") == 'on' ? __("Deactivate") : __("Active") }}</a>
+                                <a href="#" data-bs-target="#google_captcha_modal" data-bs-toggle="modal"
+                                   class="pl-btn pl_delete">{{__("Settings") }}</a>
+                            </div>
+                        </div>
 
+                        <div class="plugin-card">
+                            <div class="thumb-bg-color instagram">
+                                <strong class="instagram">{{__("Instagram")}}</strong>
+                            </div>
+                            <p class="plugin-meta">
+                                {{__("you can configure Instagram into the website.")}}
+                            </p>
+                            <div class="btn-group-wrap">
+                                <a href="#" data-option="instagram_status" data-status="{{$method("instagram_status")}}"
+                                   class="pl-btn pl_active_deactive">{{$method("instagram_status") == 'on' ? __("Deactivate") : __("Active") }}</a>
+                                <a href="#" data-bs-target="#instagram_modal" data-bs-toggle="modal"
+                                   class="pl-btn pl_delete">{{__("Settings") }}</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -655,6 +686,83 @@
                                 <small>{{__("load this script in tenant websites")}}</small>
                             </div>
                         @endif
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('Close')}}</button>
+                        <button type="submit" class="btn btn-primary">{{__('Save changes')}}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="google_captcha_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{__("Google Captcha V3")}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{route(route_prefix().'integration')}}" method="post">
+                    @csrf
+                    <input type="hidden" name="data_type" value="google_captcha_v3">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="#">{{__("Google Captcha V3 Site Key")}}</label>
+                            <input type="text"
+                                   name="site_google_captcha_v3_site_key"
+                                   class="form-control"
+                                   value="{{$method("site_google_captcha_v3_site_key")}}"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="#">{{__("Google Captcha V3 Secret Key")}}</label>
+                            <input type="text"
+                                   name="site_google_captcha_v3_secret_key"
+                                   class="form-control"
+                                   value="{{$method("site_google_captcha_v3_secret_key")}}"
+                            >
+                        </div>
+                        @if(is_null(tenant()))
+                            <div class="form-group">
+                                <label for=""><strong>{{__("Tenant")}}</strong></label>
+                                <label class="switch">
+                                    <input type="checkbox" name="site_google_captcha_v3_tenant"
+                                           @if(!empty($method("site_google_captcha_v3_tenant"))) checked @endif>
+                                    <span class="slider onff"></span>
+                                </label>
+                                <small>{{__("load this script in tenant websites")}}</small>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('Close')}}</button>
+                        <button type="submit" class="btn btn-primary">{{__('Save changes')}}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" id="instagram_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{__("Instagram")}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{route(route_prefix().'integration')}}" method="post">
+                    @csrf
+                    <input type="hidden" name="data_type" value="instagram">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="#">{{__("Instagram Access Token")}}</label>
+                            <input type="text"
+                                   name="instagram_access_token"
+                                   class="form-control"
+                                   value="{{get_static_option("instagram_access_token")}}"
+                            >
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('Close')}}</button>

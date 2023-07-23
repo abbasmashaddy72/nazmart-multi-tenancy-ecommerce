@@ -3,6 +3,7 @@
       dir="{{ \App\Facades\GlobalLanguage::user_lang_dir() }}">
 
 <head>
+    {!! renderHeadStartHooks() !!}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -120,9 +121,12 @@
     @foreach($theme_header_js_files ?? [] as $jsFile)
         <script src="{{loadJs($jsFile)}}"></script>
     @endforeach
+    {!! renderHeadEndHooks() !!}
 </head>
 
 <body class="{{$theme_slug}}">
+{!! renderBodyEndHooks() !!}
+
 @include('tenant.frontend.partials.loader')
 @include('tenant.frontend.partials.navbar')
 

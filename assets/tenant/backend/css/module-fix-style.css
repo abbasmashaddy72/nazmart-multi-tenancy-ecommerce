@@ -2177,3 +2177,18 @@ table.dataTable tbody tr {
     flex-wrap: wrap;
 }
 
+.dropzone-form-wrapper form span.xg-accept-files {
+    word-break: break-all;
+}
+
+@media only screen and (max-width: 767px) {
+    .all-uploaded-images {
+        padding: 20px 0 0 !important;
+    }
+    .image-list-wr5apper {
+        width: calc(100% - 0px) !important;
+    }
+    .media-uploader-image-info{
+        display: none !important;
+    }
+}

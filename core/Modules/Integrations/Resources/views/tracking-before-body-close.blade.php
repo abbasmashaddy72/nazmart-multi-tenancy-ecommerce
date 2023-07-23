@@ -32,3 +32,41 @@
 @if($method('tidio_status') == 'on')
 <script src="//code.tidio.co/bnimvre3g6xhowbe4bhu3xbzm3mehcle.js" async></script>
 @endif
+
+@if($method('captcha_status') == 'on')
+    <!--Start of Google Captcha V3 Script-->
+    <script src="https://www.google.com/recaptcha/api.js?render={{$method('site_google_captcha_v3_site_key')}}"></script>
+    <script>
+        (function() {
+            "use strict";
+            grecaptcha.ready(function () {
+                grecaptcha.execute("{{$method('site_google_captcha_v3_site_key')}}", {action: 'homepage'}).then(function (token) {
+                    if(document.getElementById('gcaptcha_token') != null){
+                        document.getElementById('gcaptcha_token').value = token;
+                    }
+                });
+            });
+
+        })(jQuery);
+    </script>
+    <!--End of Google Captcha V3 Script-->
+@endif
+
+@if(tenant() && get_static_option_central('site_google_captcha_v3_site_key') == 'on')
+    <!--Start of Google Captcha V3 Script-->
+    <script src="https://www.google.com/recaptcha/api.js?render={{get_static_option_central('site_google_captcha_v3_site_key')}}"></script>
+    <script>
+        (function() {
+            "use strict";
+            grecaptcha.ready(function () {
+                grecaptcha.execute("{{get_static_option_central('site_google_captcha_v3_site_key')}}", {action: 'homepage'}).then(function (token) {
+                    if(document.getElementById('gcaptcha_token') != null){
+                        document.getElementById('gcaptcha_token').value = token;
+                    }
+                });
+            });
+
+        })(jQuery);
+    </script>
+    <!--End of Google Captcha V3 Script-->
+@endif

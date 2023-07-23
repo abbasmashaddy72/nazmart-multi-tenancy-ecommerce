@@ -24,6 +24,20 @@
                     "icon": "mdi mdi-power-plug"
                 }
             ]
+        },
+        "hooks": {
+            "head_start": [
+                "tracking-just-after-head-open"
+            ],
+            "head_end": [
+                "tracking-before-head"
+            ],
+            "body_start": [
+                "tracking-after-body-open"
+            ],
+            "body_end": [
+                "tracking-before-body-close"
+            ]
         }
     }
 }

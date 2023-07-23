@@ -53,7 +53,9 @@ class ModuleMetaData
         $allMetaInformation = $this->getAllMetaData();
         foreach ($allMetaInformation as $metaInfo) {
             $paymentMeta = $this->getPaymentMetaInfo($metaInfo);
-            if (empty($paymentMeta)){continue;}
+            if (empty($paymentMeta)) {
+                continue;
+            }
             if ($gateway !== strtolower(current($paymentMeta)->slug)) {
                 continue;
             }
@@ -68,7 +70,9 @@ class ModuleMetaData
         $allMetaInformation = $this->getAllMetaData();
         foreach ($allMetaInformation as $metaInfo) {
             $paymentMeta = $this->getPaymentMetaInfo($metaInfo);
-            if (empty($paymentMeta)){continue;}
+            if (empty($paymentMeta)) {
+                continue;
+            }
             if ($gateway !== strtolower(current($paymentMeta)->slug)) {
                 continue;
             }
@@ -84,13 +88,12 @@ class ModuleMetaData
         $allMetaInformation = $this->getAllMetaData();
         foreach ($allMetaInformation as $index => $metaInfo) {
             $paymentMeta = $this->getPaymentMetaInfo($metaInfo);
-            if (!empty($paymentMeta))
-            {
+            if (!empty($paymentMeta)) {
                 foreach ($paymentMeta as $inPay) {
                     $view_file = get_module_view($index, $inPay->extraInfoMarkupBlade);
                     if (property_exists($inPay, 'extraInfoMarkupBlade')) {
                         if (view()->exists($view_file)) {
-                            $outputMarkup .= '<div id="'.$inPay->slug.'-parent-wrapper">'.view($view_file)->render().'</div>';
+                            $outputMarkup .= '<div id="' . $inPay->slug . '-parent-wrapper">' . view($view_file)->render() . '</div>';
                         }
                     }
                 }
@@ -120,10 +123,8 @@ class ModuleMetaData
         $allMetaInformation = $this->getAllMetaData();
         foreach ($allMetaInformation as $metaInfo) {
             $paymentMeta = $this->getPaymentMetaInfo($metaInfo);
-            if (!empty($paymentMeta))
-            {
-                foreach ($paymentMeta as $meta)
-                {
+            if (!empty($paymentMeta)) {
+                foreach ($paymentMeta as $meta) {
                     if (property_exists($meta, 'slug')) {
                         $outputMarkup[] = $meta->slug;
                     }
@@ -136,15 +137,13 @@ class ModuleMetaData
 
     public function getAllPaymentGatewayListWithImage()
     {
-        $eachIndex=0;
+        $eachIndex = 0;
         $outputMarkup = [];
         $allMetaInformation = $this->getAllMetaData();
         foreach ($allMetaInformation as $index => $metaInfo) {
             $paymentMeta = $this->getPaymentMetaInfo($metaInfo);
-            if (!empty($paymentMeta))
-            {
-                foreach ($paymentMeta as $key => $meta)
-                {
+            if (!empty($paymentMeta)) {
+                foreach ($paymentMeta as $key => $meta) {
                     if (property_exists($meta, 'slug') && $meta?->status) {
                         $outputMarkup[$eachIndex]['name'] = $meta->slug;
                         $outputMarkup[$eachIndex]['image'] = $this->getPaymentGatewayImagePath($meta->slug);
@@ -173,8 +172,8 @@ class ModuleMetaData
         $allModuleMeta = [];
         $allDirectories = glob(base_path() . '/Modules/*', GLOB_ONLYDIR);
         $modules_status_data = [];
-        if (file_exists(base_path() ."/modules_statuses.json") && !is_dir(base_path() ."/modules_statuses.json")){
-            $modules_status_data = json_decode(file_get_contents(base_path() ."/modules_statuses.json"),true);
+        if (file_exists(base_path() . "/modules_statuses.json") && !is_dir(base_path() . "/modules_statuses.json")) {
+            $modules_status_data = json_decode(file_get_contents(base_path() . "/modules_statuses.json"), true);
         }
 
         foreach ($allDirectories as $dire) {
@@ -183,15 +182,15 @@ class ModuleMetaData
             $metaInformation = $this->getIndividualModuleMetaData($currFolderName);
 
             //did not collect  meta info of the module which is disabled from module_status.json file
-            if(!array_key_exists($currFolderName,$modules_status_data)){
+            if (!array_key_exists($currFolderName, $modules_status_data)) {
                 continue;
             }
 
-            if(
-                array_key_exists($metaInformation->name,$modules_status_data)
+            if (
+                array_key_exists($metaInformation->name, $modules_status_data)
                 && isset($modules_status_data[$metaInformation->name])
                 && $modules_status_data[$metaInformation->name] === false
-            ){
+            ) {
                 continue;
             }
 
@@ -296,22 +295,20 @@ class ModuleMetaData
     {
         $menuList = [];
         if (!empty($allModuleMeta)) {
-            foreach ($allModuleMeta ?? [] as $metaData)
-            {
+            foreach ($allModuleMeta ?? [] as $metaData) {
                 $adminSettings = $this->getAdminSettings($metaData);
-                $adminSettings = is_array($adminSettings) ? (object) $adminSettings : $adminSettings;
+                $adminSettings = is_array($adminSettings) ? (object)$adminSettings : $adminSettings;
 
-                if (tenant() && property_exists($metaData,"show_admin_tenant") && $metaData->show_admin_tenant === false){
+                if (tenant() && property_exists($metaData, "show_admin_tenant") && $metaData->show_admin_tenant === false) {
                     continue;
                 }
-                if (!tenant() && property_exists($metaData,"show_admin_landlord") && $metaData->show_admin_landlord === false){
+                if (!tenant() && property_exists($metaData, "show_admin_landlord") && $metaData->show_admin_landlord === false) {
                     continue;
                 }
                 $menuItem = $this->getAdminMenuSettings($adminSettings);
-                if (!empty((array)$menuItem))
-                {
+                if (!empty((array)$menuItem)) {
                     //if it is tenant then load route param as tenant route param
-                    if (tenant() && property_exists(current($menuItem),'tenantRoute')){
+                    if (tenant() && property_exists(current($menuItem), 'tenantRoute')) {
                         current($menuItem)->route = current($menuItem)?->tenantRoute;
                     }
 
@@ -333,21 +330,19 @@ class ModuleMetaData
     {
         $menuList = [];
         if (!empty($allModuleMeta)) {
-            foreach ($allModuleMeta ?? [] as $metaData)
-            {
+            foreach ($allModuleMeta ?? [] as $metaData) {
                 $adminSettings = $this->getAdminSettings($metaData);
-                $adminSettings = is_array($adminSettings) ? (object) $adminSettings : $adminSettings;
-                if (tenant() && property_exists($adminSettings,"show_admin_tenant") && $adminSettings->show_admin_tenant === false){
+                $adminSettings = is_array($adminSettings) ? (object)$adminSettings : $adminSettings;
+                if (tenant() && property_exists($adminSettings, "show_admin_tenant") && $adminSettings->show_admin_tenant === false) {
                     continue;
                 }
-                if (!tenant() && property_exists($adminSettings,"show_admin_landlord") && $adminSettings->show_admin_landlord === false){
+                if (!tenant() && property_exists($adminSettings, "show_admin_landlord") && $adminSettings->show_admin_landlord === false) {
                     continue;
                 }
                 $menuItem = $this->getAdminMenuSettings($adminSettings);
-                if (!empty((array)$menuItem))
-                {
+                if (!empty((array)$menuItem)) {
                     //if it is tenant then load route param as tenant route param
-                    if (tenant() && property_exists(current($menuItem),'tenantRoute')){
+                    if (tenant() && property_exists(current($menuItem), 'tenantRoute')) {
                         current($menuItem)->route = current($menuItem)?->tenantRoute;
                     }
 
@@ -362,8 +357,7 @@ class ModuleMetaData
     public function getAdminSettings($metaData)
     {
         $adminSettings = [];
-        if (property_exists($metaData, 'admin_settings'))
-        {
+        if (property_exists($metaData, 'admin_settings')) {
             $adminSettings = $metaData->admin_settings;
         }
 
@@ -373,9 +367,8 @@ class ModuleMetaData
     public function getAdminMenuSettings($adminSettings)
     {
         $menuItem = [];
-        $adminSettings = is_array($adminSettings) ? (object) $adminSettings : $adminSettings;
-        if (property_exists($adminSettings, 'menu_item') && !empty($adminSettings->menu_item))
-        {
+        $adminSettings = is_array($adminSettings) ? (object)$adminSettings : $adminSettings;
+        if (property_exists($adminSettings, 'menu_item') && !empty($adminSettings->menu_item)) {
             $menuItem = $adminSettings->menu_item;
         }
 
@@ -391,12 +384,9 @@ class ModuleMetaData
     private function getEachPaymentMetaData($allModuleMeta)
     {
         $paymentMeta = [];
-        if (!empty($allModuleMeta))
-        {
-            foreach ($allModuleMeta as $metaItem)
-            {
-                if (property_exists($metaItem, 'paymentGateway'))
-                {
+        if (!empty($allModuleMeta)) {
+            foreach ($allModuleMeta as $metaItem) {
+                if (property_exists($metaItem, 'paymentGateway')) {
                     $paymentMeta[] = $metaItem->paymentGateway;
                 }
             }
@@ -409,16 +399,11 @@ class ModuleMetaData
     {
         $file_name = '';
         $allMetaData = $this->getExternalPaymentGateway();
-        if (!empty($allMetaData))
-        {
-            foreach ($allMetaData as $eachMeta)
-            {
-                if (property_exists($eachMeta, 'slug'))
-                {
-                    if ($eachMeta->slug == $paymentGatewaySlug)
-                    {
-                        if (property_exists($eachMeta, 'logo_file'))
-                        {
+        if (!empty($allMetaData)) {
+            foreach ($allMetaData as $eachMeta) {
+                if (property_exists($eachMeta, 'slug')) {
+                    if ($eachMeta->slug == $paymentGatewaySlug) {
+                        if (property_exists($eachMeta, 'logo_file')) {
                             $file_name = $eachMeta->logo_file;
                         }
                     }
@@ -432,11 +417,133 @@ class ModuleMetaData
     public function renderPaymentGatewayImage($imageName, $moduleName)
     {
         $moduleDir = '';
-        if (!empty($imageName) && !empty($moduleName))
-        {
-            $moduleDir = '<img src="' . global_asset(module_dir($moduleName).'assets/payment-gateway-image/'.$imageName) . '"/>';
+        if (!empty($imageName) && !empty($moduleName)) {
+            $moduleDir = '<img src="' . global_asset(module_dir($moduleName) . 'assets/payment-gateway-image/' . $imageName) . '"/>';
         }
 
         return $moduleDir;
+    }
+
+    public function getAllHooks()
+    {
+        $all_module = $this->getAllMetaData();
+
+        $all_hooks = [];
+        foreach ($all_module as $index => $each_module) {
+            if (property_exists($each_module, 'hooks') && !empty($each_module->hooks)) {
+                $all_hooks[$index] = $each_module->hooks;
+            }
+        }
+
+        return $all_hooks;
+    }
+
+    public function getHeadStartHooks(): array
+    {
+        $all_hooks = $this->getAllHooks();
+
+        $all_head_start_hooks = [];
+        foreach ($all_hooks as $index => $each_hook) {
+            if (property_exists($each_hook, 'head_start') && !empty($each_hook->head_start)) {
+                foreach ($each_hook->head_start as $hook) {
+                    $all_head_start_hooks[$index] = $hook;
+                }
+            }
+        }
+
+        return $all_head_start_hooks;
+    }
+
+    public function getHeadEndHooks(): array
+    {
+        $all_hooks = $this->getAllHooks();
+
+        $all_head_end_hooks = [];
+        foreach ($all_hooks as $index => $each_hook) {
+            if (property_exists($each_hook, 'head_end') && !empty($each_hook->head_end)) {
+                foreach ($each_hook->head_end as $hook) {
+                    $all_head_end_hooks[$index] = $hook;
+                }
+            }
+        }
+
+        return $all_head_end_hooks;
+    }
+
+    public function getBodyStartHooks(): array
+    {
+        $all_hooks = $this->getAllHooks();
+
+        $all_body_start_hooks = [];
+        foreach ($all_hooks as $index => $each_hook) {
+            if (property_exists($each_hook, 'body_start') && !empty($each_hook->body_start)) {
+                foreach ($each_hook->body_start as $hook) {
+                    $all_body_start_hooks[$index] = $hook;
+                }
+            }
+        }
+
+        return $all_body_start_hooks;
+    }
+
+    public function getBodyEndHooks(): array
+    {
+        $all_hooks = $this->getAllHooks();
+
+        $all_body_end_hooks = [];
+        foreach ($all_hooks as $index => $each_hook) {
+            if (property_exists($each_hook, 'body_end') && !empty($each_hook->body_end)) {
+                foreach ($each_hook->body_end as $hook) {
+                    $all_body_end_hooks[$index] = $hook;
+                }
+            }
+        }
+
+        return $all_body_end_hooks;
+    }
+
+    public function renderHeadStartHooks(): string
+    {
+        return $this->renderHooks(__FUNCTION__);
+    }
+
+    public function renderHeadEndHooks(): string
+    {
+        return $this->renderHooks(__FUNCTION__);
+    }
+
+    public function renderBodyStartHooks(): string
+    {
+        return $this->renderHooks(__FUNCTION__);
+    }
+
+    public function renderBodyEndHooks(): string
+    {
+        return $this->renderHooks(__FUNCTION__);
+    }
+
+    private function renderHooks($hook_name)
+    {
+        $all_hooks = match($hook_name)
+        {
+            'renderHeadStartHooks' => $this->getHeadStartHooks(),
+            'renderHeadEndHooks' => $this->getHeadEndHooks(),
+            'renderBodyStartHooks' => $this->getBodyStartHooks(),
+            'renderBodyEndHooks' => $this->getBodyEndHooks(),
+            default => []
+        };
+
+        $all_blades = '';
+        foreach ($all_hooks ?? [] as $index => $hook)
+        {
+            $hook = str_replace(['.blade','.blade.php','.php'],'',$hook);
+            $view_path = strtolower($index).'::'.$hook;
+            if (\View::exists($view_path))
+            {
+                $all_blades .= view($view_path)->render();
+            }
+        }
+
+        return $all_blades;
     }
 }

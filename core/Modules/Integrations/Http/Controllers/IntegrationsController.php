@@ -41,6 +41,8 @@ class IntegrationsController extends Controller
             "crsip" => $this->crsip(),
             "tidio" => $this->tidio(),
             "messenger" => $this->messenger(),
+            "instagram" => $this->instagram(),
+            "google_captcha_v3" => $this->google_captcha_v3(),
         };
 
         return back()->with(['msg' => __('Settings updated'),'type' => 'success']);
@@ -53,6 +55,19 @@ class IntegrationsController extends Controller
             update_static_option_central('google_analytics_gt4_tenant',$req->google_analytics_gt4_tenant ? 'on' : '');
         }else{
             update_static_option('google_analytics_gt4_ID',$req->google_analytics_gt4_ID);
+        }
+    }
+
+    private function google_captcha_v3()
+    {
+        $req = \request();
+        if (is_null(tenant())){
+            update_static_option_central('site_google_captcha_v3_site_key',$req->site_google_captcha_v3_site_key);
+            update_static_option_central('site_google_captcha_v3_secret_key',$req->site_google_captcha_v3_secret_key);
+            update_static_option_central('site_google_captcha_v3_tenant',$req->site_google_captcha_v3_tenant ? 'on' : '');
+        }else{
+            update_static_option('site_google_captcha_v3_site_key',$req->site_google_captcha_v3_site_key);
+            update_static_option('site_google_captcha_v3_secret_key',$req->site_google_captcha_v3_secret_key);
         }
     }
 
@@ -137,4 +152,9 @@ class IntegrationsController extends Controller
         update_static_option('messenger_page_id',$req->messenger_page_id);
     }
 
+    private function instagram()
+    {
+        $req = \request();
+        update_static_option('instagram_access_token',$req->instagram_access_token);
+    }
 }
