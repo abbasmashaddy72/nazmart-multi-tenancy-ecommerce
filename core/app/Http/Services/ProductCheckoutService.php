@@ -340,6 +340,7 @@ class ProductCheckoutService
                 }
 
                 OrderProducts::create([
+                    'user_id' => $user['id'],
                     'order_id' => $order_id,
                     'product_id' => $totalPriceDetails['PHYSICAL']['products_id'][$key],
                     'variant_id' => !empty($totalPriceDetails['PHYSICAL']['variants_id'][$key]) ? $totalPriceDetails['PHYSICAL']['variants_id'][$key] : null,

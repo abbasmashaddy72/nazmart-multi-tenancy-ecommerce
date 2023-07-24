@@ -424,7 +424,7 @@
 
                         if (data.type == 'success')
                         {
-                            let currency_symbol = '{{site_currency_symbol()}}';
+                            let currency_symbol = `{{site_currency_symbol()}}`;
                             $('.price-total').attr('data-total', data.coupon_amount);
                             $('.price-total span').text(currency_symbol+data.coupon_amount);
                             $('.coupon-price span:last').text(currency_symbol+data.coupon_price);

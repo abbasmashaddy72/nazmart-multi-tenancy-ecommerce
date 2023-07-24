@@ -15,7 +15,23 @@
                         {{$method['name']}}
                     </label>
                 </span>
-                    <span>{{float_amount_with_currency_symbol($method['options']['cost'])}}</span>
+                    <span>{{amount_with_currency_symbol($method['options']['cost'])}}</span>
+                </li>
+            @endforeach
+        </ul>
+    @elseif(count($default_shipping) > 0)
+        <ul class="coupon-contents-details-list coupon-border">
+            <h6>{{__('Shipping')}}</h6>
+            @foreach($default_shipping ?? [] as $key => $method)
+                <li class="coupon-contents-details-list-item" data-country="{{$country}}" data-state="{{$state}}">
+                <span class="coupon-radio-item">
+                    <input type="radio" id="shipping-option-{{$method['id']}}" value="{{$method['id']}}"
+                           name="shipping_method">
+                    <label for="shipping-option-{{$method['id']}}">
+                        {{$method['name']}}
+                    </label>
+                </span>
+                    <span>{{amount_with_currency_symbol($method['options']['cost'])}}</span>
                 </li>
             @endforeach
         </ul>

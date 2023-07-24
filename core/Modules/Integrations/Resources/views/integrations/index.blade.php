@@ -366,7 +366,7 @@
                                 <strong class="instagram">{{__("Instagram")}}</strong>
                             </div>
                             <p class="plugin-meta">
-                                {{__("you can configure Instagram into the website.")}}
+                                {{__("you can configure Instagram into the website. It will work if any instagram feature is available")}}
                             </p>
                             <div class="btn-group-wrap">
                                 <a href="#" data-option="instagram_status" data-status="{{$method("instagram_status")}}"

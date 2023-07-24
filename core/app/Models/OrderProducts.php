@@ -15,7 +15,7 @@ class OrderProducts extends Model
     protected $table = 'order_products';
 
     protected $fillable = [
-        'order_id', 'product_id', 'variant_id', 'quantity', 'price', 'product_type'
+        'order_id', 'product_id', 'variant_id', 'quantity', 'price', 'product_type', 'user_id'
     ];
 
     public function campaign_product(): HasOne

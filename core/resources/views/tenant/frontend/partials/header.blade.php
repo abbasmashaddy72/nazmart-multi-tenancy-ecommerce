@@ -125,7 +125,7 @@
 </head>
 
 <body class="{{$theme_slug}}">
-{!! renderBodyEndHooks() !!}
+{!! renderBodyStartHooks() !!}
 
 @include('tenant.frontend.partials.loader')
 @include('tenant.frontend.partials.navbar')
