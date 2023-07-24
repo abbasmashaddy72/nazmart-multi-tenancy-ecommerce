@@ -424,9 +424,10 @@
                     else
                     {
                         toastr.success(data.msg, '{{__('Go to Cart')}}', '#', 60000);
-                        $('.track-icon-list').hide();
-                        $('.track-icon-list').load(location.href + " .track-icon-list");
-                        $('.track-icon-list').fadeIn();
+                        let track_icon_list = $('.track-icon-list');
+                        track_icon_list.hide();
+                        track_icon_list.load(location.href + " .track-icon-list");
+                        track_icon_list.fadeIn();
                     }
                 },
                 erorr: function (err) {
@@ -775,9 +776,10 @@
                     else
                     {
                         toastr.success(data.msg, '{{__('Go to Cart')}}', '#', 60000);
-                        $('.track-icon-list').hide();
-                        $('.track-icon-list').load(location.href + " .track-icon-list");
-                        $('.track-icon-list').fadeIn();
+                        let track_icon_list = $('.track-icon-list');
+                        track_icon_list.hide();
+                        track_icon_list.load(location.href + " .track-icon-list");
+                        track_icon_list.fadeIn();
                     }
                 },
                 erorr: function (err) {

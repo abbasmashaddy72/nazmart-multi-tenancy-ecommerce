@@ -247,8 +247,7 @@
                         rating: selected_rating
                     },
                     beforeSend: function (){
-                        toastr.warning('{{__('Submitting please wait.')}}', 5000)
-                        submit_btn_el.text('{{__('Submitting..')}}');
+                        submit_btn_el.text(`{{__('Submitting..')}}`);
                     },
                     success: function (data){
                         if (data.type === 'success')
@@ -262,7 +261,7 @@
                             submit_btn_el.closest('form')[0].reset();
                         }
 
-                        submit_btn_el.text('{{__('Submit Review')}}');
+                        submit_btn_el.text(`{{__('Submit Review')}}`);
                     },
                     error: function (data){
                         var response = data.responseJSON.errors;
@@ -735,9 +734,10 @@
                         else
                         {
                             toastr.success(data.msg, '{{__('Go to Cart')}}', '#', 60000);
-                            $('.track-icon-list').hide();
-                            $('.track-icon-list').load(location.href + " .track-icon-list");
-                            $('.track-icon-list').fadeIn();
+                            let track_icon_list = $('.track-icon-list');
+                            track_icon_list.hide();
+                            track_icon_list.load(location.href + " .track-icon-list");
+                            track_icon_list.fadeIn();
                         }
                     },
                     erorr: function (err) {

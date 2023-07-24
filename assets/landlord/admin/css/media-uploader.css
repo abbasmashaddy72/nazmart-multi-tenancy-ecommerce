@@ -345,3 +345,19 @@ button.btn.btn-info.media_upload_form_btn {
     height: 100%;
     width: 100%;
 }
+
+.dropzone-form-wrapper form span.xg-accept-files {
+    word-break: break-all;
+}
+
+@media only screen and (max-width: 767px) {
+    .all-uploaded-images {
+        padding: 20px 0 0 !important;
+    }
+    .image-list-wr5apper {
+        width: calc(100% - 0px) !important;
+    }
+    .media-uploader-image-info{
+        display: none !important;
+    }
+}

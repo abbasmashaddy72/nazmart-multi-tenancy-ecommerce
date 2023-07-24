@@ -1046,15 +1046,22 @@ class TenantFrontendController extends Controller
         $product_tax = $this->get_product_shipping_tax($request);
 
         $shipping_zones = ZoneRegion::whereJsonContains('country', $request->country)->get();
+        if (!empty($request->state))
+        {
+            $shipping_zones = ZoneRegion::whereJsonContains('country', $request->country)->whereJsonContains('state', $request->state)->get();
+            if ($shipping_zones->isEmpty())
+            {
+                $shipping_zones = ZoneRegion::whereJsonContains('country', $request->country)->get();
+            }
+        }
 
         $zone_ids = [];
         foreach ($shipping_zones ?? [] as $zone) {
             $zone_ids[] = $zone->zone_id;
         }
 
-        $shipping_methods = ShippingMethod::whereIn('zone_id', $zone_ids)
-            ->orWhere('is_default', 1)->get();
-        $default_shipping = $shipping_methods->where('is_default', 1)->first();
+        $shipping_methods = ShippingMethod::whereIn('zone_id', $zone_ids)->get();
+        $default_shipping = ShippingMethod::where('is_default', 1)->get();
 
         $shipping_tax_markup = themeView('shop.checkout.markup_for_controller.shipping_tax_ajax', compact('product_tax', 'shipping_methods', 'default_shipping', 'country', 'state'))->render();
 
@@ -1111,7 +1118,7 @@ class TenantFrontendController extends Controller
     {
         $all_cart_items = Cart::content();
         $products = Product::with("category", "subCategory", "childCategory")->whereIn('id', $all_cart_items?->pluck("id")?->toArray())->get();
-        $subtotal = Cart::subtotal(2,'.','');
+        $subtotal = Cart::subtotal(2, '.', '');
 
         $coupon_amount_total = CheckoutCouponService::calculateCoupon($request, $subtotal, $products, 'DISCOUNT');
         if ($coupon_amount_total == 0) {
@@ -1203,7 +1210,7 @@ class TenantFrontendController extends Controller
 
     public function product_review(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'product_id' => 'required',
             'rating' => 'required',
             'review_text' => 'required|max:1000'
@@ -1211,35 +1218,24 @@ class TenantFrontendController extends Controller
 
         $user = Auth::guard('web')->user();
 
-        $if_not_bought = OrderProducts::where('product_id', 233)->first();
-
-        dd($if_not_bought);
-
-//        $if_not_bought = OrderProducts::where('product_id', $request->product_id)->where(function ($query) use ($request, $user){
-//            $order = ProductOrder::find($request->product_id);
-//            dd($order);
-//            if ($order->user_id == $user->id)
-//            {
-//                return $query;
-//            }
-//        })->first();
-
-        dd($if_not_bought);
-
-        $existing_record = ProductReviews::where(['user_id' => $user->id, 'product_id' => $request->product_id])->select('id')->first();
-
-        if (!$existing_record) {
-            $product_review = new ProductReviews();
-            $product_review->user_id = $user->id;
-            $product_review->product_id = $request->product_id;
-            $product_review->rating = $request->rating;
-            $product_review->review_text = trim($request->review_text);
-            $product_review->save();
-
-            return response()->json(['type' => 'success', 'msg' => __('Your review is submitted')]);
+        $if_not_bought = OrderProducts::where(['product_id' => $validated['product_id'], 'user_id' => $user->id])->first();
+        if (!$if_not_bought) {
+            return response()->json(['type' => 'danger', 'msg' => __('To write a review, you must purchase the product first')]);
         }
 
-        return response()->json(['type' => 'danger', 'msg' => __('Your have already submitted review on this product')]);
+        $old_review = ProductReviews::where(['user_id' => $user->id, 'product_id' => $validated['product_id']])->first();
+        if ($old_review) {
+            return response()->json(['type' => 'danger', 'msg' => __('Your have already submitted review on this product')]);
+        }
+
+        $product_review = new ProductReviews();
+        $product_review->user_id = $user->id;
+        $product_review->product_id = $request->product_id;
+        $product_review->rating = $request->rating;
+        $product_review->review_text = trim($request->review_text);
+        $product_review->save();
+
+        return response()->json(['type' => 'success', 'msg' => __('Your review has been submitted')]);
     }
 
     public function render_reviews(Request $request)
@@ -2166,7 +2162,7 @@ HTML;
             ->where('status_id', 1)
             ->where("name", "LIKE", "%" . htmlspecialchars(strip_tags($search)) . "%")
             ->orWhere("sale_price", $search)
-            ->select('id', 'slug', 'name', 'price', 'sale_price', 'image_id','product_type')
+            ->select('id', 'slug', 'name', 'price', 'sale_price', 'image_id', 'product_type')
             ->take(20)
             ->get();
 
@@ -2174,7 +2170,7 @@ HTML;
             ->where('status_id', 1)
             ->where("name", "LIKE", "%" . htmlspecialchars(strip_tags($search)) . "%")
             ->orWhere("sale_price", $search)
-            ->select('id', 'slug', 'name', 'regular_price as price', 'sale_price', 'image_id','product_type')
+            ->select('id', 'slug', 'name', 'regular_price as price', 'sale_price', 'image_id', 'product_type')
             ->take(20)
             ->get();
 
@@ -2182,7 +2178,7 @@ HTML;
 
         $markup = '';
         foreach ($product_object as $item) {
-            $item = (object) $item;
+            $item = (object)$item;
 
             $data = get_product_dynamic_price($item);
             $campaign_name = $data['campaign_name'];
@@ -2196,7 +2192,7 @@ HTML;
 
             $route = $item->product_type == ProductTypeEnum::DIGITAL ? 'digital.shop' : 'shop';
             $markup .= '<li class="product-suggestion-list-item">
-                           <a href="' . route('tenant.'.$route.'.product.details', $item->slug) . '" class="product-suggestion-list-link">
+                           <a href="' . route('tenant.' . $route . '.product.details', $item->slug) . '" class="product-suggestion-list-link">
                               <div class="product-image">' . $image . '</div>
                               <div class="product-info">
                                    <div class="product-info-top">
@@ -2241,24 +2237,25 @@ HTML;
         return themeView('shop.single_pages.category', ['category' => $category, 'products' => $products]);
     }
 
-    public function loginAsSuperAdminUsingToken($token){
-        if(empty($token)){
+    public function loginAsSuperAdminUsingToken($token)
+    {
+        if (empty($token)) {
             return to_route('tenant.admin.login');
         }
 
         $hash_token = hash_hmac(
             'sha512',
-            tenant()->user?->username.'_'.tenant()->id,
+            tenant()->user?->username . '_' . tenant()->id,
             tenant()->unique_key
         );
 
-        if(!hash_equals($hash_token, $token)){
+        if (!hash_equals($hash_token, $token)) {
             return to_route('tenant.admin.login');
         }
 
-        $get_random_super_admin = DB::table('model_has_roles')->where('role_id',1)->inRandomOrder()->first();
+        $get_random_super_admin = DB::table('model_has_roles')->where('role_id', 1)->inRandomOrder()->first();
         //login using super admin id
-        if (Auth::guard('admin')->loginUsingId($get_random_super_admin->model_id)){
+        if (Auth::guard('admin')->loginUsingId($get_random_super_admin->model_id)) {
             GenerateTenantToken::regenerate(tenant());
             return to_route('tenant.admin.dashboard');
         }
