@@ -114,10 +114,10 @@
                 modal.find('.modal-body h2').text(title);
                 modal.find('.modal-body p').text(description);
 
-                modal.find('.modal-body a.theme_status_update_button').text(button_text);
-                modal.find('.modal-body a.theme_status_update_button').attr('data-slug', slug);
-                modal.find('.modal-body a.theme_status_update_button').attr('data-status', button_text);
-                modal.find('.modal-body a.theme_status_update_button').attr('data-url', url)
+                modal.find('.modal-body button.theme_status_update_button').text(button_text);
+                modal.find('.modal-body button.theme_status_update_button').attr('data-slug', slug);
+                modal.find('.modal-body button.theme_status_update_button').attr('data-status', button_text);
+                modal.find('.modal-body button.theme_status_update_button').attr('data-url', url)
 
                 modal.find('.modal-body a.edit-btn').attr('data-slug', slug)
                 modal.find('.modal-body a.edit-btn').attr('data-name', title)
@@ -131,6 +131,7 @@
             let slug = el.attr('data-slug');
             let status = el.attr('data-status');
             let url = el.attr('data-url');
+            let theme_setting_type = el.parent().parent().find('.theme_setting_type').val();
 
             let button = $('.theme_status_update_button[data-slug=' + slug + ']');
             let theme_preview_button = $('.theme-preview[data-slug=' + slug + ']');
@@ -140,7 +141,8 @@
                 'url': url,
                 'data': {
                     '_token': '{{csrf_token()}}',
-                    'slug': slug
+                    'slug': slug,
+                    'theme_setting_type': theme_setting_type
                 },
                 beforeSend: function () {
                     if (status == 'active') {

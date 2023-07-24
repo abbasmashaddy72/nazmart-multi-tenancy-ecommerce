@@ -9,6 +9,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class ThemeManageController extends Controller
 {
@@ -19,9 +20,11 @@ class ThemeManageController extends Controller
      * @return Renderable
      */
     public function index()
-    {;
-        return view(self::BASE_PATH.'index');
+    {
+        ;
+        return view(self::BASE_PATH . 'index');
     }
+
     /**
      * Show the form for creating a new resource.
      * @return Renderable
@@ -63,27 +66,35 @@ class ThemeManageController extends Controller
 
     public function update(Request $request, $slug)
     {
-        $all_theme_slugs = ThemeDataFacade::getAllThemeSlug();
+        $request->validate([
+            'theme_setting_type' => ['required', Rule::in(['set_theme', 'set_theme_with_demo_data'])],
+            'tenant_default_theme' => 'nullable',
+        ], [
+            'theme_setting_type.required' => __('Please select theme setting type by clicking on the theme image..!')
+        ]);
 
-        if (!in_array($slug, $all_theme_slugs))
-        {
+        $all_theme_slugs = getAllThemeSlug();
+        if (!in_array($slug, $all_theme_slugs)) {
             return response()->json([
                 'status' => false
             ]);
         }
 
-        DB::beginTransaction();
-        try {
-            $tenant = \tenant();
-            Tenant::where('id',$tenant->id)->update([
-                'theme_slug' => $slug
+        $theme_setting_type = $request->theme_setting_type;
+        $requested_theme = $request->tenant_default_theme;
+
+        if($theme_setting_type == 'set_theme'){
+            update_static_option('tenant_default_theme', $requested_theme);
+        }
+        else
+        {
+            $this->set_new_home($requested_theme);
+            update_static_option('tenant_default_theme', $requested_theme);
+
+            $tenant_id = \tenant()->id;
+            Tenant::where('id', $tenant_id)->update([
+                'theme_slug' => $requested_theme
             ]);
-
-            DB::commit();
-        } catch (\Exception $exception) {
-
-
-            DB::rollBack();
         }
 
         return response()->json([

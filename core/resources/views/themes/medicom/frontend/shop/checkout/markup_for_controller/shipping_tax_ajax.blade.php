@@ -97,6 +97,6 @@
     @endphp
     <li class="coupon-contents-details-list-item price-total" data-total="{{$total}}">
         <h6 class="coupon-title"> {{__('Total Amount')}} </h6> <span
-            class="coupon-price fw-500 color-heading"> {{float_amount_with_currency_symbol($total)}} </span>
+            class="coupon-price fw-500 color-heading"> {{amount_with_currency_symbol($total)}} </span>
     </li>
 </ul>
