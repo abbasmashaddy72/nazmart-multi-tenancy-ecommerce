@@ -41,20 +41,25 @@
                     <x-slot name="tr">
                         @foreach($all_pages as $page)
                             @php
-                                $selected_page = get_static_option($page->slug.'_page');
-                                $selected_text = $page->id == $selected_page ? __('Selected') : '';
+                                $selected_page = get_static_option('home_page');
+                                $selected_text = $page->id == $selected_page ? __('Current Home') : '';
                             @endphp
                             <tr>
-                                <td>{{ $page->id  }}</td>
+                                <td>{{ $page->id }}</td>
                                 <td>
                                     <span>{{ $page->title}}</span>
-                                    <small class="mx-2 badge badge-success rounded">{{$selected_text}}</small>
+
+                                    @if($selected_text)
+                                        <small class="mx-2 badge badge-info">{{$selected_text}}</small>
+                                    @endif
                                 </td>
                                 <td>{{ \App\Enums\StatusEnums::getText($page->status)  }}</td>
                                 <td>{{$page->created_at->format('D, d-m-y')}}</td>
                                 <td>
-                                    <x-delete-popover permissions="page-delete"
-                                                      url="{{route(route_prefix().'admin.pages.delete', $page->id)}}"/>
+                                    @if(!$selected_text)
+                                        <x-delete-popover permissions="page-delete" url="{{route(route_prefix().'admin.pages.delete', $page->id)}}"/>
+                                    @endif
+
                                     <x-link-with-popover permissions="page-edit"
                                                          url="{{route(route_prefix().'admin.pages.edit', $page->id)}}">
                                         <i class="mdi mdi-pencil"></i>
@@ -72,6 +77,18 @@
                                                style="vertical-align: text-bottom"></i> {{__('Edit with Page-Builder')}}
                                         </x-link-with-popover>
                                     @endif
+
+                                    <a tabindex="0" class="btn btn-primary btn-xs mb-3 mr-1 swal_change_button"
+                                       data-bs-toggle="tooltip" data-bs-placement="top" title="{{__('Set as Home')}}"
+                                    >
+                                        <i>H</i>
+                                    </a>
+
+                                    <form method='post' action='{{route(route_prefix().'admin.general.page.settings')}}' class="swal_change_form d-none">
+                                        <input type='hidden' name='_token' value='{{csrf_token()}}'>
+                                        <input type='hidden' name='home_page' value="{{$page->id}}">
+                                        <button type="submit" class="swal_form_submit_btn d-none"></button>
+                                    </form>
 
                                     @if(tenant())
                                         <x-link-with-popover class="success"
@@ -142,6 +159,24 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $(this).closest('form').trigger('submit');
+                    }
+                });
+            })
+
+            $(document).on('click', '.swal_change_button', function (e){
+                e.preventDefault();
+                Swal.fire({
+                    title: '{{ __('Are you sure?') }}',
+                    text: '{{ __('You can revert this item anytime!') }}',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#989898',
+                    confirmButtonText: '{{__('Yes, Change it!')}}',
+                    cancelButtonText: "{{__('Cancel')}}",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $(this).siblings('form.swal_change_form').trigger('submit');
                     }
                 });
             })

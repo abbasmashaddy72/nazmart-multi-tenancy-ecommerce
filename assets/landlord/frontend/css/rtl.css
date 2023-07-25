@@ -668,3 +668,7 @@ blockquote {
         transform: translateX(-22%);
     }
 }
+
+.odometer-inside {
+    direction: ltr;
+}
