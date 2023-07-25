@@ -142,40 +142,45 @@
                 'data': {
                     '_token': '{{csrf_token()}}',
                     'slug': slug,
-                    'theme_setting_type': theme_setting_type
+                    'theme_setting_type': theme_setting_type,
+                    'tenant_default_theme': slug
                 },
                 beforeSend: function () {
-                    if (status == 'active') {
-                        button.text('Inactivating..');
-                    } else {
-                        button.text('Activating..');
-                    }
+                    status === 'active' ? button.text(`{{__('Inactivating..')}}`) : button.text(`{{__('Activating..')}}`);
                 },
                 success: function (data) {
-                    var success = $('.themeInfo_' + slug + '');
-                    var modal = $('#theme-modal');
+                    let success = $('.themeInfo_' + slug + '');
+                    let modal = $('#theme-modal');
+                    let modal_msg = $('.modal-success-msg');
 
-                    if (data.status == true) {
-                        button.text('Selected');
-                        button.attr('data-status', 'selected');
-                        theme_preview_button.attr('data-button_text', 'selected');
-
-                        success.find('h3').text('{{__('The theme is active successfully')}}');
-                        success.slideDown(20);
-
-                        modal.find('.themeName').text('{{__('The theme is active successfully')}}');
-                        $('.modal-success-msg').slideDown(20)
-
-                        setTimeout(function () {
-                            location.reload();
-                        }, 1000);
-
+                    if (data.status) {
+                        toastr.success(data.msg);
                     } else {
-                        toastr.error(`{{__('Something went wrong')}}`);
+                        modal_msg.css({'background': '#17a2b8'})
+                        toastr.info(data.msg);
                     }
+
+                    theme_preview_button.attr('data-button_text', 'selected');
+                    button.attr('data-status', 'selected');
+                    button.text(`{{__('Select')}}`)
+                    success.find('h3').text(data.msg);
+                    success.slideDown(20);
+
+                    modal.find('.themeName').text(data.msg);
+                    modal_msg.slideDown(20)
+
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
                 },
                 error: function (data) {
-                    console.log(data);
+                    button.text(`{{__('Select')}}`);
+
+                    const response = JSON.parse(data.responseText);
+
+                    $.each( response.errors, function( key, value) {
+                        toastr.error(value);
+                    });
                 }
             });
         });

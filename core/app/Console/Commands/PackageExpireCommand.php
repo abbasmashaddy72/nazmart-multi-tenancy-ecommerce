@@ -33,6 +33,7 @@ class PackageExpireCommand extends Command
             {
                 if(!empty($table_user_id)){
                     $payment_log = \App\Models\PaymentLogs::where(['tenant_id' => $table_user_id->id, 'payment_status' => 'complete'])->whereDate('expire_date','>=',Carbon::today())->first();
+                    // TODO: PaymentLogs will change into Tenant
 
                     if (is_null($payment_log)){
                         continue;
