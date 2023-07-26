@@ -463,6 +463,7 @@ Route::middleware([
 
         Route::get('/page-settings', 'page_settings')->name('admin.general.page.settings');
         Route::post('/page-settings', 'update_page_settings');
+        Route::match(['get','post'],'/page-settings/set-home','update_page_settings_home')->name('admin.general.page.settings.home');
         /* site identity Settings */
         Route::get('/site-identity', 'site_identity')->name('admin.general.site.identity');
         Route::post('/site-identity', 'update_site_identity');

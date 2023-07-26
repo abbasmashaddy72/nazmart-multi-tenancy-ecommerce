@@ -46,11 +46,6 @@ class InventoryController extends Controller
         return view(self::BASE_URL.'all', compact('all_inventory_products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $all_products = Product::all();
