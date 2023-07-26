@@ -176,10 +176,16 @@
             <li class="category-list">
                 <span class="list-item fw-600">
                     <a href="{{route('tenant.shop.category.products', [$product?->category?->slug, 'category'])}}">{{$product?->category?->name}}</a>
-                    |
-                    <a href="{{route('tenant.shop.category.products', [$product?->subCategory?->slug, 'subcategory'])}}">{{$product?->subCategory?->name}}</a>
-                    |
+
+                    @if($product?->subCategory?->slug)
+                        |
+                        <a href="{{route('tenant.shop.category.products', [$product?->subCategory?->slug, 'subcategory'])}}">{{$product?->subCategory?->name}}</a>
+                    @endif
+
                     @foreach($product->childCategory ?? [] as $child_category)
+                        @if($loop->first)
+                            |
+                        @endif
                         <a href="{{route('tenant.shop.category.products', [$child_category?->slug, 'child-category'])}}"> {{$child_category->name}} </a>
 
                         @if(!$loop->last)

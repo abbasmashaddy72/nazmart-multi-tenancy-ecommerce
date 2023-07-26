@@ -308,7 +308,7 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::get('/cancel-page','order_cancel_payment')->name('admin.package.order.cancel.page');
         Route::post('/cancel-page','update_order_cancel_payment');
         Route::get('/order-page','index')->name('admin.package.order.page');
-        Route::post('/order-page','udpate');
+        Route::post('/order-page','update');
         Route::post('/bulk-action','bulk_action')->name('admin.package.order.bulk.action');
         Route::post('/reminder','order_reminder')->name('admin.package.order.reminder');
         Route::get('/order-report','order_report')->name('admin.package.order.report');
@@ -347,6 +347,8 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
 
         Route::get('/page-settings','page_settings')->name('landlord.admin.general.page.settings');
         Route::post('/page-settings','update_page_settings');
+        Route::match(['get','post'],'/page-settings/set-home','update_page_settings_home')->name('landlord.admin.general.page.settings.home');
+
         /* site identity Settings */
         Route::get('/site-identity','site_identity')->name('landlord.admin.general.site.identity');
         Route::post('/site-identity','update_site_identity');

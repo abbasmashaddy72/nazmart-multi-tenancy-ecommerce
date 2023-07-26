@@ -84,7 +84,7 @@
                                         <i>H</i>
                                     </a>
 
-                                    <form method='post' action='{{route(route_prefix().'admin.general.page.settings')}}' class="swal_change_form d-none">
+                                    <form method='post' action='{{route(route_prefix().'admin.general.page.settings.home')}}' class="swal_change_form d-none">
                                         <input type='hidden' name='_token' value='{{csrf_token()}}'>
                                         <input type='hidden' name='home_page' value="{{$page->id}}">
                                         <button type="submit" class="swal_form_submit_btn d-none"></button>

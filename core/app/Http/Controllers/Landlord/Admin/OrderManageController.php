@@ -183,7 +183,6 @@ class OrderManageController extends Controller
         $payment_logs->payment_status = 'complete';
         $payment_logs->save();
 
-
         $msg = __('Payment status changed successfully..!');
         if ($payment_logs->payment_status == 'complete') {
             (new PaymentGateways())->tenant_create_event_with_credential_mail($payment_logs->id);
@@ -337,7 +336,7 @@ class OrderManageController extends Controller
         return view(self::ROOT_PATH . 'form-section')->with(['all_custom_form' => $all_custom_form]);
     }
 
-    public function udpate(Request $request)
+    public function update(Request $request)
     {
         $this->validate($request, [
             'order_form' => 'nullable|string',
@@ -382,13 +381,13 @@ class OrderManageController extends Controller
         $currency = site_currency_symbol();
         $currency_symbol_position = get_static_option('site_currency_symbol_position');
 
-        $payment_status = $payment_details->payment_status == 'success' ? __('Paid') : __('Unpaid');
+        $payment_status = $payment_details->payment_status == 'complete' ? __('paid') : __('unpaid');
         if ($payment_details->status == 'cancel') {
-            $payment_status = __('Cancel');
+            $payment_status = __('cancel');
         }
         if ($payment_details->status == 'trial')
         {
-            $payment_status = __('Unpaid').'-'.__('Trial');
+            $payment_status = __('unpaid').'-'.__('trial');
         }
 
         $invoice_number_padding = get_static_option('invoice_number_padding') ?? 2;

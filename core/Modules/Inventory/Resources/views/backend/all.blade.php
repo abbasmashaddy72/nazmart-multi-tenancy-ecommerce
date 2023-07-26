@@ -31,6 +31,7 @@
                                 </thead>
                                 <tbody>
                                 @foreach($all_inventory_products as $inventory)
+                                    @continue(!$inventory->product)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $inventory?->product?->name }}</td>

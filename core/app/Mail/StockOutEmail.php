@@ -21,8 +21,8 @@ class StockOutEmail extends Mailable
     public function build()
     {
         $stock_details = $this->data;
-        $mail = $this->from(get_static_option('site_global_email'), get_static_option('site_'.get_default_language().'_title'))
-                 ->subject(__('Product Stock Warning').' From '.get_static_option('site_'.get_default_language().'_title'))
+        $mail = $this->from(get_static_option('tenant_site_global_email'))
+                 ->subject(__('Product Stock Warning').' From '.get_static_option('site_title'))
                  ->view('emails.stock_out', compact('stock_details'));
 
         return $mail;

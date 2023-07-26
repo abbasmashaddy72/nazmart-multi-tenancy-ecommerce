@@ -71,6 +71,18 @@ class GeneralSettingsController extends Controller
         return response()->success(ResponseMessage::SettingsSaved());
     }
 
+    public function update_page_settings_home(Request $request)
+    {
+        $validated_data = $request->validate([
+            'home_page' => 'required|integer'
+        ]);
+        abort_if($request->method() == 'GET', 404);
+
+        update_static_option('home_page', $validated_data['home_page']);
+
+        return response()->success(ResponseMessage::SettingsSaved());
+    }
+
     public function global_variant_footer()
     {
         return view(self::BASE_PATH . 'footer-global-variant');
