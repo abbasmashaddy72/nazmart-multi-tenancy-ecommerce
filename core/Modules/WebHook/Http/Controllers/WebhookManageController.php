@@ -65,7 +65,6 @@ class WebhookManageController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         $webhook = Webhook::find($id)->update([
             "name" => $request->name,
             "url" => $request->url,

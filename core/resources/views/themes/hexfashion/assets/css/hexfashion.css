@@ -3283,3 +3283,33 @@ textarea {
   -webkit-transition: 200ms;
   transition: 200ms;
 }
+
+
+/* Common footer css */
+.footer-logo img {
+    max-width: 250px;
+}
+.footer-widget .footer-inner .payment-list li img {
+    height: auto;
+    max-width: 50px;
+}
+.footer-widget .footer-inner .payment-list {
+    gap: 10px;
+    overflow-x: auto;
+    max-width: 100%;
+    width: 100%;
+}
+.footer-social-two {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.hexfashion .footer-widget .logo-borders {
+    border: 0;
+}
+
+.hexfashion .footer-middle-border .footer-widget {
+    flex-direction: column;
+}

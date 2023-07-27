@@ -149,7 +149,7 @@
                                                 </span>
                                             </span>
                                         </td>
-                                        <td>
+                                        <td class="text-center">
                                             @php
                                                 $url = '';
                                                 $central = '.'.env('CENTRAL_DOMAIN');
@@ -165,8 +165,8 @@
                                                 $hash_token = hash_hmac('sha512',$user->username.'_'.$tenant->id, $tenant->unique_key);
                                             @endphp
 
-                                            <a href="{{tenant_url_with_protocol(optional($tenant->domain)->domain)}}" target="_blank">{{$tenant->id . '.'. env('CENTRAL_DOMAIN')}}</a>
-                                            <a class="badge rounded bg-danger px-4" href="{{$url.'/token-login/'.$hash_token}}" target="_blank">{{__('Login as Super Admin')}}</a>
+                                            <a class="d-block" href="{{tenant_url_with_protocol(optional($tenant->domain)->domain)}}" target="_blank">{{$tenant->id . '.'. env('CENTRAL_DOMAIN')}}</a>
+                                            <a class="badge rounded bg-danger px-4 mt-3" href="{{$url.'/token-login/'.$hash_token}}" target="_blank">{{__('Login as Super Admin')}}</a>
                                         </td>
                                         <td>{{$tenant->renew_status ?? 0}}</td>
                                         <td>

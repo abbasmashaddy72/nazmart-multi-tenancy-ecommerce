@@ -1817,12 +1817,6 @@ class SidebarMenuHelper
             'parent' => 'general-settings-menu-items',
             'permissions' => ['general-settings-page-settings'],
         ]);
-        $menu_instance->add_menu_item('general-settings-global-footer-settings', [
-            'route' => 'tenant.admin.general.global.footer.settings',
-            'label' => __('Global Footer Settings'),
-            'parent' => 'general-settings-menu-items',
-            'permissions' => [],
-        ]);
 
         $menu_instance->add_menu_item('general-settings-site-identity', [
             'route' => 'tenant.admin.general.site.identity',

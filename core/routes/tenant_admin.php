@@ -452,9 +452,6 @@ Route::middleware([
         //Reading
         Route::get('/page-settings', 'page_settings')->name('admin.general.page.settings');
         Route::post('/page-settings', 'update_page_settings');
-        //Footer Global Variant
-        Route::get('/global-variant-footer', 'global_variant_footer')->name('admin.general.global.footer.settings');
-        Route::post('/global-variant-footer', 'update_global_variant_footer');
 
         /* Basic settings */
         Route::get('/basic-settings', 'basic_settings')->name('admin.general.basic.settings');

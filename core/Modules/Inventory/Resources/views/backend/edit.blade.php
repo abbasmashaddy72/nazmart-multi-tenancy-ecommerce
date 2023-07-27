@@ -45,6 +45,10 @@
             margin-bottom: 20px;
             cursor: pointer;
             left: auto;
+            width: 100%;
+        }
+        .singleFlexitem .recentCaption {
+            width: 100%;
         }
         @media only screen and (min-width: 1200px) and (max-width: 1399.99px) {
             .singleFlexitem .listCap {
@@ -126,7 +130,7 @@
         .singleFlexitem .listCap .recentCaption .featureCap .subCap {
             font-family: var(--heading-font);
             font-family: var(--heading-font);
-            color: #00ff65;
+            color: #198ae3;
             font-weight: 400;
         }
         @media only screen and (min-width: 1200px) and (max-width: 1399.99px) {
@@ -233,7 +237,8 @@
                             <span class="featurePricing">{{ amount_with_currency_symbol($product->price) }} <del>{{ amount_with_currency_symbol($product->sale_price) }}</del></span>
                         </div>
                         <div class="recentCaption">
-                            <div class="d-flex align-items-center gap-4 mb-4">
+                            <p class="subCap"><span class="mdi mdi-clock-outline"></span> {{$product->updated_at?->diffForHumans() ?? ''}}</p>
+                            <div class="d-flex align-items-center justify-content-between gap-4 mb-4">
                                 <h5 class="mb-0"><a href="javascript:void(0)" class="featureTittle">{{ $product->name }}</a></h5>
                                 <div class="btn-wrapper d-flex flex-wrap gap-2">
                                     <a href="{{route('tenant.shop.product.details', $product->slug)}}" class="btn btn-success me-2"><i class="lar la-eye icon"></i> {{__('View')}}</a>  <!-- To Product View from Frontend -->
@@ -241,7 +246,7 @@
                                 </div>
                             </div>
 
-                            <p class="featureCap mb-4">{{ $product?->summary }} <strong class="subCap">{{$product->updated_at?->diffForHumans() ?? ''}}</strong></p>
+                            <p class="featureCap mb-4">{{ $product?->summary }}</p>
 
                             <div class="featureCap_category">
                                   <div class="featureCap_category_item d-flex gap-2">
