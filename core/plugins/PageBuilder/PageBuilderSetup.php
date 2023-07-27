@@ -19,6 +19,7 @@ use Plugins\PageBuilder\Addons\Landlord\Common\PricePlan;
 use Plugins\PageBuilder\Addons\Landlord\Common\RawHTML;
 use Plugins\PageBuilder\Addons\Landlord\Common\TemplateDesign;
 use Plugins\PageBuilder\Addons\Landlord\Common\Themes;
+use Plugins\PageBuilder\Addons\Landlord\Common\VideoArea;
 use Plugins\PageBuilder\Addons\Landlord\Common\WhyChooseUs;
 use Plugins\PageBuilder\Addons\Landlord\Header\AboutHeaderStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\FeaturesStyleOne;
@@ -198,7 +199,8 @@ class PageBuilderSetup
                 AboutHeaderStyleOne::class,
                 ContactCards::class,
                 BlogStyleOne::class,
-                RawHTML::class
+                RawHTML::class,
+                VideoArea::class
             ];
         }
 

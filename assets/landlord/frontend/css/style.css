@@ -1925,3 +1925,8 @@ Version: 1.0.0
 .toggle-password.show-pass .show-icon {
   display: none;
 }
+
+.video_iframe {
+  width: 100%;
+  height: 350px;
+}

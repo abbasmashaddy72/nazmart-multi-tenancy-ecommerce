@@ -1314,8 +1314,8 @@ table.dataTable thead td {
     left: 0;
     background-color: #fff;
     padding: 20px;
-    box-shadow: 0 0 10px #f9f9f9;
-    min-width: 200px;
+    box-shadow: 0 0 10px #ebebeb;
+    min-width: 220px;
     width: fit-content;
     display: none;
 }

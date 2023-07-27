@@ -22,7 +22,11 @@ class TenantRegisterObserver
         /* send email verify mail to user */
         VerifyUserMailSend::sendMail($user);
         CustomDomain::create(['user_id' => $user->id]);
-        Event::dispatch(new WebhookEventFire('user:register', $user));
+
+        if (!\tenant())
+        {
+            Event::dispatch(new WebhookEventFire('user:register', $user));
+        }
     }
 
     private function mailToAdminAboutUserRegister(User $user)

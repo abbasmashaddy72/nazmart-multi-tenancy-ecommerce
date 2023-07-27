@@ -83,29 +83,6 @@ class GeneralSettingsController extends Controller
         return response()->success(ResponseMessage::SettingsSaved());
     }
 
-    public function global_variant_footer()
-    {
-        return view(self::BASE_PATH . 'footer-global-variant');
-    }
-
-    public function update_global_variant_footer(Request $request)
-    {
-        $this->validate($request, [
-            'global_footer_variant' => 'nullable|string',
-        ]);
-        $fields = [
-            'global_footer_variant',
-        ];
-
-        foreach ($fields as $field) {
-            if ($request->has($field)) {
-                update_static_option($field, $request->$field);
-            }
-        }
-        return response()->success(ResponseMessage::SettingsSaved());
-    }
-
-
     public function basic_settings()
     {
         return view(self::BASE_PATH . 'basic-settings');

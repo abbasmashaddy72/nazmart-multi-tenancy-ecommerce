@@ -35,7 +35,7 @@
                             </div>
                             <div class="single-input mt-4">
                                 <label class="label-title mb-3"> {{__('Email Address')}} </label>
-                                <input class="form--control" type="text" placeholder="{{__('Type Email')}}" name="email" value="@auth('web'){{$billing_info ? $billing_info->email : auth('web')->user()?->email}}@else{{old('email')}}@endauth" {{$readonly}}>
+                                <input class="form--control" type="email" placeholder="{{__('Type Email')}}" name="email" value="@auth('web'){{$billing_info ? $billing_info->email : auth('web')->user()?->email}}@else{{old('email')}}@endauth" {{$readonly}}>
                             </div>
                         </div>
                         <div class="checkout-form-flex">

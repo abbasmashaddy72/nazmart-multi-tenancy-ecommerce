@@ -11318,3 +11318,25 @@ textarea {
     font-weight: 400;
     color: var(--extra-light-color);
 }
+
+
+/* Common footer css */
+.footer-logo img {
+    max-width: 250px;
+}
+.footer-widget .footer-inner .payment-list li img {
+    height: auto;
+    max-width: 50px;
+}
+.footer-widget .footer-inner .payment-list {
+    gap: 10px;
+    overflow-x: auto;
+    max-width: 100%;
+    width: 100%;
+}
+.footer-social-two {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}

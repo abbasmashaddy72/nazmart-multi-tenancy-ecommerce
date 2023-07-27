@@ -20,6 +20,7 @@
                     "id" : "integration-manage-settings-menu",
                     "label": "Integration",
                     "route": "landlord.integration",
+                    "tenantRoute": "tenant.integration",
                     "parent": null,
                     "icon": "mdi mdi-power-plug"
                 }
