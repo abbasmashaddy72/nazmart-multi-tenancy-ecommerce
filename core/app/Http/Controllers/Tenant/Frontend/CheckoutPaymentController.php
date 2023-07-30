@@ -42,6 +42,10 @@ class CheckoutPaymentController extends Controller
 
         $checkout_service = new ProductCheckoutService();
         $user = $checkout_service->getOrCreateUser($validated_data);
+        if (empty($user))
+        {
+            return back()->withErrors(['error' => 'User exist with this username or email']);
+        }
         $order_log_id = $checkout_service->createOrder($validated_data, $user);
 
         // Checking shipping method is selected

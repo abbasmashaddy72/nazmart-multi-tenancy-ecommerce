@@ -3,22 +3,16 @@
 namespace App\Http\Controllers\Landlord\Admin;
 
 use App\Actions\Payment\PaymentGateways;
-use App\Events\TenantRegisterEvent;
+use App\Helpers\FlashMsg;
 use App\Http\Controllers\Controller;
-use App\Listeners\TenantDomainCreate;
-use App\Mail\TenantCredentialMail;
 use App\Models\FormBuilder;
 use App\Models\Language;
 use App\Mail\BasicMail;
 use App\Mail\OrderReply;
-use App\Mail\PlaceOrder;
-use App\Models\Order;
 use App\Models\PaymentLogs;
 use App\Models\PricePlan;
-use App\Models\ProductOrder;
 use App\Models\Tenant;
 use App\Models\User;
-use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -378,7 +372,7 @@ class OrderManageController extends Controller
         ]);
 
         $currency_symbol = site_currency_symbol();
-        $currency = site_currency_symbol();
+        $currency = site_currency_symbol(true);
         $currency_symbol_position = get_static_option('site_currency_symbol_position');
 
         $payment_status = $payment_details->payment_status == 'complete' ? __('paid') : __('unpaid');
@@ -393,6 +387,7 @@ class OrderManageController extends Controller
         $invoice_number_padding = get_static_option('invoice_number_padding') ?? 2;
         $thousand_separator = get_static_option('site_custom_currency_thousand_separator') ?? ',';
         $decimal_separator = get_static_option('site_custom_currency_decimal_separator') ?? '.';
+        $currency_fraction = get_static_option('currency_fraction_code') ?? 'cents.';
 
         $site_logo = get_attachment_image_by_id(get_static_option('site_logo'))['img_url'] ?? '';
 
@@ -405,7 +400,8 @@ class OrderManageController extends Controller
         {
             $package_title = 'Package: '.$package_details->title;
             $description = '<p>Shop Name: '.$tenant->id.'</p>';
-            $description .= '<p>Expire Date: '.Carbon::parse($tenant->expire_date)->format('d-m-Y').'</p>';
+            $description .= '<p>Order Date: '.Carbon::parse($payment_details->created_at)->format('d/m/Y').'</p>';
+            $description .= '<p>Expire Date: '.Carbon::parse($tenant->expire_date)->format('d/m/Y').'</p>';
         }
 
         $InvoiceItem = (new InvoiceItem())
@@ -415,24 +411,23 @@ class OrderManageController extends Controller
 
         $invoiceInstance = Invoice::make(site_title() . ' - Order Invoice')
             ->template('landlord')
-            // ability to include translated invoice status
-            // in case it was paid
             ->status($payment_status)
             ->sequence($payment_details->id)
             ->sequencePadding($invoice_number_padding)
             ->serialNumberFormat('{SEQUENCE}')
             ->seller($client)
             ->buyer($customer)
-            ->date(now()->subWeeks(3))
-            ->dateFormat('m/d/Y')
+            ->date(now())
+            ->dateFormat('d/m/Y')
             ->currencySymbol($currency_symbol)
             ->currencyCode($currency)
             ->currencyFormat($currency_symbol_position == 'left' ? '{SYMBOL}{VALUE}' : '{VALUE}{SYMBOL}')
             ->currencyThousandsSeparator($thousand_separator)
             ->currencyDecimalPoint($decimal_separator)
+            ->currencyFraction($currency_fraction)
             ->addItem($InvoiceItem)
+            ->payUntilDays(1)
             ->logo($site_logo);
-        // You can additionally save generated invoice to configured disk
 
         return $invoiceInstance->save();
     }
@@ -458,5 +453,21 @@ class OrderManageController extends Controller
         }
 
         return redirect()->back()->with(['msg' => $msg, 'type' => 'success']);
+    }
+
+    public function invoice_settings()
+    {
+        return view('landlord.admin.package-order-manage.invoice-settings');
+    }
+
+    public function invoice_settings_update(Request $request)
+    {
+        $validated_data = $request->validate([
+            'currency_fraction_code' => 'required'
+        ]);
+
+        update_static_option('currency_fraction_code', $validated_data['currency_fraction_code']);
+
+        return back()->with(FlashMsg::update_succeed('Invoice Settings'));
     }
 }

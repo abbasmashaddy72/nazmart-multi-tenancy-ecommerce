@@ -119,7 +119,4 @@ class TenantGenerateHelper
         $this->getTenant()->delete();
         $this->setTenant(null);
     }
-
-
-
 }

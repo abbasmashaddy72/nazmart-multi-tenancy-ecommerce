@@ -228,6 +228,12 @@ class SidebarMenuHelper
             'parent' => 'order-manage-settings-menu-items',
             'permissions' => ['package-order-payment-report'],
         ]);
+        $menu_instance->add_menu_item('order-invoice-settings', [
+            'route' => 'landlord.admin.invoice.settings',
+            'label' => __('Invoice Settings'),
+            'parent' => 'order-manage-settings-menu-items',
+            'permissions' => ['invoice-settings'],
+        ]);
     }
 
     private function custom_domain_settings_menus(MenuWithPermission $menu_instance): void

@@ -320,6 +320,9 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::post('/payment-logs/bulk-action','payment_log_bulk_action')->name('admin.payment.bulk.action');
         Route::get('/payment-logs/report','payment_report')->name('admin.payment.report');
         Route::get('/payment-logs/payment-status/{id}','payment_log_payment_status_change')->name('admin.package.order.payment.status.change');
+
+        Route::get('/invoice-settings', 'invoice_settings')->name('admin.invoice.settings');
+        Route::post('/invoice-settings', 'invoice_settings_update');
     });
 
 /*----------------------------------------------------------------------------------------------------------------------------
