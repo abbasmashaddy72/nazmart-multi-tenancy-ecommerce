@@ -396,25 +396,25 @@ class OrderManageController extends Controller
 
         $site_logo = get_attachment_image_by_id(get_static_option('site_logo'))['img_url'] ?? '';
 
-//        $taxPosition = get_static_option('invoice_tax_position') ?? 'total';
-//        $taxInfo = json_decode($payment_details->payment_meta);
-//        $tax_rate = array_key_exists('product_tax', (array)$taxInfo) ? $taxInfo->product_tax : 0;
-
         $tenant = Tenant::find($payment_details->tenant_id);
         $package_details = PricePlan::find($payment_details->package_id);
 
+        $package_title = '';
         $description = '';
         if ($tenant)
         {
-            $description = $tenant->id .' - '. Carbon::parse($tenant->expire_date)->format('Y-m-d');
+            $package_title = 'Package: '.$package_details->title;
+            $description = '<p>Shop Name: '.$tenant->id.'</p>';
+            $description .= '<p>Expire Date: '.Carbon::parse($tenant->expire_date)->format('d-m-Y').'</p>';
         }
 
         $InvoiceItem = (new InvoiceItem())
-            ->title($package_details->title)
+            ->title($package_title)
             ->description($description)
             ->pricePerUnit($package_details->price);
 
         $invoiceInstance = Invoice::make(site_title() . ' - Order Invoice')
+            ->template('landlord')
             // ability to include translated invoice status
             // in case it was paid
             ->status($payment_status)

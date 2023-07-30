@@ -233,6 +233,13 @@
       0 => 'Spatie\\Translatable\\TranslatableServiceProvider',
     ),
   ),
+  'spatie/laravel-webhook-server' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Spatie\\WebhookServer\\WebhookServerServiceProvider',
+    ),
+  ),
   'srmklive/paypal' => 
   array (
     'providers' => 
