@@ -62,72 +62,110 @@ class ProductCheckoutService
             {
                 $username = $validated_data['create_username'];
                 $password = $validated_data['create_password'];
-                $username = create_slug($username, 'User', false, '', 'username');
 
-                $user = User::create([
-                    'username' => $username,
-                    'password' => \Hash::make($password),
-                    'name' => $name,
-                    'email' => $email,
-                    'mobile' => $phone,
-                    'country' => $country_name,
-                    'state' => $state_name,
-                    'city' => $city,
-                    'address' => $address
-                ]);
+                $user = $this->loginIfUserExist($validated_data);
+                if (!$user || $user == 'user_exist') {
+                    if ($user == 'user_exist')
+                    {
+                        return [];
+                    }
 
-                $user_delivery_address = UserDeliveryAddress::create([
-                    'user_id' => $user->id,
-                    'full_name' => $user->name,
-                    'email' => $email,
-                    'phone' => $phone,
-                    'country_id' => $country_id,
-                    'state_id' => $state_id,
-                    'city' => $city,
-                    'address' => $address,
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]);
+                    $username = create_slug($username, 'User', false, '', 'username');
 
-                $user = [
-                    'id' => $user->id,
-                    'name' => $user_delivery_address->full_name,
-                    'email' => $user_delivery_address->email,
-                    'mobile' => $user_delivery_address->phone,
-                    'country' => $user_delivery_address->country_id,
-                    'state' => $user_delivery_address->state_id,
-                    'city' => $user_delivery_address->city,
-                    'address' => $user_delivery_address->address
-                ];
-            }
-        } else { // get logged in user address with billing info
-            if ($validated_data['shift_another_address'] == 'on') {
-                $user = [
-                    'id' => $user->id,
-                    'name' => $validated_data['shift_name'],
-                    'email' => $validated_data['shift_email'],
-                    'mobile' => $validated_data['shift_phone'],
-                    'country' => $validated_data['shift_country'],
-                    'state' => $validated_data['shift_state'],
-                    'city' => $validated_data['shift_city'],
-                    'address' => $validated_data['shift_address']
-                ];
-            } else {
-                $user_address = $user->delivery_address;
-                $user = [
-                    'id' => $user->id,
-                    'name' => $user_address->full_name,
-                    'email' => $user_address->email,
-                    'mobile' => $user_address->phone,
-                    'country' => $user_address->country_id,
-                    'state' => $user_address->state_id,
-                    'city' => $user_address->city,
-                    'address' => $user_address->address
-                ];
+                    $user = User::create([
+                        'username' => $username,
+                        'password' => \Hash::make($password),
+                        'name' => $name,
+                        'email' => $email,
+                        'mobile' => $phone,
+                        'country' => $country_name,
+                        'state' => $state_name,
+                        'city' => $city,
+                        'address' => $address
+                    ]);
+
+                    Auth::guard('web')->attempt(['username' => $user->username, 'password' => $password], true);
+
+                    $user_delivery_address = UserDeliveryAddress::create([
+                        'user_id' => $user->id,
+                        'full_name' => $user->name,
+                        'email' => $email,
+                        'phone' => $phone,
+                        'country_id' => $country_id,
+                        'state_id' => $state_id,
+                        'city' => $city,
+                        'address' => $address,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+
+                    $user = [
+                        'id' => $user->id,
+                        'name' => $user_delivery_address->full_name,
+                        'email' => $user_delivery_address->email,
+                        'mobile' => $user_delivery_address->phone,
+                        'country' => $user_delivery_address->country_id,
+                        'state' => $user_delivery_address->state_id,
+                        'city' => $user_delivery_address->city,
+                        'address' => $user_delivery_address->address
+                    ];
+                }
+            } else { // get logged in user address with billing info
+                if ($validated_data['shift_another_address'] == 'on') {
+                    $user = [
+                        'id' => $user->id,
+                        'name' => $validated_data['shift_name'],
+                        'email' => $validated_data['shift_email'],
+                        'mobile' => $validated_data['shift_phone'],
+                        'country' => $validated_data['shift_country'],
+                        'state' => $validated_data['shift_state'],
+                        'city' => $validated_data['shift_city'],
+                        'address' => $validated_data['shift_address']
+                    ];
+                } else {
+                    $user_address = $user->delivery_address;
+                    $user = [
+                        'id' => $user->id,
+                        'name' => $user_address->full_name,
+                        'email' => $user_address->email,
+                        'mobile' => $user_address->phone,
+                        'country' => $user_address->country_id,
+                        'state' => $user_address->state_id,
+                        'city' => $user_address->city,
+                        'address' => $user_address->address
+                    ];
+                }
             }
         }
 
         return $user;
+    }
+
+    private function loginIfUserExist($data)
+    {
+        $user = User::where('username', trim($data['create_username']))->orWhere('email', $data['email'])->first();
+
+        if ($user && Auth::guard('web')->attempt(['username' => $user->username, 'password' => $data['create_password']], true)) {
+            $user_address = $user->delivery_address;
+
+            return [
+                'id' => $user->id,
+                'name' => $user_address->full_name ?? $user->name,
+                'email' => $user_address->email ?? $user->email,
+                'mobile' => $user_address->phone ?? $user->mobile,
+                'country' => $user_address->country_id ?? $user->country(),
+                'state' => $user_address->state_id ?? $user->state,
+                'city' => $user_address->city ?? $user->city,
+                'address' => $user_address->address ?? $user->address
+            ];
+        }
+
+        if ($user)
+        {
+            return 'user_exist';
+        }
+
+        return false;
     }
 
     public static function getCartProducts(): array
@@ -162,8 +200,7 @@ class ProductCheckoutService
         $arr['DIGITAL']['total'] = 0.0;
 
         foreach ($cartArr as $item) {
-            if ($item['type'] == ProductTypeEnum::PHYSICAL)
-            {
+            if ($item['type'] == ProductTypeEnum::PHYSICAL) {
                 $arr['PHYSICAL']['total'] += $item['price'] * $item['qty'];
                 $arr['PHYSICAL']['products_id'][] = $item['id'];
                 $arr['PHYSICAL']['products_type'][] = $item['type'];
@@ -188,13 +225,11 @@ class ProductCheckoutService
         }
 
 
-        if (count($arr['DIGITAL']) <= 1)
-        {
+        if (count($arr['DIGITAL']) <= 1) {
             unset($arr['DIGITAL']);
         }
 
-        if (count($arr['PHYSICAL']) <= 1)
-        {
+        if (count($arr['PHYSICAL']) <= 1) {
             unset($arr['PHYSICAL']);
         }
 
@@ -247,14 +282,12 @@ class ProductCheckoutService
         if (array_key_exists('DIGITAL', $price)) {
             $products = DigitalProduct::whereIn('id', $price['DIGITAL']['products_id'])->get();
             $tax = 0.0;
-            foreach ($products ?? [] as $product)
-            {
+            foreach ($products ?? [] as $product) {
                 $price = get_digital_product_dynamic_price($product);
                 $price = (!is_null($price['sale_price']) || $price['sale_price'] > 0) ? $price['sale_price'] : $price['regular_price'];
 
                 $taxed_price = 0.0;
-                if (!is_null($product->tax))
-                {
+                if (!is_null($product->tax)) {
                     $tax = $product?->getTax?->tax_percentage;
                     $taxed_price = ($price * $tax) / 100;
                 }
@@ -275,8 +308,7 @@ class ProductCheckoutService
         $physical_items = Cart::content('default')->where('options.type', \App\Enums\ProductTypeEnum::PHYSICAL);
 
         // Checking shipping method is selected
-        if (count($physical_items) >! 0)
-        {
+        if (count($physical_items) > !0) {
             if (!$this->check_shipping_method($user, $validated_data)) {
                 return false;
             }
@@ -292,8 +324,7 @@ class ProductCheckoutService
         $cart_data = json_encode(Cart::content()->toArray());
 
         $coupon = [];
-        if (!empty($validated_data['used_coupon']))
-        {
+        if (!empty($validated_data['used_coupon'])) {
             $coupon['coupon'] = ProductCoupon::where('code', $validated_data['used_coupon'])->first();
             $coupon['coupon_code'] = $coupon['coupon']->code;
             $coupon['coupon_discount'] = $coupon['coupon']->discount;
@@ -324,18 +355,15 @@ class ProductCheckoutService
             'updated_at' => Carbon::now()
         ])->id;
 
-        if (array_key_exists('PHYSICAL', $totalPriceDetails))
-        {
-            foreach ($totalPriceDetails['PHYSICAL']['products_id'] ?? [] as $key => $ids)
-            {
+        if (array_key_exists('PHYSICAL', $totalPriceDetails)) {
+            foreach ($totalPriceDetails['PHYSICAL']['products_id'] ?? [] as $key => $ids) {
                 $products = Product::whereIn('id', $totalPriceDetails['PHYSICAL']['products_id'])->get();
                 $coupon = (object)[
                     "coupon" => $validated_data['used_coupon']
                 ];
 
-                if (in_array('cart_total', $finalDetails))
-                {
-                    $coupon_type_info = CheckoutCouponService::calculateCoupon($coupon , $finalDetails['cart_total'], $products, return_type: 'TOTAL',  purpose: 'type');
+                if (in_array('cart_total', $finalDetails)) {
+                    $coupon_type_info = CheckoutCouponService::calculateCoupon($coupon, $finalDetails['cart_total'], $products, return_type: 'TOTAL', purpose: 'type');
                     $price = $this->coupon_based_products($coupon_type_info, $ids, $totalPriceDetails['PHYSICAL']['quantity'][$key]);
                 }
 
@@ -351,10 +379,8 @@ class ProductCheckoutService
             }
         }
 
-        if (array_key_exists('DIGITAL', $totalPriceDetails))
-        {
-            foreach ($totalPriceDetails['DIGITAL']['products_id'] as $key => $ids)
-            {
+        if (array_key_exists('DIGITAL', $totalPriceDetails)) {
+            foreach ($totalPriceDetails['DIGITAL']['products_id'] as $key => $ids) {
                 OrderProducts::create([
                     'order_id' => $order_id,
                     'product_id' => $totalPriceDetails['DIGITAL']['products_id'][$key],
@@ -376,42 +402,39 @@ class ProductCheckoutService
         if ($coupon_type_info['discount_on'] == 'all') {
             $price = $this->discount_type_based_price(price: $product->sale_price, discount_amount: $coupon_type_info['coupon_amount'], discount_type: $coupon_type_info['coupon_type'], qty: $qty);
         } elseif ($coupon_type_info['discount_on'] == 'category') {
-            $categories = (array) json_decode($coupon_type_info['coupon_object']->discount_on_details);
-            $category = (int) $categories[0];
+            $categories = (array)json_decode($coupon_type_info['coupon_object']->discount_on_details);
+            $category = (int)$categories[0];
 
             $product_ids = ProductCategory::where('category_id', $category)->pluck('product_id');
-            if (in_array($product->id, current($product_ids)))
-            {
+            if (in_array($product->id, current($product_ids))) {
                 $price = $this->discount_type_based_price(price: $product->sale_price, discount_amount: $coupon_type_info['coupon_amount'], discount_type: $coupon_type_info['coupon_type'], qty: $qty);
             }
         } elseif ($coupon_type_info['discount_on'] == 'subcategory') {
-            $sub_categories = (array) json_decode($coupon_type_info['coupon_object']->discount_on_details);
-            $sub_category = (int) $sub_categories[0];
+            $sub_categories = (array)json_decode($coupon_type_info['coupon_object']->discount_on_details);
+            $sub_category = (int)$sub_categories[0];
 
             $product_ids = ProductSubCategory::where('sub_category_id', $sub_category)->pluck('product_id');
-            if (in_array($product->id, current($product_ids)))
-            {
+            if (in_array($product->id, current($product_ids))) {
                 $price = $this->discount_type_based_price(price: $product->sale_price, discount_amount: $coupon_type_info['coupon_amount'], discount_type: $coupon_type_info['coupon_type'], qty: $qty);
             }
 
         } elseif ($coupon_type_info['discount_on'] == 'childcategory') {
-            $child_categories = (array) json_decode($coupon_type_info['coupon_object']->discount_on_details);
-            $child_category = (int) $child_categories[0];
+            $child_categories = (array)json_decode($coupon_type_info['coupon_object']->discount_on_details);
+            $child_category = (int)$child_categories[0];
 
             $product_ids = ProductChildCategory::where('child_category_id', $child_category)->pluck('product_id');
-            if (in_array($product->id, current($product_ids)))
-            {
+            if (in_array($product->id, current($product_ids))) {
                 $price = $this->discount_type_based_price(price: $product->sale_price, discount_amount: $coupon_type_info['coupon_amount'], discount_type: $coupon_type_info['coupon_type'], qty: $qty);
             }
 
         } elseif ($coupon_type_info['discount_on'] == 'product') {
-            $product_ids = (array) json_decode($coupon_type_info['coupon_object']->discount_on_details);
+            $product_ids = (array)json_decode($coupon_type_info['coupon_object']->discount_on_details);
 
             if (count($product_ids) < 1) {
                 return 0;
             }
 
-            if(in_array($product->id, $product_ids)){
+            if (in_array($product->id, $product_ids)) {
                 $price = $this->discount_type_based_price(price: $product->sale_price, discount_amount: $coupon_type_info['coupon_amount'], discount_type: $coupon_type_info['coupon_type'], qty: $qty);
             }
         }
@@ -422,8 +445,7 @@ class ProductCheckoutService
     private function discount_type_based_price($price, $discount_amount, $discount_type, $qty)
     {
         $price = $price * $qty;
-        if ($discount_type == 'percentage')
-        {
+        if ($discount_type == 'percentage') {
             return $price - ($price * $discount_amount) / 100;
         } else {
             return $price - $discount_amount;
@@ -438,8 +460,7 @@ class ProductCheckoutService
         if ($request['state'] && $request['country']) {
             $product_tax = StateTax::where(['country_id' => $request['country'], 'state_id' => $request['state']])->select('id', 'tax_percentage')->first();
 
-            if (empty($product_tax))
-            {
+            if (empty($product_tax)) {
                 $product_tax = CountryTax::where('country_id', $request['country'])->select('id', 'tax_percentage')->first();
             }
 
