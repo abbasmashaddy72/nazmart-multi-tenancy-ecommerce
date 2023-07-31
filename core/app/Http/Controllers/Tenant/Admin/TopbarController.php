@@ -13,18 +13,34 @@ class TopbarController extends Controller
 {
     public function index(){
         $topbar_menu = get_static_option('topbar_menu');
+        $menu_list = \App\Models\Menu::all();
+        $all_social_icons = TopbarInfo::all();
+
         return view('tenant.admin.pages.topbar-settings')->with([
             'topbar_menu' => $topbar_menu,
+            'menu_list' => $menu_list,
+            'all_social_icons' => $all_social_icons
         ]);
     }
 
     public function update_topbar(Request $request)
     {
-        $request->validate([
-            'topbar_menu' => 'required'
-        ]);
+        $data = [
+            'topbar_menu' => 'required',
+            'topbar_phone' => 'nullable',
+            'topbar_email' => 'nullable',
+            'topbar_menu_show_hide' => 'nullable',
+            'contact_info_show_hide' => 'nullable',
+            'social_info_show_hide' => 'nullable',
+            'topbar_show_hide' => 'nullable'
+        ];
 
-        update_static_option('topbar_menu', $request->topbar_menu);
+        $request->validate($data);
+
+        foreach ($data as $index => $value)
+        {
+            update_static_option($index, esc_html($request->$index));
+        }
 
         return redirect()->back()->with(FlashMsg::update_succeed(__('Topbar')));
     }

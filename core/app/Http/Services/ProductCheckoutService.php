@@ -31,6 +31,7 @@ class ProductCheckoutService
     public function getOrCreateUser($validated_data): array
     {
         $user = Auth::guard('web')->user();
+
         if ($user == null || ($user != null && $user->delivery_address == null)) { // get non-logged in user or user with no billing address
             $name = $validated_data['name'];
             $email = trim(strtolower($validated_data['email']));
@@ -123,7 +124,9 @@ class ProductCheckoutService
                         'address' => $validated_data['shift_address']
                     ];
                 } else {
-                    $user_address = $user->delivery_address;
+                    $user_for_address = User::find($user['id']);
+                    $user_address = $user_for_address->delivery_address;
+
                     $user = [
                         'id' => $user->id,
                         'name' => $user_address->full_name,
@@ -136,6 +139,20 @@ class ProductCheckoutService
                     ];
                 }
             }
+        }
+        elseif($user && $user->delivery_address)
+        {
+            $user_address = $user->delivery_address;
+            $user = [
+                'id' => $user->id,
+                'name' => $user_address->full_name,
+                'email' => $user_address->email,
+                'mobile' => $user_address->phone,
+                'country' => $user_address->country_id,
+                'state' => $user_address->state_id,
+                'city' => $user_address->city,
+                'address' => $user_address->address
+            ];
         }
 
         return $user;
