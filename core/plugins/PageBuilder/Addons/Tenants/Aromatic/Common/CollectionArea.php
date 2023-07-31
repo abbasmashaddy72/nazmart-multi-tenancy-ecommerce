@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugins\PageBuilder\Addons\Tenants\Furnito\Common;
+namespace Plugins\PageBuilder\Addons\Tenants\Aromatic\Common;
 
 use App\Helpers\SanitizeInput;
 use Modules\Campaign\Entities\Campaign;

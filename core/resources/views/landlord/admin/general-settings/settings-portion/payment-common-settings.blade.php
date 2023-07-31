@@ -46,7 +46,7 @@
         <input type="text" class="form-control"
                name="site_{{strtolower($global_currency)}}_to_usd_exchange_rate"
                value="{{get_static_option('site_'.$global_currency.'_to_usd_exchange_rate')}}">
-        <span class="info-text">{{sprintf(__('enter %1$s to USD exchange rate. eg: 1 %2$s = ? USD'),$global_currency,$global_currency) }}</span>
+        <span class="info-text">{{__("enter {$global_currency} to USD exchange rate. eg: 1 {$global_currency} = ? USD")}}</span>
     </div>
 @endif
 
@@ -56,7 +56,7 @@
         <input type="text" class="form-control"
                name="site_{{strtolower($global_currency)}}_to_idr_exchange_rate"
                value="{{get_static_option('site_'.$global_currency.'_to_idr_exchange_rate')}}">
-        <span class="info-text">{{sprintf(__('enter %1$s to USD exchange rate. eg: 1 %2$s = ? IDR'),$global_currency,$global_currency) }}</span>
+        <span class="info-text">{{ __("enter {$global_currency} to IDR exchange rate. eg: 1 {$global_currency} = ? IDR") }}</span>
     </div>
 @endif
 
@@ -87,7 +87,7 @@
         <input type="text" class="form-control"
                name="site_{{strtolower($global_currency)}}_to_zar_exchange_rate"
                value="{{get_static_option('site_'.$global_currency.'_to_zar_exchange_rate')}}">
-        <span class="info-text">{{sprintf(__('enter %1$s to USD exchange rate. eg: 1 %2$s = ? ZAR'),$global_currency,$global_currency) }}</span>
+        <span class="info-text">{{__("enter {$global_currency} to ZAR exchange rate. eg: 1 {$global_currency} = ? ZAR")}}</span>
     </div>
 @endif
 

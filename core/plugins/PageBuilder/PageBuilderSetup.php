@@ -166,6 +166,12 @@ class PageBuilderSetup
                     \Plugins\PageBuilder\Addons\Tenants\Casual\Blog\BlogOne::class,
                     \Plugins\PageBuilder\Addons\Tenants\Casual\Common\Brand::class
                 ];
+            } elseif ($theme == 'electro')
+            {
+                $addons = [
+                    \Plugins\PageBuilder\Addons\Tenants\Electro\Header\Header::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Electro\Common\CollectionCard::class
+                ];
             }
 
             // Global addons for all theme

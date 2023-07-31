@@ -44,13 +44,13 @@ class CheckoutPaymentController extends Controller
         $user = $checkout_service->getOrCreateUser($validated_data);
         if (empty($user))
         {
-            return back()->withErrors(['error' => 'User exist with this username or email']);
+            return back()->withErrors(['error' => __('User exist with this username or email')]);
         }
         $order_log_id = $checkout_service->createOrder($validated_data, $user);
 
         // Checking shipping method is selected
         if(!$order_log_id) {
-            return back()->withErrors(['error' => 'Please select a shipping method']);
+            return back()->withErrors(['error' => __('Please select a shipping method')]);
         }
 
         return CheckoutToPaymentService::checkoutToGateway(compact('order_log_id', 'validated_data')); // Sending multiple data compacting together in one array
