@@ -2,6 +2,7 @@
 
 namespace Modules\Attributes\Entities;
 
+use App\Enums\StatusEnums;
 use App\Models\MediaUploader;
 use App\Models\Status;
 use Illuminate\Database\Eloquent\Model;
@@ -22,7 +23,7 @@ class Category extends Model
 
     public function scopePublished()
     {
-        return $this->where('status_id', 1);
+        return $this->where('status_id', StatusEnums::PUBLISH);
     }
 
     public function image(): HasOne

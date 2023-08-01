@@ -96,9 +96,11 @@
             let sort_to = el.data('sort_to');
             let allId = el.data('all-id');
 
+            const url = `{{route('tenant.category.wise.product.'.tenant()->theme_slug)}}`;
+
             $.ajax({
                 type: 'GET',
-                url: "{{route('tenant.category.wise.product.casual')}}",
+                url: url,
                 data: {
                     category: tab,
                     limit: limit,

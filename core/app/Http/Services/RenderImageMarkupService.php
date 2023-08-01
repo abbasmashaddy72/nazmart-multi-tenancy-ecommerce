@@ -3,7 +3,7 @@
 namespace App\Http\Services;
 
 /**
- * Class RenderImageMarkupService
+ * @returns RenderImageMarkupService
  */
 
 class RenderImageMarkupService
@@ -13,14 +13,6 @@ class RenderImageMarkupService
     protected $grandchild_markup;
     protected $image;
 
-    /**
-     * @method getParent
-     *
-     * @param $parent_image
-     * @param $parent_class
-     * @param $parent_style
-     * @return mixed
-     */
     public function getParent($parent_image, $parent_class = '', $parent_style = '')
     {
         $this->image = $parent_image;
@@ -28,7 +20,7 @@ class RenderImageMarkupService
         return $this;
     }
 
-    public function getChild($child_ref = '', $child_class = '', $child_id = '')
+    public function getChild($child_ref = '#', $child_class = '', $child_id = '')
     {
         $this->child_markup = !empty($child_ref) ? '<a class="'.$child_class.'" id="'.$child_id.'" href="'.$child_ref.'">' : '';
         return $this;

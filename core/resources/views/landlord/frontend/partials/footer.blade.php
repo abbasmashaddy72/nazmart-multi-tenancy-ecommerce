@@ -50,26 +50,9 @@
 </script>
 <x-custom-js.lang-change-landlord/>
 <x-custom-js.landlord-newsletter-store/>
+<x-custom-js.lazy-load-image/>
 
 <script>
-    var images = document.querySelectorAll(".blurred-img");
-    images.forEach(function (e, t) {
-        let img = images[t].querySelector('img');
-        if (img.complete)
-        {
-            e.classList.add("loaded")
-            // e.setAttribute("style", "")
-        }
-        else
-        {
-            // if the img.complete is not true then wait until image loaded
-            img.addEventListener("load", function () {
-                e.classList.add("loaded")
-                // e.setAttribute("style", "")
-            });
-        }
-    });
-
     $(function () {
         var ENDPOINT = window.location.href;
         var posts = 6;

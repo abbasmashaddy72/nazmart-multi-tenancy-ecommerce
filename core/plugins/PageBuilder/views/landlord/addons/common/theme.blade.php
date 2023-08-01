@@ -58,8 +58,8 @@
             @endforeach
 
             @if(get_static_option('up_coming_themes_frontend'))
-                @foreach(range(4, 14) as $item)
-                    @if($item == 4)
+                @foreach(range(7, 16) as $item)
+                    @if($item == 7)
                         @php
                             $base_url = URL::to('/');
                             $base_url = str_replace(['http://','https://'], '', $base_url);
@@ -91,7 +91,7 @@
                             <div class="single-themes">
                                 <div class="single-themes-thumb coming_soon">
                                     <a href="javascript:void(0)">
-                                        <img class="rounded" src="{{get_theme_image('theme-'.$item)}}" alt="">
+                                        <img class="rounded" src="{{get_theme_image('theme-'.$item, range(7, 16))}}" alt="">
                                     </a>
                                     <div class="coming-soon-theme">{{__('Coming Soon')}}</div>
                                 </div>
