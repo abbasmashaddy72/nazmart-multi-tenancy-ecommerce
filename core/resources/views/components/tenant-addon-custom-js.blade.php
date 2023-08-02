@@ -84,48 +84,51 @@
     });
 </script>
 
-<script>
-    $(function () {
-        $(document).on('click', '.product-list .list', function (e) {
-            e.preventDefault();
+@if (in_array(tenant()->theme_slug, ['casual', 'electro']))
+    <script>
+        $(function () {
+            $(document).on('click', '.product-list .list', function (e) {
+                e.preventDefault();
 
-            let el = $(this);
-            let tab = el.data('tab');
-            let limit = el.data('limit');
-            let sort_by = el.data('sort_by');
-            let sort_to = el.data('sort_to');
-            let allId = el.data('all-id');
+                let el = $(this);
+                let tab = el.data('tab');
+                let limit = el.data('limit');
+                let sort_by = el.data('sort_by');
+                let sort_to = el.data('sort_to');
+                let allId = el.data('all-id');
 
-            const url = `{{route('tenant.category.wise.product.'.tenant()->theme_slug)}}`;
+                const url = `{{route('tenant.category.wise.product.'.tenant()->theme_slug)}}`;
 
-            $.ajax({
-                type: 'GET',
-                url: url,
-                data: {
-                    category: tab,
-                    limit: limit,
-                    sort_by: sort_by,
-                    sort_to: sort_to,
-                    allId: allId
-                },
-                beforeSend: function () {
-                    $('.loader').fadeIn(200);
-                },
-                success: function (data) {
-                    let tab = $('li.list[data-tab='+data.category+']');
-                    let markup_wrapper = $('.markup_wrapper');
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    data: {
+                        category: tab,
+                        limit: limit,
+                        sort_by: sort_by,
+                        sort_to: sort_to,
+                        allId: allId
+                    },
+                    beforeSend: function () {
+                        $('.loader').fadeIn(200);
+                    },
+                    success: function (data) {
+                        let tab = $('li.list[data-tab='+data.category+']');
+                        let markup_wrapper = $('.markup_wrapper');
 
-                    $('li.list').removeClass('active');
-                    tab.addClass('active');
-                    markup_wrapper.hide();
-                    markup_wrapper.html(data.markup);
-                    markup_wrapper.fadeIn();
-                    $('.loader').fadeOut(200);
-                },
-                error: function (data) {
-                    console.log('error')
-                }
+                        $('li.list').removeClass('active');
+                        tab.addClass('active');
+                        markup_wrapper.hide();
+                        markup_wrapper.html(data.markup);
+                        markup_wrapper.fadeIn();
+                        $('.loader').fadeOut(200);
+                    },
+                    error: function (data) {
+                        console.log('error')
+                    }
+                });
             });
         });
-    });
-</script>
+    </script>
+@endif
+

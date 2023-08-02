@@ -54,12 +54,12 @@ class CampaignCard extends PageBuilderBase
                     'type' => RepeaterField::TEXT,
                     'name' => 'repeater_slogan',
                     'label' => __('Campaign Slogan').' '.'<sup class="text-primary">'.__('Optional').'</sup>',
+                    'info' => '<p class="mt-2">'.__('To highlight a text use {h}{/h}. eg, Product {h}Collection{/h}').'</p>'
                 ],
                 [
                     'type' => RepeaterField::TEXT,
                     'name' => 'repeater_title',
                     'label' => __('Campaign Title').' '.'<sup class="text-primary">'.__('Optional').'</sup>',
-                    'info' => '<p class="mt-2">'.__('To highlight a text use {h}{/h}. eg, Product {h}Collection{/h}').'</p>'
                 ],
                 [
                     'type' => RepeaterField::TEXT,
