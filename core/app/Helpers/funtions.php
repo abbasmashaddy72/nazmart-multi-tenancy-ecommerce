@@ -340,12 +340,12 @@ function render_image_markup_by_attachment_id($id, $class = null, $size = 'full'
     return $output;
 }
 
-function get_theme_image($slug)
+function get_theme_image($slug, $range)
 {
     //Info - Theme image path - assets/img/theme
     $themes = [];
 
-    foreach (range(1, 14) as $item) {
+    foreach ($range as $item) {
         $themes['theme-' . $item] = global_asset('assets/img/theme/th-' . $item . '.jpg');
     }
 
@@ -619,6 +619,25 @@ function get_product_dynamic_price($product_object)
     $data['is_expired'] = $is_expired;
 
     return $data;
+}
+
+function render_product_dynamic_price_markup($product_object, $sale_price_markup_tag = 'span', $sale_price_class = '', $regular_price_markup_tag = 'span', $regular_price_class = '')
+{
+    $sale_price_markup_tag = str_replace(['<','>','/'], '', $sale_price_markup_tag);
+    $regular_price_markup_tag = str_replace(['<','>','/'], '', $regular_price_markup_tag);
+
+    $price_data = get_product_dynamic_price($product_object);
+
+    $sale_price = amount_with_currency_symbol($price_data['sale_price']);
+    $regular_price = amount_with_currency_symbol($price_data['regular_price']);
+
+    $markup = "<{$sale_price_markup_tag} class='{$sale_price_class}'>{$sale_price}</{$sale_price_markup_tag}>";
+    if ($price_data['regular_price'] > 0)
+    {
+        $markup .= "<{$regular_price_markup_tag} class='{$regular_price_class}'>{$regular_price}</$regular_price_markup_tag>";
+    }
+
+    return $markup;
 }
 
 function get_digital_product_dynamic_price($product_object)
@@ -1386,9 +1405,6 @@ function render_payment_gateway_for_form($cash_on_delivery = false)
 //    }
 
     $output .= '<input type="hidden" name="selected_payment_gateway" value="' . get_static_option('site_default_payment_gateway') . '">';
-//    $all_gateway = [
-//        'paypal', 'manual_payment', 'mollie', 'paytm', 'stripe', 'razorpay', 'flutterwave', 'paystack','midtrans','payfast','cashfree','instamojo','marcadopago'
-//    ];
     $all_gateway = \App\Models\PaymentGateway::where('status', 1)->get();
     $output .= '<ul>';
     if ($cash_on_delivery) {
@@ -1792,7 +1808,7 @@ function tenant_plan_theme_list()
     return $themes;
 }
 
-function product_limited_text($text, $type)
+function product_limited_text($text, $type = 'title')
 {
     switch ($type) {
         case 'title':

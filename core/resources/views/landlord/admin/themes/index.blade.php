@@ -81,14 +81,14 @@
                     @endforeach
 
                     @if(get_static_option('up_coming_themes_backend'))
-                        @foreach(range(4, 14) as $item)
+                        @foreach(range(8, 16) as $item)
                             <div class="col-xl-3 col-md-6">
                                 <div class="themePreview coming_soon">
                                     <a href="javascript:void(0)" id="theme-preview"
                                        data-bs-toggle="modal"
                                        class="theme-preview">
                                         <div class="bg"
-                                             style="background-image: url('{{get_theme_image('theme-'.$item)}}');"></div>
+                                             style="background-image: url('{{get_theme_image('theme-'.$item, range(7, 16))}}');"></div>
                                     </a>
                                     <div class="coming-soon-theme">{{__('Coming Soon')}}</div>
                                 </div>

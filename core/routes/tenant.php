@@ -310,6 +310,7 @@ Route::middleware([
         Route::get('category-wise-product/theme-bookpoint/physical', [TenantFrontendController::class, 'product_by_category_ajax_bookpoint_physical'])->name('category.wise.product.bookpoint.physical');
         Route::get('category-wise-product/theme-aromatic', [TenantFrontendController::class, 'product_by_category_ajax_aromatic'])->name('category.wise.product.aromatic');
         Route::get('category-wise-product/theme-casual', [TenantFrontendController::class, 'product_by_category_ajax_casual'])->name('category.wise.product.casual');
+        Route::get('category-wise-product/theme-electro', [TenantFrontendController::class, 'product_by_category_ajax_electro'])->name('category.wise.product.electro');
     });
 });
 

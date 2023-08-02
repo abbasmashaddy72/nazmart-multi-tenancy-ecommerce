@@ -40,7 +40,7 @@
             @foreach($all_theme as $theme)
                 @php
                     $theme_slug = $theme->slug;
-                    if (!in_array($theme_slug ,tenant_plan_theme_list()))
+                    if (!in_array($theme_slug , tenant_plan_theme_list()))
                     {
                         continue;
                     }

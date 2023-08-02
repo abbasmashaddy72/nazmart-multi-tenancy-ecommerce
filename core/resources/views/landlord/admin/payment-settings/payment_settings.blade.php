@@ -51,7 +51,7 @@
 
                                                 <div class="form-group">
                                                     <label
-                                                        for="instamojo_test_mode"><strong>{{sprintf(__('Enable Test Mode %s'),ucfirst($gateway->name))}}</strong></label>
+                                                        for="instamojo_test_mode"><strong>{{__("Enable Test Mode"." ".ucfirst($gateway->name))}}</strong></label>
 
                                                     <label class="switch">
                                                         <input type="checkbox" name="{{$gateway->name}}_test_mode"
@@ -61,7 +61,7 @@
                                                 </div>
 
                                                 <x-landlord-others.edit-media-upload-image
-                                                    label="{{ sprintf(__('%s Logo'),ucfirst($gateway->name))}}"
+                                                    label="{{ __(ucfirst($gateway->name).' '.'Logo') }}"
                                                     name="{{$gateway->name.'_logo'}}" :value="$gateway->image"/>
 
                                                 @if($gateway->name === "paystack")
