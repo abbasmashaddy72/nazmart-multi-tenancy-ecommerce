@@ -32,7 +32,9 @@ class ProductCheckoutService
     {
         $user = Auth::guard('web')->user();
 
-        if ($user == null || ($user != null && $user->delivery_address == null)) { // get non-logged in user or user with no billing address
+        // If user does not exist
+        if (!$user)
+        {
             $name = $validated_data['name'];
             $email = trim(strtolower($validated_data['email']));
             $phone = $validated_data['phone'];
@@ -46,59 +48,25 @@ class ProductCheckoutService
             $city = $validated_data['city'];
             $address = $validated_data['address'];
 
-            $user = [
-                'id' => !empty($user) ? $user->id : null,
-                'name' => $name,
-                'email' => $email,
-                'mobile' => $phone,
-                'country_name' => $country_name,
-                'country' => $country_id,
-                'state_name' => $state_name,
-                'state' => $state_id,
-                'city' => $city,
-                'address' => $address
-            ];
-
-            if (array_key_exists('create_accounts_input', $validated_data) && $validated_data['create_accounts_input'] != null) // create new user
+            // If user wants to create account while checkout
+            if (array_key_exists('create_accounts_input', $validated_data) && $validated_data['create_accounts_input'] != null)
             {
                 $username = $validated_data['create_username'];
                 $password = $validated_data['create_password'];
 
                 $user = $this->loginIfUserExist($validated_data);
-                if (!$user || $user == 'user_exist') {
-                    if ($user == 'user_exist')
+                if (!$user || 'user_exist' == $user) {
+                    if ('user_exist' == $user)
                     {
                         return [];
                     }
 
-                    $username = create_slug($username, 'User', false, '', 'username');
+                    $user_data = $this->createUserAndDeliveryAddress(
+                        compact('username', 'password', 'name', 'email', 'phone', 'country_name', 'state_name', 'city', 'address', 'country_id', 'state_id')
+                    );
 
-                    $user = User::create([
-                        'username' => $username,
-                        'password' => \Hash::make($password),
-                        'name' => $name,
-                        'email' => $email,
-                        'mobile' => $phone,
-                        'country' => $country_name,
-                        'state' => $state_name,
-                        'city' => $city,
-                        'address' => $address
-                    ]);
-
-                    Auth::guard('web')->attempt(['username' => $user->username, 'password' => $password], true);
-
-                    $user_delivery_address = UserDeliveryAddress::create([
-                        'user_id' => $user->id,
-                        'full_name' => $user->name,
-                        'email' => $email,
-                        'phone' => $phone,
-                        'country_id' => $country_id,
-                        'state_id' => $state_id,
-                        'city' => $city,
-                        'address' => $address,
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ]);
+                    $user = $user_data['user'];
+                    $user_delivery_address = $user_data['user_delivery_address'];
 
                     $user = [
                         'id' => $user->id,
@@ -111,10 +79,46 @@ class ProductCheckoutService
                         'address' => $user_delivery_address->address
                     ];
                 }
-            } else { // get logged in user address with billing info
-                if ($validated_data['shift_another_address'] == 'on') {
+            }
+            else
+            {
+                $user = [
+                    'id' => null,
+                    'name' => $name,
+                    'email' => $email,
+                    'mobile' => $phone,
+                    'country_name' => $country_name,
+                    'country' => $country_id,
+                    'state_name' => $state_name,
+                    'state' => $state_id,
+                    'city' => $city,
+                    'address' => $address
+                ];
+            }
+        }
+        // If user is logged in
+        else
+        {
+            // If user delivery address exist
+            if ($user->delivery_address)
+            {
+                $user_address = $user->delivery_address;
+                $user = [
+                    'id' => $user->id,
+                    'name' => $user_address->full_name,
+                    'email' => $user_address->email,
+                    'mobile' => $user_address->phone,
+                    'country' => $user_address->country_id,
+                    'state' => $user_address->state_id,
+                    'city' => $user_address->city,
+                    'address' => $user_address->address
+                ];
+
+                // If user want to ship another address
+                if ($validated_data['shift_another_address'])
+                {
                     $user = [
-                        'id' => $user->id,
+                        'id' => $user['id'],
                         'name' => $validated_data['shift_name'],
                         'email' => $validated_data['shift_email'],
                         'mobile' => $validated_data['shift_phone'],
@@ -123,46 +127,33 @@ class ProductCheckoutService
                         'city' => $validated_data['shift_city'],
                         'address' => $validated_data['shift_address']
                     ];
-                } else {
-                    $user_for_address = User::find($user['id']);
-                    $user_address = $user_for_address->delivery_address;
-
-                    $user = [
-                        'id' => $user->id,
-                        'name' => $user_address->full_name,
-                        'email' => $user_address->email,
-                        'mobile' => $user_address->phone,
-                        'country' => $user_address->country_id,
-                        'state' => $user_address->state_id,
-                        'city' => $user_address->city,
-                        'address' => $user_address->address
-                    ];
                 }
             }
-        }
-        elseif($user && $user->delivery_address)
-        {
-            $user_address = $user->delivery_address;
-            $user = [
-                'id' => $user->id,
-                'name' => $user_address->full_name,
-                'email' => $user_address->email,
-                'mobile' => $user_address->phone,
-                'country' => $user_address->country_id,
-                'state' => $user_address->state_id,
-                'city' => $user_address->city,
-                'address' => $user_address->address
-            ];
+            // If user has not set any delivery address
+            else
+            {
+                $user = [
+                    'id' => $user->id,
+                    'name' => $user->full_name,
+                    'email' => $user->email,
+                    'mobile' => $user->phone,
+                    'country' => null,
+                    'state' => null,
+                    'city' => $user->city,
+                    'address' => $user->address
+                ];
+            }
         }
 
         return $user;
     }
 
-    private function loginIfUserExist($data)
+    private function loginIfUserExist($data): bool|array|string
     {
         $user = User::where('username', trim($data['create_username']))->orWhere('email', $data['email'])->first();
 
-        if ($user && Auth::guard('web')->attempt(['username' => $user->username, 'password' => $data['create_password']], true)) {
+        // If user exist and get authenticated
+        if ($user && $this->loginUser($user->username, $data['create_password'])) {
             $user_address = $user->delivery_address;
 
             return [
@@ -170,19 +161,66 @@ class ProductCheckoutService
                 'name' => $user_address->full_name ?? $user->name,
                 'email' => $user_address->email ?? $user->email,
                 'mobile' => $user_address->phone ?? $user->mobile,
-                'country' => $user_address->country_id ?? $user->country(),
+                'country' => $user_address->country_id ?? $user->country,
                 'state' => $user_address->state_id ?? $user->state,
                 'city' => $user_address->city ?? $user->city,
                 'address' => $user_address->address ?? $user->address
             ];
         }
 
+        // If user exist but not authenticated
         if ($user)
         {
             return 'user_exist';
         }
 
+        // If user do not exist
         return false;
+    }
+
+    private function createUserAndDeliveryAddress($data): array
+    {
+        $username = create_slug($data['username'], 'User', false, '', 'username');
+
+        $user = User::create([
+            'username' => $username,
+            'password' => \Hash::make($data['password']),
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'mobile' => $data['phone'],
+            'country' => $data['country_name'],
+            'state' => $data['state_name'],
+            'city' => $data['city'],
+            'address' => $data['address']
+        ]);
+
+        $user_delivery_address = UserDeliveryAddress::create([
+            'user_id' => $user->id,
+            'full_name' => $user->name,
+            'email' => $data['email'],
+            'phone' => $data['phone'],
+            'country_id' => $data['country_id'],
+            'state_id' => $data['state_id'],
+            'city' => $data['city'],
+            'address' => $data['address'],
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        if ($user)
+        {
+            $this->loginUser($user->username, $data['password']);
+        }
+
+        return [
+            'user' => $user,
+            'user_delivery_address' => $user_delivery_address
+        ];
+    }
+
+    private function loginUser($username, $password): bool
+    {
+        return Auth::guard('web')->attempt(['username' => $username, 'password' => $password], true);
     }
 
     public static function getCartProducts(): array
@@ -232,13 +270,6 @@ class ProductCheckoutService
                 $arr['DIGITAL']['quantity'][] = $item['qty'];
                 $arr['DIGITAL']['price'][] = $item['price'];
             }
-
-//            $total += $item['price'] * $item['qty'];
-//            $products_id[] = $item['id'];
-//            $products_type[] = $item['type'];
-//            $variant_id[] = $item['variant_id'];
-//            $quantity[] = $item['qty'];
-//            $price[] = $item['price'];
         }
 
 
@@ -249,15 +280,6 @@ class ProductCheckoutService
         if (count($arr['PHYSICAL']) <= 1) {
             unset($arr['PHYSICAL']);
         }
-
-//        return [
-//            'total' => $total,
-//            'products_id' => $products_id,
-//            'products_type' => $products_type,
-//            'variants_id' => $variant_id,
-//            'quantity' => $quantity,
-//            'price' => $price
-//        ];
 
         return $arr;
     }

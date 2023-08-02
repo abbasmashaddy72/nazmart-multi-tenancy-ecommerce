@@ -52,19 +52,24 @@ class CampaignCard extends PageBuilderBase
                 ],
                 [
                     'type' => RepeaterField::TEXT,
+                    'name' => 'repeater_slogan',
+                    'label' => __('Campaign Slogan').' '.'<sup class="text-primary">'.__('Optional').'</sup>',
+                ],
+                [
+                    'type' => RepeaterField::TEXT,
                     'name' => 'repeater_title',
-                    'label' => __('Campaign Title'),
+                    'label' => __('Campaign Title').' '.'<sup class="text-primary">'.__('Optional').'</sup>',
                     'info' => '<p class="mt-2">'.__('To highlight a text use {h}{/h}. eg, Product {h}Collection{/h}').'</p>'
                 ],
                 [
                     'type' => RepeaterField::TEXT,
                     'name' => 'repeater_button_text',
-                    'label' => __('Button Text')
+                    'label' => __('Button Text').' '.'<sup class="text-primary">'.__('Optional').'</sup>'
                 ],
                 [
                     'type' => RepeaterField::TEXT,
                     'name' => 'repeater_button_url',
-                    'label' => __('Button URL')
+                    'label' => __('Button URL').' '.'<sup class="text-primary">'.__('Optional').'</sup>'
                 ],
                 [
                     'type' => RepeaterField::SWITCHER,
@@ -75,14 +80,9 @@ class CampaignCard extends PageBuilderBase
                 [
                     'type' => RepeaterField::IMAGE,
                     'name' => 'repeater_image',
-                    'label' => __('Image'),
+                    'label' => __('Image').' '.'<sup class="text-primary">'.__('Optional').'</sup>',
                     'dimensions'=> '320x287 | 320x290 px'
-                ],
-                [
-                    'type' => RepeaterField::COLOR_PICKER,
-                    'name' => 'repeater_background_color',
-                    'label' => __('Background Color')
-                ],
+                ]
             ]
         ]);
 
