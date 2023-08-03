@@ -37,50 +37,6 @@ class PopularProducts extends PageBuilderBase
             'value' => $widget_saved_values['title'] ?? null,
         ]);
 
-        $products = [];
-        Product::published()->chunk(50, function ($chunked_products) use (&$products) {
-            foreach ($chunked_products as $product)
-            {
-                $products[$product->id] = $product->name;
-            }
-
-            return $products;
-        });
-
-//        $products_id = OrderProducts::query()->distinct('product_id')->orderBy('product_id', 'desc')->pluck('product_id')->toArray();
-//        $sales = DB::table('order_products')
-//            ->leftJoin('products','order_products.product_id','=','products.id')
-//            ->selectRaw('order_products.*, COALESCE(sum(order_products.product_id),0) total')
-//            ->groupBy('order_products.product_id')
-//            ->orderBy('total','desc')
-//            ->take(5)
-//            ->get();
-
-//        $referrals = OrderProducts::whereNotNull('product_id')->orderBy('product_id', 'asc')->get()->groupBy('product_id');
-
-        $users = OrderProducts::select('*', DB::raw('count(product_id) as total'))
-            ->groupBy('product_id')
-            ->pluck('product_id','total')
-            ->orderBy('total', 'desc')
-            ->toArray();
-
-        $users = DB::table('order_products')->raw("SELECT COUNT(CustomerID), Country
-                                FROM Customers
-                                GROUP BY Country
-                                ORDER BY COUNT(CustomerID) DESC");
-
-        dd($users);
-
-
-        $output .= NiceSelect::get([
-            'multiple' => true,
-            'name' => 'products',
-            'label' => __('Select Products'),
-            'options' => $products,
-            'value' => $widget_saved_values['products'] ?? null,
-            'info' => __('You can select your desired products or leave it empty to show latest products')
-        ]);
-
         $output .= Number::get([
             'name' => 'item_show',
             'label' => __('Product Show'),
@@ -110,23 +66,28 @@ class PopularProducts extends PageBuilderBase
 
     public function frontend_render()
     {
-        $product_id = $this->setting_item('products');
-        $title = SanitizeInput::esc_html($this->setting_item('title') ?? '');
-        $item_show = SanitizeInput::esc_html($this->setting_item('item_show') ?? '');
-        $item_order = SanitizeInput::esc_html($this->setting_item('item_order') ?? '');
+        $title = esc_html($this->setting_item('title') ?? '');
+        $item_show = esc_html($this->setting_item('item_show'));
+        $item_order = esc_html($this->setting_item('item_order') ?? '');
 
-        $padding_top = SanitizeInput::esc_html($this->setting_item('padding_top'));
-        $padding_bottom = SanitizeInput::esc_html($this->setting_item('padding_bottom'));
+        $padding_top = esc_html($this->setting_item('padding_top'));
+        $padding_bottom = esc_html($this->setting_item('padding_bottom'));
 
-        $products = Product::with('badge', 'campaign_product', 'inventory', 'inventoryDetail')
-                    ->where('status_id', 1);
+        $products_id = OrderProducts::select('product_id', DB::raw('count(product_id) as total'))
+            ->groupBy('product_id')
+            ->orderBy('total',  $item_order ?? 'desc')
+            ->take(!empty($item_show) ? $item_show : 4)
+            ->pluck('product_id');
 
-        if (!empty($product_id))
+        $products = Product::with('badge', 'campaign_product', 'inventory', 'inventoryDetail')->published();
+        if ($products_id)
         {
-            $products->whereIn('id', $product_id);
+            $products->whereIn('id', $products_id->toArray());
+        } else {
+            $products->orderByDesc('id');
         }
 
-        $products = $products->orderBy('created_at', $item_order ?? 'desc')->take($item_show ?? 4)->get();
+        $products = $products->take(!empty($item_show) ? $item_show : 4)->get();
 
         $data = [
             'padding_top'=> $padding_top,
@@ -135,7 +96,7 @@ class PopularProducts extends PageBuilderBase
             'products'=> $products,
         ];
 
-        return self::renderView('tenant.electro.product.featured-collection', $data);
+        return self::renderView('tenant.electro.product.popular-products', $data);
     }
 
     public function addon_title()

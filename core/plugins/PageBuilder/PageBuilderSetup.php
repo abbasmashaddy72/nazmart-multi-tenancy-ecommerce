@@ -35,6 +35,7 @@ use Plugins\PageBuilder\Addons\Tenants\Casual\Common\Categories;
 use Plugins\PageBuilder\Addons\Tenants\Casual\Product\PopularCollection;
 use Plugins\PageBuilder\Addons\Tenants\Casual\Product\PopularProduct;
 use Plugins\PageBuilder\Addons\Tenants\Electro\Common\CampaignCard;
+use Plugins\PageBuilder\Addons\Tenants\Electro\Common\NewReleaseCard;
 use Plugins\PageBuilder\Addons\Tenants\Electro\Product\FeaturedCollection;
 use Plugins\PageBuilder\Addons\Tenants\Electro\Product\PopularProducts;
 use Plugins\PageBuilder\Addons\Tenants\Furnito\Product\TrendingProducts;
@@ -177,7 +178,8 @@ class PageBuilderSetup
                     FeaturedCollection::class,
                     \Plugins\PageBuilder\Addons\Tenants\Electro\Product\ProductTypeList::class,
                     CampaignCard::class,
-                    PopularProducts::class
+                    PopularProducts::class,
+                    NewReleaseCard::class
                 ];
             }
 

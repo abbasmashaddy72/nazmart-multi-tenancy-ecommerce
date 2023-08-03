@@ -862,5 +862,4 @@ class GeneralSettingsController extends Controller
 
         return back()->with(["msg" => $message, "type" => $type]);
     }
-
 }
