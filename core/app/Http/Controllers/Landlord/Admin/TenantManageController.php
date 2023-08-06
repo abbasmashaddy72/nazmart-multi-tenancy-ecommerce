@@ -46,7 +46,7 @@ class TenantManageController extends Controller
     {
         $all_tenants = \Cache::remember('all_tenants', 60*60, function (){
             $every = [];
-            Tenant::chunk(100, function ($tenants) use (&$every) {
+            Tenant::whereNotNull('user_id')->chunk(100, function ($tenants) use (&$every) {
                 foreach ($tenants as $tenant)
                 {
                     $every[] = $tenant;
