@@ -4,6 +4,7 @@ namespace Plugins\PageBuilder\Addons\Tenants\Electro\Common;
 
 use App\Facades\GlobalLanguage;
 use App\Helpers\SanitizeInput;
+use Plugins\PageBuilder\Fields\HighlightedText;
 use Plugins\PageBuilder\Fields\Number;
 use Plugins\PageBuilder\Fields\Repeater;
 use Plugins\PageBuilder\Fields\Select;
@@ -70,11 +71,14 @@ class NewReleaseCard extends PageBuilderBase
             ]
         ]);
 
-        $output .= Text::get([
-            'name' => 'title',
-            'label' => __('Title'),
-            'value' => $widget_saved_values['title'] ?? null,
-            'info' => '<p class="mt-2">'.__('To highlight a text use {h}{/h}. eg, Product {h}Collection{/h}').'</p>'
+        $output .= HighlightedText::get([
+            'label' => __('test'),
+            'name' => 'testTwo',
+            'options' => [
+                'value' => $widget_saved_values['testTwo'][0] ?? null,
+                'highlight' => $widget_saved_values['testTwo'][1] ?? null
+            ],
+            'value' => $widget_saved_values['testTwo'] ?? null,
         ]);
 
         // add padding option
@@ -91,6 +95,7 @@ class NewReleaseCard extends PageBuilderBase
         $padding_top = esc_html($this->setting_item('padding_top'));
         $padding_bottom = esc_html($this->setting_item('padding_bottom'));
 
+        dd($this->setting_item('testTwo'));
         $repeater = $this->setting_item('repeater_data') ?? '';
 
         $data = [
