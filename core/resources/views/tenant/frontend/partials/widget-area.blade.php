@@ -2,7 +2,6 @@
     $current_theme_slug = getSelectedThemeSlug();
     $widget_area_name = getFooterWidgetArea();
 
-//    $footer_view = 'tenant.frontend.partials.pages-portion.footers.footer-'.$current_theme_slug.'';
     $footer_view = 'themes.'.$current_theme_slug.'.footerWidgetArea.'.$widget_area_name;
 @endphp
 
