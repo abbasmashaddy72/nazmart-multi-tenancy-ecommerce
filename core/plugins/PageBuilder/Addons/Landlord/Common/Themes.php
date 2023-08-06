@@ -10,6 +10,7 @@ use Plugins\PageBuilder\Fields\Image;
 use Plugins\PageBuilder\Fields\Number;
 use Plugins\PageBuilder\Fields\Repeater;
 use Plugins\PageBuilder\Fields\Slider;
+use Plugins\PageBuilder\Fields\Switcher;
 use Plugins\PageBuilder\Fields\Text;
 use Plugins\PageBuilder\Helpers\RepeaterField;
 use Plugins\PageBuilder\PageBuilderBase;
@@ -50,9 +51,21 @@ class Themes extends PageBuilderBase
         ]);
 
         $output .= Text::get([
+            'name' => 'theme_page_text',
+            'label' => __('Theme Page Button Text'),
+            'value' => $widget_saved_values['theme_page_text'] ?? null,
+        ]);
+
+        $output .= Text::get([
             'name' => 'theme_page_url',
             'label' => __('Theme Page URL'),
             'value' => $widget_saved_values['theme_page_url'] ?? null,
+        ]);
+
+        $output .= Switcher::get([
+            'name' => 'new_tab',
+            'label' => __('Open in new tab'),
+            'value' => $widget_saved_values['new_tab'] ?? null,
         ]);
 
         // add padding option
@@ -67,22 +80,27 @@ class Themes extends PageBuilderBase
 
     public function frontend_render()
     {
-        $padding_top = SanitizeInput::esc_html($this->setting_item('padding_top'));
-        $padding_bottom = SanitizeInput::esc_html($this->setting_item('padding_bottom'));
+        $padding_top = esc_html($this->setting_item('padding_top'));
+        $padding_bottom = esc_html($this->setting_item('padding_bottom'));
 
-        $title = SanitizeInput::esc_html($this->setting_item('title')) ?? '';
-        $subtitle = SanitizeInput::esc_html($this->setting_item('subtitle')) ?? '';
-        $theme_url = SanitizeInput::esc_url($this->setting_item('theme_page_url')) ?? '';
+        $title = esc_html($this->setting_item('title')) ?? '';
+        $subtitle = esc_html($this->setting_item('subtitle')) ?? '';
+        $theme_text = esc_html($this->setting_item('theme_page_text')) ?? '';
+        $theme_url = esc_url($this->setting_item('theme_page_url')) ?? '';
+
+        $target = esc_url($this->setting_item('new_tab')) ?? '';
 
         $bg_shape_image = $this->setting_item('background_shape') ?? '';
 
-        $section_id = SanitizeInput::esc_html($this->setting_item('section_id')) ?? '';
+        $section_id = esc_html($this->setting_item('section_id')) ?? '';
         $data = [
             'padding_top' => $padding_top,
             'padding_bottom' => $padding_bottom,
             'title' => $title,
             'subtitle' => $subtitle,
+            'theme_text' => $theme_text,
             'theme_url' => $theme_url,
+            'target' => $target,
             'bg_shape_image' => $bg_shape_image,
             'section_id' => $section_id,
         ];

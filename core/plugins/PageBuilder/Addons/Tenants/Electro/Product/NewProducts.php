@@ -17,7 +17,7 @@ use Plugins\PageBuilder\Fields\Switcher;
 use Plugins\PageBuilder\Fields\Text;
 use Plugins\PageBuilder\PageBuilderBase;
 
-class PopularProducts extends PageBuilderBase
+class NewProducts extends PageBuilderBase
 {
     public function preview_image()
     {
@@ -73,21 +73,10 @@ class PopularProducts extends PageBuilderBase
         $padding_top = esc_html($this->setting_item('padding_top'));
         $padding_bottom = esc_html($this->setting_item('padding_bottom'));
 
-        $products_id = OrderProducts::select('product_id', DB::raw('count(product_id) as total'))
-            ->groupBy('product_id')
-            ->orderBy('total',  $item_order ?? 'desc')
-            ->take(!empty($item_show) ? $item_show : 4)
-            ->pluck('product_id');
-
-        $products = Product::with('badge', 'campaign_product', 'inventory', 'inventoryDetail')->published();
-        if ($products_id)
-        {
-            $products->whereIn('id', $products_id->toArray());
-        } else {
-            $products->orderByDesc('id');
-        }
-
-        $products = $products->take(!empty($item_show) ? $item_show : 4)->get();
+        $products = Product::with('badge', 'campaign_product', 'inventory', 'inventoryDetail')
+            ->published()
+            ->orderBy('id', $item_order ?? 'desc')
+            ->take(!empty($item_show) ? $item_show : 3)->get();
 
         $data = [
             'padding_top'=> $padding_top,
@@ -96,11 +85,11 @@ class PopularProducts extends PageBuilderBase
             'products'=> $products,
         ];
 
-        return self::renderView('tenant.electro.product.popular-products', $data);
+        return self::renderView('tenant.electro.product.new-products', $data);
     }
 
     public function addon_title()
     {
-        return __('Electro: Popular Products');
+        return __('Electro: New Products');
     }
 }

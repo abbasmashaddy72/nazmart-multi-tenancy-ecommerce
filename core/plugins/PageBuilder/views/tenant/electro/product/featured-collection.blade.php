@@ -30,7 +30,9 @@
                             </div>
 
                             <div class="collection-contents">
-                                <h3 class="collection-title color-four"> <a href="javascript:void(0)"> {{product_limited_text($product->name)}} </a></h3>
+                                <h3 class="collection-title color-four">
+                                    <a href="{{to_product_details($product->slug)}}"> {{product_limited_text($product->name)}} </a>
+                                </h3>
 
                                 @php
                                     $price_class = 'fs-22 ff-roboto fw-500 flash-prices color-four margin-top-10';

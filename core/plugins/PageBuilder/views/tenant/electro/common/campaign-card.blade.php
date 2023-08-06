@@ -13,7 +13,7 @@
                     $image_id = $data['repeater']['repeater_image_'][$index] ?? $campaign->image;
 
                     $campaign_url = route('frontend.products.campaign', $campaign_id);
-                    $button_text = $data['repeater']['repeater_button_text_'][$index] ?? 'Order Now';
+                    $button_text = $data['repeater']['repeater_button_text_'][$index] ?? __('Order Now');
                     $button_url = $data['repeater']['repeater_button_url_'][$index] ?? $campaign_url;
                     $button_target = $data['repeater']['repeater_button_target_'][$index] ? 'target="_blank"' : '';
                 @endphp

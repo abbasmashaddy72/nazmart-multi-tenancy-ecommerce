@@ -91,7 +91,8 @@
                             <div class="single-themes">
                                 <div class="single-themes-thumb coming_soon">
                                     <a href="javascript:void(0)">
-                                        <img class="rounded" src="{{get_theme_image('theme-'.$item, range(7, 16))}}" alt="">
+                                        <img class="rounded" src="{{get_theme_image('theme-'.$item, range(7, 16))}}"
+                                             alt="">
                                     </a>
                                     <div class="coming-soon-theme">{{__('Coming Soon')}}</div>
                                 </div>
@@ -109,6 +110,14 @@
                         </div>
                     @endif
                 @endforeach
+            @endif
+
+            @if(array_key_exists('theme_url', $data) && !empty($data['theme_url']))
+                <div class="col-12" style="margin-top: 80px">
+                    <div class="btn-wrapper text-center">
+                        <a href="{{$data['theme_url']}}" class="cmn-btn cmn-btn-bg-1" {{$data['target'] ? 'target="_blank"' : '""'}}>{{$data['theme_text'] ?? ''}}</a>
+                    </div>
+                </div>
             @endif
         </div>
     </div>
