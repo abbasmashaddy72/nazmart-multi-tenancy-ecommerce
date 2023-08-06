@@ -137,10 +137,11 @@
 <script>
     let site_currency_symbol = '{{ site_currency_symbol() }}';
 
-    @if(tenant()->theme_slug == 'hexfashion' || tenant()->theme_slug == 'furnito' || tenant()->theme_slug == 'aromatic')
+    @if(in_array(tenant()->theme_slug, ["hexfashion","furnito","aromatic","electro"]))
         $('.theme-one-footer .col-lg-3').removeClass('col-lg-3').addClass('col-lg-4');
         $('.theme-two-footer .col-lg-3').removeClass('col-lg-3').addClass('col-lg-4');
         $('.theme-aromatic-footer .col-lg-3').removeClass('col-lg-3').addClass('col-lg-4');
+        $('.theme-electro-footer .col-lg-3').removeClass('col-lg-3').addClass('col-lg-4');
     @endif
 </script>
 

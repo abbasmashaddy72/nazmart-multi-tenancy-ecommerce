@@ -39,6 +39,8 @@ use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterContact;
 use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterPaymentGatewaysWidget;
 use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\SocialFollowWidget;
 use Plugins\WidgetBuilder\Widgets\TenantSidebarBannerWidget;
+use Plugins\WidgetBuilder\Widgets\Tenants\Electro\AboutUsWidget as ElectroAboutUsWidget;
+use Plugins\WidgetBuilder\Widgets\Tenants\Electro\TenantImageWidget as ElectroImageWidget;
 
 class WidgetBuilderSetup
 {
@@ -85,7 +87,11 @@ class WidgetBuilderSetup
 
             // Casual
             TenantNavigationMenuWidgetThree::class,
-            TenantAboutUsWidgetThree::class
+            TenantAboutUsWidgetThree::class,
+
+            // Electro
+            ElectroAboutUsWidget::class,
+            ElectroImageWidget::class
         ];
 
         // Third party custom addons
