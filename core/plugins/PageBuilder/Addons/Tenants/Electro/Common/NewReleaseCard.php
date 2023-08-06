@@ -5,6 +5,7 @@ namespace Plugins\PageBuilder\Addons\Tenants\Electro\Common;
 use App\Facades\GlobalLanguage;
 use App\Helpers\SanitizeInput;
 use Plugins\PageBuilder\Fields\HighlightedText;
+use Plugins\PageBuilder\Fields\Image;
 use Plugins\PageBuilder\Fields\Number;
 use Plugins\PageBuilder\Fields\Repeater;
 use Plugins\PageBuilder\Fields\Select;
@@ -29,56 +30,57 @@ class NewReleaseCard extends PageBuilderBase
 
         $widget_saved_values = $this->get_settings();
 
-        //repeater
-        $output .= Repeater::get([
-            'multi_lang' => false,
-            'settings' => $widget_saved_values,
-            'id' => 'repeater_data',
-            'fields' => [
-                [
-                    'type' => RepeaterField::TEXT,
-                    'name' => 'repeater_title',
-                    'label' => __('Title'),
-                    'info' => '<p class="mt-2">'.__('To highlight a text use {h}{/h}. eg, Product {h}Collection{/h}').'</p>'
-                ],
-                [
-                    'type' => RepeaterField::TEXT,
-                    'name' => 'repeater_button_text',
-                    'label' => __('Button Text')
-                ],
-                [
-                    'type' => RepeaterField::TEXT,
-                    'name' => 'repeater_button_url',
-                    'label' => __('Button URL')
-                ],
-                [
-                    'type' => RepeaterField::SWITCHER,
-                    'name' => 'repeater_button_target',
-                    'label' => __('Button Target'),
-                    'info' => __('keep on if you want to open the link in a different tab')
-                ],
-                [
-                    'type' => RepeaterField::IMAGE,
-                    'name' => 'repeater_image',
-                    'label' => __('Image'),
-                    'dimensions'=> '320x287 | 320x290 px'
-                ],
-                [
-                    'type' => RepeaterField::COLOR_PICKER,
-                    'name' => 'repeater_background_color',
-                    'label' => __('Background Color')
-                ],
-            ]
+        $output .= HighlightedText::get([
+            'label' => __('Enter Full Title'),
+            'name' => 'title',
+            'options' => [
+                'value' => $widget_saved_values['title'][0] ?? null,
+                'highlight' => $widget_saved_values['title'][1] ?? null
+            ],
+            'value' => $widget_saved_values['title'] ?? null,
         ]);
 
-        $output .= HighlightedText::get([
-            'label' => __('test'),
-            'name' => 'testTwo',
-            'options' => [
-                'value' => $widget_saved_values['testTwo'][0] ?? null,
-                'highlight' => $widget_saved_values['testTwo'][1] ?? null
-            ],
-            'value' => $widget_saved_values['testTwo'] ?? null,
+        $output .= Number::get([
+            'label' => __('Enter Price'),
+            'name' => 'price',
+            'placeholder' => __('Price'),
+            'value' => $widget_saved_values['price'] ?? null,
+        ]);
+
+        $output .= Text::get([
+            'label' => __('Enter Button Text'),
+            'name' => 'button_text',
+            'placeholder' => __('Button Text'),
+            'value' => $widget_saved_values['button_text'] ?? null,
+        ]);
+
+        $output .= Text::get([
+            'label' => __('Enter Button URL'),
+            'name' => 'button_url',
+            'placeholder' => __('Button URL'),
+            'value' => $widget_saved_values['button_url'] ?? null,
+        ]);
+
+        $output .= Image::get([
+            'name' => 'image',
+            'label' => __('Image'),
+            'value' => $widget_saved_values['image'] ?? '',
+            'dimensions' => '~1600x570px'
+        ]);
+
+        $output .= Image::get([
+            'name' => 'background_image',
+            'label' => __('Background Image'),
+            'value' => $widget_saved_values['background_image'] ?? '',
+            'dimensions' => '~3:1'
+        ]);
+
+        $output .= Text::get([
+            'label' => __('Floating Text'),
+            'name' => 'floating_text',
+            'placeholder' => __('Floating Text'),
+            'value' => $widget_saved_values['floating_text'] ?? null,
+            'info' => __('This text will appear on a floating box. use comma(,) after every word')
         ]);
 
         // add padding option
@@ -95,16 +97,28 @@ class NewReleaseCard extends PageBuilderBase
         $padding_top = esc_html($this->setting_item('padding_top'));
         $padding_bottom = esc_html($this->setting_item('padding_bottom'));
 
-        dd($this->setting_item('testTwo'));
-        $repeater = $this->setting_item('repeater_data') ?? '';
+        $title = $this->setting_item('title') ?? [];
+        $price = esc_html($this->setting_item('price')) ?? '';
+        $button_text = esc_html($this->setting_item('button_text')) ?? '';
+        $button_url = esc_url($this->setting_item('button_url')) ?? '';
+        $floating_text = esc_html($this->setting_item('floating_text')) ?? '';
+
+        $image = $this->setting_item('image') ?? '';
+        $background_image = $this->setting_item('background_image') ?? '';
 
         $data = [
             'padding_top' => $padding_top,
             'padding_bottom' => $padding_bottom,
-            'repeater' => $repeater,
+            'title' => $title,
+            'price' => $price,
+            'button_text' => $button_text,
+            'button_url' => $button_url,
+            'floating_text' => $floating_text,
+            'image' => $image,
+            'background_image' => $background_image,
         ];
 
-        return self::renderView('tenant.electro.common.collection-card', $data);
+        return self::renderView('tenant.electro.common.new-release-card', $data);
     }
 
     public function enable(): bool

@@ -491,6 +491,26 @@ function get_tenant_highlighted_text($title, $class = 'color-two')
     return $title;
 }
 
+function highlighted_text($data, $class = '', $inner_tag = 'span')
+{
+    $inner_tag = str_replace(['<','>','</','/'],'', $inner_tag);
+
+    $final_markup = '';
+    if (count($data) > 1)
+    {
+        $full_element = trim($data[0]);
+        $targeted_element = trim($data[1]);
+
+        if (str_contains($full_element, $targeted_element))
+        {
+            $highlight_markup = '<'.$inner_tag.' class="'.$class.'">'.$targeted_element.'</'.$inner_tag.'>';
+            $final_markup = str_replace($targeted_element, $highlight_markup, $full_element);
+        }
+    }
+
+    return $final_markup;
+}
+
 function get_price_plan_expire_status($date_expire): string
 {
     $expire_date = \Carbon\Carbon::parse($date_expire);
@@ -1868,9 +1888,14 @@ function esc_url($text)
     return \App\Helpers\SanitizeInput::esc_url($text);
 }
 
-function to_product_details($slug, $id = null)
+function to_product_details($slug, $id = null): string
 {
     return route('tenant.shop.product.details', $slug);
+}
+
+function to_product_category($slug): string
+{
+    return route('tenant.shop.category.products', [$slug, 'category']);
 }
 
 function render_preloaded_image($image, $styles = '')

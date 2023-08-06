@@ -30,4 +30,15 @@ class HighlightedText extends PageBuilderField
 
         return $output;
     }
+
+//        How to use in addon
+//        $output .= HighlightedText::get([
+//            'label' => __('test'),
+//            'name' => 'testTwo',
+//            'options' => [
+//            'value' => $widget_saved_values['testTwo'][0] ?? null,
+//            'highlight' => $widget_saved_values['testTwo'][1] ?? null
+//            ],
+//            'value' => $widget_saved_values['testTwo'] ?? null,
+//        ]);
 }

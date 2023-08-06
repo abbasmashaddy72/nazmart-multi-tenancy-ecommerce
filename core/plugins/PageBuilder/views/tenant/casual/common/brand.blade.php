@@ -1,5 +1,6 @@
 <!-- Client Logo area Starts -->
-<div class="clent-logo-area padding-top-50 padding-bottom-100">
+<div class="clent-logo-area" data-padding-top="{{$data['padding_top']}}"
+     data-padding-bottom="{{$data['padding_bottom']}}">>
     <div class="container-two">
         <div class="row">
             <div class="col-lg-12">

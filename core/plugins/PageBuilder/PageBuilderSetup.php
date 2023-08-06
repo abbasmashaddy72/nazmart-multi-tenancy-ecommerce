@@ -37,6 +37,7 @@ use Plugins\PageBuilder\Addons\Tenants\Casual\Product\PopularProduct;
 use Plugins\PageBuilder\Addons\Tenants\Electro\Common\CampaignCard;
 use Plugins\PageBuilder\Addons\Tenants\Electro\Common\NewReleaseCard;
 use Plugins\PageBuilder\Addons\Tenants\Electro\Product\FeaturedCollection;
+use Plugins\PageBuilder\Addons\Tenants\Electro\Product\NewProducts;
 use Plugins\PageBuilder\Addons\Tenants\Electro\Product\PopularProducts;
 use Plugins\PageBuilder\Addons\Tenants\Furnito\Product\TrendingProducts;
 use Plugins\PageBuilder\Addons\Tenants\Hexfashion\Contact\ContactAreaOne;
@@ -179,7 +180,11 @@ class PageBuilderSetup
                     \Plugins\PageBuilder\Addons\Tenants\Electro\Product\ProductTypeList::class,
                     CampaignCard::class,
                     PopularProducts::class,
-                    NewReleaseCard::class
+                    NewReleaseCard::class,
+                    NewProducts::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Electro\Common\Brand::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Electro\Blog\BlogOne::class,
+                    \Plugins\PageBuilder\Addons\Tenants\Electro\Common\Services::class
                 ];
             }
 
