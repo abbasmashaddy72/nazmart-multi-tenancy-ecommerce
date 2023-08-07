@@ -1900,7 +1900,9 @@ function to_product_category($slug): string
 
 function render_preloaded_image($image, $styles = '')
 {
-    $image = get_attachment_image_by_id($image, 'tiny')['img_url'];
+    $image = get_attachment_image_by_id($image, 'tiny');
+    $image = !empty($image) ? $image['img_url'] : '';
+
     return 'style="background-image: url('.$image.');'.$styles.'"';
 }
 

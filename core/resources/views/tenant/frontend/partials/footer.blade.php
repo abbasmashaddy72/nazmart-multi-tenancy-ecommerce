@@ -141,7 +141,7 @@
         $('.theme-one-footer .col-lg-3').removeClass('col-lg-3').addClass('col-lg-4');
         $('.theme-two-footer .col-lg-3').removeClass('col-lg-3').addClass('col-lg-4');
         $('.theme-aromatic-footer .col-lg-3').removeClass('col-lg-3').addClass('col-lg-4');
-        $('.theme-electro-footer .col-lg-3').removeClass('col-lg-3').addClass('col-lg-4');
+        $('.theme-electro-footer .footer-top-contents .col-lg-3').removeClass('col-lg-3').addClass('col-lg-4');
     @endif
 </script>
 

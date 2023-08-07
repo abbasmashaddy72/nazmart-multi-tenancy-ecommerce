@@ -85,7 +85,7 @@ class AddressWidget extends WidgetBase
         $output .= $this->widget_after(); // render widget after content
 
         return $output;
-}
+    }
 
     public function enable(): bool
     {
