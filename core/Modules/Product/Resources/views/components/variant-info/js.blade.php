@@ -10,7 +10,6 @@
                 $(this).closest('.variant_info_repeater').remove();
             });
         });
-
         $(document).on('click', '.add_item_attribute', function (e) {
             let container = $(this).closest('.inventory_item');
             let attribute_name_field = container.find('.item_attribute_name');
@@ -75,7 +74,7 @@
             $('.inventory_items_container').append(inventory_item);
             $('.inventory_items_container .inventory_item:last-child').data('id', inventory_item_id + 1);
 
-            $('select').select2();
+            // $('select').select2();
         });
 
         $(document).on('click', '.remove_details_attribute', function (e) {
