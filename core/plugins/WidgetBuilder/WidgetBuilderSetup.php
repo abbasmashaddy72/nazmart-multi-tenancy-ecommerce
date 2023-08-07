@@ -33,6 +33,8 @@ use Plugins\WidgetBuilder\Widgets\Tenants\Bookpoint\NewsletterBookpoint;
 use Plugins\WidgetBuilder\Widgets\Tenants\Bookpoint\TenantImageWidget;
 use Plugins\WidgetBuilder\Widgets\Tenants\Casual\TenantAboutUsWidgetThree;
 use Plugins\WidgetBuilder\Widgets\Tenants\Casual\TenantNavigationMenuWidgetThree;
+use Plugins\WidgetBuilder\Widgets\Tenants\Electro\AddressWidget;
+use Plugins\WidgetBuilder\Widgets\Tenants\Electro\NavigationMenuWidget;
 use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterAbout;
 use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterBottomLinksWidget;
 use Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterContact;
@@ -91,7 +93,9 @@ class WidgetBuilderSetup
 
             // Electro
             ElectroAboutUsWidget::class,
-            ElectroImageWidget::class
+            ElectroImageWidget::class,
+            NavigationMenuWidget::class,
+            AddressWidget::class
         ];
 
         // Third party custom addons
@@ -100,8 +104,8 @@ class WidgetBuilderSetup
         return array_merge($widget, $customAddons);
     }
 
-    private static function registerd_sidebars(){
-
+    private static function registerd_sidebars()
+    {
         $register_widgets_for_admin = ['footer','sidebar'];
         $register_widgets_for_tenant = ['footer','footer_top','footer_bottom_left','footer_bottom_right', 'footer_bottom',/*'sidebar','blog_sidebar',*/ 'shop_footer'];
         $condition = (bool) tenant() ? $register_widgets_for_tenant : $register_widgets_for_admin;

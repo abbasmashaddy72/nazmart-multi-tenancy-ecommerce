@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Plugins\WidgetBuilder\Widgets;
+namespace Plugins\WidgetBuilder\Widgets\Tenants\Electro;
 
 use App\Helpers\SanitizeInput;
 use App\Models\Language;
@@ -10,7 +10,7 @@ use Plugins\WidgetBuilder\Traits\LanguageFallbackForWidgetBuilder;
 use Plugins\WidgetBuilder\WidgetBase;
 use Mews\Purifier\Facades\Purifier;
 
-class TenantNavigationMenuWidgetTwo extends WidgetBase
+class NavigationMenuWidget extends WidgetBase
 {
     use LanguageFallbackForWidgetBuilder;
 
@@ -22,12 +22,11 @@ class TenantNavigationMenuWidgetTwo extends WidgetBase
         $output .= $this->default_fields();
         $widget_saved_values = $this->get_settings();
 
-            $widget_title =  $widget_saved_values['widget_title'] ?? '';
-            $selected_menu_id = $widget_saved_values['menu_id'] ?? '';
+        $widget_title =  $widget_saved_values['widget_title'] ?? '';
+        $selected_menu_id = $widget_saved_values['menu_id'] ?? '';
 
-            $output .= '<div class="form-group"><input type="text" name="widget_title' . '" class="form-control" placeholder="' . __('Widget Title') . '" value="'. SanitizeInput::esc_html($widget_title) .'"></div>';
+        $output .= '<div class="form-group"><input type="text" name="widget_title" class="form-control" placeholder="' . __('Widget Title') . '" value="'. SanitizeInput::esc_html($widget_title) .'"></div>';
 
-        //end multi langual tab option
         $navigation_menus = Menu::all();
         $output .= '<div class="form-group">';
         $output .= '<select class="form-control" name="menu_id">';
@@ -51,15 +50,17 @@ class TenantNavigationMenuWidgetTwo extends WidgetBase
         $widget_title = SanitizeInput::esc_html($this->setting_item('widget_title') ?? '');
         $menu_id = $this->setting_item('menu_id') ?? '';
 
-        $output = $this->widget_before(); //render widget before content
+        $output = $this->widget_before('color-four'); //render widget before content
+        $output .= '<div class="footer-widget widget color-four">';
+        $output .= '<h6 class="widget-title">'.$widget_title.'</h6>';
 
-        $output .= '<h4 class="widget-title fw-400">'.$widget_title.'</h4>
-                            <div class="footer-inner mt-4">
-                                <ul class="footer-link-list footer-link-list-tenant">
-                                    '.render_frontend_menu($menu_id).'
-                                </ul>
-                            </div>';
+        $output .= '<div class="footer-inner margin-top-30">';
+        $output .= '<ul class="footer-link-list">';
+        $output .= render_frontend_menu($menu_id);
+        $output .= '</ul>';
 
+        $output .= '</div>';
+        $output .= '</div>';
         $output .= $this->widget_after(); // render widget after content
 
         return $output;
@@ -74,6 +75,6 @@ class TenantNavigationMenuWidgetTwo extends WidgetBase
     public function widget_title()
     {
         // TODO: Implement widget_title() method.
-        return __('Tenant Navigation Menu(01): Furnito');
+        return __('Tenant Navigation Menu: Electro');
     }
 }

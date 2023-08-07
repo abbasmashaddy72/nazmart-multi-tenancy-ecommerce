@@ -86,7 +86,7 @@ class FooterPaymentGatewaysWidget extends WidgetBase
 
     public function widget_title()
     {
-        return __('Footer Bottom Payment Gateway Images: TH-01');
+        return __('Footer Bottom Payment Gateway Images: HexFashion');
     }
 
 }

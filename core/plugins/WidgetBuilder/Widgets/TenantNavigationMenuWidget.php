@@ -73,6 +73,6 @@ class TenantNavigationMenuWidget extends WidgetBase
     public function widget_title()
     {
         // TODO: Implement widget_title() method.
-        return __('Theme 1: Tenant Navigation Menu');
+        return __('Tenant Navigation Menu: HexFashion');
     }
 }

@@ -101,7 +101,7 @@ class FooterContact extends WidgetBase
 
     public function widget_title()
     {
-        return __('Footer Contact: TH-01');
+        return __('Footer Contact: HexFashion');
     }
 
 }

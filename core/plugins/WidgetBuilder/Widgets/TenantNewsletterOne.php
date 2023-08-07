@@ -86,6 +86,6 @@ HTML;
     }
 
     public function widget_title(){
-        return __('Theme 1: Tenant Newsletter(01)');
+        return __('Tenant Newsletter(01): HexFashion');
     }
 }
