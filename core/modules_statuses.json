@@ -23,5 +23,6 @@
     "PluginManage": true,
     "SalesReport": true,
     "WebHook": true,
-    "Integrations": true
+    "Integrations": true,
+    "WooCommerceImport": true
 }

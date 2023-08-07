@@ -50,7 +50,7 @@ class TenantImageWidget extends WidgetBase
         $widget_saved_values = $this->get_settings();
         $repeater_data = $widget_saved_values['image_widget'] ?? [];
 
-        $markup = '<div class="col-lg-6 col-md-6 col-sm-6 mt-4">';
+        $markup = '<div class="col-lg-3 col-md-6 col-sm-6 mt-4">';
         $markup .= '<div class="footer-widget widget">';
         $markup .= '<div class="footer-inner">';
 

@@ -74,6 +74,6 @@ class TenantNavigationMenuWidgetTwo extends WidgetBase
     public function widget_title()
     {
         // TODO: Implement widget_title() method.
-        return __('Theme 2 : Tenant Navigation Menu(01)');
+        return __('Tenant Navigation Menu(01): Furnito');
     }
 }

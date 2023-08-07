@@ -1,0 +1,29 @@
+{
+    "name": "WooCommerce",
+    "alias": "woocommerce",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\WooCommerce\\Providers\\WooCommerceServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": [],
+    "nazmartMetaData": {
+        "admin_settings": {
+            "show_admin_landlord": true,
+            "show_admin_tenant": true,
+            "menu_item": [
+                {
+                    "id" : "woocommerce-manage-settings-all-menu",
+                    "label": "WooCommerce",
+                    "route": "tenant.woocommerce",
+                    "tenantRoute": "tenant.woocommerce",
+                    "parent": "",
+                    "icon": "mdi mdi-power-plug"
+                }
+            ]
+        }
+    }
+}

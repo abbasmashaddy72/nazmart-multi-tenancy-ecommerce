@@ -73,7 +73,7 @@ class FooterAbout extends WidgetBase
 
     public function widget_title()
     {
-        return __('Footer About: TH-01');
+        return __('Footer About: HexFashion');
     }
 
 }

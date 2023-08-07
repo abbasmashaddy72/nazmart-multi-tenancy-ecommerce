@@ -111,7 +111,7 @@
                     @endforeach
                 @endif
             </div>
-            <div class="row align-items-center">
+            <div class="row align-items-center select-attribute-wrapper">
                 <div class="col">
                     <div class="form-group">
                         <label>{{ __('Attribute Name') }}</label>
@@ -153,6 +153,8 @@
             </div>
         </div>
     </div>
+
+    <p class="attribute-warning">{{ __("You can't select same attribute within a variant if you need then please create a new variant") }}</p>
 </div>
 
 {{-- NOT NEEDED - ONLY KEPT FOR REFERENCE --}}

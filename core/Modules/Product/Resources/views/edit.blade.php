@@ -180,6 +180,38 @@
             <x-summernote.js/>
 
             <script>
+                // todo:: listen changes event
+                $(document).on('change', '.item_attribute_name', function (){
+                    // todo:: get value from selected value
+                    let value = $(this).find("option:selected").text();
+                    // todo:: target variant container
+                    let oldValue = $(this).closest(".inventory_item").find(`input[value=${value}]`);
+                    // todo:: check old value length is bigger then 0 that mean's this value is already selected
+
+                    let attribute_warning = $(this).parents('.row').siblings('.attribute-warning');
+                    attribute_warning.css('color', 'black');
+
+                    if(oldValue.length > 0){
+                        toastr.warning(`{{ __("You can't select same attribute within a same variant if you need then please create a new variant") }}`)
+                        $(this).find("option").each(function (){
+                            $(this).attr("selected", false)
+                        })
+                        $(this).find("option:first-child").attr("selected", true);
+
+                        attribute_warning.css('color', 'red');
+
+                        return false;
+                    }
+
+                    let terms = $(this).find('option:selected').data('terms');
+                    let terms_html = '<option value=""><?php echo e(__("Select attribute value")); ?></option>';
+                    terms.map(function (term) {
+                        terms_html += '<option value="' + term + '">' + term + '</option>';
+                    });
+                    $(this).closest('.inventory_item').find('.item_attribute_value').html(terms_html);
+                });
+
+
                 $(document).ready(function () {
                     String.prototype.capitalize = String.prototype.capitalize || function () {
                         return this.charAt(0).toUpperCase() + this.slice(1);
@@ -238,15 +270,6 @@
                             toastr.warning('@php echo e(__("Select both attribute name and value")); @endphp');
                         }
                     });
-
-                    $(document).on('change', '.item_attribute_name', function () {
-                        let terms = $(this).find('option:selected').data('terms');
-                        let terms_html = '<option value=""><?php echo e(__("Select attribute value")); ?></option>';
-                        terms.map(function (term) {
-                            terms_html += '<option value="' + term + '">' + term + '</option>';
-                        });
-                        $(this).closest('.inventory_item').find('.item_attribute_value').html(terms_html);
-                    })
 
                     $(document).on("submit", "#product-create-form", function (e) {
                         e.preventDefault();

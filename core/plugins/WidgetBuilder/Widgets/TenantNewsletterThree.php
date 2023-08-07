@@ -79,6 +79,6 @@ class TenantNewsletterThree extends WidgetBase
     }
 
     public function widget_title(){
-        return __('Theme Hexfashion: Tenant Newsletter(01)');
+        return __('Tenant Newsletter(01): Theme Hexfashion');
     }
 }
