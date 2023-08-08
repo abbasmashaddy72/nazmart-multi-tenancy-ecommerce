@@ -2,78 +2,45 @@
 
 namespace Modules\WooCommerce\Http\Controllers;
 
+use App\Helpers\FlashMsg;
+use Automattic\WooCommerce\Client;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\WebHook\Http\Services\WooCommerceService;
 
 class WooCommerceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     * @return Renderable
-     */
     public function index()
     {
+        $api_products = WooCommerceService::getProducts();
+        $products = WooCommerceService::prepareProducts($api_products);
+
+
         return view('woocommerce::index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     * @return Renderable
-     */
-    public function create()
+    public function settings()
     {
-        return view('woocommerce::create');
+        return view('woocommerce::woocommerce.settings');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
-     */
-    public function store(Request $request)
+    public function settings_update(Request $request)
     {
-        //
-    }
+        $validated_data = $request->validate([
+            'woocommerce_site_url' => 'required',
+            'woocommerce_consumer_key' => 'required|starts_with:ck',
+            'woocommerce_consumer_secret' => 'required|starts_with:cs'
+        ],[
+            'woocommerce_consumer_key.starts_with' => __('The consumer key is invalid'),
+            'woocommerce_consumer_secret.starts_with' => __('The consumer secret is invalid'),
+        ]);
 
-    /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function show($id)
-    {
-        return view('woocommerce::show');
-    }
+        foreach ($validated_data ?? [] as $index => $value)
+        {
+            update_static_option($index, $value);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function edit($id)
-    {
-        return view('woocommerce::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Renderable
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
-     */
-    public function destroy($id)
-    {
-        //
+        return back()->with(FlashMsg::settings_update('Woocommerce settings updated'));
     }
 }
