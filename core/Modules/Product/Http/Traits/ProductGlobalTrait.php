@@ -410,7 +410,9 @@ trait ProductGlobalTrait {
         $childCategory = ProductChildCategory::insert($this->childCategoryData($product, $id));
         $deliveryOptions = ProductDeliveryOption::insert($this->prepareDeliveryOptionData($product, $id));
         $productGallery = ProductGallery::insert($this->prepareProductGalleryData($product, $id));
-        $productTag = ProductTag::insert($this->prepareProductTagData($product, $id));
+
+        ProductTag::insert($this->prepareProductTagData($product, $id));
+
         $productUom = ProductUom::create($this->prepareUomData($data, $id));
 
         $productPolicy = ProductShippingReturnPolicy::create([
@@ -493,7 +495,7 @@ trait ProductGlobalTrait {
         $childCategory = ProductChildCategory::insert($this->childCategoryData($data, $id));
         $deliveryOptions = ProductDeliveryOption::insert($this->prepareDeliveryOptionData($data,$id));
         $productGallery = ProductGallery::insert($this->prepareProductGalleryData($data,$id));
-        $productTag = ProductTag::insert($this->prepareProductTagData($data,$id));
+        $productTag = ProductTag::insert($this->prepareProductTagData($data, $id));
 
         $productPolicy = ProductShippingReturnPolicy::updateOrCreate(
             ['product_id' => $id],

@@ -29,7 +29,7 @@ class ProductStoreRequest extends FormRequest
             "uom" => "required",
             "image_id" => "required",
             "product_gallery" => "nullable",
-            "tags" => "required",
+            "tags" => "nullable",
             "badge_id" => "nullable",
             "item_size" => "nullable",
             "item_color" => "nullable",
@@ -77,7 +77,8 @@ class ProductStoreRequest extends FormRequest
             "price.required" => __("Regular price is required."),
             "sku.required" => __("SKU Stock Kipping Unit is required"),
             "uni.required" => __("Please Select a unit type"),
-            "uom.required" => __("UOM Unit of measurement field is required.")
+            "uom.required" => __("UOM Unit of measurement field is required."),
+            "unit_id.required" => __("Unit of product is required.")
         ];
     }
 
