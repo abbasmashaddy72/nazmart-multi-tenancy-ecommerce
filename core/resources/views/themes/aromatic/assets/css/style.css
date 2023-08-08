@@ -10486,8 +10486,8 @@ input[type=number] {
   z-index: 1;
 }
 .value-input-area .color-list li.active {
-  height: 16px;
-  width: 16px;
+  height: 30px;
+  width: 30px;
 }
 .value-input-area .color-list li.active::before {
   content: "";
@@ -10497,7 +10497,6 @@ input[type=number] {
   left: -4px;
   top: -4px;
   border: 1px solid #F83A26;
-  border-radius: 50%;
 }
 .value-input-area .color-list li.shop-color-2 {
   border-color: #30BB6F;
