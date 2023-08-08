@@ -2102,12 +2102,6 @@ HTML;
             ];
         }
 
-        $product->reviews->transform(function ($item){
-            $item->user->image = render_image($item->user->profile_image, render_type: 'path');
-            unset($item->user->profile_image);
-            return $item;
-        });
-
         $available_attributes = array_map(fn($i) => array_keys($i), $available_attributes);
 
         $setting_text = StaticOption::whereIn('option_name', [
