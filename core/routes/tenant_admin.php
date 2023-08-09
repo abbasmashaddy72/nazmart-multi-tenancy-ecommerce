@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Landlord\Admin\PaymentSettingsController;
 use Illuminate\Support\Facades\Route;
-use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Controllers\Landlord\Admin\GeneralSettingsController;
 use Modules\Blog\Http\Controllers\Landlord\Admin\BlogTagController;
@@ -11,10 +10,8 @@ use App\Http\Controllers\Tenant\Admin\OrderManageController;
 use App\Http\Controllers\Tenant\Admin\NewsletterController;
 use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 
-
 Route::middleware([
     'web',
-//    InitializeTenancyByDomain::class,
     InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'auth:admin',

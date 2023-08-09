@@ -13,9 +13,10 @@ class WooCommerceController extends Controller
 {
     public function index()
     {
-        $api_products = WooCommerceService::getProducts();
-        $products = WooCommerceService::prepareProducts($api_products);
-
+        $api_products = new WooCommerceService();
+        $all_products = $api_products->getProducts();
+        $all_prepared_products = $api_products->prepareProducts($all_products);
+        dd($all_prepared_products);
 
         return view('woocommerce::index');
     }

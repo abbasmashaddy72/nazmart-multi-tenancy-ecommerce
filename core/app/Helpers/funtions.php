@@ -105,7 +105,7 @@ function get_attachment_image_by_id($id, $size = null, $default = false): array
         $path_prefix = is_null(tenant()) ? 'assets/landlord' : 'assets/tenant';
         $path = global_asset($path_prefix . '/uploads/media-uploader/' . $tenant_subdomain);
         $base_path = global_assets_path($path_prefix . '/uploads/media-uploader/' . $tenant_subdomain);
-        $image_url = $path . $image_details->path;
+        $image_url = $path .'/'. $image_details->path;
         switch ($size) {
             case "large":
                 if ($base_path . 'large/large-' . $image_details->path && !is_dir($base_path . 'large/large-' . $image_details->path)) {

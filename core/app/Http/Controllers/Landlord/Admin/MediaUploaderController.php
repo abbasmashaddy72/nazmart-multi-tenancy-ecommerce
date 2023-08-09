@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Landlord\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Services\HandleImageUploadService;
 use App\Models\MediaUploader;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -74,7 +75,15 @@ class MediaUploaderController extends Controller
             }
 
             if (in_array($image_extenstion,['jpg','jpeg','png','gif','webp'])){
-                $this->handle_image_upload(
+//                $this->handle_image_upload(
+//                    $image_db,
+//                    $image,
+//                    $image_name_with_ext,
+//                    $folder_path,
+//                    $request
+//                );
+
+                HandleImageUploadService::handle_image_upload(
                     $image_db,
                     $image,
                     $image_name_with_ext,
@@ -214,67 +223,66 @@ class MediaUploaderController extends Controller
         return response()->json($all_image_files);
     }
 
-    private function handle_image_upload(
-        $image_db,
-        $image,
-        $image_name_with_ext,
-        $folder_path,
-        $request
-    )
-    {
-        $image_dimension = getimagesize($image);
-        $image_width = $image_dimension[0];
-        $image_height = $image_dimension[1];
-        $image_dimension_for_db = $image_width . ' x ' . $image_height . ' pixels';
-        $image_size_for_db = $image->getSize();
-
-        $image_grid = 'grid-'.$image_db ;
-        $image_large = 'large-'. $image_db;
-        $image_thumb = 'thumb-'. $image_db;
-        $image_tiny = 'tiny-'. $image_db;
-
-        $resize_grid_image = Image::make($image)->resize(350, null,function ($constraint) {
-            $constraint->aspectRatio();
-        });
-        $resize_large_image = Image::make($image)->resize(740, null,function ($constraint) {
-            $constraint->aspectRatio();
-        });
-        $resize_thumb_image = Image::make($image)->resize(150, 150);
-        $resize_tiny_image = Image::make($image)->resize(15, 15)->blur(50);
-        $request->file->move($folder_path, $image_db);
-
-        $imageData = [
-            'title' => $image_name_with_ext,
-            'size' => formatBytes($image_size_for_db),
-            'path' => $image_db,
-            'user_type' => 0, //0 == admin 1 == user
-            'user_id' => \Auth::guard('admin')->id(),
-            'dimensions' => $image_dimension_for_db
-        ];
-        if ($request->user_type === 'user'){
-            $imageData['user_type'] = 1;
-            $imageData['user_id'] = \Auth::guard('web')->id();
-        }
-        else if ($request->user_type === 'api'){
-            $imageData['user_type'] = 1;
-            $imageData['user_id'] = \Auth::guard('sanctum')->id();
-        }
-
-         MediaUploader::create($imageData);
-
-        if ($image_width > 150){
-            $resize_thumb_image->save($folder_path .'thumb/'. $image_thumb);
-            $resize_grid_image->save($folder_path .'grid/'. $image_grid);
-            $resize_large_image->save($folder_path .'large/'. $image_large);
-
-            $tiny_path = $folder_path .'tiny';
-            if (!is_dir($tiny_path))
-            {
-                mkdir($tiny_path, 0777);
-            }
-            $resize_tiny_image->save($folder_path .'tiny/'. $image_tiny);
-        }
-    }
+//    private function handle_image_upload(
+//        $image_db,
+//        $image,
+//        $image_name_with_ext,
+//        $folder_path,
+//        $request
+//    ){
+//        $image_dimension = getimagesize($image);
+//        $image_width = $image_dimension[0];
+//        $image_height = $image_dimension[1];
+//        $image_dimension_for_db = $image_width . ' x ' . $image_height . ' pixels';
+//        $image_size_for_db = $image->getSize();
+//
+//        $image_grid = 'grid-'.$image_db ;
+//        $image_large = 'large-'. $image_db;
+//        $image_thumb = 'thumb-'. $image_db;
+//        $image_tiny = 'tiny-'. $image_db;
+//
+//        $resize_grid_image = Image::make($image)->resize(350, null,function ($constraint) {
+//            $constraint->aspectRatio();
+//        });
+//        $resize_large_image = Image::make($image)->resize(740, null,function ($constraint) {
+//            $constraint->aspectRatio();
+//        });
+//        $resize_thumb_image = Image::make($image)->resize(150, 150);
+//        $resize_tiny_image = Image::make($image)->resize(15, 15)->blur(50);
+//        $request->file->move($folder_path, $image_db);
+//
+//        $imageData = [
+//            'title' => $image_name_with_ext,
+//            'size' => formatBytes($image_size_for_db),
+//            'path' => $image_db,
+//            'user_type' => 0, //0 == admin 1 == user
+//            'user_id' => \Auth::guard('admin')->id(),
+//            'dimensions' => $image_dimension_for_db
+//        ];
+//        if ($request->user_type === 'user'){
+//            $imageData['user_type'] = 1;
+//            $imageData['user_id'] = \Auth::guard('web')->id();
+//        }
+//        else if ($request->user_type === 'api'){
+//            $imageData['user_type'] = 1;
+//            $imageData['user_id'] = \Auth::guard('sanctum')->id();
+//        }
+//
+//         MediaUploader::create($imageData);
+//
+//        if ($image_width > 150){
+//            $resize_thumb_image->save($folder_path .'thumb/'. $image_thumb);
+//            $resize_grid_image->save($folder_path .'grid/'. $image_grid);
+//            $resize_large_image->save($folder_path .'large/'. $image_large);
+//
+//            $tiny_path = $folder_path .'tiny';
+//            if (!is_dir($tiny_path))
+//            {
+//                mkdir($tiny_path, 0777);
+//            }
+//            $resize_tiny_image->save($folder_path .'tiny/'. $image_tiny);
+//        }
+//    }
 
     private function deleteOldFile($get_image_details) : void
     {

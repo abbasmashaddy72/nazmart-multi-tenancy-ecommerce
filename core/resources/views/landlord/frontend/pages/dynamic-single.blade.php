@@ -22,7 +22,7 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="alert alert-warning">
-                                    <p><a class="text-primary" href="{{route('login')}}">{{__('Login')}}</a> {{__('to see this page')}} </p>
+                                    <p><a class="text-primary" href="{{route('landlord.user.login')}}">{{__('Login')}}</a> {{__('to see this page')}} </p>
                                 </div>
                             </div>
                         </div>
