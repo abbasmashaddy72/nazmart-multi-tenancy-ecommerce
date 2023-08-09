@@ -101,14 +101,14 @@ class GeneralSettingsController extends Controller
             'placeholder_image' => 'nullable|integer'
         ];
 
-        $this->validate($request, $nonlang_fields);
+        $request->validate($nonlang_fields);
         $fields = [
             'site_title' => 'nullable|string',
             'site_tag_line' => 'nullable|string',
             'site_footer_copyright_text' => 'nullable|string',
         ];
 
-        $this->validate($request, $fields);
+        $request->validate($fields);
         foreach ($fields as $field_name => $rules) {
             update_static_option($field_name, SanitizeInput::esc_html($request->$field_name));
         }
@@ -117,14 +117,13 @@ class GeneralSettingsController extends Controller
             update_static_option($field_name, $request->$field_name);
         }
 
-        $timezone = get_static_option('timezone');
-        if (!empty($timezone)) {
-            setEnvValue(['APP_TIMEZONE' => $timezone]);
+        if (!\tenant())
+        {
+            $timezone = get_static_option('timezone');
+            if (!empty($timezone)) {
+                setEnvValue(['APP_TIMEZONE' => $timezone]);
+            }
         }
-
-        $request_engine = $request->mysql_database_engine;
-        setEnvValue(['DB_ENGINE' => $request_engine]);
-        update_static_option('mysql_database_engine', $request_engine);
 
         return response()->success(ResponseMessage::SettingsSaved());
     }

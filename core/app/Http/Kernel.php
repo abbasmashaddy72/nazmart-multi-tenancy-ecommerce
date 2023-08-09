@@ -16,6 +16,7 @@ use App\Http\Middleware\Tenant\PageLimitMiddleware;
 use App\Http\Middleware\Tenant\RedirectIfNoDigitalProduct;
 use App\Http\Middleware\Tenant\TenantAccountStatus;
 use App\Http\Middleware\Tenant\TenantCheckPermission;
+use App\Http\Middleware\Tenant\TenantConfigMiddleware;
 use App\Http\Middleware\Tenant\TenantFeaturePermission;
 use App\Http\Middleware\Tenant\TenantUserMailVerifyMiddleware;
 use App\Http\Middleware\TenantCheckMiddleware;
@@ -56,6 +57,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            TenantConfigMiddleware::class
 //            Demo::class
         ],
 
