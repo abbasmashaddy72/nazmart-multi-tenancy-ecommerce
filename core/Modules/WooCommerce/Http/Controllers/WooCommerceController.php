@@ -16,6 +16,11 @@ class WooCommerceController extends Controller
         $api_products = new WooCommerceService();
         $all_products = $api_products->getProducts();
         $all_prepared_products = $api_products->prepareProducts($all_products);
+
+        foreach ($all_prepared_products as $product)
+        {
+            $api_products->filterForStore($product);
+        }
         dd($all_prepared_products);
 
         return view('woocommerce::index');
@@ -42,6 +47,26 @@ class WooCommerceController extends Controller
             update_static_option($index, $value);
         }
 
-        return back()->with(FlashMsg::settings_update('Woocommerce settings updated'));
+        return back()->with(FlashMsg::settings_update(__('Woocommerce settings updated')));
+    }
+
+    public function import_settings()
+    {
+        return view('woocommerce::woocommerce.import_settings');
+    }
+
+    public function import_settings_update(Request $request)
+    {
+        $validated_data = $request->validate([
+            'woocommerce_default_unit' => 'required',
+            'woocommerce_default_uom' => 'required|int'
+        ]);
+
+        foreach ($validated_data ?? [] as $index => $value)
+        {
+            update_static_option($index, $value);
+        }
+
+        return back()->with(FlashMsg::settings_update(__('Woocommerce import settings updated')));
     }
 }

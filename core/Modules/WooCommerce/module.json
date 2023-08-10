@@ -12,7 +12,7 @@
     "requires": [],
     "nazmartMetaData": {
         "admin_settings": {
-            "show_admin_landlord": true,
+            "show_admin_landlord": false,
             "show_admin_tenant": true,
             "menu_item": [
                 {
@@ -27,6 +27,13 @@
                     "label": "Index",
                     "route": "tenant.woocommerce",
                     "tenantRoute": "tenant.woocommerce",
+                    "parent": "woocommerce-manage-menu"
+                },
+                {
+                    "id" : "woocommerce-manage-settings-import",
+                    "label": "Import Settings",
+                    "route": "tenant.woocommerce.settings.import",
+                    "tenantRoute": "tenant.woocommerce.settings.import",
                     "parent": "woocommerce-manage-menu"
                 },
                 {

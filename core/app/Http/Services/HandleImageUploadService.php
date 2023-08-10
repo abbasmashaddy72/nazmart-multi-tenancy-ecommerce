@@ -12,14 +12,11 @@ class HandleImageUploadService
         $image,
         $image_name_with_ext,
         $folder_path,
-        $request
+        $request,
+        $woocommerce_import = false,
+        $woocommerce_import_path = ''
     )
     {
-//        dd($image_db,
-//            $image,
-//            $image_name_with_ext,
-//            $folder_path,
-//            $request);
         $image_dimension = getimagesize($image);
         $image_width = $image_dimension[0];
         $image_height = $image_dimension[1];
@@ -40,9 +37,15 @@ class HandleImageUploadService
         $resize_thumb_image = Image::make($image)->resize(150, 150);
         $resize_tiny_image = Image::make($image)->resize(15, 15)->blur(50);
 
-        // todo: create a new function to move the temp image into specific tenant directory only the real image
-        // todo: this is only applicable for woocommerce import
-        $request->file->move($folder_path, $image_db);
+        if (!$woocommerce_import)
+        {
+            $request->file->move($folder_path, $image_db);
+        } else {
+            if (!empty($woocommerce_import_path))
+            {
+                \File::move($woocommerce_import_path.$image_db, $folder_path.$image_db);
+            }
+        }
 
         $imageData = [
             'title' => $image_name_with_ext,
@@ -61,7 +64,7 @@ class HandleImageUploadService
             $imageData['user_id'] = \Auth::guard('sanctum')->id();
         }
 
-        MediaUploader::create($imageData);
+        $image_data = MediaUploader::create($imageData);
 
         if ($image_width > 150){
             $resize_thumb_image->save($folder_path .'thumb/'. $image_thumb);
@@ -76,6 +79,6 @@ class HandleImageUploadService
             $resize_tiny_image->save($folder_path .'tiny/'. $image_tiny);
         }
 
-        return true;
+        return $image_data->id ?? '';
     }
 }
