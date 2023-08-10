@@ -61,7 +61,6 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             })
 
-
             $("body").tooltip({ selector: '[data-bs-toggle=tooltip]' });
             $('select.select2').select2();
 
