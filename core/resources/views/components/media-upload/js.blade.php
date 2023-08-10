@@ -45,7 +45,19 @@ $file_load_more_route = route($route_name.'.admin.upload.media.file.loadmore');
 
             //delete image form media uploader
             $(document).on('click','.media_library_image_delete_btn',function (e) {
+                triggerDeleteSwal(e)
+            });
+
+            $(document).on('keydown',function (e) {
+                if (e.keyCode === 46)
+                {
+                    triggerDeleteSwal(e);
+                }
+            });
+
+            const triggerDeleteSwal = (e) => {
                 e.preventDefault();
+
                 Swal.fire({
                     title: '{{__("Are you sure to delete this image")}}',
                     text: '{{__("This image will remove permanently")}}',
@@ -60,7 +72,7 @@ $file_load_more_route = route($route_name.'.admin.upload.media.file.loadmore');
                         deleteImage();
                     }
                 });
-            });
+            }
 
             function deleteImage(){
                 $.ajax({
