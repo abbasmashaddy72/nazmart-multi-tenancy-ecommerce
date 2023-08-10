@@ -89,7 +89,7 @@ class PaymentLogController extends Controller
         ], [
             "custom_subdomain.required_if" => __("Custom Sub Domain Required."),
             "trasaction_id" => __("Transaction ID Required."),
-            "trasaction_attachment" => __("Transaction Attachment Required."),
+            "trasaction_attachment.required" => __("Transaction Attachment Required."),
             "theme_slug.in" => __("The selected theme is invalid.")
         ]);
 

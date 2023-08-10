@@ -449,6 +449,7 @@ trait ProductGlobalTrait {
     }
 
     public function productStore($data){
+        dd($data);
         $product_data = self::ProductData($data);
         $slug = $data['slug'] ?? $data['name'];
         $product_data['slug'] = create_slug(Str::slug($slug), 'Product', true, 'Product', 'slug');
