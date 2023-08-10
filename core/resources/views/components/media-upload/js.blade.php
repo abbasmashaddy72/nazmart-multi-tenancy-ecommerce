@@ -49,9 +49,14 @@ $file_load_more_route = route($route_name.'.admin.upload.media.file.loadmore');
             });
 
             $(document).on('keydown',function (e) {
-                if (e.keyCode === 46)
+                let image = $('.media-uploader-image-list li.selected');
+
+                if(image.length === 1 && image.attr('data-imgid') !== undefined)
                 {
-                    triggerDeleteSwal(e);
+                    if (e.keyCode === 46)
+                    {
+                        triggerDeleteSwal(e);
+                    }
                 }
             });
 
