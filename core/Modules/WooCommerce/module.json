@@ -24,7 +24,7 @@
                 },
                 {
                     "id" : "woocommerce-manage-index",
-                    "label": "Index",
+                    "label": "Product List",
                     "route": "tenant.admin.woocommerce",
                     "tenantRoute": "tenant.admin.woocommerce",
                     "parent": "woocommerce-manage-menu"

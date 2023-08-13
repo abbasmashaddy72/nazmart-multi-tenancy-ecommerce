@@ -28,7 +28,7 @@
                         <div class="header-wrap d-flex justify-content-between">
                             <div>
                                 <h4 class="header-title">{{__('All Available Products')}}</h4>
-                                <p class="my-2 mb-4">{{__('The list shows all the products listed in your wordpress site through woocommerce')}}</p>
+                                <p class="my-2">{{__('The list shows all the products listed in your wordpress site through woocommerce. Only simple products are available right now. Variable product support will be available very soon.')}}</p>
                             </div>
                             <a class="btn btn-primary btn-sm import_all_btn" data-route="{{route('tenant.admin.woocommerce.import.all')}}">{{__('Import All')}}</a>
                         </div>
