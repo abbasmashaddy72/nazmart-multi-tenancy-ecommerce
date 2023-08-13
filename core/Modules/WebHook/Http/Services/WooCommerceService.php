@@ -211,10 +211,17 @@ class WooCommerceService
         // Fetch the image content
         $image_content = file_get_contents($image_url);
 
+        // Create temp-images directory
+        $dir_path = 'assets/uploads/temp-images';
+        if (!\File::exists($dir_path))
+        {
+            mkdir($dir_path, 0777);
+        }
+
         // Generate a unique filename for the stored image
         $unique_filename = uniqid($image_name . '-');
         $unique_filename_with_extension = $unique_filename . '.' . $image_extension;
-        $store_path = 'assets/uploads/temp-images/' . $unique_filename_with_extension;
+        $store_path = $dir_path . '/' . $unique_filename_with_extension;
 
         try {
             file_put_contents($store_path, $image_content);
