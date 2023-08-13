@@ -14,11 +14,14 @@ class WooCommerceController extends Controller
     public function index()
     {
         $api_products = new WooCommerceService();
-        $all_products = $api_products->getProducts();
-        if ($all_products == 401)
-        {
-            return view('woocommerce::woocommerce.error');
-        }
+
+            $all_products = $api_products->getProducts();
+            if ($all_products == 401)
+            {
+                return view('woocommerce::woocommerce.error');
+
+
+            }
 
         return view('woocommerce::woocommerce.index', compact('all_products'));
     }
@@ -105,6 +108,7 @@ class WooCommerceController extends Controller
         {
             update_static_option($index, $value);
         }
+        \Cache::forget('woocommerce_client');
 
         return back()->with(FlashMsg::settings_update(__('Woocommerce import settings updated')));
     }
