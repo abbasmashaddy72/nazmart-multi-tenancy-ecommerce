@@ -18,29 +18,29 @@
                 {
                     "id" : "woocommerce-manage-menu",
                     "label": "WooCommerce",
-                    "route": "tenant.woocommerce",
+                    "route": "tenant.admin.woocommerce",
                     "parent": null,
                     "icon": "mdi mdi-wordpress"
                 },
                 {
                     "id" : "woocommerce-manage-index",
-                    "label": "Index",
-                    "route": "tenant.woocommerce",
-                    "tenantRoute": "tenant.woocommerce",
+                    "label": "Product List",
+                    "route": "tenant.admin.woocommerce",
+                    "tenantRoute": "tenant.admin.woocommerce",
                     "parent": "woocommerce-manage-menu"
                 },
                 {
                     "id" : "woocommerce-manage-settings-import",
                     "label": "Import Settings",
-                    "route": "tenant.woocommerce.settings.import",
-                    "tenantRoute": "tenant.woocommerce.settings.import",
+                    "route": "tenant.admin.woocommerce.settings.import",
+                    "tenantRoute": "tenant.admin.woocommerce.settings.import",
                     "parent": "woocommerce-manage-menu"
                 },
                 {
                     "id" : "woocommerce-manage-settings",
                     "label": "Settings",
-                    "route": "tenant.woocommerce.settings",
-                    "tenantRoute": "tenant.woocommerce.settings",
+                    "route": "tenant.admin.woocommerce.settings",
+                    "tenantRoute": "tenant.admin.woocommerce.settings",
                     "parent": "woocommerce-manage-menu"
                 }
             ]

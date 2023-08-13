@@ -4,7 +4,21 @@
 @endsection
 
 @section('style')
-
+    <style>
+        .upcoming-overlay {
+            position: relative;
+        }
+        .upcoming-overlay:before {
+            content: "";
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            left: 0;
+            top: 0;
+            z-index: 1;
+            background: rgba(255, 255, 255, .5);
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -22,7 +36,7 @@
                         <x-error-msg/>
                         <div class="card">
                             <div class="card-body">
-                                <form action="{{route('tenant.woocommerce.settings.import')}}" method="POST">
+                                <form action="{{route('tenant.admin.woocommerce.settings.import')}}" method="POST">
                                     @csrf
 
                                     @php
@@ -67,8 +81,42 @@
             </div>
         </div>
     </div>
-@endsection
 
-@section('scripts')
+    <div class="dashboard-recent-order mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="recent-order-wrapper upcoming-overlay dashboard-table bg-white padding-30">
+                    <div class="header-wrap">
+                        <h2 class="text-primary">{{__('Coming Soon')}}</h2>
+                        <h4 class="header-title mb-2">{{__("CSV Import/Export Settings")}}</h4>
+                        <p>{{__("These fields will automatically add the default value while importing the data from the CSV")}}</p>
+                    </div>
 
+                    <div class="plugin-grid">
+                        <x-error-msg/>
+                        <div class="card">
+                            <div class="card-body">
+                                <form>
+                                    @csrf
+                                    <div class="form-group">
+                                        <label for="woocommerce-default-unit">{{__('Product Unit')}}</label>
+                                        <select id="woocommerce-default-unit" class="form-control" disabled>
+                                            <option value="">Select Unit</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label
+                                            for="woocommerce-default-uom">{{__('Product Unit of measurement (UOM)')}}</label>
+                                        <input type="text" class="form-control" id="woocommerce-default-uom"
+                                               placeholder="{{__('Ep, 1')}}" disabled>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection

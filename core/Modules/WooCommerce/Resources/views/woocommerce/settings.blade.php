@@ -22,7 +22,7 @@
                         <x-error-msg/>
                         <div class="card">
                             <div class="card-body">
-                                <form action="{{route('tenant.woocommerce.settings')}}" method="POST">
+                                <form action="{{route('tenant.admin.woocommerce.settings')}}" method="POST">
                                     @csrf
 
                                     <div class="form-group">
