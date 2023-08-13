@@ -15,15 +15,54 @@ class WooCommerceController extends Controller
     {
         $api_products = new WooCommerceService();
         $all_products = $api_products->getProducts();
+        if ($all_products == 401)
+        {
+            return view('woocommerce::woocommerce.error');
+        }
+
+        return view('woocommerce::woocommerce.index', compact('all_products'));
+    }
+
+    public function import_all()
+    {
+        $api_products = new WooCommerceService();
+        $all_products = $api_products->getProducts();
         $all_prepared_products = $api_products->prepareProducts($all_products);
 
+        $imported = false;
         foreach ($all_prepared_products as $product)
         {
-            $api_products->filterForStore($product);
+            $imported = $api_products->filterForStore($product);
         }
-        dd($all_prepared_products);
 
-        return view('woocommerce::index');
+        return back()->with(FlashMsg::explain($imported ? 'success' : 'danger', $imported ? __('All Product Imported') : __('Something Went Wrong')));
+    }
+
+    public function import_selective(Request $request)
+    {
+        abort_if($request->method() == 'GET', 403);
+
+        $validated_data = $request->validate([
+            'ids' => 'required|array'
+        ]);
+
+        $api_products = new WooCommerceService();
+        $products = $api_products->getSelectiveProducts($validated_data['ids']);
+
+        $imported = false;
+        if (!empty($products))
+        {
+            $all_prepared_products = $api_products->prepareProducts($products);
+            foreach ($all_prepared_products as $product)
+            {
+                $imported = $api_products->filterForStore($product);
+            }
+        }
+
+        return response()->json([
+            'type' => $imported ? 'success' : 'danger',
+            'msg' => $imported ? __('Products Imported') : __('Something Went Wrong')
+        ]);
     }
 
     public function settings()

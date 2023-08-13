@@ -33,7 +33,11 @@ class WooCommerceService
 
     public function getProducts()
     {
-        return $this->woocommerce_client->get('products');
+        try {
+            return $this->woocommerce_client->get('products');
+        } catch (\Exception $exception) {
+            return $exception->getCode();
+        }
     }
 
     public function prepareProducts($products)
@@ -54,6 +58,7 @@ class WooCommerceService
             $productArr[$count]['categories'] = current($product->categories)->name;
 //            }
 
+            $productArr[$count]['tags'] = [];
             foreach ($product->tags ?? [] as $tag) {
                 $productArr[$count]['tags'][] = $tag->name;
             }
@@ -62,13 +67,13 @@ class WooCommerceService
             $productArr[$count]['price'] = $product->regular_price ?? $product->price;
             $productArr[$count]['sale_price'] = $product->sale_price;
 
-            $productArr[$count]['status_id'] = StatusEnums::PUBLISH;
+            $productArr[$count]['status_id'] = $product->status == 'publish' ? StatusEnums::PUBLISH : 2;
             $productArr[$count]['product_type'] = ProductTypeEnum::PHYSICAL;
 
             $productArr[$count]['sku'] = $product->sku;
             $productArr[$count]['unit_id'] = get_static_option('woocommerce_default_unit') ?? 6;
             $productArr[$count]['uom'] = get_static_option('woocommerce_default_uom') ?? 1;
-            $productArr[$count]['quantity'] = $product->stock_quantity;
+            $productArr[$count]['quantity'] = $product->stock_quantity ?? 0;
 
             foreach ($product->images ?? [] as $image_index => $each_image) {
                 if ($image_index == 0) {
@@ -84,9 +89,10 @@ class WooCommerceService
         return $productArr;
     }
 
-    public function storeProduct()
+    public function getSelectiveProducts($ids)
     {
-
+        $products = collect($this->getProducts());
+        return $products->whereIn('id', $ids) ?? [];
     }
 
     public function filterForStore($arr_data)
@@ -103,19 +109,24 @@ class WooCommerceService
             'sale_price' => !empty($arr_data['sale_price']) ? $arr_data['sale_price'] : $arr_data['price'],
             'status_id' => StatusEnums::PUBLISH,
             'product_type' => ProductTypeEnum::PHYSICAL,
-            'sku' => $arr_data['sku'],
-            'quantity' => $arr_data['quantity'],
+            'sku' => create_slug($arr_data['sku'] ?? 'default', 'ProductInventory', true, 'Product', 'sku'),
+            'quantity' => $arr_data['quantity'] ?? 0,
             'unit_id' => $arr_data['unit_id'],
             'uom' => $arr_data['uom'],
             'image_id' => $image_data['primary_image_id'],
             'product_gallery' => $image_data['gallery_image_id'],
             'tags' => $this->getTags($arr_data['tags']),
             'category_id' => $this->getOrCreateCategory($arr_data['categories']),
+            'sub_category' => null,
             'badge_id' => null,
             'brand' => null,
             'min_purchase' => null,
             'max_purchase' => null,
             'is_inventory_warn_able' => null,
+            'item_stock_count' => [0],
+
+            'delivery_option' => null,
+            'policy_description' => null,
 
             'general_title' => '',
             'general_description' => '',
@@ -127,7 +138,7 @@ class WooCommerceService
             "twitter_image" => ''
         ];
 
-        (new AdminProductServices())->store($product);
+        return (new AdminProductServices())->store($product);
     }
 
     private function getTags($tags): ?string

@@ -22,7 +22,7 @@
                         <x-error-msg/>
                         <div class="card">
                             <div class="card-body">
-                                <form action="{{route('tenant.woocommerce.settings.import')}}" method="POST">
+                                <form action="{{route('tenant.admin.woocommerce.settings.import')}}" method="POST">
                                     @csrf
 
                                     @php

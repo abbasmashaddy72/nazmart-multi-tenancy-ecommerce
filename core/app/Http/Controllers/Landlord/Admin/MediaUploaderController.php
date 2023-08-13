@@ -75,14 +75,6 @@ class MediaUploaderController extends Controller
             }
 
             if (in_array($image_extenstion,['jpg','jpeg','png','gif','webp'])){
-//                $this->handle_image_upload(
-//                    $image_db,
-//                    $image,
-//                    $image_name_with_ext,
-//                    $folder_path,
-//                    $request
-//                );
-
                 HandleImageUploadService::handle_image_upload(
                     $image_db,
                     $image,
