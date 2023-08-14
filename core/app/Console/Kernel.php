@@ -19,6 +19,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('package:auto-renew')
             ->everyMinute();
 
+        $schedule->command('queue:work --timeout=60 --tries=1 --once')
+            ->everyMinute()
+            ->withoutOverlapping()
+            ->sendOutputTo(storage_path() . '/logs/queue-jobs.log');
     }
 
     protected function commands()
