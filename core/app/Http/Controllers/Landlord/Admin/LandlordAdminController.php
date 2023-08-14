@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Landlord\Admin;
 
-use App\Helpers\ThemeMetaData;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Brand;
@@ -15,8 +14,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Modules\Blog\Entities\Blog;
-use Modules\Service\Entities\Service;
-use Spatie\ImageOptimizer\OptimizerChainFactory;
 use function view;
 
 class LandlordAdminController extends Controller
@@ -40,6 +37,12 @@ class LandlordAdminController extends Controller
         $recent_order_logs = PaymentLogs::orderBy('id','desc')->take(5)->get();
 
         return view(self::BASE_VIEW_PATH.'admin-home',compact('total_admin','total_user','all_blogs','total_brand','total_price_plan','total_testimonial','recent_order_logs'));
+    }
+
+    public  function health()
+    {
+        $all_user = Admin::all()->except(Auth::id());
+        return view(self::BASE_VIEW_PATH.'health')->with(['all_user' => $all_user]);
     }
 
     public function change_password(){

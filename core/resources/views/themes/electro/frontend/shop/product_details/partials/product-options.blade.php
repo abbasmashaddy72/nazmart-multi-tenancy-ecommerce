@@ -13,11 +13,12 @@
         </div>
     @endif
 
+    @if(!empty($product->badge))
+        <span class="global-card-thumb-badge-box global-card-thumb-badge-box-product-details  bg-color-new "> {{$product?->badge?->name}} </span>
+    @endif
     <div class="name_badge d-flex">
         <h2 class="details-title"> {{$product->name}}
-            @if(!empty($product->badge))
-                <span class="global-card-thumb-badge-box global-card-thumb-badge-box-product-details  bg-color-new "> {{$product?->badge?->name}} </span>
-            @endif
+
         </h2>
 
         <div class="wishlist-compare">

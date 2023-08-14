@@ -21434,3 +21434,33 @@ table .attachment-preview {
 .sales_table_wrapper {
     overflow-x: auto;
 }
+
+/* page builder custom css */
+.form-control.addon-text-left {
+    width: calc(60% - 24px);
+    margin-right: 24px;
+    display: inline-block;
+}
+
+.form-control.addon-text-right {
+    width: 40%;
+    display: inline-block;
+}
+@media screen and (min-width: 992px) and (max-width: 1399px) {
+    .form-control.addon-text-left {
+        width: calc(100% - 0px);
+        margin-bottom: 12px;
+    }
+    .form-control.addon-text-right {
+        width: 100%;
+    }
+}
+@media only screen and (max-width: 575px) {
+    .form-control.addon-text-left {
+        width: calc(100% - 0px);
+        margin-bottom: 12px;
+    }
+    .form-control.addon-text-right {
+        width: 100%;
+    }
+}

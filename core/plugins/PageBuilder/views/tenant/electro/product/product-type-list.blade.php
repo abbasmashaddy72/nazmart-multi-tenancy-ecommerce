@@ -1,4 +1,5 @@
-<section class="stoere-area" data-padding-top="{{$data['padding_top']}}" data-padding-bottom="{{$data['padding_bottom']}}">
+<section class="stoere-area" data-padding-top="{{$data['padding_top']}}"
+         data-padding-bottom="{{$data['padding_bottom']}}">
     <div class="container-three">
         <div class="row">
             <div class="col-lg-12">
@@ -52,7 +53,8 @@
                         ->renderAll();
                     @endphp
 
-                    <div class="col-xl-3 col-lg-4 col-md-6 margin-top-30 grid-item wow {{$class}}" data-wow-delay="{{$delay}}">
+                    <div class="col-xl-3 col-lg-4 col-md-6 margin-top-30 grid-item wow {{$class}}"
+                         data-wow-delay="{{$delay}}">
                         <div class="signle-collection style-02 text-center">
                             <div class="collction-thumb">
                                 {!! $image_markup !!}
@@ -64,11 +66,13 @@
                                     <a href="{{to_product_details($product->slug)}}"> {{product_limited_text($product->name)}} </a>
                                 </h2>
 
-                                @php
-                                    $price_class = 'fs-22 ff-roboto fw-500 flash-prices color-four margin-top-10';
-                                @endphp
+                                <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                    @php
+                                        $price_class = 'fs-22 fw-500 flash-prices color-four';
+                                    @endphp
 
-                                {!! render_product_dynamic_price_markup($product, sale_price_class: $price_class, regular_price_class: $price_class) !!}
+                                    {!! render_product_dynamic_price_markup($product, sale_price_class: $price_class, regular_price_markup_tag: 's') !!}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -80,7 +84,8 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="btn-wrapper text-center margin-top-50">
-                        <a href="{{$data['view_all_button_url']}}" class="cmn-btn btn-outline-four color-four radius-0"> {{$data['view_all_button_text']}} </a>
+                        <a href="{{$data['view_all_button_url']}}"
+                           class="cmn-btn btn-outline-four color-four radius-0"> {{$data['view_all_button_text']}} </a>
                     </div>
                 </div>
             </div>

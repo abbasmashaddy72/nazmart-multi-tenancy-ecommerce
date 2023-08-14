@@ -34,6 +34,7 @@ Route::group(['middleware' => ['auth:admin','adminglobalVariable', 'set_lang'],'
     -------------------------------------------- */
     Route::controller(LandlordAdminController::class)->group(function (){
         Route::get('/','dashboard')->name('landlord.admin.home');
+        Route::get('/health','health')->name('landlord.admin.health');
         Route::get('/edit-profile','edit_profile')->name('landlord.admin.edit.profile');
         Route::get('/change-password','change_password')->name('landlord.admin.change.password');
         Route::post('/edit-profile','update_edit_profile');

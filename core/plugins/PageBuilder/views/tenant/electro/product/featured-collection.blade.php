@@ -33,11 +33,12 @@
                                 <h3 class="collection-title color-four">
                                     <a href="{{to_product_details($product->slug)}}"> {{product_limited_text($product->name)}} </a>
                                 </h3>
-
-                                @php
-                                    $price_class = 'fs-22 ff-roboto fw-500 flash-prices color-four margin-top-10';
-                                @endphp
-                                {!! render_product_dynamic_price_markup($product, sale_price_class: $price_class, regular_price_class: $price_class) !!}
+                                <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                    @php
+                                        $price_class = 'fs-22 fw-500 flash-prices color-four';
+                                    @endphp
+                                    {!! render_product_dynamic_price_markup($product, sale_price_class: $price_class, regular_price_markup_tag: 's') !!}
+                                </div>
                             </div>
                         </div>
                     @endforeach

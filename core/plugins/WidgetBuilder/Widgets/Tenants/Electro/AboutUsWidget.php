@@ -52,7 +52,7 @@ class AboutUsWidget extends WidgetBase
     {
         $widget_saved_values = $this->get_settings();
         $description = esc_html($widget_saved_values['description']) ?? '';
-        $description = !empty($description) ? '<p class="footer-para">'.$description.'</p>' : '';
+        $description = !empty($description) ? '<p class="footer-para mt-3">'.$description.'</p>' : '';
         $logo_image = $widget_saved_values['logo_image'];
 
         $root_url = url('/');
@@ -62,7 +62,7 @@ class AboutUsWidget extends WidgetBase
         return <<<HTML
                     <div class="col-lg-4 col-sm-6 margin-top-30">
                         <div class="footer-widget widget color-four">
-                            <div class="footer-inner">
+                            <div class="footer-inner text-center">
                                 <div class="footer-logo">
                                     <a href="{$root_url}">
                                         {$logo}

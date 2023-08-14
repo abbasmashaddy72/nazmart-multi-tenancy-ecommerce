@@ -5435,8 +5435,6 @@ input[type=number] {
       -ms-flex-align: center;
           align-items: center;
   gap: 30px;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
 }
 @media (min-width: 1400px) and (max-width: 1599.98px) {
   .single-promo-collection .promo-collection-image-contents .promo-collection-flex {
@@ -5520,6 +5518,7 @@ input[type=number] {
 }
 .single-promo-collection .promo-collection-image-contents .promo-collection-img {
   max-width: 250px;
+    flex-shrink: 0;
 }
 @media (min-width: 1400px) and (max-width: 1599.98px) {
   .single-promo-collection .promo-collection-image-contents .promo-collection-img {

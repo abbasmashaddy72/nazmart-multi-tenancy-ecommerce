@@ -1444,6 +1444,14 @@ class SidebarMenuHelper
             'permissions' => ['product-create'],
         ]);
 
+        $menu_instance->add_menu_item('product-import-export-items', [
+            'route' => '#',
+            'label' => __('CSV Import/Export (Coming Soon)'),
+            'parent' => 'product-settings-menu-items',
+            'permissions' => [],
+            'class' => 'submenu-disabled'
+        ]);
+
         $menu_instance->add_menu_item('product-global-settings-menu-items', [
             'route' => 'tenant.admin.product.settings',
             'label' => __('Product Settings'),
