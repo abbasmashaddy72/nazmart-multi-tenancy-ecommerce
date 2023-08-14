@@ -215,7 +215,7 @@ class WooCommerceService
         $dir_path = 'assets/uploads/temp-images';
         if (!\File::exists($dir_path))
         {
-            mkdir($dir_path, 0777);
+            @mkdir($dir_path, 0777);
         }
 
         // Generate a unique filename for the stored image

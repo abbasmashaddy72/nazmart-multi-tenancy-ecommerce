@@ -81,7 +81,6 @@ class PluginManageController extends Controller
             }
             //todo get modules.json file content
             $plugin_info = json_decode(file_get_contents(storage_path("app/plugins-file/".$plugin_name."/module.json")));
-
             if (!property_exists($plugin_info,"nazmartMetaData")){
                 return false;
             }

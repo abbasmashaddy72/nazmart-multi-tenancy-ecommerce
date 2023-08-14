@@ -14,7 +14,7 @@
 
                     $image_markup = \App\Facades\ImageRenderFacade::getParent($blog->image)
                             ->getChild(tenant_blog_single_route($blog->slug), 'blog-image')
-                            ->getGrandchild()
+                            ->getGrandchild('radius-0')
                             ->renderAll();
 
                     $category_name = $blog?->category?->title;

@@ -113,7 +113,7 @@
                                 @endforeach
 
                                 <h6 class="p-3 mb-0 text-center"><a
-                                        href="{{route(route_prefix().'admin.blog')}}">{{__('Seel All')}}</a>
+                                        href="{{route(route_prefix().'admin.blog')}}">{{__('See All')}}</a>
                                 </h6>
                             </a>
                     </div>
@@ -165,6 +165,13 @@
                             </h6>
                         </a>
                 </div>
+            </li>
+
+
+            <li class="nav-item nav-logout d-none d-lg-block mx-2">
+                <a class="btn btn-success btn-icon-text" href="{{route('landlord.admin.health')}}">
+                    <i class="mdi mdi-stethoscope btn-icon-prepend"></i> {{__('Health')}}
+                </a>
             </li>
 
             <li class="nav-item nav-logout d-none d-lg-block">

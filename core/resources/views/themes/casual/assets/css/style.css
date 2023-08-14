@@ -3846,10 +3846,21 @@ input[type=number] {
 
 .banner-images-right {
   position: absolute;
-  right: 0px;
+  right: 210px;
   bottom: 0;
   z-index: 0;
 }
+@media screen and (min-width: 1400px) and (max-width: 1599.98px) {
+    .banner-images-right {
+        right: 160px;
+    }
+}
+@media only screen and (max-width: 1399.98px) {
+    .banner-images-right {
+        right: 0px;
+    }
+}
+
 .banner-images-right .banner-shapes-img {
   position: absolute;
   top: 50%;
@@ -8218,12 +8229,17 @@ input[type=number] {
 
 .flash-sale-image {
   position: absolute;
-  right: 0;
+  right: 150px;
   bottom: 0;
   z-index: -1;
 }
 .flash-sale-image img {
   height: 100%;
+}
+@media only screen and (max-width: 1599px) {
+  .flash-sale-image {
+    right: 0;
+  }
 }
 @media only screen and (max-width: 575.98px) {
   .flash-sale-image {

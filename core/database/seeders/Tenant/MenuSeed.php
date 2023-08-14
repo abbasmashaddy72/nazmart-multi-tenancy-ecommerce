@@ -24,6 +24,12 @@ class MenuSeed extends Seeder
             'title' => 'Useful Links',
             'status' => NULL,
         ]);
+
+        Menu::create([
+            'content' => json_encode($this->top_menu_content()),
+            'title' => 'FAQ',
+            'status' => NULL,
+        ]);
     }
 
     private function menu_content()

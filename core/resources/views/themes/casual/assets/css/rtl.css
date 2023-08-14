@@ -315,14 +315,32 @@
 
 .banner-socials {
     right: auto;
-    left: -100px;
+    left: -50px;
 }
-
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+    .banner-socials {
+        right: auto;
+        left: -120px;
+    }
+}
 .banner-images-right {
     right: auto;
-    left: 0;
+    left: 210px;
 }
 
+@media screen and (min-width: 1400px) and (max-width: 1599.98px) {
+    .banner-images-right {
+        right: auto;
+        left: 160px;
+    }
+}
+
+@media only screen and (max-width: 1399.98px) {
+    .banner-images-right {
+        right: auto;
+        left: 0px;
+    }
+}
 .banner-right-contents-all .banner-image-shapes {
     right: auto;
     left: 170px;
@@ -846,7 +864,7 @@ span.showing-results {
 @media (min-width:320px) and (max-width: 375px) {
     .banner-socials {
         right: auto;
-        left: -80px !important;
+        left: -70px !important;
     }
     .store-tabs li {
         font-size: 14px;
@@ -854,5 +872,15 @@ span.showing-results {
     .single-blog.style-02 .contents .blog-title {
         font-size: 24px;
         line-height: 32px;
+    }
+}
+.flash-sale-image {
+    right: auto;
+    left: 150px;
+}
+@media only screen and (max-width: 1599px) {
+    .flash-sale-image {
+        right: auto;
+        left: 0px;
     }
 }

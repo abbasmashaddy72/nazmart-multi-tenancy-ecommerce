@@ -123,7 +123,112 @@ class BrandSeed extends Seeder
                     'status' => null
                 ],
             ]);
-        } else {
+        }
+        elseif(session()->get('theme') == 'electro')
+        {
+            Brand::insert([
+                [
+                    'id' => 2,
+                    'name' => 'Gucchi',
+                    'slug' => 'gucci',
+                    'image_id' => 959,
+                    'banner_id' => 959,
+                    'title' => 'Gucci',
+                    'description' => 'Gucci is a Brand',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'deleted_at' => null,
+                    'url' => '#',
+                    'status' => null
+                ],
+                [
+                    'id' => 3,
+                    'name' => 'Intel',
+                    'slug' => 'intel',
+                    'image_id' => 959,
+                    'banner_id' => 959,
+                    'title' => 'Gucci',
+                    'description' => 'Gucci is a Brand',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'deleted_at' => null,
+                    'url' => '#',
+                    'status' => null
+                ],
+                [
+                    'id' => 4,
+                    'name' => 'Mark',
+                    'slug' => 'mark',
+                    'image_id' => 959,
+                    'banner_id' => 959,
+                    'title' => 'Gucci',
+                    'description' => 'Gucci is a Brand',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'deleted_at' => null,
+                    'url' => '#',
+                    'status' => null
+                ],
+                [
+                    'id' => 5,
+                    'name' => 'Vagoda',
+                    'slug' => 'vagoda',
+                    'image_id' => 959,
+                    'banner_id' => 959,
+                    'title' => 'Gucci',
+                    'description' => 'Gucci is a Brand',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'deleted_at' => null,
+                    'url' => '#',
+                    'status' => null
+                ],
+                [
+                    'id' => 6,
+                    'name' => 'Quicker',
+                    'slug' => 'quicker',
+                    'image_id' => 959,
+                    'banner_id' => 959,
+                    'title' => 'Gucci',
+                    'description' => 'Gucci is a Brand',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'deleted_at' => null,
+                    'url' => '#',
+                    'status' => null
+                ],
+                [
+                    'id' => 7,
+                    'name' => 'Boogie',
+                    'slug' => 'boogie',
+                    'image_id' => 959,
+                    'banner_id' => 959,
+                    'title' => 'Gucci',
+                    'description' => 'Gucci is a Brand',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'deleted_at' => null,
+                    'url' => '#',
+                    'status' => null
+                ],
+                [
+                    'id' => 8,
+                    'name' => 'Ogivo',
+                    'slug' => 'ogivo',
+                    'image_id' => 959,
+                    'banner_id' => 959,
+                    'title' => 'Gucci',
+                    'description' => 'Gucci is a Brand',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'deleted_at' => null,
+                    'url' => '#',
+                    'status' => null
+                ],
+            ]);
+        }
+        else
+        {
             Brand::insert([
                     [
                         'id' => 2,

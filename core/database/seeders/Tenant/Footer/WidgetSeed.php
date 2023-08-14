@@ -162,6 +162,133 @@ class WidgetSeed extends Seeder
                 ],
             ]);
         }
+        elseif (session()->get('theme') == 'electro')
+        {
+            // TODO: make widget_content into json encode
+            Widgets::insert([
+                [
+                    'id' => 11,
+                    'widget_area' => NULL,
+                    'widget_order' => 1,
+                    'widget_location' => 'footer_bottom',
+                    'widget_name' => 'FooterBottomLinksWidget',
+                    'widget_content' => 'a:7:{s:2:\"id\";s:2:\"11\";s:11:\"widget_name\";s:23:\"FooterBottomLinksWidget\";s:11:\"widget_type\";s:6:\"update\";s:15:\"widget_location\";s:13:\"footer_bottom\";s:12:\"widget_order\";s:1:\"1\";s:9:\"namespace\";s:70:\"Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterBottomLinksWidget\";s:11:\"navbar_link\";s:1:\"1\";}',
+                    'created_at' => '2023-05-25 17:10:40',
+                    'updated_at' => '2023-05-25 17:10:40',
+                    'widget_namespace' => 'Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterBottomLinksWidget'
+                ],
+                [
+                    'id' => 12,
+                    'widget_area' => NULL,
+                    'widget_order' => 1,
+                    'widget_location' => 'footer_bottom_left',
+                    'widget_name' => 'FooterBottomLinksWidget',
+                    'widget_content' => 'a:7:{s:2:\"id\";s:2:\"12\";s:11:\"widget_name\";s:23:\"FooterBottomLinksWidget\";s:11:\"widget_type\";s:6:\"update\";s:15:\"widget_location\";s:18:\"footer_bottom_left\";s:12:\"widget_order\";s:1:\"1\";s:9:\"namespace\";s:70:\"Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterBottomLinksWidget\";s:11:\"navbar_link\";s:1:\"1\";}',
+                    'created_at' => '2023-05-25 17:10:40',
+                    'updated_at' => '2023-05-25 17:10:40',
+                    'widget_namespace' => 'Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterBottomLinksWidget'
+                ],
+                [
+                    'id' => 13,
+                    'widget_area' => NULL,
+                    'widget_order' => 1,
+                    'widget_location' => 'footer_bottom_right',
+                    'widget_name' => 'FooterPaymentGatewaysWidget',
+                    'widget_content' => 'a:7:{s:2:\"id\";s:2:\"13\";s:11:\"widget_name\";s:27:\"FooterPaymentGatewaysWidget\";s:11:\"widget_type\";s:6:\"update\";s:15:\"widget_location\";s:19:\"footer_bottom_right\";s:12:\"widget_order\";s:1:\"1\";s:9:\"namespace\";s:74:\"Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterPaymentGatewaysWidget\";s:22:\"footer_payment_gateway\";a:2:{s:15:\"repeater_image_\";a:1:{i:0;s:3:\"448\";}s:19:\"repeater_image_url_\";a:1:{i:0;s:1:\"#\";}}}',
+                    'created_at' => '2023-05-25 17:10:40',
+                    'updated_at' => '2023-05-25 17:10:40',
+                    'widget_namespace' => 'Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\FooterPaymentGatewaysWidget'
+                ],
+                [
+                    'id' => 14,
+                    'widget_area' => NULL,
+                    'widget_order' => 1,
+                    'widget_location' => 'shop_footer',
+                    'widget_name' => 'ShopFooterWidget',
+                    'widget_content' => 'a:7:{s:2:\"id\";s:2:\"14\";s:11:\"widget_name\";s:16:\"ShopFooterWidget\";s:11:\"widget_type\";s:6:\"update\";s:15:\"widget_location\";s:11:\"shop_footer\";s:12:\"widget_order\";s:1:\"1\";s:9:\"namespace\";s:46:\"Plugins\WidgetBuilder\Widgets\ShopFooterWidget\";s:17:\"services_repeater\";a:3:{s:14:\"repeater_icon_\";a:4:{i:0;s:12:\"las la-truck\";i:1;s:15:\"las la-redo-alt\";i:2;s:11:\"las la-lock\";i:3;s:11:\"las la-gift\";}s:15:\"repeater_title_\";a:4:{i:0;s:13:\"Free Shipping\";i:1;s:11:\"Easy Return\";i:2;s:14:\"Secure payment\";i:3;s:10:\"Best Offer\";}s:18:\"repeater_subtitle_\";a:4:{i:0;s:14:\"Order Over $90\";i:1;s:14:\"Within 15 Days\";i:2;s:15:\"Online Shopping\";i:3;s:10:\"Guaranteed\";}}}',
+                    'created_at' => '2023-05-25 17:10:40',
+                    'updated_at' => '2023-05-25 17:10:40',
+                    'widget_namespace' => 'Plugins\WidgetBuilder\Widgets\ShopFooterWidget'
+                ],
+                [
+                    'id' => 17,
+                    'widget_area' => NULL,
+                    'widget_order' => 1,
+                    'widget_location' => 'footer_top',
+                    'widget_name' => 'SocialFollowWidget',
+                    'widget_content' => 'a:8:{s:2:\"id\";s:2:\"17\";s:11:\"widget_name\";s:18:\"SocialFollowWidget\";s:11:\"widget_type\";s:6:\"update\";s:15:\"widget_location\";s:10:\"footer_top\";s:12:\"widget_order\";s:1:\"1\";s:9:\"namespace\";s:65:\"Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\SocialFollowWidget\";s:5:\"title\";N;s:20:\"footer_social_follow\";a:2:{s:14:\"repeater_icon_\";a:4:{i:0;s:17:\"lab la-facebook-f\";i:1;s:14:\"lab la-twitter\";i:2;s:16:\"lab la-instagram\";i:3;s:14:\"lab la-youtube\";}s:18:\"repeater_icon_url_\";a:4:{i:0;s:1:\"#\";i:1;s:1:\"#\";i:2;s:1:\"#\";i:3;s:1:\"#\";}}}',
+                    'created_at' => '2023-05-25 17:10:40',
+                    'updated_at' => '2023-05-25 17:10:40',
+                    'widget_namespace' => 'Plugins\WidgetBuilder\Widgets\Tenants\ThemeOne\SocialFollowWidget'
+                ],
+                [
+                    'id' => 18,
+                    'widget_area' => NULL,
+                    'widget_order' => 2,
+                    'widget_location' => 'footer_top',
+                    'widget_name' => 'AboutUsWidget',
+                    'widget_content' => 'a:8:{s:2:\"id\";s:2:\"18\";s:11:\"widget_name\";s:13:\"AboutUsWidget\";s:11:\"widget_type\";s:6:\"update\";s:15:\"widget_location\";s:10:\"footer_top\";s:12:\"widget_order\";s:1:\"2\";s:9:\"namespace\";s:59:\"Plugins\WidgetBuilder\Widgets\Tenants\Electro\AboutUsWidget\";s:10:\"logo_image\";s:3:\"571\";s:11:\"description\";s:18:\"asdasd asdas zxcwe\";}',
+                    'created_at' => '2023-05-25 17:10:40',
+                    'updated_at' => '2023-05-25 17:10:40',
+                    'widget_namespace' => 'Plugins\WidgetBuilder\Widgets\Tenants\Electro\AboutUsWidget'
+                ],
+                [
+                    'id' => 19,
+                    'widget_area' => NULL,
+                    'widget_order' => 3,
+                    'widget_location' => 'footer_top',
+                    'widget_name' => 'TenantImageWidget',
+                    'widget_content' => 'a:6:{s:11:\"widget_name\";s:17:\"TenantImageWidget\";s:11:\"widget_type\";s:3:\"new\";s:15:\"widget_location\";s:10:\"footer_top\";s:12:\"widget_order\";s:1:\"3\";s:9:\"namespace\";s:63:\"Plugins\WidgetBuilder\Widgets\Tenants\Electro\TenantImageWidget\";s:12:\"image_widget\";a:2:{s:15:\"repeater_image_\";a:3:{i:0;s:3:\"304\";i:1;s:3:\"312\";i:2;s:3:\"306\";}s:19:\"repeater_image_url_\";a:3:{i:0;s:1:\"#\";i:1;s:1:\"#\";i:2;s:1:\"#\";}}}',
+                    'created_at' => '2023-05-25 17:10:40',
+                    'updated_at' => '2023-05-25 17:10:40',
+                    'widget_namespace' => 'Plugins\WidgetBuilder\Widgets\Tenants\Electro\TenantImageWidget'
+                ],
+//                [
+//                    'id' => 21,
+//                    'widget_area' => NULL,
+//                    'widget_order' => 1,
+//                    'widget_location' => 'footer',
+//                    'widget_name' => 'NavigationMenuWidget',
+//                    'widget_content' => 'a:8:{s:2:\"id\";s:2:\"21\";s:11:\"widget_name\";s:20:\"NavigationMenuWidget\";s:11:\"widget_type\";s:6:\"update\";s:15:\"widget_location\";s:6:\"footer\";s:12:\"widget_order\";s:1:\"1\";s:9:\"namespace\";s:66:\"Plugins\WidgetBuilder\Widgets\Tenants\Electro\NavigationMenuWidget\";s:12:\"widget_title\";s:11:\"Quick Links\";s:7:\"menu_id\";s:1:\"1\";}',
+//                    'created_at' => '2023-05-25 17:10:40',
+//                    'updated_at' => '2023-05-25 17:10:40',
+//                    'widget_namespace' => 'Plugins\WidgetBuilder\Widgets\Tenants\Electro\NavigationMenuWidget'
+//                ],
+//                [
+//                    'id' => 22,
+//                    'widget_area' => NULL,
+//                    'widget_order' => 2,
+//                    'widget_location' => 'footer',
+//                    'widget_name' => 'NavigationMenuWidget',
+//                    'widget_content' => 'a:7:{s:11:\"widget_name\";s:20:\"NavigationMenuWidget\";s:11:\"widget_type\";s:3:\"new\";s:15:\"widget_location\";s:6:\"footer\";s:12:\"widget_order\";s:1:\"2\";s:9:\"namespace\";s:66:\"Plugins\WidgetBuilder\Widgets\Tenants\Electro\NavigationMenuWidget\";s:12:\"widget_title\";s:13:\"Helpful Links\";s:7:\"menu_id\";s:1:\"1\";}',
+//                    'created_at' => '2023-05-25 17:10:40',
+//                    'updated_at' => '2023-05-25 17:10:40',
+//                    'widget_namespace' => 'Plugins\WidgetBuilder\Widgets\Tenants\Electro\NavigationMenuWidget'
+//                ],
+//                [
+//                    'id' => 23,
+//                    'widget_area' => NULL,
+//                    'widget_order' => 3,
+//                    'widget_location' => 'footer',
+//                    'widget_name' => 'AddressWidget',
+//                    'widget_content' => 'a:8:{s:2:\"id\";s:2:\"23\";s:11:\"widget_name\";s:13:\"AddressWidget\";s:11:\"widget_type\";s:6:\"update\";s:15:\"widget_location\";s:6:\"footer\";s:12:\"widget_order\";s:1:\"3\";s:9:\"namespace\";s:59:\"Plugins\WidgetBuilder\Widgets\Tenants\Electro\AddressWidget\";s:5:\"title\";s:15:\"Our Information\";s:19:\"about_us_two_widget\";a:3:{s:14:\"repeater_text_\";a:3:{i:0;s:26:\"41/1, Hilton Mall, NY City\";i:1;s:13:\"+012-78901234\";i:2;s:13:\"help@mail.com\";}s:18:\"repeater_icon_url_\";a:3:{i:0;N;i:1;s:20:\"callto:+012-78901234\";i:2;s:20:\"mailto:help@mail.com\";}s:14:\"repeater_icon_\";a:3:{i:0;s:21:\"las la-location-arrow\";i:1;s:12:\"las la-phone\";i:2;s:15:\"las la-envelope\";}}}',
+//                    'created_at' => '2023-05-25 17:10:40',
+//                    'updated_at' => '2023-05-25 17:10:40',
+//                    'widget_namespace' => 'Plugins\WidgetBuilder\Widgets\Tenants\Electro\AddressWidget'
+//                ],
+//                [
+//                    'id' => 24,
+//                    'widget_area' => NULL,
+//                    'widget_order' => 4,
+//                    'widget_location' => 'footer',
+//                    'widget_name' => 'NewsletterBookpoint',
+//                    'widget_content' => 'a:8:{s:2:\"id\";s:2:\"24\";s:11:\"widget_name\";s:19:\"NewsletterBookpoint\";s:11:\"widget_type\";s:6:\"update\";s:15:\"widget_location\";s:6:\"footer\";s:12:\"widget_order\";s:1:\"4\";s:9:\"namespace\";s:67:\"Plugins\WidgetBuilder\Widgets\Tenants\Bookpoint\NewsletterBookpoint\";s:5:\"title\";s:12:\"Get In Touch\";s:8:\"subtitle\";s:32:\"Sign up to our mailing list now!\";}',
+//                    'created_at' => '2023-05-25 17:10:40',
+//                    'updated_at' => '2023-05-25 17:10:40',
+//                    'widget_namespace' => 'Plugins\WidgetBuilder\Widgets\Tenants\Bookpoint\NewsletterBookpoint'
+//                ]
+            ]);
+        }
         else
         {
             Widgets::insert([

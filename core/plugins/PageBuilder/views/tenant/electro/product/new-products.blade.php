@@ -1,4 +1,5 @@
-<section class="arrivals-area" data-padding-top="{{$data['padding_top']}}" data-padding-bottom="{{$data['padding_bottom']}}">
+<section class="arrivals-area" data-padding-top="{{$data['padding_top']}}"
+         data-padding-bottom="{{$data['padding_bottom']}}">
     <div class="container-three">
         <div class="row">
             <div class="col-lg-12">
@@ -34,10 +35,12 @@
                                     <a href="{{to_product_details($product->slug)}}"> {{product_limited_text($product->name)}} </a>
                                 </h3>
 
-                                @php
-                                    $price_class = 'common-price-title ff-roboto color-four';
-                                @endphp
-                                {!! render_product_dynamic_price_markup($product, sale_price_class: $price_class, regular_price_class: $price_class) !!}
+                                <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                    @php
+                                        $price_class = 'common-price-title ff-roboto color-four';
+                                    @endphp
+                                    {!! render_product_dynamic_price_markup($product, sale_price_class: $price_class, regular_price_markup_tag: 's') !!}
+                                </div>
                             </div>
 
                             <div class="arrival-flex d-flex flex-wrap align-items-center">

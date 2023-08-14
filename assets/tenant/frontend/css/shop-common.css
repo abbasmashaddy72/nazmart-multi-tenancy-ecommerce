@@ -1297,6 +1297,7 @@
   padding: 3px 12px;
   color: #fff;
   background-color: var(--main-color-one);
+  width: fit-content;
 }
 .global-card-thumb-badge-box.bg-color-new {
   background: var(--new-color);

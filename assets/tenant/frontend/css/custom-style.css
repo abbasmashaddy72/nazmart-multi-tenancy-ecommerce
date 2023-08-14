@@ -1006,3 +1006,7 @@ html body.stop-scroll {
 .blurred-img.loaded img {
     opacity: 1;
 }
+
+.electro .footer-middle-border div[class*=col]:not(:last-child) .footer-widget::after {
+    display: none;
+}
