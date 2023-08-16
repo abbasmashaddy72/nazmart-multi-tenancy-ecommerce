@@ -122,7 +122,6 @@
             @endif
 
 
-
             <li class="nav-item dropdown">
                 <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#"
                    data-bs-toggle="dropdown" aria-expanded="false">
@@ -167,10 +166,45 @@
                 </div>
             </li>
 
+            @php
+                $warning = false;
+                try {
+                    if (function_exists('ini_get')){
+                        $memory_limit =  ini_get("memory_limit");
+                        $post_max_size =  ini_get("post_max_size");
+                        $max_execution_time =  ini_get("max_execution_time");
+                        $upload_max_filesize =  ini_get("upload_max_filesize");
+                    }
+
+                        // required version
+                        $required_minimum_versions = [
+                            'php_version' => 8.0,
+                            'mysql_version' => 5.7,
+                            'laravel_version' => 9,
+                            'memory_limit' => 512,
+                            'execution_time' => 300,
+                            'upload_filesize' => 128,
+                            'post_size' => 128
+                        ];
+
+                        if (
+                                !(phpversion() >= $required_minimum_versions['php_version']) ||
+                                !(DB::select("SELECT VERSION() as version")[0]->version >= $required_minimum_versions['mysql_version']) ||
+                                !(app()->version() >= $required_minimum_versions['laravel_version']) ||
+                                !($memory_limit >= $required_minimum_versions['memory_limit']) ||
+                                !($post_max_size >= $required_minimum_versions['execution_time']) ||
+                                !($max_execution_time >= $required_minimum_versions['upload_filesize']) ||
+                                !($upload_max_filesize >= $required_minimum_versions['post_size'])
+                            )
+                        {
+                            $warning = true;
+                        }
+                 } catch (Exception $exception) {}
+            @endphp
 
             <li class="nav-item nav-logout d-none d-lg-block mx-2">
-                <a class="btn btn-success btn-icon-text" href="{{route('landlord.admin.health')}}">
-                    <i class="mdi mdi-stethoscope btn-icon-prepend"></i> {{__('Health')}}
+                <a class="btn {{$warning ? 'btn-danger site-health-btn' : 'btn-success'}} btn-icon-text" href="{{route('landlord.admin.health')}}">
+                    <i class="mdi mdi-stethoscope"></i> {{__('Health')}}
                 </a>
             </li>
 

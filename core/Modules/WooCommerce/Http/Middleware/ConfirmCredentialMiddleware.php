@@ -16,11 +16,15 @@ class ConfirmCredentialMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (get_static_option('woocommerce_site_url') && get_static_option('woocommerce_consumer_key') && get_static_option('woocommerce_consumer_secret'))
+        if (tenant_plan_sidebar_permission('woocommerce'))
         {
-            return $next($request);
+            if (get_static_option('woocommerce_site_url') && get_static_option('woocommerce_consumer_key') && get_static_option('woocommerce_consumer_secret')) {
+                return $next($request);
+            }
+
+            return to_route('tenant.admin.woocommerce.settings');
         }
 
-        return to_route('tenant.admin.woocommerce.settings');
+        abort(404);
     }
 }

@@ -47,7 +47,7 @@
                                 </thead>
                                 <tbody>
 
-                                @foreach($all_products as $key => $product)
+                                @foreach($all_products ?? [] as $key => $product)
                                     @continue(count($product->variations) > 0)
                                     <tr>
                                         <x-woocommerce::bulk-action.td :id="$product->id"/>

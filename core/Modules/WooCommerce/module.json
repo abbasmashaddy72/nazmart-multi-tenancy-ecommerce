@@ -20,7 +20,8 @@
                     "label": "WooCommerce",
                     "route": "tenant.admin.woocommerce",
                     "parent": null,
-                    "icon": "mdi mdi-wordpress"
+                    "icon": "mdi mdi-wordpress",
+                    "permission": "woocommerce"
                 },
                 {
                     "id" : "woocommerce-manage-index",

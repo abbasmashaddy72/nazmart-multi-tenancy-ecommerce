@@ -37,7 +37,6 @@ class AccountRemoval extends Command
                 rsort($day_list);
 
                 foreach ($day_list as $day){
-
                     if (\Carbon\Carbon::parse($payment_log->expire_date)->addDay($remove_day)->subDay($day)->lessThan(\Carbon\Carbon::today())){
                         $message['subject'] = 'Account will be deleted -' . get_static_option('site_' . get_default_language() . '_title');
                         $message['body'] = 'Your Account will be removed within ' . ($day) .  ' days.  Please subscribe to a plan before we remove your account ';

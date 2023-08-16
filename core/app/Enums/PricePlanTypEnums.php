@@ -21,7 +21,7 @@ class PricePlanTypEnums
 
     public static function getFeatureList()
     {
-        return [
+        $all_features = [
             'products' => __('products'),
             'pages' => __('pages'),
             'blog' => __('blog'),
@@ -35,5 +35,12 @@ class PricePlanTypEnums
             'testimonial' => __('testimonial'),
             'app_api' => __('app api')
         ];
+
+        if (moduleExists('WooCommerce'))
+        {
+            $all_features['woocommerce'] = __('woocommerce');
+        }
+
+        return $all_features;
     }
 }

@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Landlord\Admin;
 
-use App\Actions\Tenant\ReassignTenant;
 use App\Actions\Tenant\ReGenerateTenant;
-use App\Actions\Tenant\TenantCreateEventWithMail;
 use App\Events\TenantRegisterEvent;
 use App\Helpers\FlashMsg;
 use App\Helpers\Payment\DatabaseUpdateAndMailSend\LandlordPricePlanAndTenantCreate;
@@ -28,9 +26,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use phpDocumentor\Reflection\Types\Self_;
 use Spatie\Activitylog\Models\Activity;
-use Symfony\Component\ErrorHandler\Error\OutOfMemoryError;
 
 class TenantManageController extends Controller
 {

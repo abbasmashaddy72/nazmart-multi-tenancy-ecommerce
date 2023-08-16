@@ -16,11 +16,9 @@ class WooCommerceController extends Controller
         $api_products = new WooCommerceService();
 
             $all_products = $api_products->getProducts();
-            if ($all_products == 401)
+            if ($all_products == 401 || $all_products == 404)
             {
                 return view('woocommerce::woocommerce.error');
-
-
             }
 
         return view('woocommerce::woocommerce.index', compact('all_products'));
