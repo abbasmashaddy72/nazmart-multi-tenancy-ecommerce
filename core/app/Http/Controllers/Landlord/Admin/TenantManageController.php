@@ -589,8 +589,8 @@ class TenantManageController extends Controller
 
     public function failed_tenants()
     {
-        $tenants = Tenant::where('user_id', NULL)
-            ->orWhere('data', NULL)
+        $tenants = Tenant::whereNull('user_id')
+            ->orWhereNull('data')
             ->orderBy('created_at', 'desc')
             ->get();
 

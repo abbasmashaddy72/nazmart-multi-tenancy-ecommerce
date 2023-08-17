@@ -92,6 +92,21 @@
     },
     {
       "id": 7,
+      "title": "Home Page (Electro)",
+      "slug": "home-page-electro",
+      "theme_slug": "electro",
+      "page_content": "Home",
+      "visibility": 0,
+      "breadcrumb": 0,
+      "page_builder": 1,
+      "status": 1,
+      "navbar_variant": "01",
+      "footer_variant": "01",
+      "created_at": "2023-05-21 14:26:01",
+      "updated_at": "2023-05-21 14:26:01"
+    },
+    {
+      "id": 8,
       "title": "About Us",
       "slug": "about",
       "page_content": "About us content",
@@ -105,7 +120,7 @@
       "updated_at": "2023-05-21 14:26:01"
     },
     {
-      "id": 8,
+      "id": 9,
       "title": "Contact",
       "slug": "contact",
       "page_content": "Contact content",
@@ -119,7 +134,7 @@
       "updated_at": "2023-05-21 14:26:02"
     },
     {
-      "id": 9,
+      "id": 10,
       "title": "Shop",
       "slug": "shop",
       "page_content": "Shop content",
@@ -133,7 +148,7 @@
       "updated_at": "2023-05-21 14:26:02"
     },
     {
-      "id": 10,
+      "id": 11,
       "title": "Blog",
       "slug": "blog",
       "page_content": "Blog content",
@@ -147,7 +162,7 @@
       "updated_at": "2023-05-21 14:26:02"
     },
     {
-      "id": 11,
+      "id": 12,
       "title": "Digital Product",
       "slug": "digital-product",
       "page_content": "Shop content",

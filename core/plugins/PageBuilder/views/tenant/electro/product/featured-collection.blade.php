@@ -10,7 +10,8 @@
         <div class="row margin-top-10">
             <div class="col-lg-12 margin-top-40">
                 <div class="global-slick-init collection-slider slider-inner-margin dot-style-one dot-color-four dot-03 slider-inner-margin" data-infinite="true" data-slidesToShow="4" data-dots="true" data-swipeToSlide="true" data-autoplay="false" data-autoplaySpeed="2500"
-                     data-responsive='[{"breakpoint": 1400,"settings": {"slidesToShow": 3}},{"breakpoint": 1200,"settings": {"slidesToShow": 3}},{"breakpoint": 992,"settings": {"slidesToShow": 2}},{"breakpoint": 768, "settings": {"slidesToShow": 2}},{"breakpoint": 576, "settings": {"slidesToShow": 1}}]'>
+                     data-responsive='[{"breakpoint": 1400,"settings": {"slidesToShow": 3}},{"breakpoint": 1200,"settings": {"slidesToShow": 3}},{"breakpoint": 992,"settings": {"slidesToShow": 2}},{"breakpoint": 768, "settings": {"slidesToShow": 2}},{"breakpoint": 576, "settings": {"slidesToShow": 1}}]'
+                     data-rtl="{{get_user_lang_direction() == 1 ? 'true' : 'false'}}">
                     @foreach($data['products'] ?? [] as $product)
                         @php
                             $class = $loop->odd ? 'fadeInUp' : 'fadeInDown';

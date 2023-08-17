@@ -7,10 +7,10 @@
                     $campaign_id = $data['repeater']['repeater_campaign_'][$index];
                     $campaign = \Modules\Campaign\Entities\Campaign::find($campaign_id);
 
-                    $title = $data['repeater']['repeater_title_'][$index] ?? $campaign->title;
-                    $slogan = $data['repeater']['repeater_slogan_'][$index] ?? $campaign->subtitle;
+                    $title = $data['repeater']['repeater_title_'][$index] ?? $campaign?->title;
+                    $slogan = $data['repeater']['repeater_slogan_'][$index] ?? $campaign?->subtitle;
 
-                    $image_id = $data['repeater']['repeater_image_'][$index] ?? $campaign->image;
+                    $image_id = $data['repeater']['repeater_image_'][$index] ?? $campaign?->image;
 
                     $campaign_url = route('frontend.products.campaign', $campaign_id);
                     $button_text = $data['repeater']['repeater_button_text_'][$index] ?? __('Order Now');
