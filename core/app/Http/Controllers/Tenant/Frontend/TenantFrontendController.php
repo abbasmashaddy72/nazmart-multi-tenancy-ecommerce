@@ -2045,41 +2045,20 @@ HTML;
         $product_inventory_set = []; // FRONTEND : attribute store
         $additional_info_store = []; // FRONTEND : $additional info_store
 
-        $productColors = $product->color->unique();
-        $productSizes = $product->sizes->unique();
-
         foreach ($all_included_attributes as $id => $included_attributes) {
             $single_inventory_item = [];
-            $colorCode = [];
             foreach ($included_attributes as $included_attribute_single) {
-                /**
-                 * Example: (Only data representation, not in code)
-                 *      selected_attributes = [
-                 *          'Cheese' => ['Mozzarella', 'Cheddar', 'Parmesan'],
-                 *          'Sauce' => ['Hot', 'Taco', 'Fish', 'Soy', 'Tartar']
-                 *      ];
-                 */
                 $available_attributes[$included_attribute_single['attribute_name']][$included_attribute_single['attribute_value']] = 1;
 
                 // individual inventory item
                 $single_inventory_item[$included_attribute_single['attribute_name']] = $included_attribute_single['attribute_value'];
-                /* *
-                 * ========================================================
-                 * Example of $available_attributes
-                 *
-                 * array:3 [▼
-                 *     "Cheese" => "cream"
-                 *     "Color" => "Green"
-                 *     "Size" => "M"
-                 *   ]
-                 * ========================================================
-                 * */
 
-                if (optional($inventoryDetails->find($id))->productColor) {
+
+                if (!empty(optional($inventoryDetails->find($id))->productColor)) {
                     $single_inventory_item['Color'] = optional(optional($inventoryDetails->find($id))->productColor)->name;
                 }
 
-                if (optional($inventoryDetails->find($id))->productSize) {
+                if (!empty(optional($inventoryDetails->find($id))->productSize)) {
                     $single_inventory_item['Size'] = optional(optional($inventoryDetails->find($id))->productSize)->name;
                 }
             }
@@ -2088,21 +2067,65 @@ HTML;
             $item_additional_stock = optional(optional($product->inventoryDetail)->find($id))->stock_count ?? 0;
             $image = get_attachment_image_by_id(optional(optional($product->inventoryDetail)->find($id))->image)['img_url'] ?? '';
 
+            $product_inventory_set[] = $single_inventory_item;
 
             $sorted_inventory_item = $single_inventory_item;
             ksort($sorted_inventory_item);
-            $md5 = md5(json_encode($sorted_inventory_item));
 
-            $product_inventory_set[] = $single_inventory_item + ["hash" => $md5];
-            $additional_info_store[$md5] = [
-                'pid_id' => $id, // ProductInventoryDetails->id
+            $additional_info_store[md5(json_encode($sorted_inventory_item))] = [
+                'pid_id' => $id, //Info: ProductInventoryDetails id
                 'additional_price' => $item_additional_price,
                 'stock_count' => $item_additional_stock,
                 'image' => $image,
             ];
         }
 
+        $productColors = $product->color->unique();
+        $productSizes = $product->sizes->unique();
+
+        $colorAndSizes = $product?->inventoryDetail?->whereNotIn("id", $all_included_attributes_prd_id);
+
+        if (!empty($colorAndSizes)) {
+            $product_id = $product_inventory_attributes[0]['id'] ?? $product->id;
+
+            foreach ($colorAndSizes as $inventory) {
+                // if this inventory has attributes then it will fire continue statement
+                if (in_array($inventory->product_id, $all_included_attributes_prd_id)) {
+                    continue;
+                }
+
+                $single_inventory_item = [];
+
+                if (!empty(optional($inventoryDetails->find($product_id))->color)) {
+                    // todo:: this line will check if color name is exist then store it on $singleInventoryItem['Color'] array
+                    optional($inventory->productColor)->name ? $single_inventory_item['Color'] = optional($inventory->productColor)->name : null;
+                }
+
+                if (!empty(optional($inventoryDetails->find($product_id))->size)) {
+                    // todo:: this line will check if size name is exist then store it on $singleInventoryItem['Size'] array
+                    optional($inventory->productSize)->name ? $single_inventory_item['Size'] = optional($inventory->productSize)->name : null;
+                }
+
+                $product_inventory_set[] = $single_inventory_item;
+
+                $item_additional_price = optional($inventory)->additional_price ?? 0;
+                $item_additional_stock = optional($inventory)->stock_count ?? 0;
+                $image = get_attachment_image_by_id(optional($inventory)->image)['img_url'] ?? '';
+
+                $sorted_inventory_item = $single_inventory_item;
+                ksort($sorted_inventory_item);
+
+                $additional_info_store[md5(json_encode($sorted_inventory_item))] = [
+                    'pid_id' => $product_id,
+                    'additional_price' => $item_additional_price,
+                    'stock_count' => $item_additional_stock,
+                    'image' => $image,
+                ];
+            }
+        }
+
         $available_attributes = array_map(fn($i) => array_keys($i), $available_attributes);
+
 
         $setting_text = StaticOption::whereIn('option_name', [
             'product_in_stock_text',
@@ -2114,8 +2137,6 @@ HTML;
             'write_your_feedback_text',
             'post_your_feedback_text',
         ])->get()->mapWithKeys(fn($item) => [$item->option_name => $item->option_value])->toArray();
-
-//        dd($product_inventory_set);
 
         return [
             "available_attributes" => $available_attributes,

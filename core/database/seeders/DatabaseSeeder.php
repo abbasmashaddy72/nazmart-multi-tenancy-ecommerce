@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\PaymentGateway;
 use App\Models\Themes;
+use App\Models\Widgets;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Session;
 
@@ -353,32 +354,35 @@ class DatabaseSeeder extends Seeder
 //            \Spatie\Permission\Models\Permission::create(['name' => $permission,'guard_name' => 'admin']);
 //        }
 
-//        $themes = [
-//            [
-//                'title' => 'Luxury Perfume Store',
-//                'slug' => \Str::slug('theme-1'),
-//                'description' => 'This theme has a best design for perfume store'
-//            ],
-//            [
-//                'title' => 'Clothing Store',
-//                'slug' => \Str::slug('theme-2'),
-//                'description' => 'This theme has a best design for clothing store'
-//            ],
-//            [
-//                'title' => 'Fashion Shop',
-//                'slug' => \Str::slug('theme-3'),
-//                'description' => 'This theme has a best design for fashion shop'
-//            ]
-//        ];
-//
-//        foreach ($themes as $theme)
-//        {
-//            Themes::create($theme);
-//        }
-
-
 //        $this->call([
 //            ThemeModifySeeder::class
 //        ]);
+
+        if (!tenant())
+        {
+            $widgets = Widgets::all();
+            foreach ($widgets as $widget)
+            {
+                $widget->widget_content = $this->format_widget_content($widget->widget_content);
+                $widget->save();
+            }
+        }
+    }
+
+    private function format_widget_content($data)
+    {
+        if (!$this->check_json($data))
+        {
+            $unserialized = unserialize($data);
+            return json_encode($unserialized);
+        }
+
+        return $data;
+    }
+
+    private function check_json($data): bool
+    {
+        json_decode($data);
+        return json_last_error() === JSON_ERROR_NONE; // if true json is valid, false if json is not valid
     }
 }

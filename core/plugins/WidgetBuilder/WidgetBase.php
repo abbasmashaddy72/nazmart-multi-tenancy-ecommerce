@@ -101,10 +101,29 @@ abstract class WidgetBase
     public function get_settings()
     {
         $widget_data = !empty($this->args['id']) ? Widgets::find($this->args['id']) : null;
-        $widget_content_data = $this->repairSerializeString($widget_data?->widget_content);
-        $widget_data = !empty($widget_data) ? unserialize($widget_content_data,['class' => false]) : [];
-        return $widget_data;
+//        $widget_content_data = $this->repairSerializeString($widget_data?->widget_content);
+//        $widget_data = !empty($widget_data) ? unserialize($widget_content_data,['class' => false]) : [];
+        $widget_data = !empty($widget_data) ? $this->format_widget_content($widget_data?->widget_content,['class' => false]) : "";
+        return json_decode($widget_data,true);
     }
+
+    private function format_widget_content($data)
+    {
+        if (!$this->check_json($data))
+        {
+            $unserialized = unserialize($data);
+            return json_encode($unserialized);
+        }
+
+        return $data;
+    }
+
+    private function check_json($data): bool
+    {
+        json_decode($data);
+        return json_last_error() === JSON_ERROR_NONE; // if true json is valid, false if json is not valid
+    }
+
     /**
      * widget_column_start
      * this method will add widget column markup for frontend

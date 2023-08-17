@@ -128,8 +128,8 @@
         </div>
     </div>
     {{--end --}}
-
 @endsection
+
 @section('scripts')
     <!-- Start datatable js -->
     <x-datatable.js/>

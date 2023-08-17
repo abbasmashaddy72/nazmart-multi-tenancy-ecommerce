@@ -940,17 +940,21 @@ function render_frontend_sidebar($location, $args = [])
     $output = '';
     $all_widgets = \App\Models\Widgets::where(['widget_location' => $location])->orderBy('widget_order', 'ASC')->get();
 
-    foreach ($all_widgets as $widget) {
-        $output .= \Plugins\WidgetBuilder\WidgetBuilderSetup::render_widgets_by_name_for_frontend([
-            'name' => $widget->widget_name,
-            'location' => $location,
-            'id' => $widget->id,
-            'column' => $args['column'] ?? false,
-            'namespace' => $widget->widget_namespace
-        ]);
-    }
+    try {
+        foreach ($all_widgets as $widget) {
+            $output .= \Plugins\WidgetBuilder\WidgetBuilderSetup::render_widgets_by_name_for_frontend([
+                'name' => $widget->widget_name,
+                'location' => $location,
+                'id' => $widget->id,
+                'column' => $args['column'] ?? false,
+                'namespace' => $widget->widget_namespace
+            ]);
+        }
 
-    return $output;
+        return $output;
+    } catch (Exception $exception) {
+
+    }
 }
 
 function render_admin_panel_widgets_list()

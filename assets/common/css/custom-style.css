@@ -452,3 +452,30 @@ table.dataTable thead td {
     margin-top: 8px;
 }
 
+.site-health-btn {
+    animation: site-health-btn-glow 5s linear infinite;
+}
+
+@keyframes site-health-btn-glow {
+    0% {
+        background-color: #fe7c96;
+    }
+    20% {
+        background-color: #fc3e62;
+    }
+    40% {
+        background-color: #fe7c96;
+    }
+    60% {
+        background-color: #fc3e62;
+    }
+    75% {
+        background-color: #fe7c96;
+    }
+    85% {
+        background-color: #fc3e62;
+    }
+    100% {
+        background-color: #fe7c96;
+    }
+}

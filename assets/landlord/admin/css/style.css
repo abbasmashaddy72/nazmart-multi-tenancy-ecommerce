@@ -21464,3 +21464,25 @@ table .attachment-preview {
         width: 100%;
     }
 }
+
+
+/*external plugin bagde css*/
+.sidebar .nav .nav-item.plugin-menu:before {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    content: "\f6a4";
+    z-index: 9;
+    left: 5px;
+    font-family: "Material Design Icons";
+    top: 15px;
+    background-color: #d286ff;
+    line-height: 20px;
+    text-align: center;
+    color: #fff;
+    border-radius: 2px;
+}
+
+.sidebar .nav .nav-item.plugin-menu {
+    position: relative;
+}

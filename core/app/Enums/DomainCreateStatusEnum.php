@@ -7,7 +7,6 @@ class DomainCreateStatusEnum
     const FAILED = 0;
     const ACTIVE = 1;
 
-
     public static function getText($const)
     {
         if ($const == self::FAILED){

@@ -341,6 +341,14 @@ class ModuleMetaData
                 }
                 $menuItem = $this->getAdminMenuSettings($adminSettings);
                 if (!empty((array)$menuItem)) {
+                    if (tenant() && property_exists(current($menuItem), "permission") && !empty(current($menuItem)->permission))
+                    {
+                        if (!tenant_plan_sidebar_permission('woocommerce'))
+                        {
+                            continue;
+                        }
+                    }
+
                     //if it is tenant then load route param as tenant route param
                     if (tenant() && property_exists(current($menuItem), 'tenantRoute')) {
                         current($menuItem)->route = current($menuItem)?->tenantRoute;

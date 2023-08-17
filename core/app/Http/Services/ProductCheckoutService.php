@@ -134,9 +134,9 @@ class ProductCheckoutService
             {
                 $user = [
                     'id' => $user->id,
-                    'name' => $user->full_name,
+                    'name' => $user->name,
                     'email' => $user->email,
-                    'mobile' => $user->phone,
+                    'mobile' => ($user->mobile ?? $validated_data['phone']) ?? 0,
                     'country' => null,
                     'state' => null,
                     'city' => $user->city,
