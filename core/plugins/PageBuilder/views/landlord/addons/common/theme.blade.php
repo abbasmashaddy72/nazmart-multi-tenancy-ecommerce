@@ -35,12 +35,19 @@
                     $custom_theme_image = get_static_option_central($theme_data['slug'].'_theme_image');
                 @endphp
 
-                <div class="col-lg-4 col-sm-6 mt-4">
+                <div class="col-lg-4 col-sm-6 mt-4 {{$theme_slug}}-screenshot">
                     <div class="single-themes">
                         <div class="single-themes-thumb">
                             <a href="{{$theme_custom_url}}" target="_blank">
                                 <img src="{{ !empty($custom_theme_image) ? $custom_theme_image : $theme_image}}" alt="">
                             </a>
+
+{{--                            @if($theme_slug == 'electro')--}}
+{{--                                <div class="single-themes-thumb-btn" style="display: none">--}}
+{{--                                    <a href="#0" class="btn btn-primary">btn One</a>--}}
+{{--                                    <a href="#0" class="btn btn-secondary">btn Two</a>--}}
+{{--                                </div>--}}
+{{--                            @endif--}}
                         </div>
                         <div class="single-themes-content mt-3">
                             <div class="single-themes-content-flex">

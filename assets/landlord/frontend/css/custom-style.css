@@ -796,12 +796,26 @@
 .single-themes-thumb{
     overflow: hidden;
     max-height: 500px;
+    position: relative;
 }
 
 .single-themes:hover .single-themes-thumb.coming_soon img {
     transform: unset;
 }
-
+.single-themes-thumb-btn {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+}
 .coming-soon-theme {
     position: absolute;
     left: 0;
