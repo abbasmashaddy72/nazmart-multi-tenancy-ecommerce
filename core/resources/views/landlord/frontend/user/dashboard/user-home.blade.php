@@ -217,7 +217,7 @@
                             <select class="form-select subdomain" id="subdomain" name="subdomain">
                                 <option value="" selected disabled>{{__('Select a subdomain')}}</option>
                                     @foreach($user->tenant_details ?? [] as $tenant)
-                                        <option value="{{$tenant->id}}" {{$tenant->payment_log->package->type == \App\Enums\PricePlanTypEnums::LIFETIME ? 'selected' : ''}}>{{optional($tenant->domain)->domain}}</option>
+                                        <option value="{{$tenant->id}}" {{$tenant->payment_log?->package?->type == \App\Enums\PricePlanTypEnums::LIFETIME ? 'selected' : ''}}>{{optional($tenant->domain)->domain}}</option>
                                     @endforeach
                                 <option value="custom_domain__dd">{{__('Add new subdomain')}}</option>;
                             </select>
@@ -249,7 +249,7 @@
                             <label for="custom-theme">{{__('Add Theme')}}</label>
                             <select class="form-select text-capitalize" name="theme_slug" id="custom-theme">
                                 @foreach($themes as $theme)
-                                    <option value="{{$theme}}">{{$theme}}</option>
+                                    <option value="{{$theme}}" {{$theme === get_static_option('default_theme') ? 'selected' : ''}}>{{$theme}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -341,7 +341,9 @@
     <x-custom-js.landloard-unique-subdomain-check :name="'custom_subdomain'"/>
 
     <script>
-        const final_detail = {};
+        const final_detail = {
+            theme: `{{get_static_option('default_theme')}}`
+        };
 
         $(document).on('change','.package_id_selector',function (){
             let el = $(this);
@@ -383,9 +385,6 @@
                     data: {
                         _token : '{{csrf_token()}}',
                         subdomain : subdomain
-                    },
-                    beforeSend: function () {
-                        el.find('option').attr('selected', false);
                     },
                     success: function (res) {
                         if(res.theme_slug !== '')
@@ -507,7 +506,6 @@
             $('#user_add_subscription').modal('hide');
             $(modal_id).modal('show');
 
-            console.log(final_detail)
             modal.find('.confirm-details--title').text(final_detail.renew_status ? `{{__('Renew Plan')}}` : `{{__('New Purchase')}}`);
             modal.find('.shop_name').text(final_detail.subdomain);
             modal.find('.package_name').text(final_detail.package_name);

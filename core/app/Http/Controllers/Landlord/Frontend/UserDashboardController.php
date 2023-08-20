@@ -416,7 +416,8 @@ class UserDashboardController extends Controller
         $plan_themes = $price_plan->plan_themes;
         foreach ($plan_themes ?? [] as $theme)
         {
-            $markup .= "<option value=".$theme->theme_slug.">".$theme->theme_slug."</option>";
+            $selected = get_static_option('default_theme') == $theme->theme_slug ? 'selected' : '';
+            $markup .= "<option value='".$theme->theme_slug."' ${selected}>".$theme->theme_slug."</option>";
         }
 
         return response()->json([
