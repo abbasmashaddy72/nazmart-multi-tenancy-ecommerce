@@ -161,11 +161,12 @@
                             </div>
                         </div>
 
+
                         <x-fields.select name="type" class="package_type" title="{{__('Type')}}">
                             <option value="">{{__('Select')}}</option>
-                            <option value="0">{{__('Monthly')}}</option>
-                            <option value="1">{{__('Yearly')}}</option>
-                            <option value="2">{{__('Lifetime')}}</option>
+                            @foreach(\App\Enums\PricePlanTypEnums::getPricePlanTypeList() ?? [] as $key => $value)
+                                <option value="{{$key}}">{{$value}}</option>
+                            @endforeach
                         </x-fields.select>
 
                         <div class="d-flex justify-content-start">

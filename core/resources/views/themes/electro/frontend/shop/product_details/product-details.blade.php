@@ -247,18 +247,18 @@
                         rating: selected_rating
                     },
                     beforeSend: function (){
-                        toastr.warning('{{__('Submitting please wait.')}}', 5000)
+                        toastr.warning('{{__('Submitting please wait.')}}')
                         submit_btn_el.text('{{__('Submitting..')}}');
                     },
                     success: function (data){
                         if (data.type === 'success')
                         {
-                            toastr.success(data.msg, 5000)
+                            toastr.success(data.msg)
                             setTimeout(() => {
                                 location.reload();
                             }, 300);
                         } else {
-                            toastr.error(data.msg, 5000)
+                            toastr.error(data.msg)
                             submit_btn_el.closest('form')[0].reset();
                         }
 
@@ -267,7 +267,7 @@
                     error: function (data){
                         var response = data.responseJSON.errors;
                         $.each(response, function (value, index) {
-                            toastr.error(index, 5000)
+                            toastr.error(index)
                         });
 
                         submit_btn_el.text('{{__('Submit Review')}}');
@@ -340,7 +340,7 @@
 
             // if selected attribute set is not available
             if (Object.keys(selected_options).length) {
-                toastr.error('{{__('Attribute not available')}}', 5000)
+                toastr.error('{{__('Attribute not available')}}')
             }
 
             return '';
@@ -422,7 +422,7 @@
                                 toastr.warning(data.msg );
                             } else {
                                 el.text('{{__("Login Success.. Redirecting ..")}}');
-                                toastr.success(data.msg );
+                                toastr.success(data.msg);
 
                                 setTimeout(() => {
                                     location.reload();
@@ -679,18 +679,6 @@
 
         $(document).on('click', '.add_to_cart_single_page', function (e) {
             e.preventDefault();
-
-            let has_campaign = '{{empty($campaign_product) ? 0 : 1}}';
-            let campaign_expired = '{{isset($is_expired) ? $is_expired : 0}}';
-
-            if(has_campaign == 1)
-            {
-                if (campaign_expired == 0)
-                {
-                    toastr.error('{{__('The campaign is over, Sorry! you can not cart this product')}}');
-                    return false;
-                }
-            }
 
             let selected_size = $('#selected_size').val();
             let selected_color = $('#selected_color').val();

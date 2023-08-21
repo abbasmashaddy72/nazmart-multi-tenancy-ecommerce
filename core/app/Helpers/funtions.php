@@ -616,6 +616,7 @@ function get_product_dynamic_price($product_object)
     (double)$sale_price = $product_object->sale_price;
     $discount = null;
 
+    // todo: make product sale price normal if the campaign is not started yet or campaign is over
     if (!is_null($product_object?->campaign_product)) {
         if ($product_object?->campaign_product?->campaign?->status == 'publish') {
             $start_date = \Carbon\Carbon::parse($product_object?->campaign_product?->start_date);

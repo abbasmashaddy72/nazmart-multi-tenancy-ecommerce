@@ -436,6 +436,7 @@ class TenantFrontendController extends Controller
             $sale_price = $product->sale_price;
             $additional_price = 0;
 
+            dd(get_product_dynamic_price($product));
             if ($product->campaign_product) {
                 $sale_price = $product?->campaign_product?->campaign_price;
             }
