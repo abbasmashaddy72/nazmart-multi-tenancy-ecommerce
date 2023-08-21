@@ -120,6 +120,22 @@
 
 {{--    <x-google-recaptcha/>--}}
 
+    @dd(url('/'))
+    <script>
+        $(document).ready(function () {
+            $('.electro-screenshot').on('mouseenter', function () {
+                $('.electro-screenshot .single-themes-thumb').append(
+                   `<div class="single-themes-thumb-btn" style="display: none">
+                   <a href="#0" class="btn btn-primary">btn One</a>
+                   <a href="#0" class="btn btn-secondary">btn Two</a>
+                   </div>`
+                );
+
+                $('.electro-screenshot .single-themes-thumb-btn').show();
+            });
+        });
+    </script>
+
     @php
         $dynamic_style = 'assets/landlord/frontend/js/dynamic-script.js';
     @endphp

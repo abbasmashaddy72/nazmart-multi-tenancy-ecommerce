@@ -264,12 +264,11 @@
                 let image = el.data('image');
                 let imageid = el.data('imageid');
 
-                if (imageid != '') {
+                if (imageid !== '') {
                     modal.find('.media-upload-btn-wrapper .img-wrap').html('<div class="attachment-preview"><div class="thumbnail"><div class="centered"><img class="avatar user-thumb" src="' + image + '" > </div></div></div>');
-                    modal.find('.media-upload-btn-wrapper input').val(imageid);
-                    modal.find('.media-upload-btn-wrapper .media_upload_form_btn').text('Change Image');
+                    modal.find('.media-upload-btn-wrapper input').val(imageid.id);
+                    modal.find('.media-upload-btn-wrapper .media_upload_form_btn').text(`{{__('Change Image')}}`);
                 }
-
             });
 
             $('#create-name , #create-slug').on('keyup', function () {
@@ -281,6 +280,13 @@
                 let title_text = $(this).val();
                 $('#edit_slug').val(convertToSlug(title_text))
             });
+
+            function convertToSlug(text) {
+                return text
+                    .toLowerCase()
+                    .replace(/ /g, '-')
+                    .replace(/[^\w-]+/g, '');
+            }
         });
     </script>
 @endsection

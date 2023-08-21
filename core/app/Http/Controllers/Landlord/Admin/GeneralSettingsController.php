@@ -790,11 +790,13 @@ class GeneralSettingsController extends Controller
             $extensionReq = true;
             if ($extensions) {
                 foreach (explode(',', str_replace(' ','', strtolower($extensions))) as $extension) {
+                    if(!empty($extension)) continue;
                     $extensionReq = XgApiClient::extensionCheck($extension);
                 }
             }
             if(($phpVCompare === false || $mysqlVCompare === false) && $extensionReq === false){
                 $output .='<div class="text-danger">'.__('Your server does not have required software version installed.  Required: Php'). $phpVersionReq == 8 ? '8.0' : $phpVersionReq .', Mysql'.  $mysqlVersionReq . '/ Extensions:' .$extensions . 'etc </div>';
+                return response()->json(["msg" => $result["message"],"type" => "success","markup" => $output ]);
             }
 
             if (!empty($latestVersion)){
