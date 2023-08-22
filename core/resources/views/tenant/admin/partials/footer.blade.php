@@ -1,7 +1,7 @@
 <footer class="footer">
     <div class="container-fluid d-flex justify-content-between">
         <span class="text-muted d-block text-center text-sm-start d-sm-inline-block">
-            {!! get_footer_copyright_text(\App\Facades\GlobalLanguage::default_slug()) !!}
+            {!! get_footer_copyright_text() !!}
         </span>
         <span class="float-none float-sm-end mt-1 mt-sm-0 text-end"> v- <strong>{{get_static_option_central('get_script_version')}}</strong></span>
     </div>
@@ -22,6 +22,18 @@
 <script src="{{global_asset('assets/common/js/toastr.min.js')}}"></script>
 <script src="{{global_asset('assets/common/js/select2.min.js')}}"></script>
 <script>
+    toastr.options = {
+        "closeButton": true,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "slideUp",
+        "rtl": "{{get_user_lang_direction() == 1}}"
+    }
+
     const translatedDataTable = () => {
         return {
             "decimal": "",

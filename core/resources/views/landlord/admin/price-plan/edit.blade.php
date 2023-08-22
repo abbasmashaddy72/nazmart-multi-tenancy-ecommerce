@@ -222,12 +222,9 @@
                         </div>
 
                         <x-fields.select name="type" title="{{__('Type')}}">
-                            <option @if($plan->type === \App\Enums\PricePlanTypEnums::MONTHLY) selected
-                                    @endif value="0">{{__('Monthly')}}</option>
-                            <option @if($plan->type === \App\Enums\PricePlanTypEnums::YEARLY) selected
-                                    @endif value="1">{{__('Yearly')}}</option>
-                            <option @if($plan->type === \App\Enums\PricePlanTypEnums::LIFETIME) selected
-                                    @endif value="2">{{__('Lifetime')}}</option>
+                            @foreach(\App\Enums\PricePlanTypEnums::getPricePlanTypeList() ?? [] as $key => $value)
+                                <option value="{{$key}}" {{$plan->type === $key ? 'selected' : ''}}>{{$value}}</option>
+                            @endforeach
                         </x-fields.select>
 
                         <div class="d-flex justify-content-start">

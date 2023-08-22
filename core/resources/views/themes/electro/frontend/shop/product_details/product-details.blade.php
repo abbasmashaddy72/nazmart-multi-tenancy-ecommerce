@@ -28,7 +28,7 @@
             --gl-tooltip-size: 6px;
         }
 
-        .gl-star-rating--stars span{
+        .gl-star-rating--stars span {
             margin-right: 5px !important;
         }
 
@@ -36,12 +36,14 @@
             text-align: center;
             z-index: 95;
         }
+
         .campaign_countdown_wrapper .global-timer .syotimer__body {
             gap: 10px 15px;
             -webkit-box-pack: justify;
             -ms-flex-pack: justify;
             justify-content: space-between;
         }
+
         .campaign_countdown_wrapper .global-timer .syotimer__body .syotimer-cell {
             background-color: rgba(var(--main-color-two-rgb), .1);
             padding: 10px 20px;
@@ -53,64 +55,77 @@
                 gap: 10px;
             }
         }
+
         @media (min-width: 1200px) and (max-width: 1399.98px) {
             .campaign_countdown_wrapper .global-timer .syotimer__body {
                 gap: 10px;
             }
         }
+
         @media (min-width: 992px) and (max-width: 1199.98px) {
             .campaign_countdown_wrapper .global-timer .syotimer__body {
                 gap: 10px;
             }
         }
+
         @media (min-width: 300px) and (max-width: 991.98px) {
             .campaign_countdown_wrapper .global-timer .syotimer__body {
                 gap: 10px;
             }
         }
+
         .campaign_countdown_wrapper .global-timer .syotimer__body .syotimer-cell .syotimer-cell__value {
             font-size: 32px;
             line-height: 36px;
         }
+
         @media (min-width: 1400px) and (max-width: 1599.98px) {
             .campaign_countdown_wrapper .global-timer .syotimer__body .syotimer-cell .syotimer-cell__value {
                 font-size: 28px;
             }
         }
+
         @media (min-width: 1200px) and (max-width: 1399.98px) {
             .campaign_countdown_wrapper .global-timer .syotimer__body .syotimer-cell .syotimer-cell__value {
                 font-size: 28px;
             }
         }
+
         @media (min-width: 992px) and (max-width: 1199.98px) {
             .campaign_countdown_wrapper .global-timer .syotimer__body .syotimer-cell .syotimer-cell__value {
                 font-size: 28px;
             }
         }
+
         @media (min-width: 300px) and (max-width: 991.98px) {
             .campaign_countdown_wrapper .global-timer .syotimer__body .syotimer-cell .syotimer-cell__value {
                 font-size: 28px;
             }
         }
+
         .campaign_countdown_wrapper .global-timer .syotimer__body .syotimer-cell .syotimer-cell__unit {
             font-size: 18px;
             line-height: 28px;
         }
+
         @media (min-width: 1400px) and (max-width: 1599.98px) {
             .campaign_countdown_wrapper .global-timer .syotimer__body .syotimer-cell .syotimer-cell__unit {
                 font-size: 16px;
             }
         }
+
         @media (min-width: 1200px) and (max-width: 1399.98px) {
             .campaign_countdown_wrapper .global-timer .syotimer__body .syotimer-cell .syotimer-cell__unit {
                 font-size: 16px;
             }
         }
+
         @media (min-width: 992px) and (max-width: 1199.98px) {
             .campaign_countdown_wrapper .global-timer .syotimer__body .syotimer-cell .syotimer-cell__unit {
                 font-size: 16px;
             }
         }
+
         @media (min-width: 300px) and (max-width: 991.98px) {
             .campaign_countdown_wrapper .global-timer .syotimer__body .syotimer-cell .syotimer-cell__unit {
                 font-size: 16px;
@@ -126,12 +141,21 @@
         $data_regular_price = $data['regular_price'];
         $data_sale_price = $data['sale_price'];
         $discount = $data['discount'];
+        $is_running = $data['is_running'];
 
-         $campaign_product = $product?->campaign_product;
-         $sale_price = $data_sale_price;
-         $deleted_price = $data_regular_price;
-         $campaign_percentage = $discount;
-         $campaignSoldCount = \Modules\Campaign\Entities\CampaignSoldProduct::where("product_id",$product->id)->first();
+        $sale_price = $data['sale_price'];
+        $deleted_price = $data['regular_price'];
+
+        $campaign_product = null;
+        if ($is_running)
+        {
+            $campaign_product = $product?->campaign_product;
+            $sale_price = $data_sale_price;
+            $deleted_price = $data_regular_price;
+            $campaign_percentage = $discount;
+            $campaignSoldCount = \Modules\Campaign\Entities\CampaignSoldProduct::where("product_id",$product->id)->first();
+        }
+
 
          // todo remove it if manage it from inventory from listener
          $stock_count = $campaign_product ? $product?->campaign_product?->units_for_sale - optional($campaignSoldCount)->sold_count ?? 0 : optional($product->inventory)->stock_count;
@@ -145,7 +169,7 @@
          $quickView = false;
     @endphp
 
-        <!-- Shop Details area end -->
+            <!-- Shop Details area end -->
     <section class="shop-details-area padding-top-100 padding-bottom-50">
         <div class="container">
             <div class="row justify-content-between">
@@ -187,7 +211,7 @@
 
 @section('scripts')
     <script>
-        $(function (){
+        $(function () {
             let starRatingControl = new StarRating('.star-rating', {
                 maxStars: 5,
                 clearable: false,
@@ -220,7 +244,7 @@
                 day: day,
             });
 
-            $(document).on('click', '.small-img', function (){
+            $(document).on('click', '.small-img', function () {
                 let image = $(this).data('image-path');
                 let long_img = $('.long-img img');
 
@@ -229,7 +253,7 @@
                 long_img.fadeIn(100);
             });
 
-            $(document).on('click', '#review-submit-btn', function (e){
+            $(document).on('click', '#review-submit-btn', function (e) {
                 e.preventDefault();
 
                 let product_id = '{{$product->id}}';
@@ -246,28 +270,27 @@
                         review_text: review_text,
                         rating: selected_rating
                     },
-                    beforeSend: function (){
-                        toastr.warning('{{__('Submitting please wait.')}}', 5000)
+                    beforeSend: function () {
+                        toastr.warning('{{__('Submitting please wait.')}}')
                         submit_btn_el.text('{{__('Submitting..')}}');
                     },
-                    success: function (data){
-                        if (data.type === 'success')
-                        {
-                            toastr.success(data.msg, 5000)
+                    success: function (data) {
+                        if (data.type === 'success') {
+                            toastr.success(data.msg)
                             setTimeout(() => {
                                 location.reload();
                             }, 300);
                         } else {
-                            toastr.error(data.msg, 5000)
+                            toastr.error(data.msg)
                             submit_btn_el.closest('form')[0].reset();
                         }
 
                         submit_btn_el.text('{{__('Submit Review')}}');
                     },
-                    error: function (data){
+                    error: function (data) {
                         var response = data.responseJSON.errors;
                         $.each(response, function (value, index) {
-                            toastr.error(index, 5000)
+                            toastr.error(index)
                         });
 
                         submit_btn_el.text('{{__('Submit Review')}}');
@@ -275,7 +298,7 @@
                 });
             });
 
-            $(document).on('click', '.see-more-review', function (){
+            $(document).on('click', '.see-more-review', function () {
                 let el = $(this);
                 let items = el.attr('data-items');
 
@@ -286,17 +309,17 @@
                         product_id: '{{$product->id}}',
                         items: items,
                     },
-                    beforeSend: function (){
+                    beforeSend: function () {
                         el.text('{{__('Loading..')}}');
                     },
-                    success: function (data){
+                    success: function (data) {
                         $('.all-reviews').html(data.markup).hide();
                         $('.all-reviews').fadeIn(800);
                         el.text('{{__('See More')}}');
 
-                        el.attr('data-items', Number(items)+5);
+                        el.attr('data-items', Number(items) + 5);
                     },
-                    error: function (data){
+                    error: function (data) {
                         el.text('{{__('See More')}}');
                     }
                 });
@@ -340,7 +363,7 @@
 
             // if selected attribute set is not available
             if (Object.keys(selected_options).length) {
-                toastr.error('{{__('Attribute not available')}}', 5000)
+                toastr.error('{{__('Attribute not available')}}')
             }
 
             return '';
@@ -419,10 +442,10 @@
                         success: function (data) {
                             if (data.status === 'invalid') {
                                 el.text('{{__("Login")}}')
-                                toastr.warning(data.msg );
+                                toastr.warning(data.msg);
                             } else {
                                 el.text('{{__("Login Success.. Redirecting ..")}}');
-                                toastr.success(data.msg );
+                                toastr.success(data.msg);
 
                                 setTimeout(() => {
                                     location.reload();
@@ -671,7 +694,7 @@
 
                 product_stock_el.html(stock_message);
 
-            }else{
+            } else {
                 product_stock_el.html(product_stock_el.data("stock-text"))
                 product_item_left_el.html(product_item_left_el.data("stock-text"))
             }
@@ -679,18 +702,6 @@
 
         $(document).on('click', '.add_to_cart_single_page', function (e) {
             e.preventDefault();
-
-            let has_campaign = '{{empty($campaign_product) ? 0 : 1}}';
-            let campaign_expired = '{{isset($is_expired) ? $is_expired : 0}}';
-
-            if(has_campaign == 1)
-            {
-                if (campaign_expired == 0)
-                {
-                    toastr.error('{{__('The campaign is over, Sorry! you can not cart this product')}}');
-                    return false;
-                }
-            }
 
             let selected_size = $('#selected_size').val();
             let selected_color = $('#selected_color').val();
@@ -724,16 +735,11 @@
 
                     },
                     success: function (data) {
-                        if (data.quantity_msg)
-                        {
+                        if (data.quantity_msg) {
                             toastr.warning(data.quantity_msg);
-                        }
-                        else if(data.error_msg)
-                        {
+                        } else if (data.error_msg) {
                             toastr.error(data.error_msg);
-                        }
-                        else
-                        {
+                        } else {
                             toastr.success(data.msg, '{{__('Go to Cart')}}', '#', 60000);
                             $('.track-icon-list').hide();
                             $('.track-icon-list').load(location.href + " .track-icon-list");
@@ -755,10 +761,8 @@
             let has_campaign = '{{empty($campaign_product) ? 0 : 1}}';
             let campaign_expired = '{{isset($is_expired) ? $is_expired : 0}}';
 
-            if(has_campaign == 1)
-            {
-                if (campaign_expired == 0)
-                {
+            if (has_campaign == 1) {
+                if (campaign_expired == 0) {
                     toastr.error('{{__('The campaign is over, Sorry! you can not cart this product')}}');
                     return false;
                 }
@@ -796,16 +800,11 @@
 
                     },
                     success: function (data) {
-                        if (data.quantity_msg)
-                        {
+                        if (data.quantity_msg) {
                             toastr.warning(data.quantity_msg);
-                        }
-                        else if(data.error_msg)
-                        {
+                        } else if (data.error_msg) {
                             toastr.error(data.error_msg);
-                        }
-                        else
-                        {
+                        } else {
                             toastr.success(data.msg, '{{__('Go to Cart')}}', '#', 60000);
                             $('.track-icon-list').load(location.href + " .track-icon-list");
                         }
@@ -826,10 +825,8 @@
             let has_campaign = '{{empty($campaign_product) ? 0 : 1}}';
             let campaign_expired = '{{isset($is_expired) ? $is_expired : 0}}';
 
-            if(has_campaign == 1)
-            {
-                if (campaign_expired == 0)
-                {
+            if (has_campaign == 1) {
+                if (campaign_expired == 0) {
                     toastr.error('{{__('The campaign is over, Sorry! you can not cart this product')}}');
                     return false;
                 }
@@ -867,16 +864,11 @@
 
                     },
                     success: function (data) {
-                        if (data.quantity_msg)
-                        {
+                        if (data.quantity_msg) {
                             toastr.warning(data.quantity_msg);
-                        }
-                        else if(data.error_msg)
-                        {
+                        } else if (data.error_msg) {
                             toastr.error(data.error_msg);
-                        }
-                        else
-                        {
+                        } else {
                             toastr.success(data.msg, '{{__('Go to Cart')}}', '#', 60000);
                             $('.track-icon-list').load(location.href + " .track-icon-list");
                         }
@@ -896,10 +888,8 @@
             let has_campaign = '{{empty($campaign_product) ? 0 : 1}}';
             let campaign_expired = '{{isset($is_expired) ? $is_expired : 0}}';
 
-            if(has_campaign == 1)
-            {
-                if (campaign_expired == 0)
-                {
+            if (has_campaign == 1) {
+                if (campaign_expired == 0) {
                     toastr.error('{{__('The campaign is over, Sorry! you can not cart this product')}}');
                     return false;
                 }
@@ -937,19 +927,15 @@
 
                     },
                     success: function (data) {
-                        if (data.quantity_msg)
-                        {
+                        if (data.quantity_msg) {
                             toastr.warning(data.quantity_msg, 5000);
-                        }
-                        else if(data.error_msg)
-                        {
+                        } else if (data.error_msg) {
                             toastr.error(data.error_msg, 5000);
                         }
 
-                        if(data.type === 'success')
-                        {
+                        if (data.type === 'success') {
                             toastr.success(data.msg);
-                            setTimeout(()=>{
+                            setTimeout(() => {
                                 location.href = data.redirect;
                             }, 2000)
                         }

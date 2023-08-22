@@ -2,6 +2,8 @@
 
 namespace App\Enums;
 
+use ReflectionClass;
+
 class PricePlanTypEnums
 {
     const MONTHLY = 0;
@@ -10,13 +12,27 @@ class PricePlanTypEnums
 
     public static function getText(int $const)
     {
-        if ($const == self::MONTHLY){
-            return __('Monthly');
-        }elseif ($const == self::YEARLY){
-            return __('Yearly');
-        }elseif ($const == self::LIFETIME){
-            return __('Lifetime');
+        foreach (self::getPricePlanTypeList() as $index => $item) {
+            if ($const == $index) {
+                return __(ucwords(strtolower($item)));
+            }
         }
+    }
+
+    private static function getAttributes(): array
+    {
+        $reflect = new ReflectionClass(__CLASS__);
+        return $reflect->getConstants() ?? [];
+    }
+
+    public static function getPricePlanTypeList(): array
+    {
+        $valueArr = [];
+        foreach (self::getAttributes() as $index => $attribute) {
+            $valueArr[$attribute] = __(ucwords(strtolower($index)));
+        }
+
+        return $valueArr;
     }
 
     public static function getFeatureList()

@@ -115,13 +115,16 @@ class CampaignController extends Controller
             'status' => 'required|string',
             'campaign_start_date' => 'required',
             'campaign_end_date' => 'required',
+            'product_id.*' => 'required'
+        ], [
+            'product_id.*.required' => __('Products are required')
         ]);
 
         $validated_product_data = $this->getValidatedCampaignProducts($request);
 
         DB::beginTransaction();
         try{
-            $campaign = Campaign::findOrFail($request->id)->update([
+            Campaign::findOrFail($request->id)->update([
                 'title' => SanitizeInput::esc_html($request->campaign_name),
                 'subtitle' => SanitizeInput::esc_html($request->campaign_subtitle),
                 'image' => $request->image,
@@ -136,7 +139,6 @@ class CampaignController extends Controller
             return back()->with(FlashMsg::update_succeed('Campaign'));
         } catch (\Throwable $th) {
             DB::rollBack();
-            return $th->getMessage();
             return back()->with(FlashMsg::update_failed('Campaign'));
         }
     }

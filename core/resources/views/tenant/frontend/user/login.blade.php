@@ -15,7 +15,7 @@
             <div class="row justify-content-center">
                 <div class="col-md-6 col-lg-5">
                     <div class="sign-in register">
-                        <h4 class="title">{{__('sign in')}}</h4>
+                        <h4 class="title">{{__('Sign In')}}</h4>
                         <div class="form-wrapper">
                             <x-error-msg/>
                             <x-flash-msg/>
@@ -23,7 +23,7 @@
                                 <div class="error-wrap"></div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">{{__('Username')}}<span class="required">*</span></label>
-                                    <input type="text" name="username" class="form-control" id="exampleInputEmail1" placeholder="{{__('Type your username')}}">
+                                    <input type="text" name="username" class="form-control" id="exampleInputEmail1" placeholder="{{__('Type Your Username')}}">
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">{{__('Password')}}<span class="required">*</span></label>
@@ -34,7 +34,7 @@
                                     <div class="box-wrap">
                                         <div class="left">
                                             <input type="checkbox" name="remember" class="form-check-input" id="exampleCheck1">
-                                            <label class="form-check-label" for="exampleCheck1">{{__('Remember me')}}</label>
+                                            <label class="form-check-label" for="exampleCheck1">{{__('Remember Me')}}</label>
                                         </div>
                                         <div class="right">
                                             <a href="{{route('tenant.user.forget.password')}}">{{__('Forgot Password?')}}</a>
@@ -46,7 +46,7 @@
                                 </div>
 
                             </form>
-                            <p class="info">{{__("Do not have an account")}} <a href="{{route('tenant.user.register')}}" class="active">{{__('Sign up')}}</a></p>
+                            <p class="info">{{__("Do not have an account?")}} <a href="{{route('tenant.user.register')}}" class="active">{{__('Sign up')}}</a></p>
                         </div>
                     </div>
                 </div>

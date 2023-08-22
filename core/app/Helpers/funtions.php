@@ -610,12 +610,14 @@ function get_tenant_storage_info($format = 'kb')
 
 function get_product_dynamic_price($product_object)
 {
-    $is_expired = 0;
+    $is_running = false;
+    $is_expired = 0; // 0 means no campaign
     $campaign_name = null;
     (double)$regular_price = $product_object->price;
     (double)$sale_price = $product_object->sale_price;
     $discount = null;
 
+    // todo: make product sale price normal if the campaign is not started yet or campaign is over
     if (!is_null($product_object?->campaign_product)) {
         if ($product_object?->campaign_product?->campaign?->status == 'publish') {
             $start_date = \Carbon\Carbon::parse($product_object?->campaign_product?->start_date);
@@ -627,7 +629,8 @@ function get_product_dynamic_price($product_object)
                 (double)$regular_price = $product_object->sale_price;
 
                 $discount = 100 - round(($sale_price / $regular_price) * 100);
-                $is_expired = 1;
+                $is_expired = 1; // 1 means campaign exist and running
+                $is_running = true;
             }
         }
     }
@@ -637,6 +640,7 @@ function get_product_dynamic_price($product_object)
     $data['regular_price'] = $regular_price;
     $data['discount'] = $discount;
     $data['is_expired'] = $is_expired;
+    $data['is_running'] = $is_running;
 
     return $data;
 }
