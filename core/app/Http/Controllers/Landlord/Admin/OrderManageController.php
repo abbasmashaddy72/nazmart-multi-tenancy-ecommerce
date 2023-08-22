@@ -13,6 +13,7 @@ use App\Models\PaymentLogs;
 use App\Models\PricePlan;
 use App\Models\Tenant;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -344,14 +345,22 @@ class OrderManageController extends Controller
         return redirect()->back()->with(['msg' => __('Settings Updated....'), 'type' => 'success']);
     }
 
+    // todo: fix RTL issues in invoice
     public function generate_package_invoice(Request $request)
     {
         $payment_details = PaymentLogs::findOrFail($request->id);
-        $invoice = $this->invoice_design($payment_details);
+        $invoice = $this->invoice_design_laravelDaily($payment_details);
         return $invoice->stream();
     }
 
-    private function invoice_design($payment_details)
+    private function invoice_design_dompdf()
+    {
+        $data = ['name' => __('paid')];
+        $pdf = Pdf::loadView('vendor.invoices.templates.test', $data);
+        return $pdf->stream('invoice.pdf');
+    }
+
+    private function invoice_design_laravelDaily($payment_details)
     {
         $client = new Party([
             'name' => site_title(),
@@ -398,7 +407,7 @@ class OrderManageController extends Controller
         $description = '';
         if ($tenant)
         {
-            $package_title = 'Package: '.$package_details->title;
+            $package_title = __('Package:').' '.$package_details->title;
             $description = '<p>Shop Name: '.$tenant->id.'</p>';
             $description .= '<p>Order Date: '.Carbon::parse($payment_details->created_at)->format('d/m/Y').'</p>';
             $description .= '<p>Expire Date: '.Carbon::parse($tenant->expire_date)->format('d/m/Y').'</p>';
@@ -409,7 +418,7 @@ class OrderManageController extends Controller
             ->description($description)
             ->pricePerUnit($package_details->price);
 
-        $invoiceInstance = Invoice::make(site_title() . ' - Order Invoice')
+        $invoiceInstance = Invoice::make(site_title() .' - '.__('Order Invoice'))
             ->template('landlord')
             ->status($payment_status)
             ->sequence($payment_details->id)

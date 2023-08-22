@@ -979,7 +979,7 @@ class SidebarMenuHelper
         {
             foreach ($externalMenu as $individual_menu_item){
                 $convert_to_array = (array) $individual_menu_item;
-                $convert_to_array['label'] = __($individual_menu_item['label']);
+                $convert_to_array['label'] = __($convert_to_array['label']);
 
                 $routeName = $convert_to_array['route'];
                 if (isset($routeName) && !empty($routeName) && Route::has($routeName)){

@@ -25,7 +25,7 @@
                                             <label for="exampleInputEmail1">{{__('Name')}}<span
                                                         class="required">*</span></label>
                                             <input type="text" class="form-control" name="name" id="exampleInputEmail1"
-                                                   placeholder="Type your Name" value="{{old('name')}}">
+                                                   placeholder="{{__('Type Your Name')}}" value="{{old('name')}}">
                                         </div>
                                     </div>
                                     <div class="col-md-12 col-lg-12">
@@ -33,14 +33,14 @@
                                             <label for="exampleInputEmail1">{{__('Username')}}<span
                                                         class="required">*</span></label>
                                             <input type="text" class="form-control" name="username" id="exampleInputEmail1"
-                                                   placeholder="Type Last Name" value="{{old('username')}}">
+                                                   placeholder="{{__('Type Last Name')}}" value="{{old('username')}}">
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">{{__('Email Address')}}<span class="required">*</span></label>
-                                    <input type="email" name="email" class="form-control" id="exampleInputEmail1" placeholder="Type your mail">
+                                    <input type="email" name="email" class="form-control" id="exampleInputEmail1" placeholder="{{__('Type Your Email')}}">
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">{{__('Country')}}<span class="required">*</span></label>
@@ -49,12 +49,12 @@
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">{{__('State')}}<span class="required">*</span></label>
-                                    <input type="text" name="state" class="form-control" id="exampleInputEmail1" placeholder="Type your city" value="{{old('state')}}">
+                                    <input type="text" name="state" class="form-control" id="exampleInputEmail1" placeholder="{{__('Type Your State')}}" value="{{old('state')}}">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">{{__('City')}}</label>
-                                    <input type="text" name="city" class="form-control" id="exampleInputEmail1" placeholder="Type your city" value="{{old('city')}}">
+                                    <input type="text" name="city" class="form-control" id="exampleInputEmail1" placeholder="{{__('Type Your City')}}" value="{{old('city')}}">
                                 </div>
 
                                 <div class="row">
@@ -63,7 +63,7 @@
                                             <label for="exampleInputEmail1">{{__('Password')}}<span
                                                         class="required">*</span></label>
                                             <input type="password" name="password" class="form-control" id="exampleInputPassword1"
-                                                   placeholder="Password">
+                                                   placeholder="{{__('Password')}}">
                                         </div>
                                     </div>
                                     <div class="col-md-12 col-lg-6">
@@ -71,7 +71,7 @@
                                             <label for="exampleInputEmail1">{{__('Confirmed Password')}}<span
                                                         class="required">*</span></label>
                                             <input type="password" name="password_confirmation" class="form-control" id="exampleInputPassword1"
-                                                   placeholder="Confirmed Password">
+                                                   placeholder="{{__('Confirmed Password')}}">
                                         </div>
                                     </div>
                                 </div>
@@ -94,10 +94,10 @@
 @section('scripts')
     <script>
         (function($){
-        "use strict";
-        $(document).ready(function () {
-            <x-btn.custom :id="'register'" :title="__('Please Wait..')"/>
-        });
+            "use strict";
+            $(document).ready(function () {
+                <x-btn.custom :id="'register'" :title="__('Please Wait..')"/>
+            });
         })(jQuery);
     </script>
 @endsection
