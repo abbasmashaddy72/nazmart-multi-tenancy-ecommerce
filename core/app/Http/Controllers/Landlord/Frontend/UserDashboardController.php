@@ -404,7 +404,8 @@ class UserDashboardController extends Controller
     public function package_check(Request $request)
     {
         $validated = $request->validate([
-            'package_id' => 'required|integer|exists:price_plans,id'
+            'package_id' => 'required|integer|exists:price_plans,id',
+            'subdomain' => 'nullable'
         ]);
 
         $price_plan = PricePlan::findOrFail($validated['package_id']);
@@ -412,11 +413,13 @@ class UserDashboardController extends Controller
         $type = PricePlanTypEnums::getText($price_plan->type);
         $validity = $this->getValidity($price_plan)['package_expire_date'] ?? __('Lifetime');
 
+        $tenant = Tenant::find($validated['subdomain'] ?? '');
+
         $markup = '';
         $plan_themes = $price_plan->plan_themes;
         foreach ($plan_themes ?? [] as $theme)
         {
-            $selected = get_static_option('default_theme') == $theme->theme_slug ? 'selected' : '';
+            $selected = !empty($tenant) ? ($tenant->theme_slug == $theme->theme_slug ? 'selected' : '') : (get_static_option('default_theme') == $theme->theme_slug ? 'selected' : '');
             $markup .= "<option value='".$theme->theme_slug."' ${selected}>".$theme->theme_slug."</option>";
         }
 
@@ -424,7 +427,8 @@ class UserDashboardController extends Controller
             'price' => $price,
             'type' => $type,
             'validity' => $validity,
-            'theme_list' => $markup
+            'theme_list' => $markup,
+            'theme' => $tenant->theme_slug ?? null
         ]);
     }
 
