@@ -38,8 +38,10 @@ class ChildCategoryController extends Controller
      */
     public function index(): View|Factory|Application
     {
-        $data['all_category'] = Category::all();
-        $data['all_child_category'] = ChildCategory::with("sub_category","category","image","status")->get();
+        $data['all_category'] = Category::where('status_id', 1)->get();
+        $data['all_child_category'] = ChildCategory::with("sub_category","category","image","status")
+            ->where('status_id', 1)
+            ->get();
 
         return view(self::BASE_PATH.'child-category.all', compact('data'));
     }
@@ -113,7 +115,7 @@ class ChildCategoryController extends Controller
 
     public function getSubcategoriesOfCategory($id): JsonResponse
     {
-        $all_subcategory = ChildCategory::where('category_id', $id)
+        $all_subcategory = ChildCategory::where('status_id', 1)->where('category_id', $id)
             ->select("id","name")->get();
         return response()->json($all_subcategory);
     }

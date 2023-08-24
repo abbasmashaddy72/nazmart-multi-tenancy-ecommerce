@@ -23,11 +23,11 @@
                                 <div class="error-wrap"></div>
                                 <div class="form-group single-input">
                                     <label for="exampleInputEmail1" class="label-title mb-3">{{__('Username')}}<span class="required">*</span></label>
-                                    <input type="text" name="username" class="form-control form--control" id="exampleInputEmail1" placeholder="Type your username">
+                                    <input type="text" name="username" class="form-control form--control" id="exampleInputEmail1" placeholder="{{__('Type your username')}}">
                                 </div>
                                 <div class="form-group single-input mt-4">
                                     <label for="exampleInputEmail1" class="label-title mb-3">{{__('Password')}}<span class="required">*</span></label>
-                                    <input type="password" name="password" class="form-control form--control" id="exampleInputPassword1" placeholder="Password">
+                                    <input type="password" name="password" class="form-control form--control" id="exampleInputPassword1" placeholder="{{__('Password')}}">
                                 </div>
 
                                 <div class="form-group single-input form-check mt-4">

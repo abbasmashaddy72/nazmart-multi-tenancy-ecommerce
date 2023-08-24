@@ -35,7 +35,7 @@ class CategoryController extends Controller
      */
     public function index(): View|Factory|Application
     {
-        $all_category = Category::with(["image:id,path", "status"])->get();
+        $all_category = Category::with(["image:id,path", "status"])->where('status_id', 1)->get();
         return view('attributes::backend.category.all')->with(['all_category' => $all_category]);
     }
 

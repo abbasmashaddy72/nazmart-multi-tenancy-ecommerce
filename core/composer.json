@@ -12,7 +12,7 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^7.4|^8.0",
+        "php": "^8.0",
         "ext-gd": "*",
         "ext-json": "*",
         "ext-zip": "*",

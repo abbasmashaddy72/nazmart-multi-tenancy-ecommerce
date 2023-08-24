@@ -1,6 +1,5 @@
 <?php
 
-use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use Modules\RefundModule\Http\Controllers\RefundModuleController;
 use Modules\RefundModule\Http\Controllers\RefundChatController;
@@ -9,8 +8,7 @@ use Modules\RefundModule\Http\Controllers\admin\AdminRefundController;
 use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 
 Route::middleware([
-    'web',
-//    InitializeTenancyByDomain::class,
+    'auth:web',
     InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'tenant_glvar',
@@ -32,7 +30,6 @@ Route::middleware([
 
 Route::middleware([
     'web',
-//    InitializeTenancyByDomain::class,
     InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'auth:admin',

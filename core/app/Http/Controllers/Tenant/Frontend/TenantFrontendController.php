@@ -436,7 +436,7 @@ class TenantFrontendController extends Controller
             $sale_price = $product->sale_price;
             $additional_price = 0;
 
-            if ($product->campaign_product) {
+            if ($product->campaign_product && campaign_running_status($product)) {
                 $sale_price = $product?->campaign_product?->campaign_price;
             }
 
@@ -477,6 +477,8 @@ class TenantFrontendController extends Controller
             ];
             $options['base_cost'] = $product->cost + ($additional_cost ?? 0);
             $options['type'] = ProductTypeEnum::PHYSICAL;
+
+            dd($options);
 
             Cart::instance("default")->add(['id' => $cart_data['product_id'], 'name' => $product->name, 'qty' => $cart_data['quantity'], 'price' => $final_sale_price, 'weight' => '0', 'options' => $options]);
 

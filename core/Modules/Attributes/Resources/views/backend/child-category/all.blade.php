@@ -142,7 +142,7 @@
                             <div class="form-group edit-category-wrapper">
                                 <label for="category">{{__('Category')}}</label>
                                 <select class="form-control" id="edit_category_id" name="category_id">
-                                    <option>{{ __('Select Category') }}</option>
+                                    <option value="">{{ __('Select Category') }}</option>
                                     @foreach ($data['all_category'] as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
@@ -168,7 +168,7 @@
                             <x-fields.media-upload :title="__('Image')" :name="'image_id'" :dimentions="'200x200'"/>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-sm btn-secondary"
+                            <button type="button" class="btn btn-secondary"
                                     data-bs-dismiss="modal">{{__('Close')}}</button>
                             <button type="submit" class="btn btn-primary">{{__('Save Change')}}</button>
                         </div>
@@ -204,7 +204,7 @@
                             <div class="form-group category-wrapper">
                                 <label for="category_id">{{__('Category')}}</label>
                                 <select class="form-control" id="create_category_id" name="category_id">
-                                    <option>{{ __('Select Category') }}</option>
+                                    <option value="">{{ __('Select Category') }}</option>
                                     @foreach ($data['all_category'] as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
@@ -230,7 +230,7 @@
                             <x-fields.media-upload :title="__('Image')" :name="'image_id'" :dimentions="'200x200'"/>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-sm btn-secondary"
+                            <button type="button" class="btn btn-secondary"
                                     data-bs-dismiss="modal">{{__('Close')}}</button>
                             <button type="submit" class="btn btn-primary mt-4 pr-4 pl-4">{{__('Add New')}}</button>
                         </div>
@@ -257,7 +257,7 @@
                     success: function (data) {
                         $("#create_sub_category").html(data.option);
                         $(".create-sub-category-wrapper .list").html(data.list);
-                        $(".create-sub-category-wrapper span.current").html("Select Sub Category");
+                        $(".create-sub-category-wrapper span.current").html(`{{__('Select Sub Category')}}`);
                     },
                     error: function (err) {
 
@@ -278,7 +278,7 @@
                     success: function (data) {
                         $("#edit_sub_category").html(data.option);
                         $(".edit-sub-category-wrapper .list").html(data.list);
-                        $(".edit-sub-category-wrapper span.current").html("Select Sub Category");
+                        $(".edit-sub-category-wrapper span.current").html(`{{__('Select Sub Category')}}`);
                     },
                     error: function (err) {
                         toastr.error('<?php echo __("An error occurred"); ?>');
@@ -331,7 +331,8 @@
                 modal.find('#edit_name').val(name);
                 modal.find('#edit_slug').val(slug);
                 modal.find('#edit_category').val(category_id);
-                modal.find(".edit-category-wrapper select option[value=" + category_id + "]").attr('selected', true);
+                modal.find(`.edit-category-wrapper select option`).attr('selected', false);
+                modal.find(`.edit-category-wrapper select option[value="${category_id}"]`).attr('selected', true);
                 modal.find(".edit-status-wrapper select option[value=" + status + "]").attr('selected', true);
 
                 modal.find(".modal-footer").click();
@@ -342,7 +343,7 @@
                 if (imageid != '') {
                     modal.find('.media-upload-btn-wrapper .img-wrap').html('<div class="attachment-preview"><div class="thumbnail"><div class="centered"><img class="avatar user-thumb" src="' + image + '" > </div></div></div>');
                     modal.find('.media-upload-btn-wrapper input').val(imageid);
-                    modal.find('.media-upload-btn-wrapper .media_upload_form_btn').text('Change Image');
+                    modal.find('.media-upload-btn-wrapper .media_upload_form_btn').text(`{{__('Change Image')}}`);
                 }
             });
         });
@@ -360,5 +361,4 @@
     @can('product-child-category-delete')
         <x-bulk-action.js :route="route('tenant.admin.product.child-category.bulk.action')"/>
     @endcan
-
 @endsection

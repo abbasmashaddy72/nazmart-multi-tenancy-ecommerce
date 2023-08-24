@@ -645,6 +645,23 @@ function get_product_dynamic_price($product_object)
     return $data;
 }
 
+function campaign_running_status($product_object)
+{
+    $is_running = false;
+    if (!is_null($product_object?->campaign_product)) {
+        if ($product_object?->campaign_product?->campaign?->status == 'publish') {
+            $start_date = \Carbon\Carbon::parse($product_object?->campaign_product?->start_date);
+            $end_date = \Carbon\Carbon::parse($product_object?->campaign_product?->end_date);
+
+            if ($start_date->lessThanOrEqualTo(now()) && $end_date->greaterThanOrEqualTo(now())) {
+                $is_running = true;
+            }
+        }
+    }
+
+    return $is_running;
+}
+
 function render_product_dynamic_price_markup($product_object, $sale_price_markup_tag = 'span', $sale_price_class = '', $regular_price_markup_tag = 'span', $regular_price_class = '')
 {
     $sale_price_markup_tag = str_replace(['<','>','/'], '', $sale_price_markup_tag);
@@ -1124,6 +1141,11 @@ function get_user_lang_bool_direction()
     $user_direction = \App\Models\Language::where('slug', session()->get('lang'))->first();
 
     return !empty(session()->get('lang')) ? ($user_direction->direction == 0 ? 'false' : 'true') : ($default->direction == 0 ? 'false' : 'true');
+}
+
+function get_lang_direction()
+{
+    return get_user_lang_direction() == 0 ? 'ltr' : 'rtl';
 }
 
 function get_language_name_by_slug($slug)
