@@ -137,7 +137,7 @@
                             <div class="form-group edit-category-wrapper">
                                 <label for="name">{{__('Category')}}</label>
                                 <select type="text" class="form-control" id="category_id" name="category_id">
-                                    <option value="">Select Category</option>
+                                    <option value="">{{__('Select Category')}}</option>
                                     @foreach($data['all_category'] as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
@@ -161,7 +161,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-sm btn-secondary"
+                            <button type="button" class="btn btn-secondary"
                                     data-bs-dismiss="modal">{{__('Close')}}</button>
                             <button type="submit" class="btn btn-primary">{{__('Save Change')}}</button>
                         </div>
@@ -197,7 +197,7 @@
                             <div class="form-group">
                                 <label for="name">{{__('Category')}}</label>
                                 <select type="text" class="form-control" id="create_category_id" name="category_id">
-                                    <option value="">Select Category</option>
+                                    <option value="">{{__('Select Category')}}</option>
                                     @foreach($data['all_category'] as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach

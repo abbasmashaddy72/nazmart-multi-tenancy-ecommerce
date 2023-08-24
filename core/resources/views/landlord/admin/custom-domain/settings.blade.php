@@ -98,7 +98,7 @@
                                         </div>
 
                                         <div class="form-group col-md-3 mt-3">
-                                            <input class="form-control" value="{{$_SERVER['SERVER_ADDR']}}" disabled>
+                                            <input type="text" class="form-control server-ip" name="server_ip" value="{{get_static_option_central('server_ip') ?? $_SERVER['SERVER_ADDR']}}" readonly>
                                         </div>
 
                                         <div class="form-group col-md-3 mt-3">
@@ -127,7 +127,9 @@
     <x-media-upload.js/>
     <script>
         $(document).ready(function () {
-
+            $(document).on('click', '.server-ip', function () {
+                $(this).attr('readonly', false);
+            });
         });
     </script>
 @endsection

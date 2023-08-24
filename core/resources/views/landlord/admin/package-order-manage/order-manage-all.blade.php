@@ -1,8 +1,10 @@
 @extends('landlord.admin.admin-master')
-@section('title') {{__('All Orders')}} @endsection
+@section('title')
+    {{__('All Orders')}}
+@endsection
 
 @section('style')
-   <x-media-upload.css/>
+    <x-media-upload.css/>
     <x-datatable.css/>
     <x-summernote.css/>
 @endsection
@@ -20,25 +22,25 @@
                         <x-error-msg/>
                         <x-flash-msg/>
                         <h4 class="header-title mb-4">{{__('All Orders')}}</h4>
-                       <div class="d-flex flex-wrap justify-content-between">
-                           <x-bulk-action permissions="package-order-delete"/>
-                           <div class="filter-order-wrapper">
-                               <div class="select-box-wrap mt-3">
-                                   <select name="filter_order" id="filter_order">
-                                       <option value="all">{{{__('All Order')}}}</option>
-                                       <option
-                                           value="pending" {{request()->filter == 'pending' ? 'selected' : ''}}>{{{__('Pending')}}}</option>
-                                       <option
-                                           value="in_progress" {{request()->filter == 'in_progress' ? 'selected' : ''}}>{{{__('In Progress')}}}</option>
-                                       <option
-                                           value="cancel" {{request()->filter == 'cancel' ? 'selected' : ''}}>{{{__('Cancel')}}}</option>
-                                       <option
-                                           value="complete" {{request()->filter == 'complete' ? 'selected' : ''}}>{{{__('Complete')}}}</option>
-                                   </select>
-                                   <button class="btn btn-primary btn-sm" id="filter_btn">{{__('Filter')}}</button>
-                               </div>
-                           </div>
-                       </div>
+                        <div class="d-flex flex-wrap justify-content-between">
+                            <x-bulk-action permissions="package-order-delete"/>
+                            <div class="filter-order-wrapper">
+                                <div class="select-box-wrap mt-3">
+                                    <select name="filter_order" id="filter_order">
+                                        <option value="all">{{{__('All Order')}}}</option>
+                                        <option
+                                            value="pending" {{request()->filter == 'pending' ? 'selected' : ''}}>{{{__('Pending')}}}</option>
+                                        <option
+                                            value="in_progress" {{request()->filter == 'in_progress' ? 'selected' : ''}}>{{{__('In Progress')}}}</option>
+                                        <option
+                                            value="cancel" {{request()->filter == 'cancel' ? 'selected' : ''}}>{{{__('Cancel')}}}</option>
+                                        <option
+                                            value="complete" {{request()->filter == 'complete' ? 'selected' : ''}}>{{{__('Complete')}}}</option>
+                                    </select>
+                                    <button class="btn btn-primary btn-sm" id="filter_btn">{{__('Filter')}}</button>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="table-wrap table-responsive">
                             <table class="table table-default table-striped table-bordered">
@@ -66,7 +68,8 @@
                                     <tr>
                                         <td>
                                             <div class="bulk-checkbox-wrapper">
-                                                <input type="checkbox" class="bulk-checkbox" name="bulk_delete[]" value="{{$data->id}}">
+                                                <input type="checkbox" class="bulk-checkbox" name="bulk_delete[]"
+                                                       value="{{$data->id}}">
                                             </div>
                                         </td>
                                         <td>{{$data->id}}</td>
@@ -80,15 +83,19 @@
 
                                             <div>
                                                 @if($data->payment_status == 'complete')
-                                                    <span class="alert alert-success text-capitalize">{{__($data->payment_status)}}</span>
+                                                    <span
+                                                        class="alert alert-success text-capitalize">{{__($data->payment_status)}}</span>
                                                 @else
-                                                    <span class="alert alert-warning text-capitalize">{{$data->payment_status ? __($data->payment_status) : __('Pending')}}</span>
+                                                    <span
+                                                        class="alert alert-warning text-capitalize">{{$data->payment_status ? __($data->payment_status) : __('Pending')}}</span>
                                                 @endif
 
                                                 @if($data->payment_status == 'pending')
-                                                        @if($data->status != 'trial')
-                                                            <a href="{{route('landlord.admin.package.order.payment.status.change',$data->id)}}" class="btn btn-success btn-xs" title="{{__('Make Complete')}}"><i class="las la-check"></i></a>
-                                                        @endif
+                                                    @if($data->status != 'trial')
+                                                        <a href="{{route('landlord.admin.package.order.payment.status.change',$data->id)}}"
+                                                           class="btn btn-success btn-xs"
+                                                           title="{{__('Make Complete')}}"><i class="las la-check"></i></a>
+                                                    @endif
                                                 @endif
                                             </div>
 
@@ -102,15 +109,20 @@
                                         </td>
                                         <td>
                                             @if($data->status == 'pending')
-                                            <span class="alert alert-warning text-capitalize">{{__($data->status)}}</span>
+                                                <span
+                                                    class="alert alert-warning text-capitalize">{{__($data->status)}}</span>
                                             @elseif($data->status == 'cancel')
-                                                <span class="alert alert-danger text-capitalize">{{__($data->status)}}</span>
+                                                <span
+                                                    class="alert alert-danger text-capitalize">{{__($data->status)}}</span>
                                             @elseif($data->status == 'in_progress')
-                                                <span class="alert alert-info text-capitalize">{{__(str_replace('_', ' ', $data->status))}}</span>
+                                                <span
+                                                    class="alert alert-info text-capitalize">{{__(str_replace('_', ' ', $data->status))}}</span>
                                             @elseif($data->status == 'trial')
-                                                <span class="alert alert-primary text-capitalize">{{__($data->status)}}</span>
+                                                <span
+                                                    class="alert alert-primary text-capitalize">{{__($data->status)}}</span>
                                             @else
-                                                <span class="alert alert-success text-capitalize">{{__($data->status)}}</span>
+                                                <span
+                                                    class="alert alert-success text-capitalize">{{__($data->status)}}</span>
                                             @endif
                                         </td>
 
@@ -119,7 +131,8 @@
                                         <td>{{date('d-m-Y',strtotime($data->expire_date))}}</td>
                                         <td>
 
-                                            <x-delete-popover permissions="package-order-delete" url="{{route(route_prefix().'admin.package.order.manage.delete', $data->id)}}"/>
+                                            <x-delete-popover permissions="package-order-delete"
+                                                              url="{{route(route_prefix().'admin.package.order.manage.delete', $data->id)}}"/>
 
                                             <a href="#"
                                                data-bs-toggle="modal"
@@ -128,7 +141,8 @@
                                             >
                                                 <i class="las la-envelope"></i>
                                             </a>
-                                            <a href="{{route(route_prefix().'admin.package.order.manage.view',$data->id)}}" class="btn btn-lg btn-primary btn-sm mb-3 mr-1 view_order_details_btn">
+                                            <a href="{{route(route_prefix().'admin.package.order.manage.view',$data->id)}}"
+                                               class="btn btn-lg btn-primary btn-sm mb-3 mr-1 view_order_details_btn">
                                                 <i class="las la-eye"></i>
                                             </a>
 
@@ -147,19 +161,28 @@
                                                 @endif
                                                 @if(!empty($data->user_id) && $data->payment_status == 'pending' || $data->payment_status == null)
 
-                                                        <form action="{{route(route_prefix().'admin.package.order.reminder')}}"  method="post">
-                                                            @csrf
-                                                            <input type="hidden" name="id" value="{{$data->id}}">
-                                                            <button class="btn btn-secondary mb-2 btn-sm" type="submit"><i class="las la-bell"></i></button>
-                                                        </form>
+                                                    <form
+                                                        action="{{route(route_prefix().'admin.package.order.reminder')}}"
+                                                        method="post">
+                                                        @csrf
+                                                        <input type="hidden" name="id" value="{{$data->id}}">
+                                                        <button class="btn btn-secondary mb-2 btn-sm" type="submit"><i
+                                                                class="las la-bell"></i></button>
+                                                    </form>
                                                 @endif
                                             @endcan
 
-                                            <form action="{{route('landlord.package.invoice.generate')}}" method="post" enctype="multipart/form-data" target="_blank">
-                                                @csrf
-                                                <input type="hidden" name="id" value="{{$data->id}}">
-                                                <button class="btn btn-dark btn-sm" type="submit">{{__('Invoice')}}</button>
-                                            </form>
+                                            @if(get_lang_direction() == 'rtl')
+                                                <a class="btn btn-dark btn-sm btn-invoice-rtl" href="javascript:void(0)" data-id="{{$data->id}}">{{__('Invoice')}}</a>
+                                            @else
+                                                <form action="{{route('landlord.package.invoice.generate')}}" method="POST"
+                                                      enctype="multipart/form-data" target="_blank">
+                                                    @csrf
+                                                    <input type="hidden" name="id" value="{{$data->id}}">
+                                                    <button class="btn btn-dark btn-sm"
+                                                            type="submit">{{__('Invoice')}}</button>
+                                                </form>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -170,11 +193,11 @@
                 </div>
             </div>
         </div>
-   </div>
+    </div>
 
     @can('package-order-edit')
         @include('landlord.admin.package-order-manage.portion.status-and-mail-send')
-   @endcan
+    @endcan
 
     <x-media-upload.markup/>
 @endsection
@@ -186,43 +209,87 @@
     <x-bulk-action-js :url="route(route_prefix().'admin.package.order.bulk.action')"/>
 
     <script>
-        (function($){
-        "use strict";
-        $(document).ready(function() {
-            $(document).on('click','.order_status_change_btn',function(e){
-                e.preventDefault();
-                var el = $(this);
-                var form = $('#order_status_change_modal');
-                form.find('#order_id').val(el.data('id'));
-                form.find('#order_status option[value="'+el.data('status')+'"]').attr('selected',true);
-            });
-            $('#all_user_table').DataTable( {
-                "order": [[ 1, "desc" ]],
-                'columnDefs' : [{
-                    'targets' : 'no-sort',
-                    'orderable' : false
-                }]
-            } );
-            $('.summernote').summernote({
-                height: 250,   //set editable area's height
-                codemirror: { // codemirror options
-                    theme: 'monokai'
-                },
-                callbacks: {
-                    onChange: function(contents, $editable) {
-                        $(this).prev('input').val(contents);
+        (function ($) {
+            "use strict";
+            $(document).ready(function () {
+                $(document).on('click', '.order_status_change_btn', function (e) {
+                    e.preventDefault();
+                    var el = $(this);
+                    var form = $('#order_status_change_modal');
+                    form.find('#order_id').val(el.data('id'));
+                    form.find('#order_status option[value="' + el.data('status') + '"]').attr('selected', true);
+                });
+
+                $('#all_user_table').DataTable({
+                    "order": [[1, "desc"]],
+                    'columnDefs': [{
+                        'targets': 'no-sort',
+                        'orderable': false
+                    }]
+                });
+
+                $('.summernote').summernote({
+                    height: 250,   //set editable area's height
+                    codemirror: { // codemirror options
+                        theme: 'monokai'
+                    },
+                    callbacks: {
+                        onChange: function (contents, $editable) {
+                            $(this).prev('input').val(contents);
+                        }
                     }
-                }
+                });
+
+                $(document).on('click', '#filter_btn', function () {
+                    let type = $('#filter_order').val();
+
+                    location.href = '{{route('landlord.admin.package.order.manage.all').'?filter='}}' + type;
+                });
             });
 
-            $(document).on('click', '#filter_btn', function () {
-                let type = $('#filter_order').val();
+            $(document).on('click', '.btn-invoice-rtl', function (e){
+                e.preventDefault();
 
-                location.href = '{{route('landlord.admin.package.order.manage.all').'?filter='}}' + type;
+                alert(2121);
+
+                let order_id = $(this).attr('data-id');
+
+                $.ajax({
+                    type: 'POST',
+                    url: `{{route('landlord.package.invoice.generate.rtl')}}`,
+                    data: {
+                        _token: `{{csrf_token()}}`,
+                        id: order_id
+                    },
+                    success: function (data)
+                    {
+                        console.log(data);
+                        let mywindow = window.open('', 'new div', 'height=874,width=840');
+                        mywindow.document.write(data);
+                        mywindow.document.close();
+                        mywindow.focus();
+                    }
+                });
             });
-        });
         })(jQuery);
     </script>
 
+    <script>
+        ready(init);
+
+        function ready(fn) {
+            if (document.readyState !== 'loading') {
+                fn();
+            } else {
+                document.addEventListener('DOMContentLoaded', fn);
+            }
+        }
+
+        function init() {
+            document.addEventListener('click', function() {
+                window.print();
+            });
+        }
+    </script>
 @endsection
 

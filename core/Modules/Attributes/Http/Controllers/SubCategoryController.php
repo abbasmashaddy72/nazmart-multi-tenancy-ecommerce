@@ -39,8 +39,13 @@ class SubCategoryController extends Controller
     public function index(): View|Factory|Application
     {
         $data = [];
-        $data['all_category'] = Category::with(["image:id,path","status"])->get();
-        $data['all_sub_category'] = SubCategory::with(["image:id,path","status","category:id,name"])->get();
+        $data['all_category'] = Category::with(["image:id,path","status"])
+            ->where('status_id', 1)
+            ->get();
+
+        $data['all_sub_category'] = SubCategory::with(["image:id,path","status","category:id,name"])
+            ->where('status_id', 1)
+            ->get();
 
         return view(self::BASE_PATH.'sub-category.all', compact('data'));
     }
@@ -114,7 +119,7 @@ class SubCategoryController extends Controller
 
     public function getSubcategoriesForSelect(Request $request)
     {
-        $sub_category = SubCategory::where("category_id",$request->category_id)->get();
+        $sub_category = SubCategory::where('status_id', 1)->where("category_id",$request->category_id)->get();
         $options = view(self::BASE_PATH."sub-category.sub-category-option", compact("sub_category"))->render();
         $lists = view(self::BASE_PATH."sub-category.sub_category-list", compact("sub_category"))->render();
 

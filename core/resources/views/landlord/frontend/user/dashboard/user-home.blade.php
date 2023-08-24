@@ -217,7 +217,7 @@
                             <select class="form-select subdomain" id="subdomain" name="subdomain">
                                 <option value="" selected disabled>{{__('Select a subdomain')}}</option>
                                     @foreach($user->tenant_details ?? [] as $tenant)
-                                        <option value="{{$tenant->id}}" {{$tenant->payment_log?->package?->type == \App\Enums\PricePlanTypEnums::LIFETIME ? 'selected' : ''}}>{{optional($tenant->domain)->domain}}</option>
+                                        <option value="{{$tenant->id}}">{{optional($tenant->domain)->domain}}</option>
                                     @endforeach
                                 <option value="custom_domain__dd">{{__('Add new subdomain')}}</option>;
                             </select>
@@ -389,7 +389,9 @@
                     success: function (res) {
                         if(res.theme_slug !== '')
                         {
+                            el.find(`option`).attr('selected', false);
                             el.find(`option[value="${res.theme_slug}"]`).attr('selected', true);
+                            final_detail.theme = res.theme_slug
                         }
 
                         let custom_theme_wrapper = $('#custom-theme').parent();
@@ -442,13 +444,15 @@
             let el = $(this);
             let package_id = el.val();
             let package_name = el.find(':selected').text().trim();
+            let subdomain = final_detail.subdomain;
 
             $.ajax({
                 url: '{{route('landlord.frontend.package.check')}}',
                 type: 'POST',
                 data: {
                     _token : '{{csrf_token()}}',
-                    package_id : package_id
+                    package_id : package_id,
+                    subdomain: subdomain
                 },
                 success: function (data) {
                     let payment_gateway_wrapper = $('.payment-gateway-wrapper');
@@ -476,6 +480,11 @@
                     final_detail.price = data.price;
                     final_detail.validity = data.validity;
                     final_detail.payment_gateway = selected_payment_gateway.val();
+
+                    if (data.theme !== null)
+                    {
+                        final_detail.theme = data.theme;
+                    }
                 }
             });
         });

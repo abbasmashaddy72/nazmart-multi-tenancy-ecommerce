@@ -349,18 +349,19 @@ class OrderManageController extends Controller
     public function generate_package_invoice(Request $request)
     {
         $payment_details = PaymentLogs::findOrFail($request->id);
-        $invoice = $this->invoice_design_laravelDaily($payment_details);
+        $invoice = $this->invoice_design($payment_details);
         return $invoice->stream();
     }
 
-    private function invoice_design_dompdf()
+    public function generate_package_invoice_rtl(Request $request)
     {
-        $data = ['name' => __('paid')];
-        $pdf = Pdf::loadView('vendor.invoices.templates.test', $data);
-        return $pdf->stream('invoice.pdf');
+        $payment_details = PaymentLogs::findOrFail($request->id);
+        $invoice = $this->invoice_design($payment_details);
+
+        return $invoice->toHtml();
     }
 
-    private function invoice_design_laravelDaily($payment_details)
+    private function invoice_design($payment_details)
     {
         $client = new Party([
             'name' => site_title(),
