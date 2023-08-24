@@ -105,7 +105,7 @@ class CustomDomainController extends Controller
             'custom_domain_settings_description' =>  'nullable',
             'custom_domain_table_title' =>  'nullable',
             'custom_domain_settings_screem_show_image' =>  'nullable',
-
+            'server_ip' => 'nullable'
         ]);
 
        foreach ($data as $key => $item){
