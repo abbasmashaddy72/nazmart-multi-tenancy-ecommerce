@@ -67,6 +67,7 @@
                                                         <p class="text-small">{{__('when you set fixed date, you have to click on sync date button, to sync date selection with all prodcuts')}}</p>
                                                         <div id="fixed_date_container" style="display: none">
                                                             <input type="date" name="campaign_start_date" id="fixed_from_date" class="form-control mb-2 flatpickr" placeholder="{{ __('From Date') }}">
+                                                            <br>
                                                             <input type="date" name="campaign_end_date" id="fixed_to_date" class="form-control mb-2 flatpickr" placeholder="{{ __('To Date') }}">
                                                             <button class="btn btn-sm btn-primary" id="fixed_date_sync_all">{{ __('Sync Date') }}</button>
                                                         </div>

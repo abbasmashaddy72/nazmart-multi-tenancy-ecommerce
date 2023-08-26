@@ -81,7 +81,8 @@
                                                     <div id="fixed_date_container" @if(!$campaign->start_date && !$campaign->end_date) style="display: none" @endif>
                                                         <label>{{__('Campaign Starting date')}}</label>
                                                         <input type="text" name="campaign_start_date" id="fixed_from_date" class="form-control mb-2 flatpickr" placeholder="{{ __('From Date') }}" value="{{ $campaign->start_date }}">
-                                                        <label>{{__('Campaign Starting date')}}</label>
+                                                        <br>
+                                                        <label>{{__('Campaign Ending date')}}</label>
                                                         <input type="text" name="campaign_end_date" id="fixed_to_date" class="form-control mb-2 flatpickr" placeholder="{{ __('To Date') }}" value="{{ $campaign->end_date }}">
                                                         <button type="button" class="btn btn-sm btn-primary" id="fixed_date_sync_all">{{ __('Sync Date') }}</button>
                                                     </div>
