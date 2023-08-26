@@ -217,6 +217,7 @@
                             <select class="form-select subdomain" id="subdomain" name="subdomain">
                                 <option value="" selected disabled>{{__('Select a subdomain')}}</option>
                                     @foreach($user->tenant_details ?? [] as $tenant)
+                                        @continue($tenant->payment_log->package->type == \App\Enums\PricePlanTypEnums::LIFETIME)
                                         <option value="{{$tenant->id}}">{{optional($tenant->domain)->domain}}</option>
                                     @endforeach
                                 <option value="custom_domain__dd">{{__('Add new subdomain')}}</option>;

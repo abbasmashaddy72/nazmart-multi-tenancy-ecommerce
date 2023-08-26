@@ -52,7 +52,7 @@
                             <tr>
                                 <td>A Record</td>
                                 <td>@</td>
-                                <td>{{$_SERVER['SERVER_ADDR']}}</td>
+                                <td>{{get_static_option_central('server_ip') ?? $_SERVER['SERVER_ADDR']}}</td>
                                 <td>Automatic</td>
                             </tr>
 

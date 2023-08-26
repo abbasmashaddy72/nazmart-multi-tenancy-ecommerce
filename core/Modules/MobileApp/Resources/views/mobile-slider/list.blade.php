@@ -41,7 +41,7 @@
                                     <th>{{ __("Action") }}</th>
                                 </thead>
                                 <tbody>
-                                    @foreach($mobileSliders as $slider)
+                                    @forelse($mobileSliders as $slider)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $slider->title }}</td>
@@ -65,7 +65,11 @@
                                                 @endcan
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="7" class="text-center">{{__('No Data Available')}}</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>

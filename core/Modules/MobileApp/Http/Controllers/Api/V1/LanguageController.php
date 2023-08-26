@@ -3,36 +3,36 @@
 namespace Modules\MobileApp\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Language;
+use App\Models\Language;
 use Illuminate\Http\Request;
 
 
 class LanguageController extends Controller
 {
     public function languageInfo(){
-        
+
         $languages = Language::select('id','name','slug','direction')->where('default',1)->first()->toArray();
-        
+
         if(!is_null($languages)){
             return response()->json([
                 'language'=>$languages,
             ]);
         }
-        
+
         return response()->json([
-                'language'=> [ 
+                'language'=> [
                     "slug" => "en_GB",
                     "direction" => "ltr"
                 ],
         ]);
     }
-    
+
     public function translateString(Request $request){
-        $translateable_array = json_decode($request->get('strings'),true);
-        
+        $translatable_array = json_decode($request->get('strings'),true);
+
         $translated_array = [];
         if($request->has('strings')){
-            foreach($translateable_array as $key => $string){
+            foreach($translatable_array as $key => $string){
                 $translated_array[$key] = __($key);
             }
         }
@@ -41,6 +41,4 @@ class LanguageController extends Controller
             'strings'=> $translated_array
         ]);
     }
-
-    
 }

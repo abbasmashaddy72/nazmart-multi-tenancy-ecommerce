@@ -100,7 +100,7 @@ Route::middleware([
         Route::get('/privacy-policy-page', [MobileController::class, 'privacyPolicy']);
         Route::get('site-currency-symbol', [MobileController::class, 'site_currency_symbol']);
         Route::get('/language',[LanguageController::class,'languageInfo']);
-        Route::post('/translate-string',[LanguageController::class,'translateString']);
+        Route::post('/translate-string',[LanguageController::class,'translateString'])->middleware("set_lang");
 
         Route::post('/coupon',[ProductController::class,'productCoupon']);
         Route::post('/shipping-charge',[ProductController::class,'shippingCharge']);
