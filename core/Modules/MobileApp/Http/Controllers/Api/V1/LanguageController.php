@@ -28,11 +28,11 @@ class LanguageController extends Controller
     }
 
     public function translateString(Request $request){
-        $translateable_array = json_decode($request->get('strings'),true);
+        $translatable_array = json_decode($request->get('strings'),true);
 
         $translated_array = [];
         if($request->has('strings')){
-            foreach($translateable_array as $key => $string){
+            foreach($translatable_array as $key => $string){
                 $translated_array[$key] = __($key);
             }
         }

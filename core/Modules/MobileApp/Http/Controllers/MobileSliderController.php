@@ -52,7 +52,7 @@ class MobileSliderController extends Controller
         return view("mobileapp::mobile-slider.edit", compact("mobileSlider","campaigns", "categories"));
     }
 
-    public function update(MobileSlider $mobileSlider,StoreMobileSliderRequest $request){
+    public function update(MobileSlider $mobileSlider, StoreMobileSliderRequest $request){
         $data = $request->validated();
         $bool = $mobileSlider->update($data);
 

@@ -25,7 +25,7 @@ class StoreMobileSliderRequest extends FormRequest
     {
         return [
             "title" => "required",
-            "description" => "required",
+            "description" => "required|max:255",
             "image_id" => "required",
             "button_text" => "required",
             "url" => "required",
