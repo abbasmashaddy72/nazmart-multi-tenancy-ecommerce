@@ -19,8 +19,12 @@ class VerifyUserMailSend
         $subject = sprintf(__('Verify your email address at %s'),site_title());
 
         try {
-            Mail::to($user->email)->send(new BasicMail($msg,$subject));
+            Mail::to($user->email)->send(new BasicMail($msg, $subject));
         }catch (\Exception $e){
+            if ($e->getCode() == 553)
+            {
+                return redirect()->back()->with(['msg'=> __('Site or server email configuration  is incorrect'), 'type'=> 'danger']);
+            }
             return redirect()->back()->with(['msg'=> $e->getMessage(), 'type'=> 'danger']);
         }
     }

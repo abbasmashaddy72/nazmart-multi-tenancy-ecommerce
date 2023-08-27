@@ -123,6 +123,13 @@ class GeneralSettingsController extends Controller
             if (!empty($timezone)) {
                 setEnvValue(['APP_TIMEZONE' => $timezone]);
             }
+
+            if (!empty($request->debug_mode))
+            {
+                setEnvValue(['APP_DEBUG' => 'true']);
+            } else {
+                setEnvValue(['APP_DEBUG' => 'false']);
+            }
         }
 
         return response()->success(ResponseMessage::SettingsSaved());

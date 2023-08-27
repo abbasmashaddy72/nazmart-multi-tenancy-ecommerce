@@ -29,6 +29,7 @@
                     </div>
 
 {{--                    <x-fields.switcher value="{{get_static_option('dark_mode_for_admin_panel')}}" name="dark_mode_for_admin_panel" label="{{__('Enable/Disable Dark Mode For Admin Panel')}}"/>--}}
+                    <x-fields.switcher value="{{env('APP_DEBUG') ? 'on' : ''}}" name="debug_mode" label="{{__('Enable/Disable Debug Mode')}}"/>
                     <x-fields.switcher value="{{get_static_option('maintenance_mode')}}" name="maintenance_mode" label="{{__('Enable/Disable Maintenance Mode')}}"/>
 {{--                    <x-fields.switcher value="{{get_static_option('language_selector_status')}}" name="language_selector_status" label="{{__('Show/Hide Language Selector In Frontend')}}"/>--}}
 

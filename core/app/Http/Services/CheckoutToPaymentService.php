@@ -47,10 +47,10 @@ class CheckoutToPaymentService
                             $sold_count->total_amount += $product->campaign_product->campaign_price * $product->quantity;
                             $sold_count->save();
                         } else {
-                            return back()->withErrors('Campaign sell limitation is over, You can not purchase current amount');
+                            return back()->withErrors(__('Campaign sell limitation is over, You can not purchase current amount'));
                         }
                     } else {
-                        return back()->withErrors('Campaign sell limitation is over, You can not purchase this product right now');
+                        return back()->withErrors(__('Campaign sell limitation is over, You can not purchase this product right now'));
                     }
                 }
             }
@@ -131,12 +131,14 @@ class CheckoutToPaymentService
 
     private static function common_charge_customer_data($amount_to_charge, $payment_details, $ipn_url): array
     {
+        $purchase_details = "Payment For Order ID: # {$payment_details->id}\n".
+                "Payer Name: {$payment_details->name}\n".
+                "Payer Email: {$payment_details->email}";
+
         $data = [
             'amount' => $amount_to_charge,
             'title' => 'Order ID: ' . $payment_details->id,
-            'description' => 'Payment For Order ID: #' . $payment_details->id .
-                ' Payer Name: ' . $payment_details->name .
-                ' Payer Email: ' . $payment_details->email,
+            'description' => $purchase_details,
             'order_id' => $payment_details->id,
             'track' => $payment_details->payment_track,
             'cancel_url' => route(PaymentRouteEnum::CANCEL_ROUTE, $payment_details->id),

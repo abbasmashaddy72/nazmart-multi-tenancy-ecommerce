@@ -180,10 +180,13 @@ class FrontendUserManageController extends Controller
             $subscriber_details->email_verify_token = $token;
             $subscriber_details->save();
         }
-        $message = __('verify your email to get all news from '). get_static_option('site_title') . '<div class="btn-wrap"> <a class="anchor-btn" style="background-color: #007cbd;color: white;padding: 10px"  href="' . route('tenant.user.login') . '">' . __('Login') . '</a></div>';
+        $message = __('Verify your email to get all news from '). get_static_option('site_title');
+        $message .= '<div class="btn-wrap">
+                        <a class="anchor-btn" style="background-color: #007cbd;color: white; padding: 10px; margin: 10px"  href="' . route('tenant.user.login') . '">' . __('Login') . '</a>
+                     </div>';
 
         $msg = $message;
-        $subject = __('verify your email');
+        $subject = __('Verify your email');
 
 
         try {

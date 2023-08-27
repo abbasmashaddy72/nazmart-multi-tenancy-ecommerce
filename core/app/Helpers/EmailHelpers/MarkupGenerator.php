@@ -13,11 +13,13 @@ class MarkupGenerator
     public static function button($data){
         return sprintf('<div class="btn-wrap"><button class="anchor-btn">%s</button></div>',$data);
     }
+
     public static function table($data){}
 
     public static function anchor($title,$url){
         return sprintf('<div class="btn-wrap"><a class="anchor-btn" href="%$1s">%$2s</a></div>',$url,$title);
     }
+
     public static function code($data){
         return sprintf('<code class="verify-code" >%s</code>',$data);
     }

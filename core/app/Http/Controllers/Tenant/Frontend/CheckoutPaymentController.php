@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckoutFormRequest;
 use App\Http\Services\CheckoutToPaymentService;
 use App\Http\Services\ProductCheckoutService;
+use App\Models\PricePlan;
 use App\Models\ProductOrder;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Auth;

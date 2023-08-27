@@ -250,8 +250,6 @@
             $(document).on('click', '.btn-invoice-rtl', function (e){
                 e.preventDefault();
 
-                alert(2121);
-
                 let order_id = $(this).attr('data-id');
 
                 $.ajax({
@@ -263,7 +261,6 @@
                     },
                     success: function (data)
                     {
-                        console.log(data);
                         let mywindow = window.open('', 'new div', 'height=874,width=840');
                         mywindow.document.write(data);
                         mywindow.document.close();
@@ -272,24 +269,6 @@
                 });
             });
         })(jQuery);
-    </script>
-
-    <script>
-        ready(init);
-
-        function ready(fn) {
-            if (document.readyState !== 'loading') {
-                fn();
-            } else {
-                document.addEventListener('DOMContentLoaded', fn);
-            }
-        }
-
-        function init() {
-            document.addEventListener('click', function() {
-                window.print();
-            });
-        }
     </script>
 @endsection
 

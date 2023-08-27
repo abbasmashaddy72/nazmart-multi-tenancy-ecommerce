@@ -383,5 +383,26 @@
                 $pdf->page_text($x, $y, $text, $font, $size);
             }
         </script>
+
+
+        @if(get_lang_direction() == 'rtl')
+            <script>
+                ready(init);
+
+                function ready(fn) {
+                    if (document.readyState !== 'loading') {
+                        fn();
+                    } else {
+                        document.addEventListener('DOMContentLoaded', fn);
+                    }
+                }
+
+                function init() {
+                    document.addEventListener('click', function() {
+                        window.print();
+                    });
+                }
+            </script>
+        @endif
     </body>
 </html>
