@@ -56,9 +56,7 @@
                         </p>
                         <form class="forms-sample" method="post" action="{{route('landlord.admin.general.smtp.settings.test.mail')}}">
                             @csrf
-                            <x-fields.input  name="subject" label="{{__('Subject')}}" />
                             <x-fields.input  name="email" label="{{__('Email')}}" />
-                            <x-fields.textarea  name="message" label="{{__('Message')}}" />
                             <button type="submit" class="btn btn-gradient-primary me-2">{{__('Send Test Mail')}}</button>
                         </form>
                     </div>
