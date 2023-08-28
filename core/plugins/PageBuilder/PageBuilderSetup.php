@@ -199,7 +199,7 @@ class PageBuilderSetup
             }
 
             // Third party custom addons
-            $customAddons = (new ModuleMetaData())->getPageBuilderAddonList();
+            $customAddons = (new ModuleMetaData())->getTenantPageBuilderAddonList();
         } else {
             //Admin Register
             $addons = [
@@ -222,6 +222,9 @@ class PageBuilderSetup
                 RawHTML::class,
                 VideoArea::class
             ];
+
+            // Third party custom addons
+            $customAddons = (new ModuleMetaData())->getLandlordPageBuilderAddonList();
         }
 
         //check module wise widget by set condition

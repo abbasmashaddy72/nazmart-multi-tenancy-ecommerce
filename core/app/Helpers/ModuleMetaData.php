@@ -231,6 +231,46 @@ class ModuleMetaData
         return $addonNames;
     }
 
+    public function getLandlordPageBuilderAddonList(): array
+    {
+        $addonNames = [];
+        $addonList = $this->getPageBuilderAddonList();
+        if (!empty($addonList))
+        {
+            foreach ($addonList as $item)
+            {
+                if (!$item['landlord'])
+                {
+                    continue;
+                }
+
+                $addonNames[] = $item['addon'];
+            }
+        }
+
+        return $addonNames;
+    }
+
+    public function getTenantPageBuilderAddonList(): array
+    {
+        $addonNames = [];
+        $addonList = $this->getPageBuilderAddonList();
+        if (!empty($addonList))
+        {
+            foreach ($addonList as $item)
+            {
+                if (!$item['tenant'])
+                {
+                    continue;
+                }
+
+                $addonNames[] = $item['addon'];
+            }
+        }
+
+        return $addonNames;
+    }
+
     private function getOnlyPageBuilder($allModuleMeta)
     {
         $classList = [];
@@ -238,7 +278,22 @@ class ModuleMetaData
             if (property_exists($eachModuleMeta, 'pageBuilderAddon')) {
                 $pageBuilderAddon = $eachModuleMeta->pageBuilderAddon;
                 if (!empty($pageBuilderAddon)) {
-                    $classList = $this->addonPath($pageBuilderAddon);
+                    foreach ($pageBuilderAddon as $key => $item)
+                    {
+                        if (!empty($item))
+                        {
+                            if (!property_exists($item, 'addon'))
+                            {
+                                continue;
+                            }
+
+                            $classList[$key] = [
+                                "addon" => $this->addonPath($item->addon),
+                                "landlord" => isset($item->landlord) && is_bool($item->landlord) ? $item->landlord : false,
+                                "tenant" => isset($item->tenant) && is_bool($item->tenant) ? $item->tenant : false,
+                            ];
+                        }
+                    }
                 }
             }
         }
@@ -275,12 +330,12 @@ class ModuleMetaData
 
     private function addonPath($widgetBuilderAddon)
     {
-        $addonNames = [];
-        foreach ($widgetBuilderAddon as $addon) {
-            if (file_exists(str_replace('\\', '/', base_path($addon)) . '.php')) {
-                $addonNames[] = $addon;
+        $addonNames = "";
+//        foreach ($widgetBuilderAddon as $addon) {
+            if (file_exists(str_replace('\\', '/', base_path($widgetBuilderAddon)) . '.php')) {
+                $addonNames = $widgetBuilderAddon;
             }
-        }
+//        }
 
         return $addonNames;
     }
