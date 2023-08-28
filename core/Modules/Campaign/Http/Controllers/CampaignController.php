@@ -11,6 +11,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Campaign\Entities\Campaign;
 use Modules\Campaign\Entities\CampaignProduct;
+use Modules\Campaign\Entities\CampaignSoldProduct;
 use Modules\Product\Entities\Product;
 use Razorpay\Api\Resource;
 use Sabberworm\CSS\Renderable;
@@ -201,6 +202,16 @@ class CampaignController extends Controller
     {
 //        try {
 //            DB::beginTransaction();
+
+            $pastCampaignProducts = CampaignProduct::where('campaign_id', $campaign_id)->pluck('product_id')->toArray() ?? [];
+            if (!empty($pastCampaignProducts))
+            {
+                $unused_product = array_diff($pastCampaignProducts, $validated_product_data['product_id']);
+                if (!empty($unused_product))
+                {
+                    CampaignSoldProduct::whereIn('product_id', $unused_product)->delete();
+                }
+            }
 
             $delete = $this->deleteCampaignProducts($campaign_id);
             if(!empty($validated_product_data)){

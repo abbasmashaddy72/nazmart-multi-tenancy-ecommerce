@@ -55,7 +55,7 @@ class LandlordFrontendController extends Controller
     }
 
     /* -------------------------
-        SUBDOMAIN AVIALBILITY
+        SUBDOMAIN AVAILABILITY
     -------------------------- */
     public function subdomain_check(Request $request)
     {

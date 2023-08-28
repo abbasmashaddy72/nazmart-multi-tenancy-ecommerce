@@ -1,8 +1,6 @@
 <!doctype html>
 <html lang="en">
-@php
-    $default_lang = \App\Facades\GlobalLanguage::default_slug();
-@endphp
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -220,7 +218,7 @@
             <img src="{{$image_url}}" alt="logo" style="width: 200px;height: auto">
         </a>
     </div>
-    <div class="inner-wrap">
+    <div class="inner-wrap" style="margin-top: 10px; margin-bottom: 10px">
         {!! $msg !!}
     </div>
     <footer>

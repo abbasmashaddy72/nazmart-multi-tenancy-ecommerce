@@ -43,7 +43,7 @@ class BasicMail extends Mailable
                 $mail->attach($this->attachment);
             }
         }
-        return $mail;
 
+        return $mail;
     }
 }

@@ -355,10 +355,11 @@ class OrderManageController extends Controller
 
     public function generate_package_invoice_rtl(Request $request)
     {
-        $payment_details = PaymentLogs::findOrFail($request->id);
+//        $payment_details = PaymentLogs::findOrFail($request->id);
+        $payment_details = PaymentLogs::findOrFail(239);
         $invoice = $this->invoice_design($payment_details);
 
-        return $invoice->toHtml();
+        return view('invoices::templates.landlord-rtl', compact('invoice'));
     }
 
     private function invoice_design($payment_details)

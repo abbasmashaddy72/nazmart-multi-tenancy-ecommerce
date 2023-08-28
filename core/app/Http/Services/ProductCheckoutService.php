@@ -413,7 +413,7 @@ class ProductCheckoutService
                     'variant_id' => !empty($totalPriceDetails['PHYSICAL']['variants_id'][$key]) ? $totalPriceDetails['PHYSICAL']['variants_id'][$key] : null,
                     'quantity' => $totalPriceDetails['PHYSICAL']['quantity'][$key] ?? null,
                     'price' => $price ?? $totalPriceDetails['PHYSICAL']['price'][$key],
-                    'product_type' => 1,
+                    'product_type' => ProductTypeEnum::PHYSICAL,
                 ]);
             }
         }
@@ -426,7 +426,7 @@ class ProductCheckoutService
                     'variant_id' => !empty($totalPriceDetails['DIGITAL']['variants_id'][$key]) ? $totalPriceDetails['DIGITAL']['variants_id'][$key] : null,
                     'quantity' => $totalPriceDetails['DIGITAL']['quantity'][$key] ?? null,
                     'price' => $price ?? $totalPriceDetails['DIGITAL']['price'][$key],
-                    'product_type' => 2,
+                    'product_type' => ProductTypeEnum::DIGITAL,
                 ]);
             }
         }

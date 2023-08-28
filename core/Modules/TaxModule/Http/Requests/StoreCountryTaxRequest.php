@@ -14,8 +14,8 @@ class StoreCountryTaxRequest extends FormRequest
     public function rules()
     {
         return [
-            'country_id' => 'required|unique:country_taxes',
-            'tax_percentage' => 'required|integer|max:191',
+            'country_id' => 'required|unique:country_taxes,id,'.$this->id ?? 0,
+            'tax_percentage' => 'required|string|max:191',
         ];
     }
 

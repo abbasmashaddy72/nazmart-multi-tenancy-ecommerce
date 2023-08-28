@@ -232,10 +232,13 @@
                         </div>
 
                         <div class="form-group mt-3">
+                            @php
+                                $price_plan = \App\Models\PricePlan::where('status', \App\Enums\StatusEnums::PUBLISH)->get();
+                            @endphp
                             <label for="">{{__('Select A Package')}}</label>
                             <select class="form-control package_id_selector" name="package">
                                 <option value="">{{__('Select Package')}}</option>
-                                @foreach(\App\Models\PricePlan::all() as $price)
+                                @foreach($price_plan as $price)
                                     <option value="{{$price->id}}" data-id="{{$price->id}}" data-title="{{$price->title}}">
                                         {{$price->title}} {{ '('.amount_with_currency_symbol($price->price).')' }} - {{\App\Enums\PricePlanTypEnums::getText($price->type)}}
                                     </option>

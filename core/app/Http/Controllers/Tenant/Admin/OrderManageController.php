@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Mail;
 use LaravelDaily\Invoices\Classes\InvoiceItem;
 use LaravelDaily\Invoices\Classes\Party;
 use LaravelDaily\Invoices\Invoice;
+use Modules\Campaign\Entities\CampaignSoldProduct;
 use Modules\DigitalProduct\Entities\DigitalProductDownload;
 use Modules\Product\Entities\ProductInventory;
 use Modules\Product\Entities\ProductInventoryDetail;

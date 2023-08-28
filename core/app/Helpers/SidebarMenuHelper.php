@@ -904,8 +904,8 @@ class SidebarMenuHelper
             $this->tenant_badge_settings_menus($menu_instance);
         }
 
-        $this->tenant_country_settings_menus($menu_instance);
-        $this->tenant_tax_settings_menus($menu_instance);
+//        $this->tenant_country_settings_menus($menu_instance);
+//        $this->tenant_tax_settings_menus($menu_instance);
 
         $this->tenant_shipping_settings_menus($menu_instance);
 

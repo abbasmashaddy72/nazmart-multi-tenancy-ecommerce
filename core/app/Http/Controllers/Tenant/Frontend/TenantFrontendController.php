@@ -4,15 +4,14 @@ namespace App\Http\Controllers\Tenant\Frontend;
 
 use App\Enums\ProductTypeEnum;
 use App\Enums\StatusEnums;
-use App\Facades\ThemeDataFacade;
 use App\Helpers\EmailHelpers\VerifyUserMailSend;
+use App\Helpers\FlashMsg;
 use App\Helpers\GenerateTenantToken;
 use App\Helpers\ResponseMessage;
 use App\Http\Controllers\Controller;
 use App\Http\Services\CheckoutCouponService;
 use App\Mail\AdminResetEmail;
 use App\Mail\BasicMail;
-use App\Models\Admin;
 use App\Models\Newsletter;
 use App\Models\OrderProducts;
 use App\Models\Page;
@@ -477,8 +476,6 @@ class TenantFrontendController extends Controller
             ];
             $options['base_cost'] = $product->cost + ($additional_cost ?? 0);
             $options['type'] = ProductTypeEnum::PHYSICAL;
-
-            dd($options);
 
             Cart::instance("default")->add(['id' => $cart_data['product_id'], 'name' => $product->name, 'qty' => $cart_data['quantity'], 'price' => $final_sale_price, 'weight' => '0', 'options' => $options]);
 
@@ -1600,9 +1597,15 @@ class TenantFrontendController extends Controller
         return redirect()->route('tenant.user.home');
     }
 
-    public function resend_verify_user_email(Request $request)
+    public function resend_verify_user_email()
     {
-        VerifyUserMailSend::sendMail(Auth::guard('web')->user());
+        $user = Auth::guard('web')->user();
+        if (!$user)
+        {
+            return back()->with(FlashMsg::explain('danger', __('Please log in first')));
+        }
+
+        VerifyUserMailSend::sendMail($user);
         return redirect()->route('tenant.user.email.verify')->with(['msg' => __('Verify mail send'), 'type' => 'success']);
     }
 

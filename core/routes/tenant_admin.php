@@ -486,6 +486,7 @@ Route::middleware([
         /* smtp Settings */
         Route::get('/email-settings', 'email_settings')->name('admin.general.email.settings');
         Route::post('/email-settings', 'update_email_settings');
+        Route::post('/email-settings/mail', 'send_test_mail')->name('admin.general.mail.settings');
 
         //GDPR Settings
         Route::get('/gdpr-settings', 'gdpr_settings')->name('admin.general.gdpr.settings');

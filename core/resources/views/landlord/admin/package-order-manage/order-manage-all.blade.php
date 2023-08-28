@@ -173,7 +173,8 @@
                                             @endcan
 
                                             @if(get_lang_direction() == 'rtl')
-                                                <a class="btn btn-dark btn-sm btn-invoice-rtl" href="javascript:void(0)" data-id="{{$data->id}}">{{__('Invoice')}}</a>
+{{--                                                <a class="btn btn-dark btn-sm btn-invoice-rtl" href="javascript:void(0)" data-id="{{$data->id}}">{{__('Invoice')}}</a>--}}
+                                                <a class="btn btn-dark btn-sm btn-invoice-rtl" href="{{route('landlord.package.invoice.generate.rtl')}}" data-id="{{$data->id}}">{{__('Invoice')}}</a>
                                             @else
                                                 <form action="{{route('landlord.package.invoice.generate')}}" method="POST"
                                                       enctype="multipart/form-data" target="_blank">
@@ -247,49 +248,28 @@
                 });
             });
 
-            $(document).on('click', '.btn-invoice-rtl', function (e){
-                e.preventDefault();
+            {{--$(document).on('click', '.btn-invoice-rtl', function (e){--}}
+            {{--    e.preventDefault();--}}
 
-                alert(2121);
+            {{--    let order_id = $(this).attr('data-id');--}}
 
-                let order_id = $(this).attr('data-id');
-
-                $.ajax({
-                    type: 'POST',
-                    url: `{{route('landlord.package.invoice.generate.rtl')}}`,
-                    data: {
-                        _token: `{{csrf_token()}}`,
-                        id: order_id
-                    },
-                    success: function (data)
-                    {
-                        console.log(data);
-                        let mywindow = window.open('', 'new div', 'height=874,width=840');
-                        mywindow.document.write(data);
-                        mywindow.document.close();
-                        mywindow.focus();
-                    }
-                });
-            });
+            {{--    $.ajax({--}}
+            {{--        type: 'POST',--}}
+            {{--        url: `{{route('landlord.package.invoice.generate.rtl')}}`,--}}
+            {{--        data: {--}}
+            {{--            _token: `{{csrf_token()}}`,--}}
+            {{--            id: order_id--}}
+            {{--        },--}}
+            {{--        success: function (data)--}}
+            {{--        {--}}
+            {{--            let mywindow = window.open('', 'new div', 'height=874,width=840');--}}
+            {{--            mywindow.document.write(data);--}}
+            {{--            mywindow.document.close();--}}
+            {{--            mywindow.focus();--}}
+            {{--        }--}}
+            {{--    });--}}
+            {{--});--}}
         })(jQuery);
-    </script>
-
-    <script>
-        ready(init);
-
-        function ready(fn) {
-            if (document.readyState !== 'loading') {
-                fn();
-            } else {
-                document.addEventListener('DOMContentLoaded', fn);
-            }
-        }
-
-        function init() {
-            document.addEventListener('click', function() {
-                window.print();
-            });
-        }
     </script>
 @endsection
 

@@ -123,6 +123,13 @@ class GeneralSettingsController extends Controller
             if (!empty($timezone)) {
                 setEnvValue(['APP_TIMEZONE' => $timezone]);
             }
+
+            if (!empty($request->debug_mode))
+            {
+                setEnvValue(['APP_DEBUG' => 'true']);
+            } else {
+                setEnvValue(['APP_DEBUG' => 'false']);
+            }
         }
 
         return response()->success(ResponseMessage::SettingsSaved());
@@ -154,16 +161,36 @@ class GeneralSettingsController extends Controller
 
     public function update_email_settings(Request $request)
     {
-        $fields = [
-            'tenant_site_global_email' => 'required|email',
-        ];
-        $this->validate($request, $fields);
-        foreach ($fields as $field_name => $rules) {
-            update_static_option($field_name, $request->$field_name);
+        $fields = $request->validate([
+            'site_global_email' => 'required|email',
+            'site_smtp_host' => 'required|string|regex:/^\S*$/u',
+            'site_smtp_username' => 'required|string',
+            'site_smtp_password' => 'required|string',
+            'site_smtp_port' => 'required|numeric',
+            'site_smtp_encryption' => 'required|string',
+            'site_smtp_driver' => 'required|string',
+        ]);
+
+        foreach ($fields as $field_name => $rule){
+            update_static_option($field_name, $rule);
         }
+
+        if (is_null(\tenant())){
+            update_static_option('site_global_email',$request->site_global_email);
+
+            setEnvValue([
+                'MAIL_MAILER'=> $request->site_smtp_driver,
+                'MAIL_HOST'=> $request->site_smtp_host,
+                'MAIL_PORT'=> $request->site_smtp_port,
+                'MAIL_USERNAME'=>$request->site_smtp_username,
+                'MAIL_PASSWORD'=> addQuotes($request->site_smtp_password),
+                'MAIL_ENCRYPTION'=> $request->site_smtp_encryption,
+                'MAIL_FROM_ADDRESS'=> $request->site_global_email
+            ]);
+        }
+
         return response()->success(ResponseMessage::SettingsSaved());
     }
-
 
     public function color_settings()
     {
@@ -360,10 +387,12 @@ class GeneralSettingsController extends Controller
             'site_smtp_encryption' => 'required|string',
             'site_smtp_driver' => 'required|string',
         ];
+
         $this->validate($request, $fields);
         foreach ($fields as $field_name => $rules) {
-            update_static_option($field_name, $request->$field_name);
+            update_static_option_central($field_name, $request->$field_name);
         }
+
         setEnvValue([
             'MAIL_MAILER' => $request->site_smtp_driver,
             'MAIL_HOST' => $request->site_smtp_host,
@@ -373,6 +402,7 @@ class GeneralSettingsController extends Controller
             'MAIL_ENCRYPTION' => $request->site_smtp_encryption,
             'MAIL_FROM_ADDRESS' => $request->site_global_email
         ]);
+
         return response()->success(ResponseMessage::SettingsSaved());
     }
 
@@ -395,15 +425,18 @@ class GeneralSettingsController extends Controller
     public function send_test_mail(Request $request)
     {
         $this->validate($request, [
-            'subject' => 'required|string',
-            'email' => 'required|email',
-            'message' => 'required|string',
+            'email' => 'required|email'
         ]);
+
         try {
-            Mail::to($request->email)->send(new BasicMail($request->message, $request->subject));
+            $message = __('Hi') . (\tenant() ? ' Tenant' : ' Landlord') . ',<br>';
+            $message .= __('This is Test Mail');
+
+            Mail::to($request->email)->send(new BasicMail($message, __('SMTP Test email')));
         } catch (\Exception $e) {
             return response()->warning($e->getMessage());
         }
+
         return response()->success(ResponseMessage::mailSendSuccess());
     }
 

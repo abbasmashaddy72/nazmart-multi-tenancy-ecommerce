@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ \App\Facades\GlobalLanguage::user_lang_slug() }}"
-      dir="{{ \App\Facades\GlobalLanguage::user_lang_dir() }}">
+<html lang="{{ \App\Facades\GlobalLanguage::user_lang_slug() }}">
     <head>
         <title>{{ $invoice->name }}</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -149,8 +148,8 @@
                                 <strong>{{ $invoice->status }}</strong>
                             </h4>
                         @endif
-                        <p>{{ __('invoices::invoice.serial') }} <strong>{{ $invoice->getSerialNumber() }}</strong></p>
-                        <p>{{ __('invoices::invoice.date') }}: <strong>{{ $invoice->getDate() }}</strong></p>
+                        <p>{{ __('serial') }} <strong>{{ $invoice->getSerialNumber() }}</strong></p>
+                        <p>{{ __('date') }}: <strong>{{ $invoice->getDate() }}</strong></p>
                     </td>
                 </tr>
             </tbody>
@@ -161,11 +160,11 @@
             <thead>
                 <tr>
                     <th class="border-0 pl-0 party-header" width="48.5%">
-                        {{ __('invoices::invoice.seller') }}
+                        {{ __('seller') }}
                     </th>
                     <th class="border-0" width="3%"></th>
                     <th class="border-0 pl-0 party-header">
-                        {{ __('invoices::invoice.buyer') }}
+                        {{ __('buyer') }}
                     </th>
                 </tr>
             </thead>
@@ -383,5 +382,26 @@
                 $pdf->page_text($x, $y, $text, $font, $size);
             }
         </script>
+
+
+        @if(get_lang_direction() == 'rtl')
+            <script>
+                ready(init);
+
+                function ready(fn) {
+                    if (document.readyState !== 'loading') {
+                        fn();
+                    } else {
+                        document.addEventListener('DOMContentLoaded', fn);
+                    }
+                }
+
+                function init() {
+                    document.addEventListener('click', function() {
+                        window.print();
+                    });
+                }
+            </script>
+        @endif
     </body>
 </html>

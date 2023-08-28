@@ -114,7 +114,7 @@ Route::middleware([
         Route::get('/mobile-slider',[MobileSliderController::class,"index"]);
         Route::get('/mobile-intro',[MobileIntroApiController::class,"mobileIntro"]);
 
-        Route::get("/payment-gateway-list",[SiteSettingsController::class,"payment_gateway_list"]);
+        Route::get("/payment-gateway-list", [SiteSettingsController::class,"payment_gateway_list"]);
 
         Route::group(['prefix' => 'user/','middleware' => 'auth:sanctum'],function (){
             Route::post('logout',[UserController::class,'logout']);
