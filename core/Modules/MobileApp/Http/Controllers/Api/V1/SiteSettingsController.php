@@ -15,6 +15,28 @@ class SiteSettingsController extends Controller
             return response()->json(["error" => "Unauthenticated."], 401);
         }
 
-        return PaymentGatewayResource::collection(PaymentGateway::where('status' , 1)->get());
+        $payment_gateways = PaymentGateway::where('status' , 1)->get()->toArray();
+
+        $cash_on_delivery_option = get_static_option('cash_on_delivery');
+        $cash_on_delivery = [];
+        if (!empty($cash_on_delivery_option))
+        {
+            $index = !empty($payment_gateways) ? count($payment_gateways) + 1 : 0;
+            $id = !empty($payment_gateways) ? data_get(max($payment_gateways), 'id') + 1 : 0;
+
+            $cash_on_delivery[$index] = [
+                'id' => $id,
+                'name' => 'cash_on_delivery',
+                'description' => '',
+                'image' => '',
+                'status' => 1,
+                'test_mode' => 1,
+                'credentials' => ''
+            ];
+        }
+
+        $merged = collect(array_merge($payment_gateways, $cash_on_delivery));
+
+        return PaymentGatewayResource::collection($merged);
     }
 }

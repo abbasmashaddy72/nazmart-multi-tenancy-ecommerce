@@ -70,28 +70,32 @@ class MenuBuilderAdminRender
             $output .= '<label for="items_id">' . __('Select Items') . '</label>';
             $output .= '<select name="items_id" multiple="" class="form-control">';
             $instance = new $attributes_string['ptype']();
+//            dd($instance);
             $model_name = '\\'.$instance->model();
             $model = new $model_name();
-            if ($instance->query_type() === 'old_lang'){
-                $all_items = $model->where(['lang' => $lang])->where(['status' => 'publish'])->get();
+            /*if ($instance->query_type() === 'old_lang'){
+                $all_items = $model->where(['status' => 'publish'])->get();
             }elseif($instance->query_type() === 'new_lang'){
                 $all_items =  $model->with(['lang_query' => function($query) use ($lang){
                   $query->where('lang' , $lang);
                 }])->where(['status' => 'publish'])->get();
             }else{
                 $all_items = $model->where(['status' => 'publish'])->get();
-            }
+            }*/
+            $all_items = $model->where(['status' => 1])->get();
+
             //fetch mega menu item
             foreach ($all_items as $item) {
                 $selected = in_array($item->id, explode(',', $attributes_string['items_id']),false) ? 'selected' : '';
-                $title_param = $instance->title_param();;
+/*                $title_param = $instance->title_param();;
                 if ($instance->query_type() === 'old_lang'){
                     $title = $item->$title_param ?? '';
                 }elseif($instance->query_type() === 'new_lang'){
                     $title = $item->lang_query->$title_param ?? '';
                 }else{
                     $title = $item->$title_param ?? '';
-                }
+                }*/
+                $title = $item->title;
                 $output .= '<option value="' . $item->id . '" ' .$selected. '>' . $title . '</option>';
             }
             $output .= '</select>';
@@ -149,8 +153,9 @@ class MenuBuilderAdminRender
                     'items_id' => $menu_item->items_id ?? '',
                 ]);
                 $instance = new $attributes_string['ptype']();
-                $static_name = str_replace('[lang]',$default_lang,$instance->name());
-                $title = htmlspecialchars(strip_tags(get_static_option($static_name))).' '.__('Mega Menu');
+                $static_name = strtoupper(str_replace('_page_[lang]_name', '', $instance->name())); //str_replace('[lang]',$default_lang,$instance->name());
+                //$title = htmlspecialchars(strip_tags(get_static_option($static_name))).' '.__('Mega Menu');
+                $title = $static_name.' '.__('Mega Menu');
                 $output .=  $this->render_li_start($title,$attributes_string,$default_lang);
             }else {
                 $menu_setup_instance = new MenuBuilderSetup();
