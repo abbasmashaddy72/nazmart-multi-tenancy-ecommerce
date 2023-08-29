@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Landlord\Admin;
 
+use App\Helpers\ModuleMetaData;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Brand;
@@ -21,6 +22,8 @@ class LandlordAdminController extends Controller
     private const BASE_VIEW_PATH = 'landlord.admin.';
 
     public function dashboard(){
+        (new ModuleMetaData())->getMegaMenu();
+
         $total_admin= Admin::count();
 
         $total_user = 0;

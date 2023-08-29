@@ -89,6 +89,8 @@
                                                 </div>
                                             </div>
 
+                                            {!! render_mega_menu_list($page_post->lang) !!}
+
                                             <div class="card">
                                                 <div class="card-header" id="static-links">
                                                     <h2 class="mb-0">
@@ -233,7 +235,7 @@
 
                     $.ajax({
                         type: 'POST',
-                        url: "{{route('tenant.admin.mega.menu.item.select.markup')}}",
+                        url: "{{route(route_prefix().'admin.mega.menu.item.select.markup')}}",
                         data:{
                             _token: "{{csrf_token()}}",
                             type : menuType,
@@ -247,7 +249,6 @@
                             },1000);
                         }
                     });
-
                 });
 
             });

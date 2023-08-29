@@ -235,12 +235,9 @@ class ModuleMetaData
     {
         $addonNames = [];
         $addonList = $this->getPageBuilderAddonList();
-        if (!empty($addonList))
-        {
-            foreach ($addonList as $item)
-            {
-                if (!$item['landlord'])
-                {
+        if (!empty($addonList)) {
+            foreach ($addonList as $item) {
+                if (!$item['landlord']) {
                     continue;
                 }
 
@@ -255,12 +252,9 @@ class ModuleMetaData
     {
         $addonNames = [];
         $addonList = $this->getPageBuilderAddonList();
-        if (!empty($addonList))
-        {
-            foreach ($addonList as $item)
-            {
-                if (!$item['tenant'])
-                {
+        if (!empty($addonList)) {
+            foreach ($addonList as $item) {
+                if (!$item['tenant']) {
                     continue;
                 }
 
@@ -278,12 +272,9 @@ class ModuleMetaData
             if (property_exists($eachModuleMeta, 'pageBuilderAddon')) {
                 $pageBuilderAddon = $eachModuleMeta->pageBuilderAddon;
                 if (!empty($pageBuilderAddon)) {
-                    foreach ($pageBuilderAddon as $key => $item)
-                    {
-                        if (!empty($item))
-                        {
-                            if (!property_exists($item, 'addon'))
-                            {
+                    foreach ($pageBuilderAddon as $key => $item) {
+                        if (!empty($item)) {
+                            if (!property_exists($item, 'addon')) {
                                 continue;
                             }
 
@@ -332,9 +323,9 @@ class ModuleMetaData
     {
         $addonNames = "";
 //        foreach ($widgetBuilderAddon as $addon) {
-            if (file_exists(str_replace('\\', '/', base_path($widgetBuilderAddon)) . '.php')) {
-                $addonNames = $widgetBuilderAddon;
-            }
+        if (file_exists(str_replace('\\', '/', base_path($widgetBuilderAddon)) . '.php')) {
+            $addonNames = $widgetBuilderAddon;
+        }
 //        }
 
         return $addonNames;
@@ -396,10 +387,8 @@ class ModuleMetaData
                 }
                 $menuItem = $this->getAdminMenuSettings($adminSettings);
                 if (!empty((array)$menuItem)) {
-                    if (tenant() && property_exists(current($menuItem), "permission") && !empty(current($menuItem)->permission))
-                    {
-                        if (!tenant_plan_sidebar_permission('woocommerce'))
-                        {
+                    if (tenant() && property_exists(current($menuItem), "permission") && !empty(current($menuItem)->permission)) {
+                        if (!tenant_plan_sidebar_permission('woocommerce')) {
                             continue;
                         }
                     }
@@ -485,6 +474,50 @@ class ModuleMetaData
         }
 
         return $moduleDir;
+    }
+
+    public function getMegaMenu()
+    {
+        $allModuleMeta = $this->getAllMetaData();
+
+        $menuList = [];
+        if (!empty($allModuleMeta)) {
+            foreach ($allModuleMeta as $metaData) {
+                if (!property_exists($metaData, 'menuBuilder')) {
+                    continue;
+                }
+
+                $menuBuilder = $this->getMenuBuilder($metaData);
+                if (!empty($menuBuilder)) {
+                    $eachMenuItems = is_array($menuBuilder) ? (object)$menuBuilder : $menuBuilder;
+                    if (!empty($eachMenuItems) && property_exists($eachMenuItems, 'megaMenu')) {
+                        $eachMenuItems = $eachMenuItems->megaMenu;
+                        foreach ($eachMenuItems ?? [] as $menuItem) {
+                            if (tenant() && property_exists($menuItem, "tenant") && $menuItem->tenant === false) {
+                                continue;
+                            }
+                            if (!tenant() && property_exists($menuItem, "landlord") && $menuItem->landlord === false) {
+                                continue;
+                            }
+
+                            $menuList[] = $menuItem->menu;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $menuList;
+    }
+
+    public function getMenuBuilder($metaData)
+    {
+        $menuBuilder = [];
+        if (property_exists($metaData, 'menuBuilder')) {
+            $menuBuilder = $metaData->menuBuilder;
+        }
+
+        return $menuBuilder;
     }
 
     public function getAllHooks()
@@ -587,8 +620,7 @@ class ModuleMetaData
 
     private function renderHooks($hook_name)
     {
-        $all_hooks = match($hook_name)
-        {
+        $all_hooks = match ($hook_name) {
             'renderHeadStartHooks' => $this->getHeadStartHooks(),
             'renderHeadEndHooks' => $this->getHeadEndHooks(),
             'renderBodyStartHooks' => $this->getBodyStartHooks(),
@@ -597,12 +629,10 @@ class ModuleMetaData
         };
 
         $all_blades = '';
-        foreach ($all_hooks ?? [] as $index => $hook)
-        {
-            $hook = str_replace(['.blade','.blade.php','.php'],'',$hook);
-            $view_path = strtolower($index).'::'.$hook;
-            if (\View::exists($view_path))
-            {
+        foreach ($all_hooks ?? [] as $index => $hook) {
+            $hook = str_replace(['.blade', '.blade.php', '.php'], '', $hook);
+            $view_path = strtolower($index) . '::' . $hook;
+            if (\View::exists($view_path)) {
                 $all_blades .= view($view_path)->render();
             }
         }
