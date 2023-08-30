@@ -370,7 +370,7 @@ class UserDashboardController extends Controller
     {
         $request->validate([
             'old_domain' => 'required',
-            'custom_domain' => 'required|regex:/^[a-za-z.-]+$/',
+            'custom_domain' => 'required|regex:/^[a-z0-9.-]+$/',
         ]);
 
         $tenant = Tenant::findOrFail($request->old_domain);
