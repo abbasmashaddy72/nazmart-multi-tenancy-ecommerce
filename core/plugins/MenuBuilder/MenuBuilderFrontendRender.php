@@ -124,7 +124,7 @@ class MenuBuilderFrontendRender
                         'href' => url('/').'/'.get_static_option($instance->slug()) ?? '#' ,
                         'target' => $menu_item->antarget ?? '',
                     ],$menu_item->icon ?? '');
-                    $output .= $instance->render($menu_item->items_id ?? '',$default_lang);
+                    $output .= $instance->render($menu_item->items_id ?? '', $default_lang, 'no_lang');
                 }
             }else {
                 $menu_setup_instance = new MenuBuilderSetup();

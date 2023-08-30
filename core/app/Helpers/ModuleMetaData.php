@@ -500,7 +500,10 @@ class ModuleMetaData
                                 continue;
                             }
 
-                            $menuList[] = $menuItem->menu;
+                            if (property_exists($menuItem, "menu") && !empty($menuItem->menu))
+                            {
+                                $menuList[] = $menuItem->menu;
+                            }
                         }
                     }
                 }

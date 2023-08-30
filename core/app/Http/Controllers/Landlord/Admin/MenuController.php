@@ -109,9 +109,7 @@ class MenuController extends Controller
         $model_name = '\\'.$instance->model();
         $model = new $model_name();
 
-        $default_lang = $request->lang ?? GlobalLanguage::default_slug();
-
-        $item_details = $model->usingLocale($default_lang)->get();
+        $item_details = $model->get();
         /*if ($instance->query_type() === 'old_lang'){
             $item_details =  $model->where('lang',$request->lang)->get();
         }elseif($instance->query_type() === 'new_lang'){
@@ -135,7 +133,7 @@ class MenuController extends Controller
             }
 
             $title = $instance->query_type() === 'old_lang' ? $item->$title_param : $title;*/
-            $title = $item->getTranslation('title',$default_lang);
+            $title = $item->title;
 
             $output .= '<option value="' . $item->id . '" >' .htmlspecialchars(strip_tags($title)) ?? '' . '</option>';
         endforeach;

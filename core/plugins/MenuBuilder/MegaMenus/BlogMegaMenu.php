@@ -1,20 +1,20 @@
 <?php
 
 
-namespace App\MenuBuilder\MegaMenus;
+namespace Plugins\MenuBuilder\MegaMenus;
 
 
-use App\Blog;
-use App\BlogCategory;
-use App\MenuBuilder\MegaMenuBase;
+use Modules\Blog\Entities\Blog;
+use Plugins\MenuBuilder\MegaMenuBase;
 
 class BlogMegaMenu extends MegaMenuBase
 {
 
     function model(){
-        return 'App\Blog';
+        return 'Modules\Blog\Entities\Blog';
     }
-    function render($ids,$lang)
+
+    function render($ids,$lang, $settings)
     {
         //it will have all html markup for the mega menu
         $ids = explode(',',$ids);
@@ -28,12 +28,15 @@ class BlogMegaMenu extends MegaMenuBase
         foreach ($mega_menu_items as $cat => $posts) {
             $output .= '<div class="col-lg-3 col-md-6">' ."\n";
             $output .= '<div class="xg-mega-menu-single-column-wrap">'."\n";
-            $output .= '<h4 class="mega-menu-title">' . $this->category($cat). '</h4>'."\n";
+//            $output .= '<h4 class="mega-menu-title">' . $this->category($cat). '</h4>'."\n";
             $output .= '<ul>'."\n";
             foreach ($posts as $post) {
-                $output .= '<li><a href="'.route('frontend.blog.single',$post->slug).'">' . $post->title . '</a></li>'."\n";
+//                $output .= '<li><a href="'.route('frontend.blog.single',$post->slug).'">' . $post->title . '</a></li>'."\n";
             }
             $output .= '</ul>'."\n";
+            $output .= '<h3 class="btn btn-success">'."\n";
+            $output .= 'asdasdasdasd'."\n";
+            $output .= '</h3>'."\n";
             $output .= '</div>'."\n";
             $output .= '</div>'."\n";
         }
