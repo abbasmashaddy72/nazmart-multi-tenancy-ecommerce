@@ -7,7 +7,7 @@ namespace Plugins\MenuBuilder;
 abstract class MegaMenuBase
 {
     abstract function name();
-    abstract function render($id,$lang,$settings);
+    abstract function render($id, $lang, $settings);
     abstract function slug();
     abstract function query_type();
     abstract function enable();

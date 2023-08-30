@@ -89,7 +89,7 @@
                                                 </div>
                                             </div>
 
-                                            {!! render_mega_menu_list($page_post->lang) !!}
+                                            {!! render_mega_menu_list('no_lang') !!}
 
                                             <div class="card">
                                                 <div class="card-header" id="static-links">
