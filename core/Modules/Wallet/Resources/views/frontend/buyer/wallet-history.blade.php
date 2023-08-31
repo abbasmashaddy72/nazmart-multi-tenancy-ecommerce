@@ -180,8 +180,11 @@
                                     </div>
 
                                     <div class="form-group single-input d-none manual_transaction_id mt-4">
+                                        @php
+                                            $payment_gateways = \App\Models\PaymentGateway::where(['status' => \App\Enums\StatusEnums::PUBLISH, 'name' => 'manual_payment'])->first();
+                                        @endphp
                                         @if(!empty($payment_gateways))
-                                            <p>{{json_decode($payment_gateways->credentials)->description ?? ''}}</p>
+                                            <p class="alert alert-info">{{json_decode($payment_gateways->credentials)->description ?? ''}}</p>
                                         @endif
 
                                         <input type="text" name="trasaction_id"
