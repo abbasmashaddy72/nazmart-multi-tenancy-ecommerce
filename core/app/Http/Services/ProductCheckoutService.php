@@ -385,6 +385,7 @@ class ProductCheckoutService
             'payment_gateway' => $payment_gateway,
             'status' => 'pending',
             'payment_status' => 'pending',
+            'transaction_id' => $validated_data['manual_trasaction_id'] ?? null,
             'checkout_type' => $validated_data['checkout_type'],
             'payment_track' => Str::random(10) . Str::random(10),
             'order_details' => $cart_data,
