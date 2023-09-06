@@ -179,7 +179,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('Close')}}</button>
-                        <button type="submit" class="btn btn-primary">{{__('Send Request')}}</button>
+                        <button type="submit" class="btn btn-primary" id="login_button">{{__('Send Request')}}</button>
                     </div>
                 </form>
             </div>
@@ -210,7 +210,6 @@
                 }
 
                 $(document).on('keyup paste change', 'input[name="custom_domain"]', function (e) {
-
                     var value = '';
                     if ($(this).val() != '') {
                         value = removeTags($(this).val()).toLowerCase().replace(/\s/g, "-");
@@ -226,7 +225,7 @@
                     msgWrap.append('<span class="text-warning">{{__('availability checking..')}}</span>');
 
                     axios({
-                        url: "{{route('landlord.subdomain.check')}}",
+                        url: "{{route('landlord.subdomain.custom-domain.check')}}",
                         method: 'post',
                         responseType: 'json',
                         data: {

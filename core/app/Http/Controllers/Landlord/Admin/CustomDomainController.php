@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Landlord\Admin;
 
+use App\Helpers\FlashMsg;
 use App\Helpers\ResponseMessage;
 use App\Http\Controllers\Controller;
 use App\Models\CustomDomain;
@@ -16,7 +17,9 @@ use App\Models\PricePlan;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Stancl\Tenancy\Database\Models\Domain;
 
 class CustomDomainController extends Controller
 {
@@ -34,7 +37,7 @@ class CustomDomainController extends Controller
 
     public function all_domain_requests()
     {
-        $domain_infos = CustomDomain::all();
+        $domain_infos = CustomDomain::orderByDesc('id')->get();
         return view(self::ROOT_PATH.'all-requests')->with(['domain_infos' => $domain_infos]);
     }
 
@@ -46,6 +49,13 @@ class CustomDomainController extends Controller
         ]);
 
         $custom_domain = CustomDomain::findOrFail($request->custom_domain_id);
+
+        $custom_domain_exist = DB::table('domains')->where('domain', $custom_domain->custom_domain)->first();
+        if (!empty($custom_domain_exist) && $request->custom_domain_status == 'connected')
+        {
+            return back()->with(FlashMsg::explain('danger',__('This custom domain is occupied by another tenant/shop')));
+        }
+
         $custom_domain->custom_domain_status = $request->custom_domain_status;
         $custom_domain->save();
 
@@ -53,7 +63,7 @@ class CustomDomainController extends Controller
 
         if($request->custom_domain_status == 'connected'){
             if(is_null($custom_domain->tenant)){
-                return redirect()->back()->with(ResponseMessage::delete(__('no tenant found for this custom domain')));
+                return redirect()->back()->with(ResponseMessage::delete(__('No tenant found for this custom domain')));
             }
             $custom_domain->tenant->domains()->update(['domain' => $full_custom_domain]);
         }
