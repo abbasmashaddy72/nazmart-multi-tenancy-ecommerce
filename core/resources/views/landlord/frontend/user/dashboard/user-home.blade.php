@@ -263,6 +263,9 @@
                         </div>
 
                         <div class="form-group single-input d-none manual_transaction_id mt-4">
+                            @php
+                                $payment_gateways = \App\Models\PaymentGateway::where(['status' => \App\Enums\StatusEnums::PUBLISH, 'name' => 'manual_payment'])->first();
+                            @endphp
                             @if(!empty($payment_gateways))
                                 <p class="alert alert-info ">{{json_decode($payment_gateways->credentials)->description ?? ''}}</p>
                             @endif
@@ -301,30 +304,30 @@
                             <div class="row">
                                 <div class="col-6">
                                     <p class="confirm-details--para mt-3">
-                                        <span>Shop Name:</span>
+                                        <span>{{__('Shop Name:')}}</span>
                                         <span class="shop_name">Null</span>
                                     </p>
                                     <p class="confirm-details--para mt-3">
-                                        <span>Package Name:</span>
+                                        <span>{{__('Package Name:')}}</span>
                                         <span class="package_name">Null</span>
                                     </p>
                                     <p class="confirm-details--para mt-3">
-                                        <span>Theme:</span>
+                                        <span>{{__('Theme:')}}</span>
                                         <span class="theme"></span>
                                     </p>
                                 </div>
 
                                 <div class="col-6">
                                     <p class="confirm-details--para mt-3">
-                                        <span>Price:</span>
+                                        <span>{{__('Price:')}}</span>
                                         <span class="price"></span>
                                     </p>
                                     <p class="confirm-details--para mt-3">
-                                        <span>Validity:</span>
+                                        <span>{{__('Validity:')}}</span>
                                         <span class="validity"></span>
                                     </p>
                                     <p class="confirm-details--para mt-3">
-                                        <span>Payment Gateway:</span>
+                                        <span>{{__('Payment Gateway:')}}</span>
                                         <span class="payment_gateway"></span>
                                     </p>
                                 </div>

@@ -65,6 +65,15 @@ class LandlordFrontendController extends Controller
         return response()->json('ok');
     }
 
+    public function subdomain_custom_domain_check(Request $request)
+    {
+        $this->validate($request, [
+            'subdomain' => 'required|unique:tenants,id|unique:domains,domain',
+        ]);
+
+        return response()->json('ok');
+    }
+
     /* -------------------------
         TENANT EMAIL VERIFY
     -------------------------- */

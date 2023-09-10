@@ -14,6 +14,7 @@ Route::middleware(['landlord_glvar','maintenance_mode'])->group(function (){
 Route::middleware(['landlord_glvar','maintenance_mode','set_lang'])->controller(LandlordFrontendController::class)->group(function (){
     Route::get('/', 'homepage')->name('landlord.homepage');
     Route::post('/subdomain-check',  'subdomain_check')->name('landlord.subdomain.check');
+    Route::post('/custom-domain-check',  'subdomain_custom_domain_check')->name('landlord.subdomain.custom-domain.check');
     Route::get('/verify-email','verify_user_email')->name('tenant.email.verify');
     Route::post('/verify-email','check_verify_user_email');
     Route::get('/resend-verify-email','resend_verify_user_email')->name('tenant.email.verify.resend');

@@ -105,6 +105,7 @@ Route::middleware([
     Route::controller(\App\Http\Controllers\Tenant\Admin\CustomDomainController::class)->prefix('custom-domain')->middleware(\App\Http\Middleware\Tenant\TenantCheckPermission::class)->group(function () {
         Route::get('/custom-domain-request', 'custom_domain_request')->name('admin.custom.domain.requests');
         Route::post('/custom-domain-request', 'custom_domain_request_change');
+        Route::post('/custom-domain-check',  'subdomain_custom_domain_check')->name('admin.custom.domain.check');
     });
 
     /*----------------------------------------------------------------------------------------------------------------------------

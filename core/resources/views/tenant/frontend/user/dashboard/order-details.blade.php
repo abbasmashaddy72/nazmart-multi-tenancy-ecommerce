@@ -32,6 +32,9 @@
                             @endphp
                             <span class="order-btn-custom status {{$status_color}}">{{__('Status:')}} {{ __($order->status) }}</span>
                             <span class="order-btn-custom status {{$payment_status_color}}">{{__('Payment:')}} {{ __($order->payment_status) }}</span>
+                            @if($order->transaction_id)
+                                <span class="order-btn-custom status">{{__('Transaction ID').': '.$order->transaction_id}}</span>
+                            @endif
                         </div>
                     </td>
                 </tr>
@@ -115,12 +118,21 @@
                     </div>
                 </li>
                 <li class="single-order-summery">
+                    @php
+                        $coupon = [];
+                        $coupon_amount = '';
+                        if ($order->coupon)
+                        {
+                            $coupon = \Modules\CouponManage\Entities\ProductCoupon::where('code', $order->coupon)->first();
+                            $coupon_amount = $coupon->discount_type == 'percentage' ? $coupon->discount.'%' : amount_with_currency_symbol($coupon->discount);
+                        }
+                    @endphp
                     <div class="content">
                                     <span class="subject text-deep">
                                         {{__("coupon discount")}}
                                     </span>
                         <span class="object">
-                                        -{{ amount_with_currency_symbol($order_meta->coupon_amount ?? 0) }}
+                                        {{ $coupon ? '-'.$coupon_amount : 0 }}
                                     </span>
                     </div>
                 </li>
@@ -160,7 +172,7 @@
                                         {{__("payment method")}}
                                     </span>
                         <span class="object">
-                                        {{ __($order->payment_gateway) ?? __("cash on delivery") }}
+                                        {{ __(str_replace('_',' ',$order->payment_gateway)) ?? __("cash on delivery") }}
                                     </span>
                     </div>
                 </li>

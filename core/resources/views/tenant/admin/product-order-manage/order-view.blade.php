@@ -39,6 +39,10 @@
                                         <div class="btn-wrapper">
                                             <span class="order-btn-custom status">{{__('Order Status').': '.__($order->status)}}</span>
                                             <span class="order-btn-custom status">{{__('Payment Status').': '.__($order->payment_status)}}</span>
+
+                                            @if($order->transaction_id)
+                                                <span class="order-btn-custom status">{{__('Transaction ID').': '.$order->transaction_id}}</span>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
@@ -128,12 +132,21 @@
                                     </div>
                                 </li>
                                 <li class="single-order-summery">
+                                    @php
+                                        $coupon = [];
+                                        $coupon_amount = '';
+                                        if ($order->coupon)
+                                        {
+                                            $coupon = \Modules\CouponManage\Entities\ProductCoupon::where('code', $order->coupon)->first();
+                                            $coupon_amount = $coupon->discount_type == 'percentage' ? $coupon->discount.'%' : amount_with_currency_symbol($coupon->discount);
+                                        }
+                                    @endphp
                                     <div class="content">
                                     <span class="subject text-deep">
                                         {{__("coupon discount")}}
                                     </span>
                                         <span class="object">
-                                        -{{ amount_with_currency_symbol($order_meta->coupon_amount ?? 0) }}
+                                        {{ $coupon ? '-'.$coupon_amount : '' }}
                                     </span>
                                     </div>
                                 </li>

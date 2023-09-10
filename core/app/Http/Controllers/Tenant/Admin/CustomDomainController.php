@@ -32,7 +32,7 @@ class CustomDomainController extends Controller
 
     public function custom_domain_request(){
         $user_domain_infos = tenant()->user()->first();
-        $custom_domain_info = CustomDomain::where('user_id',$user_domain_infos->id)->first();
+        $custom_domain_info = CustomDomain::where(['user_id' => $user_domain_infos->id, 'old_domain' => \tenant()->id])->first();
 
         return view(self::ROOT_PATH.'custom-domain')->with(['user_domain_infos' => $user_domain_infos, 'custom_domain_info'=>$custom_domain_info]);
     }
@@ -65,5 +65,24 @@ class CustomDomainController extends Controller
 
     }
 
+    public function subdomain_custom_domain_check(Request $request)
+    {
+        $this->validate($request, [
+            'subdomain' => 'required',
+        ]);
 
+        $exist = CustomDomain::where(['custom_domain' => $request->subdomain, 'custom_domain_status' => 'connected'])->first();
+        if (!empty($exist))
+        {
+            return response()->json([
+                'type' => 'error',
+                'msg' => __('The subdomain has already been taken.')
+            ]);
+        }
+
+        return response()->json([
+            'type' => 'success',
+            'msg' => __('The subdomain is available.')
+        ]);
+    }
 }

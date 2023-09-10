@@ -15,6 +15,7 @@
 @section('page-title')
     {{__('Payment Success For:')}} {{$payment_details->name}}
 @endsection
+
 @section('content')
     <style>
         .billing-details li{
@@ -22,6 +23,18 @@
         }
         .vat-tax{
             font-size: 10px;
+        }
+        .download-invoice{
+            display: flex;
+            justify-content: space-between;
+        }
+        .download-invoice a{
+            font-size: 20px;
+            padding: 3px;
+        }
+        .download-invoice a:hover{
+            background: #0d6efd;
+            color: #ffffff;
         }
     </style>
 
@@ -48,14 +61,23 @@
                                     @endif
 
                                     @if(!empty($payment_details->coupon))
-                                        <li><strong>{{__('Paid Amount After Discount :')}}</strong> {{ amount_with_currency_symbol(optional($payment_details->package)->price) }}</li>
+                                        <li><strong>{{__('Payable After Discount :')}}</strong> {{ amount_with_currency_symbol($payment_details->total_amount) }}</li>
                                     @endif
 
                                     <li><strong>{{__('Payment Status:')}}</strong> {{$payment_details->payment_status}}</li>
+
                                     @if($payment_details->transaction_id)
                                         <li><strong>{{__('Transaction ID:')}}</strong> {{$payment_details->transaction_id}}</li>
                                     @endif
+
                                     <li><strong>{{__('Order Status:')}}</strong> {{$payment_details->status}}</li>
+
+{{--                                    <li class="download-invoice">--}}
+{{--                                        <strong>{{__('Invoice')}}</strong>--}}
+{{--                                        <a href="">--}}
+{{--                                            <i class="las la-file-invoice"></i>--}}
+{{--                                        </a>--}}
+{{--                                    </li>--}}
                                 </ul>
                             </div>
                             <div class="billing-items">
@@ -124,6 +146,13 @@
                                                     <td class="font-weight-bold">{{__('Shipping:')}}</td>
                                                     <td>{{amount_with_currency_symbol(json_decode($payment_details->payment_meta)?->shipping_cost)}}</td>
                                                 </tr>
+                                                @if($payment_details->coupon)
+                                                    <tr>
+                                                        <td></td>
+                                                        <td class="font-weight-bold">{{__('Discount:')}}</td>
+                                                        <td>{{$payment_details->coupon_discounted.'%'}}</td>
+                                                    </tr>
+                                                @endif
                                                 <tr>
                                                     <td></td>
                                                     <td class="font-weight-bold">{{__('Subtotal:')}}</td>

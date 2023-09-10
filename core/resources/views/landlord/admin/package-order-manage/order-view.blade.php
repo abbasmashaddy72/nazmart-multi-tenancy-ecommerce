@@ -89,6 +89,16 @@
                                                 $attachments = 'assets/landlord/uploads/payment_attachments/'.$order->attachments;
                                             @endphp
 
+                                            @if($order->transaction_id)
+                                                    <div class="parent d-flex justify-content-start">
+                                                        <strong class="text-dark ">{{__('Transaction ID :')}}</strong>
+                                                        <span class="text-primary mx-2">
+                                                        <p>{{$order->transaction_id}}</p>
+                                                    </span><br><br>
+                                                    </div>
+                                            @endif
+
+
                                             @if(!is_dir($attachments) && file_exists($attachments))
                                                 <div class="parent d-flex justify-content-start">
                                                     <strong class="text-dark ">{{__('Attachment :')}}</strong>
