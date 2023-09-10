@@ -25,16 +25,23 @@
                             </div>
                             <button type="button" class="btn btn-xs mb-4 btn-outline-dark checked_all">{{__('Check All')}}</button>
                             <div class="row checkbox-wrapper">
-                                @foreach($permissions as $permission)
-                                    <div class="col-lg-2 col-md-2">
-                                        <div class="form-group">
-                                            <label ><strong>{{__(ucfirst(str_replace('-',' ',$permission->name)))}}</strong></label>
-                                            <label class="switch role">
-                                                <input type="checkbox" name="permission[]" @if(in_array($permission->id,$rolePermissions)) checked @endif value="{{$permission->id}}" >
-                                                <span class="slider onff"></span>
-                                            </label>
-                                        </div>
+                                @foreach($permissions ?? [] as $index => $permission)
+                                    <div class="permission-prefix mt-4">
+                                        <h4 class="text-capitalize">{{$index}}</h4>
+                                        <hr>
                                     </div>
+
+                                    @foreach($permission ?? [] as $perm)
+                                        <div class="col-lg-2 col-md-2">
+                                            <div class="form-group">
+                                                <label ><strong>{{__(ucfirst(str_replace('-',' ',$perm->name)))}}</strong></label>
+                                                <label class="switch role">
+                                                    <input type="checkbox" name="permission[]" @if(in_array($perm->id, $rolePermissions)) checked @endif value="{{$perm->id}}" >
+                                                    <span class="slider onff"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 @endforeach
                             </div>
                             <button type="submit" class="btn btn-primary mt-4 pr-4 pl-4">{{__('Update')}}</button>

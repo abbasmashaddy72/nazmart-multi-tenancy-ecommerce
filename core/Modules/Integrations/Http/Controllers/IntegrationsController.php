@@ -12,6 +12,12 @@ use Modules\PluginManage\Http\Helpers\PluginManageHelpers;
 
 class IntegrationsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:admin');
+        $this->middleware('permission:integration',['only' => ['index','store','activate']]);
+    }
+
     /**
      * Display a listing of the resource.
      * @return Renderable

@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        update_static_option_central('get_script_version','1.2.0');
+        update_static_option_central('get_script_version', '1.2.0');
 
 //        $payment_gateway_markup = [
 //            [
@@ -281,98 +281,148 @@ class DatabaseSeeder extends Seeder
 //            PaymentGateway::create($payment_gate);
 //        }
 //
-//        $permissions = [
-//           'page-list',
-//           'page-create',
-//           'page-edit',
-//           'page-delete',
-//
-//           'price-plan-list',
-//           'price-plan-create',
-//           'price-plan-edit',
-//           'price-plan-delete',
-//
-//          'package-order-all-order',
-//          'package-order-pending-order',
-//          'package-order-progress-order',
-//          'package-order-complete-order',
-//          'package-order-success-order-page',
-//          'package-order-cancel-order-page',
-//          'package-order-order-page-manage',
-//          'package-order-order-report',
-//          'package-order-payment-logs',
-//          'package-order-payment-report',
-//
-//          'testimonial-list',
-//          'testimonial-create',
-//          'testimonial-edit',
-//          'testimonial-delete',
-//
-//            'brand-list',
-//            'brand-create',
-//            'brand-edit',
-//            'brand-delete',
-//
-//            'blog-category-list',
-//            'blog-category-create',
-//            'blog-category-edit',
-//            'blog-category-delete',
-//
-//            'blog-list',
-//            'blog-create',
-//            'blog-edit',
-//            'blog-delete',
-//
-//            'form-builder',
-//            'widget-builder',
-//
-//            'general-settings-page-settings',
-//            'general-settings-global-navbar-settings',
-//            'general-settings-global-footer-settings',
-//            'general-settings-site-identity',
-//            'general-settings-basic-settings',
-//            'general-settings-color-settings',
-//            'general-settings-typography-settings',
-//            'general-settings-seo-settings',
-//            'general-settings-payment-settings',
-//            'general-settings-third-party-script-settings',
-//            'general-settings-smtp-settings',
-//            'general-settings-custom-css-settings',
-//            'general-settings-custom-js-settings',
-//            'general-settings-database-upgrade-settings',
-//            'general-settings-cache-clear-settings',
-//            'general-settings-license-settings',
-//
-//            'language-list',
-//            'language-create',
-//            'language-edit',
-//            'language-delete',
-//        ];
-//
-//        foreach ($permissions as $permission){
-//            \Spatie\Permission\Models\Permission::where(['name' => $permission])->delete();
-//            \Spatie\Permission\Models\Permission::create(['name' => $permission,'guard_name' => 'admin']);
-//        }
+        $permissions = [
+            'page-list',
+            'page-create',
+            'page-edit',
+            'page-delete',
+
+            'price-plan-list',
+            'price-plan-create',
+            'price-plan-edit',
+            'price-plan-delete',
+
+            'package-order-all-order',
+            'package-order-pending-order',
+            'package-order-progress-order',
+            'package-order-complete-order',
+            'package-order-success-order-page',
+            'package-order-cancel-order-page',
+            'package-order-order-page-manage',
+            'package-order-order-report',
+            'package-order-payment-logs',
+            'package-order-payment-report',
+
+            'testimonial-list',
+            'testimonial-create',
+            'testimonial-edit',
+            'testimonial-delete',
+
+            'brand-list',
+            'brand-create',
+            'brand-edit',
+            'brand-delete',
+
+            'blog-category-list',
+            'blog-category-create',
+            'blog-category-edit',
+            'blog-category-delete',
+
+            'blog-list',
+            'blog-create',
+            'blog-edit',
+            'blog-delete',
+
+            'theme-list',
+            'theme-edit',
+            'theme-settings',
+
+            'wallet-list',
+            'wallet-history',
+
+            'custom-domain-all',
+            'custom-domain-pending',
+            'custom-domain-settings',
+
+            'newsletter-list',
+            'newsletter-create',
+            'newsletter-edit',
+            'newsletter-delete',
+            '404-settings',
+
+            'users-list',
+            'users-shop',
+            'users-create',
+            'users-activity',
+            'users-settings',
+            'users-failed-shop',
+            'users-website-issues',
+
+            'form-builder',
+            'widget-builder',
+            'highlight-settings',
+            'breadcrumb-settings',
+            'menu-manage',
+
+            'integration',
+            'webhook',
+            'plugin-manage',
+
+            'general-settings-page-settings',
+            'general-settings-global-navbar-settings',
+            'general-settings-global-footer-settings',
+            'general-settings-site-identity',
+            'general-settings-basic-settings',
+            'general-settings-color-settings',
+            'general-settings-typography-settings',
+            'general-settings-seo-settings',
+            'general-settings-payment-settings',
+            'general-settings-third-party-script-settings',
+            'general-settings-smtp-settings',
+            'general-settings-custom-css-settings',
+            'general-settings-custom-js-settings',
+            'general-settings-database-upgrade-settings',
+            'general-settings-cache-clear-settings',
+            'general-settings-license-settings',
+
+            'language-list',
+            'language-create',
+            'language-edit',
+            'language-delete',
+
+            'payment-settings-currency',
+            'payment-settings-paypal',
+            'payment-settings-paytm',
+            'payment-settings-stripe',
+            'payment-settings-razorpay',
+            'payment-settings-paystack',
+            'payment-settings-mollie',
+            'payment-settings-midtrans',
+            'payment-settings-cashfree',
+            'payment-settings-instamojo',
+            'payment-settings-marcadopago',
+            'payment-settings-zitopay',
+            'payment-settings-squareup',
+            'payment-settings-cinetpay',
+            'payment-settings-paytabs',
+            'payment-settings-billplz',
+            'payment-settings-toyyibpay',
+            'payment-settings-flutterwave',
+            'payment-settings-payfast',
+            'payment-settings-manual_payment'
+        ];
+
+        foreach ($permissions as $permission) {
+            \Spatie\Permission\Models\Permission::where(['name' => $permission])->delete();
+            \Spatie\Permission\Models\Permission::create(['name' => $permission, 'guard_name' => 'admin']);
+        }
 
 //        $this->call([
 //            ThemeModifySeeder::class
 //        ]);
 
-        if (!tenant())
-        {
-            $widgets = Widgets::all();
-            foreach ($widgets as $widget)
-            {
-                $widget->widget_content = $this->format_widget_content($widget->widget_content);
-                $widget->save();
-            }
-        }
+//        if (!tenant()) {
+//            $widgets = Widgets::all();
+//            foreach ($widgets as $widget) {
+//                $widget->widget_content = $this->format_widget_content($widget->widget_content);
+//                $widget->save();
+//            }
+//        }
     }
 
     private function format_widget_content($data)
     {
-        if (!$this->check_json($data))
-        {
+        if (!$this->check_json($data)) {
             $unserialized = unserialize($data);
             return json_encode($unserialized);
         }

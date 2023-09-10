@@ -21,7 +21,7 @@
                     "route": "tenant.admin.woocommerce",
                     "parent": null,
                     "icon": "mdi mdi-wordpress",
-                    "permission": "woocommerce",
+                    "permissions": "woocommerce",
                     "class": "plugin-menu"
                 },
                 {

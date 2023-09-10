@@ -12,6 +12,12 @@ use Modules\PluginManage\Http\Helpers\PluginManageHelpers;
 
 class PluginManageController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:admin');
+        $this->middleware('permission:plugin-manage',['only' => ['index','add_new','store_plugin','delete_plugin','change_status']]);
+    }
+
     /**
      * Display a listing of the resource.
      * @return Renderable

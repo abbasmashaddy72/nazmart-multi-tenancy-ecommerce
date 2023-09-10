@@ -57,8 +57,8 @@ class AdminRoleManageController extends Controller
         $adminRole = $admin->roles->pluck('name','name')->all();
         return view(self::BASE_PATH.'edit-user',compact('roles','adminRole','admin'));
     }
-    public function user_update(Request $request){
-
+    public function user_update(Request $request)
+    {
         $this->validate($request,[
             'name' => 'required|string|max:191',
             'email' => 'required|email|max:191',
@@ -81,10 +81,12 @@ class AdminRoleManageController extends Controller
 
         return redirect()->back()->with(['msg' => __('Admin Details Updated'),'type' =>'success' ]);
     }
-    public function new_user_delete(Request $request,$id){
+
+    public function new_user_delete(Request $request, $id){
         Admin::findOrFail($id)->delete();
         return redirect()->back()->with(['msg' => __('Admin Deleted'),'type' =>'danger' ]);
     }
+
     public function user_password_change(Request $request){
         $this->validate($request, [
             'password' => 'required|string|min:8|confirmed'
@@ -92,8 +94,8 @@ class AdminRoleManageController extends Controller
         $user = Admin::findOrFail($request->ch_user_id);
         $user->password = Hash::make($request->password);
         $user->save();
-        return redirect()->back()->with(['msg'=> __('Password Change Success..'),'type'=> 'success']);
 
+        return redirect()->back()->with(['msg'=> __('Password Change Success..'),'type'=> 'success']);
     }
 
     // ============================================== Admin Role Codes ==========================================
@@ -114,15 +116,21 @@ class AdminRoleManageController extends Controller
         ]);
         $role = Role::create(['name' => SanitizeInput::esc_html($request->name),'guard_name' => 'admin']);
         $role->syncPermissions($request->permission);
+
         return redirect()->back()->with(['msg'=> __('New Role Created..'),'type'=> 'success']);
     }
 
     public function edit_admin_role($id){
         $role = Role::find($id);
-        $permissions = Permission::get();
+        $permissions = Permission::select(DB::raw('LEFT(name, LOCATE("-", name) - 1) as prefix, name, id'))
+                        ->orderBy('name')
+                        ->get()
+                        ->groupBy('prefix');
+
         $rolePermissions = DB::table("role_has_permissions")->where("role_has_permissions.role_id",$id)
             ->pluck('role_has_permissions.permission_id','role_has_permissions.permission_id')
             ->all();
+
         return view(self::BASE_PATH.'role.edit',compact('role','permissions','rolePermissions'));
     }
 
