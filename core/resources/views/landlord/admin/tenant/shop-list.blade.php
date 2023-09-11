@@ -66,7 +66,9 @@
 
                                 <td>
                                     <a class="badge rounded bg-primary px-4" href="{{$url}}" target="_blank">{{$tenant->id . '.'. env('CENTRAL_DOMAIN')}}</a>
-                                    <a class="badge rounded bg-danger px-4" href="{{$url.'/token-login/'.$hash_token}}" target="_blank">{{__('Login as Super Admin')}}</a>
+                                    @can('users-direct-login')
+                                        <a class="badge rounded bg-danger px-4" href="{{$url.'/token-login/'.$hash_token}}" target="_blank">{{__('Login as Super Admin')}}</a>
+                                    @endcan
                                 </td>
                                 <td>
                                     <x-delete-popover permissions="domain-delete" url="{{route(route_prefix().'admin.tenant.domain.delete', $tenant->id)}}"/>

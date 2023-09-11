@@ -89,13 +89,15 @@
                                        </div>
                                    @endif
 
-                                   @php
-                                       $local_url = env('CENTRAL_DOMAIN');
-                                       $url = tenant_url_with_protocol($local_url);
-                                       $hash_token = hash_hmac('sha512',$user->username,$user->id);
-                                   @endphp
+                                   @can('users-direct-login')
+                                       @php
+                                           $local_url = env('CENTRAL_DOMAIN');
+                                           $url = tenant_url_with_protocol($local_url);
+                                           $hash_token = hash_hmac('sha512',$user->username,$user->id);
+                                       @endphp
 
-                                   <a class="btn btn-info btn-sm mb-3 mr-1 " href="{{$url.'/token-login/'.$hash_token.'?user_id='.$user->id.''}}" target="_blank" style="text-decoration: none">{{__('Login to User Account')}}</a>
+                                       <a class="btn btn-info btn-sm mb-3 mr-1 " href="{{$url.'/token-login/'.$hash_token.'?user_id='.$user->id.''}}" target="_blank" style="text-decoration: none">{{__('Login to User Account')}}</a>
+                                   @endcan
 
                                    <x-link-with-popover url="{{route('landlord.admin.tenant.details',$user->id)}}" class="dark">
                                        {{__('View Details')}}

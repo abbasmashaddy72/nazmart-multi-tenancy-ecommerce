@@ -387,7 +387,7 @@ class ModuleMetaData
                 }
                 $menuItem = $this->getAdminMenuSettings($adminSettings);
                 if (!empty((array)$menuItem)) {
-                    if (tenant() && property_exists(current($menuItem), "permission") && !empty(current($menuItem)->permission)) {
+                    if (tenant() && property_exists(current($menuItem), "permissions") && !empty(current($menuItem)->permissions)) {
                         if (!tenant_plan_sidebar_permission('woocommerce')) {
                             continue;
                         }
