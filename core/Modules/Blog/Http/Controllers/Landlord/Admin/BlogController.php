@@ -120,10 +120,11 @@ class BlogController extends Controller
         if(tenant()) {
             $blog_count = Blog::count();
             $blog_limit = tenant()?->payment_log?->package?->blog_permission_feature;
+            $blog_limit = $blog_limit == -1 ? $blog_count + 1 : $blog_count;
 
             if ($blog_count >= $blog_limit)
             {
-                return back()->with(FlashMsg::explain('danger','You can not upload more blogs due to your blog upload limit!'));
+                return back()->with(FlashMsg::explain('danger',__('You can not upload more blogs due to your blog upload limit!')));
             }
         }
 
