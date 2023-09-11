@@ -37,8 +37,11 @@
                                     </td>
                                     <td>
                                         <div class="btn-wrapper">
+                                            @php
+                                                $refund_status = \Modules\RefundModule\Entities\RefundProduct::where(['status' => 1, 'order_id' => $order->id, 'user_id' => $order->user_id])->exists();
+                                            @endphp
                                             <span class="order-btn-custom status">{{__('Order Status').': '.__($order->status)}}</span>
-                                            <span class="order-btn-custom status">{{__('Payment Status').': '.__($order->payment_status)}}</span>
+                                            <span class="order-btn-custom status">{{__('Payment Status').': '.($refund_status ? __('Refunded') : __($order->payment_status))}}</span>
 
                                             @if($order->transaction_id)
                                                 <span class="order-btn-custom status">{{__('Transaction ID').': '.$order->transaction_id}}</span>

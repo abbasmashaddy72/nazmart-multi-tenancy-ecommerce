@@ -17,7 +17,7 @@ class RefundModuleController extends Controller
      */
     public function index()
     {
-        $refund_list = RefundProduct::paginate(10);
+        $refund_list = RefundProduct::where('user_id', auth('web')->id())->paginate(10);
         return view('tenant.frontend.user.dashboard.refund.refund-list', compact('refund_list'));
     }
 
