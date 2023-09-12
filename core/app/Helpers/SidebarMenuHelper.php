@@ -930,8 +930,8 @@ class SidebarMenuHelper
             $this->tenant_badge_settings_menus($menu_instance);
         }
 
-//        $this->tenant_country_settings_menus($menu_instance);
-//        $this->tenant_tax_settings_menus($menu_instance);
+        $this->tenant_country_settings_menus($menu_instance);
+        $this->tenant_tax_settings_menus($menu_instance);
 
         $this->tenant_shipping_settings_menus($menu_instance);
 
@@ -1267,7 +1267,8 @@ class SidebarMenuHelper
             'parent' => null,
             'permissions' => [
                 'country-list', 'country-create', 'country-edit', 'country-delete',
-                'state-list', 'state-create', 'state-edit', 'state-delete'
+                'state-list', 'state-create', 'state-edit', 'state-delete',
+                'city-list', 'city-create', 'city-edit', 'city-delete',
             ],
             'icon' => 'mdi mdi-map',
         ]);
@@ -1285,11 +1286,18 @@ class SidebarMenuHelper
             'parent' => 'country-settings-menu-items',
             'permissions' => ['state-list'],
         ]);
+
+        $menu_instance->add_menu_item('city-all-settings-menu-items', [
+            'route' => 'tenant.admin.city.all',
+            'label' => __('City Manage'),
+            'parent' => 'country-settings-menu-items',
+            'permissions' => ['city-list'],
+        ]);
     }
 
     private function tenant_tax_settings_menus(MenuWithPermission $menu_instance): void
     {
-        $menu_instance->add_menu_item('tax-settings-menu-items', [
+        $menu_instance->add_menu_item('tax-manage-menu-items', [
             'route' => '#',
             'label' => __('Tax Manage'),
             'parent' => null,
@@ -1303,15 +1311,22 @@ class SidebarMenuHelper
         $menu_instance->add_menu_item('tax-country-settings-menu-items', [
             'route' => 'tenant.admin.tax.country.all',
             'label' => __('Country Tax Manage'),
-            'parent' => 'tax-settings-menu-items',
+            'parent' => 'tax-manage-menu-items',
             'permissions' => ['country-tax-list'],
         ]);
 
         $menu_instance->add_menu_item('tax-state-settings-menu-items', [
             'route' => 'tenant.admin.tax.state.all',
             'label' => __('State Tax Manage'),
-            'parent' => 'tax-settings-menu-items',
+            'parent' => 'tax-manage-menu-items',
             'permissions' => ['state-tax-list'],
+        ]);
+
+        $menu_instance->add_menu_item('tax-settings-menu-items', [
+            'route' => 'tenant.admin.tax-module.settings',
+            'label' => __('Tax Settings'),
+            'parent' => 'tax-manage-menu-items',
+            'permissions' => ['tax-settings'],
         ]);
     }
 

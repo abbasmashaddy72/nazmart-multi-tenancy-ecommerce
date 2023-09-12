@@ -2,20 +2,15 @@
 
 namespace Modules\RefundModule\Http\Controllers;
 
-use App\Events\SupportMessage;
 use App\Helpers\FlashMsg;
 use App\Helpers\SanitizeInput;
 use App\Mail\BasicMail;
-use App\Models\SupportTicket;
-use App\Models\SupportTicketMessage;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Modules\RefundModule\Entities\RefundChat;
 use Modules\RefundModule\Entities\RefundChatMessage;
-use function GuzzleHttp\Promise\all;
 
 class RefundChatController extends Controller
 {

@@ -8,38 +8,116 @@
     $order_meta = json_decode($order->payment_meta);
 @endphp
 
+
 @section('section')
     <link rel="stylesheet" href="{{global_asset('assets/common/css/select2.min.css')}}">
+    <style>
+        .order-wrapper {
+            padding: 30px;
+        }
+        .order-wrapper-flex {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .order-status-wrap .order-wrapper .btn-wrapper .order-btn-custom {
+            display: inline-block;
+            font-weight: 600;
+            background-color: var(--form-bg-color);
+            color: #999999;
+            padding: 7px 26px 9px;
+            border-radius: 30px;
+            text-transform: capitalize;
+        }
+        .order-status-wrap .order-wrapper .btn-wrapper .order-btn-custom.status {
+            background-color: #00B106;
+            color: #fff;
+        }
+
+        .order-status-wrap .order-status-inner .order-number {
+            font-family: var(--heading-color);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--heading-color);
+            display: block;
+            text-transform: capitalize;
+        }
+        .order-status-wrap .order-status-inner .price {
+            font-family: var(--heading-color);
+            font-size: 30px;
+            font-weight: 500;
+            color: var(--main-color-one);
+            display: block;
+            line-height: 44px;
+            margin-top: 10px;
+        }
+        .order-status-wrap .order-status-inner .date,
+        .order-status-wrap .order-status-inner .time {
+            display: block;
+            color: #999999;
+        }
+    </style>
 
         <!-- Order status start-->
         <div class="order-status-wrap order-details-page">
-            <table class="order-status-inner">
-                <tbody>
-                <tr class="complete">
-                    <td>
-                        <span class="order-number"> {{__("order")}} #{{ $order->id }}</span>
-                        <span class="price">{{ amount_with_currency_symbol($order->total_amount) }}</span>
-                    </td>
-                    <td>
-                        <span class="date">{{ $order->created_at?->format("M d, Y") }}</span>
-                        <span class="time">{{ $order->created_at?->format("h:i A") }}</span>
-                    </td>
-                    <td>
-                        <div class="btn-wrapper">
-                            @php
-                                $status_color = $order->status == 'pending' ? 'bg-warning' : 'bg-success';
-                                $payment_status_color = $order->payment_status == 'pending' ? 'bg-warning' : 'bg-success';
-                            @endphp
-                            <span class="order-btn-custom status {{$status_color}}">{{__('Status:')}} {{ __($order->status) }}</span>
-                            <span class="order-btn-custom status {{$payment_status_color}}">{{__('Payment:')}} {{ __($order->payment_status) }}</span>
-                            @if($order->transaction_id)
-                                <span class="order-btn-custom status">{{__('Transaction ID').': '.$order->transaction_id}}</span>
-                            @endif
+            <div class="complete order-wrapper">
+                <div class="order-wrapper-flex">
+                    <div class="order-wrap-single">
+                        <div class="order-status-inner">
+                            <span class="order-number"> {{__("order")}} #{{ $order->id }}</span>
+                            <span class="price">{{ amount_with_currency_symbol($order->total_amount) }}</span>
                         </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                    </div>
+                    <div class="order-wrap-single">
+                        <div class="order-status-inner">
+                            <span class="date">{{ $order->created_at?->format("M d, Y") }}</span>
+                            <span class="time">{{ $order->created_at?->format("h:i A") }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-wrapper d-flex flex-wrap justify-content-end gap-2 mt-3">
+                    @php
+                        $status_color = $order->status == 'pending' ? 'bg-warning' : 'bg-success';
+                        $payment_status_color = $order->payment_status == 'pending' ? 'bg-warning' : 'bg-success';
+                    @endphp
+                    <span class="order-btn-custom status {{$status_color}}">{{__('Status:')}} {{ __($order->status) }}</span>
+                    <span class="order-btn-custom status {{$payment_status_color}}">{{__('Payment:')}} {{ __($order->payment_status) }}</span>
+                    @if($order->transaction_id)
+                        <span class="order-btn-custom status">{{__('Transaction ID').': '.$order->transaction_id}}</span>
+                    @endif
+                </div>
+            </div>
+
+
+
+
+{{--            <table class="order-status-inner">--}}
+{{--                <tbody>--}}
+{{--                <tr class="complete">--}}
+{{--                    <td>--}}
+{{--                        <span class="order-number"> {{__("order")}} #{{ $order->id }}</span>--}}
+{{--                        <span class="price">{{ amount_with_currency_symbol($order->total_amount) }}</span>--}}
+{{--                    </td>--}}
+{{--                    <td>--}}
+{{--                        <span class="date">{{ $order->created_at?->format("M d, Y") }}</span>--}}
+{{--                        <span class="time">{{ $order->created_at?->format("h:i A") }}</span>--}}
+{{--                    </td>--}}
+{{--                    <td>--}}
+{{--                        <div class="btn-wrapper">--}}
+{{--                            @php--}}
+{{--                                $status_color = $order->status == 'pending' ? 'bg-warning' : 'bg-success';--}}
+{{--                                $payment_status_color = $order->payment_status == 'pending' ? 'bg-warning' : 'bg-success';--}}
+{{--                            @endphp--}}
+{{--                            <span class="order-btn-custom status {{$status_color}}">{{__('Status:')}} {{ __($order->status) }}</span>--}}
+{{--                            <span class="order-btn-custom status {{$payment_status_color}}">{{__('Payment:')}} {{ __($order->payment_status) }}</span>--}}
+{{--                            @if($order->transaction_id)--}}
+{{--                                <span class="order-btn-custom status">{{__('Transaction ID').': '.$order->transaction_id}}</span>--}}
+{{--                            @endif--}}
+{{--                        </div>--}}
+{{--                    </td>--}}
+{{--                </tr>--}}
+{{--                </tbody>--}}
+{{--            </table>--}}
         </div>
         <!-- Order status end-->
 

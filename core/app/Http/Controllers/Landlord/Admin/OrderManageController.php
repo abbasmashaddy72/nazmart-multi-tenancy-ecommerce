@@ -15,11 +15,13 @@ use App\Models\Tenant;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Elibyy\TCPDF\Facades\TCPDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use LaravelDaily\Invoices\Classes\InvoiceItem;
 use LaravelDaily\Invoices\Classes\Party;
 use LaravelDaily\Invoices\Invoice;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 
 class OrderManageController extends Controller
 {
@@ -355,11 +357,9 @@ class OrderManageController extends Controller
 
     public function generate_package_invoice_rtl(Request $request)
     {
-//        $payment_details = PaymentLogs::findOrFail($request->id);
-        $payment_details = PaymentLogs::findOrFail(239);
+        $payment_details = PaymentLogs::findOrFail($request->id);
         $invoice = $this->invoice_design($payment_details);
-
-        return view('invoices::templates.landlord-rtl', compact('invoice'));
+        return view('invoices::templates.landlord', compact('invoice'));
     }
 
     private function invoice_design($payment_details)

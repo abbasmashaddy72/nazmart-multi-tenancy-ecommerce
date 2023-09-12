@@ -137,8 +137,8 @@ class ProductCheckoutService
                     'name' => $user->name,
                     'email' => $user->email,
                     'mobile' => ($user->mobile ?? $validated_data['phone']) ?? 0,
-                    'country' => null,
-                    'state' => null,
+                    'country' => $validated_data['country'] ?? null,
+                    'state' => $validated_data['state'] ?? null,
                     'city' => $user->city,
                     'address' => $user->address
                 ];

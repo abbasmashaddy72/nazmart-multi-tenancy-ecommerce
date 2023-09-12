@@ -170,6 +170,8 @@ class GeneralSettingsController extends Controller
             'site_smtp_encryption' => 'required|string',
             'site_smtp_driver' => 'required|string',
         ]);
+        $fields['tenant_site_global_email'] = $fields['site_global_email'];
+        unset($fields['site_global_email']);
 
         foreach ($fields as $field_name => $rule){
             update_static_option($field_name, $rule);

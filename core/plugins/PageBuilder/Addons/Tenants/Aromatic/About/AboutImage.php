@@ -20,7 +20,6 @@ use Plugins\PageBuilder\PageBuilderBase;
 
 class AboutImage extends PageBuilderBase
 {
-
     public function preview_image()
     {
         return 'Landlord/common/brand.png';

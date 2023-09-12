@@ -129,7 +129,7 @@
                                                 }
                                             @endphp
                                             <td class="{{$payment_status_color}}">{{$data->payment_status}}</td>
-                                            <td>{{$data->payment_gateway}}</td>
+                                            <td>{{str_replace('_',' ',$data->payment_gateway)}}</td>
                                             <td>{{$data->created_at->diffForHumans()}}</td>
                                         </tr>
                                     @endforeach

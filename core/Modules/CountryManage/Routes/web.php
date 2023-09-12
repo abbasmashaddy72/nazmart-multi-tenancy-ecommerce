@@ -1,6 +1,7 @@
 <?php
 
-use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
+use Modules\CountryManage\Http\Controllers\Tenant\Admin\AdminUserController;
+use Modules\CountryManage\Http\Controllers\Tenant\Admin\CityController;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use Modules\CountryManage\Http\Controllers\Tenant\Admin\CountryManageController;
 use Modules\CountryManage\Http\Controllers\Tenant\Admin\StateController;
@@ -8,7 +9,6 @@ use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 
 Route::middleware([
     'web',
-//    InitializeTenancyByDomain::class,
     InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'auth:admin',
@@ -36,7 +36,7 @@ Route::middleware([
         });
 
         /*-----------------------------------
-            STATE ROUTES
+                    STATE ROUTES
         ------------------------------------*/
         Route::group(['prefix' => 'state', 'as' => 'state.'], function () {
             Route::controller(StateController::class)->group(function () {
@@ -48,6 +48,32 @@ Route::middleware([
                 Route::get('country-state', 'getStateByCountry')->name('by.country');
                 Route::post('mutliple-country-state', 'getMultipleStateByCountry')->name('by.multiple.country');
             });
+        });
+
+        /*-----------------------------------
+                    CITY ROUTES
+        ------------------------------------*/
+        Route::group(['prefix'=>'city', 'as' => 'city.'],function(){
+            Route::controller(CityController::class)->group(function () {
+                Route::match(['get','post'],'/','all_city')->name('all');
+                Route::post('edit-city/{id?}','edit_city')->name('edit');
+                Route::post('change-status/{id}','city_status')->name('status');
+                Route::post('delete/{id}','delete_city')->name('delete');
+                Route::post('bulk-action', 'bulk_action_city')->name('delete.bulk.action');
+
+                Route::get('paginate/data', 'pagination')->name('paginate.data');
+                Route::get('search-city', 'search_city')->name('search');
+
+                Route::get('csv/import','import_settings')->name('import.csv.settings');
+                Route::post('csv/import','update_import_settings')->name('import.csv.update.settings');
+                Route::post('csv/import/database','import_to_database_settings')->name('import.database');
+            });
+        });
+
+        //todo public routes for user and admin
+        Route::controller(AdminUserController::class)->group(function(){
+            Route::post('get-state','get_country_state')->name('au.state.all');
+            Route::post('get-city','get_state_city')->name('au.city.all');
         });
     });
 });

@@ -69,6 +69,7 @@
     65 => 'App\\Providers\\BladeDirectiveServiceProvider',
     66 => 'Plugins\\PageBuilder\\PageBuilderServiceProvider',
     67 => 'Plugins\\WidgetBuilder\\WidgetBuilderServiceProvider',
+    68 => 'Plugins\\MenuBuilder\\MenuBuilderServiceProvider',
   ),
   'eager' => 
   array (
@@ -123,6 +124,7 @@
     48 => 'App\\Providers\\BladeDirectiveServiceProvider',
     49 => 'Plugins\\PageBuilder\\PageBuilderServiceProvider',
     50 => 'Plugins\\WidgetBuilder\\WidgetBuilderServiceProvider',
+    51 => 'Plugins\\MenuBuilder\\MenuBuilderServiceProvider',
   ),
   'deferred' => 
   array (

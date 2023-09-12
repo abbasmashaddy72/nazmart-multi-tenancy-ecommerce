@@ -191,6 +191,7 @@ return [
             tenant_module_migrations_file_path("Product"),
             tenant_module_migrations_file_path("MobileApp"),
             tenant_module_migrations_file_path("DigitalProduct"),
+            tenant_module_migrations_file_path("TaxModule"),
             //todo: add the tenant_module_migrations_file_path in a function and call native Modules and append dynamic modules
         ],
         '--realpath' => true,

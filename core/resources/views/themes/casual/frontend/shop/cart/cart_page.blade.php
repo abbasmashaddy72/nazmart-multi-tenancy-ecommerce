@@ -2,7 +2,7 @@
 
 @php
     $page_title = $wishlist ? "Wishlist" : "Cart";
-    $theme_slug = \App\Facades\ThemeDataFacade::getSelectedThemeSlug();
+    $theme_slug = getSelectedThemeSlug();
 @endphp
 
 @section('title')

@@ -150,7 +150,7 @@
                                             @if($cart->count() != 0)
                                                 <div class="cart-total-amount">
                                                     <h6 class="amount-title"> {{__('Total Amount:')}} </h6> <span
-                                                        class="fs-18 fw-500 color-light"> {{float_amount_with_currency_symbol($subtotal)}} </span></div>
+                                                        class="fs-18 fw-500 color-light"> {{amount_with_currency_symbol($subtotal)}} </span></div>
                                                 <div class="btn-wrapper margin-top-20">
                                                     <a href="{{route('tenant.shop.checkout')}}" class="cmn-btn btn-bg-1 radius-0 w-100">
                                                         {{__('CheckOut')}} </a>
