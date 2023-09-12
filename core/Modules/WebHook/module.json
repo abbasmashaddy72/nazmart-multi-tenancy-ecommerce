@@ -21,7 +21,8 @@
                     "label": "Webhook Manage",
                     "route": "webhook.index",
                     "parent": null,
-                    "icon": "mdi mdi-settings"
+                    "icon": "mdi mdi-settings",
+                    "permissions": "webhook"
                 },
                 {
                     "id" : "webhook-manage-settings-all-menu",

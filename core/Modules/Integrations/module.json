@@ -22,7 +22,8 @@
                     "route": "landlord.integration",
                     "tenantRoute": "tenant.integration",
                     "parent": null,
-                    "icon": "mdi mdi-power-plug"
+                    "icon": "mdi mdi-power-plug",
+                    "permissions": "integration"
                 }
             ]
         },

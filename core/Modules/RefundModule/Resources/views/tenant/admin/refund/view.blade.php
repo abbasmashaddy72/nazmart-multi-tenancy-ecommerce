@@ -32,9 +32,15 @@
                                         <span class="">{{ $order_product->created_at?->format("H:ia") }}</span>
                                     </td>
                                     <td>
+                                        @php
+                                            $refund_status = \Modules\RefundModule\Entities\RefundProduct::where(['status' => 1, 'order_id' => $order_product->id, 'user_id' => $order_product->user_id])->exists();
+                                        @endphp
                                         <div class="btn-wrapper">
                                             <span class="order-btn-custom status">{{__('Order Status').': '.$order_details->status }}</span>
-                                            <span class="order-btn-custom status">{{__('Payment Status').': '. $order_details->payment_status }}</span>
+                                            <span class="order-btn-custom status">{{__('Payment Status').': '. ($refund_status ? __('Refunded') : __($order_details->payment_status)) }}</span>
+                                            @if($order_details->transaction_id)
+                                                <span class="order-btn-custom status">{{__('Transaction ID').': '.$order_details->transaction_id}}</span>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

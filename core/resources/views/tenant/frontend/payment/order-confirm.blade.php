@@ -3,7 +3,6 @@
     {{ __('Order Confirm') }}
 @endsection
 @section('content')
-
     <div class="error-page-content">
         <div class="container">
             <div class="row justify-content-center">

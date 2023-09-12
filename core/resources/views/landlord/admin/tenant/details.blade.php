@@ -166,7 +166,10 @@
                                             @endphp
 
                                             <a class="d-block" href="{{tenant_url_with_protocol(optional($tenant->domain)->domain)}}" target="_blank">{{$tenant->id . '.'. env('CENTRAL_DOMAIN')}}</a>
-                                            <a class="badge rounded bg-danger px-4 mt-3" href="{{$url.'/token-login/'.$hash_token}}" target="_blank">{{__('Login as Super Admin')}}</a>
+
+                                            @can('users-direct-login')
+                                                <a class="badge rounded bg-danger px-4 mt-3" href="{{$url.'/token-login/'.$hash_token}}" target="_blank">{{__('Login as Super Admin')}}</a>
+                                            @endcan
                                         </td>
                                         <td>{{$tenant->renew_status ?? 0}}</td>
                                         <td>

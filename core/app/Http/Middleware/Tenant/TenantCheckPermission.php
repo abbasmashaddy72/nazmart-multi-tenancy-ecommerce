@@ -13,7 +13,7 @@ class TenantCheckPermission
         $routeName = \Route::currentRouteName();
         $routeArr = explode('.',$routeName); // Exploding the hit route name in array
 
-        $name = $this->getName($routeArr); // Getting the permission name from the route name array
+        $name = $this->getName($routeArr, $request); // Getting the permission name from the route name array
 
         $current_tenant_payment_data = tenant()->payment_log ?? []; // Getting the tenant payment log
 
@@ -35,7 +35,7 @@ class TenantCheckPermission
         return redirect(url('admin'));
     }
 
-    private function getName($routeArr)
+    private function getName($routeArr, $request)
     {
         $name = '';
 
@@ -74,6 +74,8 @@ class TenantCheckPermission
             {
                 $name = $routeArr[$arrKey];
             }
+        } elseif (str_replace('tenant-','', $request->segment(2)) == 'newsletter') {
+            $name = str_replace('tenant-','', $request->segment(2));
         }
 
         if (in_array('testimonial', $routeArr))

@@ -21,7 +21,8 @@
                     "label": "Plugins Manage",
                     "route": "landlord.plugin.manage.new",
                     "parent": null,
-                    "icon": "mdi mdi-settings"
+                    "icon": "mdi mdi-settings",
+                    "permissions": "plugin-manage"
                 },
                 {
                     "id" : "plugin-manage-settings-all-menu",

@@ -124,6 +124,23 @@
                 });
             });
 
+            $(document).on('click','.swal_status_change',function(e){
+                e.preventDefault();
+                Swal.fire({
+                    title: '{{__("Are you sure to change this status?")}}',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "{{__('Yes, Change it!')}}",
+                    cancelButtonText: "{{__('Cancel')}}",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $(this).next().find('.swal_form_submit_btn').trigger('click');
+                    }
+                });
+            });
+
             let light = false;
             $(document).on('click', '.tenant_info_icon', function(){
                 $('.tenant_info_list').slideToggle(300);

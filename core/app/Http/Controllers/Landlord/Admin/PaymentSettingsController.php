@@ -13,8 +13,46 @@ class PaymentSettingsController extends Controller
 
     public function __construct()
     {
+        $this->middleware('permission:payment-settings-paypal', ['only' => [
+            'paypal_settings', 'update_payment_settings']]);
+        $this->middleware('permission:payment-settings-paytm', ['only' => [
+            'paytm_settings', 'update_payment_settings']]);
+        $this->middleware('permission:payment-settings-stripe', ['only' => [
+            'stripe_settings', 'update_payment_settings']]);
+        $this->middleware('permission:payment-settings-razorpay', ['only' => [
+            'razorpay_settings', 'update_payment_settings']]);
+        $this->middleware('permission:payment-settings-paystack', ['only' => [
+            'paystack_settings', 'update_payment_settings']]);
+        $this->middleware('permission:payment-settings-mollie', ['only' => [
+            'mollie_settings', 'update_payment_settings']]);
+        $this->middleware('permission:payment-settings-midtrans', ['only' => [
+            'midtrans_settings', 'update_payment_settings']]);
+        $this->middleware('permission:payment-settings-cashfree', ['only' => [
+            'cashfree_settings', 'update_payment_settings']]);
+        $this->middleware('permission:payment-settings-instamojo', ['only' => [
+            'instamojo_settings', 'update_payment_settings']]);
+        $this->middleware('permission:payment-settings-marcadopago', ['only' => [
+            'marcadopago_settings', 'update_payment_settings']]);
+        $this->middleware('permission:payment-settings-zitopay', ['only' => [
+            'zitopay_settings', 'update_payment_settings']]);
+        $this->middleware('permission:payment-settings-squareup', ['only' => [
+            'squareup_settings', 'update_payment_settings']]);
+        $this->middleware('permission:payment-settings-cinetpay', ['only' => [
+            'cinetpay_settings', 'update_payment_settings']]);
+        $this->middleware('permission:payment-settings-paytabs', ['only' => [
+            'paytabs_settings', 'update_payment_settings']]);
+        $this->middleware('permission:payment-settings-billplz', ['only' => [
+            'billplz_settings', 'update_payment_settings']]);
+        $this->middleware('permission:payment-settings-toyyibpay', ['only' => [
+            'toyyibpay_settings', 'update_payment_settings']]);
+        $this->middleware('permission:payment-settings-flutterwave', ['only' => [
+            'flutterwave_settings', 'update_payment_settings']]);
+        $this->middleware('permission:payment-settings-payfast', ['only' => [
+            'payfast_settings', 'update_payment_settings']]);
+        $this->middleware('permission:payment-settings-manual_payment', ['only' => [
+            'manual_payment_settings', 'update_payment_settings']]);
         $this->middleware('permission:general-settings-payment-settings', ['only' => [
-            'paypal_settings', 'paytm_settings', 'stripe_settings', 'razorpay_settings', 'paystack_settings', 'mollie_settings', 'midtrans_settings', 'cashfree_settings', 'instamojo_settings', 'marcadopago_settings', 'zitopay_settings', 'squareup_settings', 'cinetpay_settings', 'paytabs_settings', 'billplz_settings', 'toyyibpay_settings', 'flutterwave_settings', 'payfast_settings', 'manual_payment_settings', 'update_payment_settings']]);
+            'cod_settings', 'update_payment_settings']]);
     }
 
     public function paypal_settings()

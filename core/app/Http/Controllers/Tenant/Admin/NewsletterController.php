@@ -117,7 +117,7 @@ class NewsletterController extends Controller
         }
 
         $route = '#';//route('subscriber.verify', ['token' => $token])
-        $msg = __('verify your email to get all news from '). get_static_option('site_'.get_user_lang().'_title') . '<div class="btn-wrap"> <a class="anchor-btn text-primary" href="' . $route. '">' . __('verify email') . '</a></div>';
+        $msg = __('verify your email to get all news from '). get_static_option('site_title') . '<div class="btn-wrap"> <a class="anchor-btn text-primary" href="' . $route. '">' . __('verify email') . '</a></div>';
         $message = $msg;
         $subject =  __('verify your email');
 

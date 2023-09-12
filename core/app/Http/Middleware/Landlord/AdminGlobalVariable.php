@@ -10,7 +10,6 @@ use Modules\Blog\Entities\BlogComment;
 
 class AdminGlobalVariable
 {
-
     public function handle(Request $request, Closure $next)
     {
 

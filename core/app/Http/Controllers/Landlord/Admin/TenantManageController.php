@@ -31,6 +31,21 @@ use Spatie\Activitylog\Models\Activity;
 class TenantManageController extends Controller
 {
     const BASE_PATH = 'landlord.admin.tenant.';
+
+    public function __construct()
+    {
+        $this->middleware('permission:users-list', ['only' => ['all_tenants']]);
+        $this->middleware('permission:users-shop', ['only' => ['all_tenants_list']]);
+        $this->middleware('permission:users-create', ['only' => ['new_tenant', 'new_tenant_store']]);
+        $this->middleware('permission:users-edit', ['only' => ['edit_profile', 'update_edit_profile', 'update_change_password', 'tenant_account_status']]);
+        $this->middleware('permission:users-delete', ['only' => ['delete', 'trash', 'trash_restore', 'trash_delete']]);
+        $this->middleware('permission:users-shop-delete', ['only' => ['tenant_domain_delete']]);
+        $this->middleware('permission:users-assign-subscription', ['only' => ['assign_subscription']]);
+        $this->middleware('permission:users-activity', ['only' => ['tenant_activity_log']]);
+        $this->middleware('permission:users-settings', ['only' => ['account_settings', 'account_settings_update']]);
+        $this->middleware('permission:users-failed-shop', ['only' => ['failed_tenants', 'failed_tenants_edit', 'failed_tenants_delete', 'failed_regenerate_subscription']]);
+    }
+
     public function all_tenants(){
         $all_users = User::latest()->get();
         $deleted_users = User::onlyTrashed()->count();
@@ -211,9 +226,7 @@ class TenantManageController extends Controller
          return response()->success(ResponseMessage::success(__('Password updated successfully..!')));
     }
 
-
     public function send_mail(Request $request){
-
         $this->validate($request,[
             'email' => 'required|email',
             'subject' => 'required',
@@ -233,8 +246,6 @@ class TenantManageController extends Controller
     }
 
     public function resend_verify_mail(Request $request){
-
-
         $subscriber_details = User::findOrFail($request->id);
         $token = $subscriber_details->email_verify_token ? $subscriber_details->email_verify_token  : Str::random(8);
 

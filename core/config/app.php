@@ -185,6 +185,7 @@ return [
         //Plugins service provider
         \Plugins\PageBuilder\PageBuilderServiceProvider::class,
         WidgetBuilderServiceProvider::class,
+        \Plugins\MenuBuilder\MenuBuilderServiceProvider::class
     ],
 
     /*
@@ -199,7 +200,6 @@ return [
     */
 
     'aliases' => [
-
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
@@ -250,5 +250,4 @@ return [
         'SEO' => Artesaos\SEOTools\Facades\SEOTools::class,
         'Invoice' => LaravelDaily\Invoices\Facades\Invoice::class
     ],
-
 ];

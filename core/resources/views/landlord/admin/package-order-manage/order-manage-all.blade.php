@@ -173,10 +173,12 @@
                                             @endcan
 
                                             @if(get_lang_direction() == 'rtl')
-{{--                                                <a class="btn btn-dark btn-sm btn-invoice-rtl" href="javascript:void(0)" data-id="{{$data->id}}">{{__('Invoice')}}</a>--}}
-                                                <a class="btn btn-dark btn-sm btn-invoice-rtl" href="{{route('landlord.package.invoice.generate.rtl')}}" data-id="{{$data->id}}">{{__('Invoice')}}</a>
+                                                <a class="btn btn-dark btn-sm btn-invoice-rtl" href="javascript:void(0)"
+                                                   data-id="{{$data->id}}">{{__('Invoice')}}</a>
+                                                {{--                                                <a class="btn btn-dark btn-sm btn-invoice-rtl" href="{{route('landlord.package.invoice.generate.rtl')}}" data-id="{{$data->id}}">{{__('Invoice')}}</a>--}}
                                             @else
-                                                <form action="{{route('landlord.package.invoice.generate')}}" method="POST"
+                                                <form action="{{route('landlord.package.invoice.generate')}}"
+                                                      method="POST"
                                                       enctype="multipart/form-data" target="_blank">
                                                     @csrf
                                                     <input type="hidden" name="id" value="{{$data->id}}">
@@ -208,8 +210,10 @@
     <x-media-upload.js/>
     <x-summernote.js/>
     <x-bulk-action-js :url="route(route_prefix().'admin.package.order.bulk.action')"/>
-
+{{--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>--}}
+{{--    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>--}}
     <script>
+
         (function ($) {
             "use strict";
             $(document).ready(function () {
@@ -248,28 +252,88 @@
                 });
             });
 
-            {{--$(document).on('click', '.btn-invoice-rtl', function (e){--}}
-            {{--    e.preventDefault();--}}
+            $(document).on('click', '.btn-invoice-rtl', function (e) {
+                e.preventDefault();
 
-            {{--    let order_id = $(this).attr('data-id');--}}
+                let order_id = $(this).attr('data-id');
 
-            {{--    $.ajax({--}}
-            {{--        type: 'POST',--}}
-            {{--        url: `{{route('landlord.package.invoice.generate.rtl')}}`,--}}
-            {{--        data: {--}}
-            {{--            _token: `{{csrf_token()}}`,--}}
-            {{--            id: order_id--}}
-            {{--        },--}}
-            {{--        success: function (data)--}}
-            {{--        {--}}
-            {{--            let mywindow = window.open('', 'new div', 'height=874,width=840');--}}
-            {{--            mywindow.document.write(data);--}}
-            {{--            mywindow.document.close();--}}
-            {{--            mywindow.focus();--}}
-            {{--        }--}}
-            {{--    });--}}
-            {{--});--}}
+                $.ajax({
+                    type: 'POST',
+                    url: `{{route('landlord.package.invoice.generate.rtl')}}`,
+                    data: {
+                        _token: `{{csrf_token()}}`,
+                        id: order_id
+                    },
+                    success: function (data)
+                    {
+                        let mywindow = window.open('', 'new div', 'height=874,width=840');
+                        mywindow.document.write(data);
+                        mywindow.document.close();
+                        mywindow.focus();
+                    }
+                });
+            });
         })(jQuery);
+
+        // let invoice = () => {
+        //     // Create a new jsPDF instance
+        //     const doc = new jsPDF({
+        //         orientation: "landscape",
+        //         unit: "in",
+        //         format: [4, 2]
+        //     });
+        //
+        //     // Define the content of your invoice
+        //     var invoiceTitle = "Sales Invoice";
+        //     var customerName = "John Doe";
+        //     var invoiceDate = "2023-09-07";
+        //     var invoiceNumber = "12345";
+        //     var items = [
+        //         {description: "Item 1", quantity: 2, price: 10},
+        //         {description: "Item 2", quantity: 3, price: 15},
+        //         {description: "Item 3", quantity: 1, price: 20}
+        //     ];
+        //
+        //     // Set the font size and position for the title
+        //     doc.setFontSize(18);
+        //     doc.text(invoiceTitle, 20, 20);
+        //
+        //     // Set the font size and position for customer information
+        //     doc.setFontSize(12);
+        //     doc.text("Customer: " + customerName, 20, 30);
+        //     doc.text("Date: " + invoiceDate, 20, 40);
+        //     doc.text("Invoice Number: " + invoiceNumber, 20, 50);
+        //
+        //     // Set the font size and position for the table headers
+        //     doc.text("Description", 20, 70);
+        //     doc.text("Quantity", 80, 70);
+        //     doc.text("Price", 120, 70);
+        //     doc.text("Total", 160, 70);
+        //
+        //     // Initialize variables to keep track of the Y position and total amount
+        //     var y = 80;
+        //     var totalAmount = 0;
+        //
+        //     // Loop through the items and add them to the table
+        //     items.forEach(function (item) {
+        //         doc.text(item.description, 20, y);
+        //         doc.text(item.quantity.toString(), 80, y);
+        //         doc.text("$" + item.price.toFixed(2), 120, y);
+        //
+        //         var total = item.quantity * item.price;
+        //         doc.text("$" + total.toFixed(2), 160, y);
+        //
+        //         y += 10;
+        //         totalAmount += total;
+        //     });
+        //
+        //     // Set the font size and position for the total amount
+        //     doc.setFontSize(14);
+        //     doc.text("Total Amount: $" + totalAmount.toFixed(2), 120, y + 10);
+        //
+        //     // Save the PDF
+        //     doc.save("sales_invoice.pdf");
+        // }
     </script>
 @endsection
 

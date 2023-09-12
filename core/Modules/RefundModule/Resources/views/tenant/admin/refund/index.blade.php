@@ -139,13 +139,10 @@
                     },
                     success: function (data){
                         $(this).parent().prev('button').removeClass(currentStatus).addClass(status).text(status);
+                        toastr.success(`{{__('Status changed successfully')}}`);
                     }
                 })
             });
-
-
         });
-
-
     </script>
 @endsection

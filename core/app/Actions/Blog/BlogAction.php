@@ -147,6 +147,5 @@ class BlogAction
         ];
 
         $cloned_data->metainfo()->create($Metas);
-
     }
 }

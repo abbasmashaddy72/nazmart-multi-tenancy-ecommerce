@@ -2,18 +2,21 @@
 
 namespace Modules\CountryManage\Entities;
 
-use Modules\CountryManage\Entities\State;
+use App\Enums\StatusEnums;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\TaxModule\Entities\CountryTax;
 
 class Country extends Model
 {
-    use HasFactory;
     protected $fillable = [
         'name',
         'status',
     ];
+
+    public function scopePublished()
+    {
+        return $this->where('status', 'publish');
+    }
 
     public function states()
     {
@@ -23,10 +26,5 @@ class Country extends Model
     public function countryTax()
     {
         return $this->hasOne(CountryTax::class);
-    }
-
-    protected static function newFactory()
-    {
-        return \Modules\CountryManage\Database\factories\CountryFactory::new();
     }
 }

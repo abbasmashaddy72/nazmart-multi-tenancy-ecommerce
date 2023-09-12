@@ -1,75 +1,82 @@
-@extends('tenant.admin.admin-master')
+@extends(route_prefix().'admin.admin-master')
+
 @section('title')
     {{__('Country Tax')}}
 @endsection
-@section('site-title')
-    {{__('Country Tax')}}
-@endsection
+
 @section('style')
     <x-datatable.css/>
     <x-bulk-action.css/>
 @endsection
+
 @section('content')
     <div class="col-lg-12 col-ml-12 padding-bottom-30">
         <x-error-msg/>
         <x-flash-msg/>
+
         <div class="row">
-            <div class="col-lg-12 mt-2">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="header-wrap d-flex flex-wrap justify-content-between">
-                            <h4 class="header-title mb-4">{{__('All Country Tax')}}</h4>
-                            <a href="#"
-                               data-bs-toggle="modal"
-                               data-bs-target="#country_tax_new_modal" class="btn btn-sm btn-info text-light">{{__('Add new country tax')}}</a>
-                        </div>
-                        @can('country-tax-delete')
-                            <x-bulk-action.dropdown/>
-                        @endcan
-                        <div class="table-wrap table-responsive">
-                            <table class="table table-default">
-                                <thead>
-                                <x-bulk-action.th/>
-                                <th>{{__('ID')}}</th>
-                                <th>{{__('Name')}}</th>
-                                <th>{{__('Tax (%)')}}</th>
-                                <th>{{__('Action')}}</th>
-                                </thead>
-                                <tbody>
-                                @foreach($all_country_tax as $tax)
-                                    <tr>
-                                        <x-bulk-action.td :id="$tax->id"/>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ optional($tax->country)->name }}</td>
-                                        <td>{{ $tax->tax_percentage }}</td>
-                                        <td>
-                                            @can('country-tax-delete')
-                                                <x-table.btn.swal.delete
-                                                    :route="route('tenant.admin.tax.country.delete', $tax->id)"/>
-                                            @endcan
-                                            @can('country-tax-edit')
-                                                <a href="#"
-                                                   data-bs-toggle="modal"
-                                                   data-bs-target="#country_tax_edit_modal"
-                                                   class="btn btn-sm btn-primary btn-xs mb-3 mr-1 country_tax_edit_btn"
-                                                   data-id="{{$tax->id}}"
-                                                   data-country_id="{{$tax->country_id}}"
-                                                   data-tax_percentage="{{$tax->tax_percentage}}"
-                                                >
-                                                    <i class="mdi mdi-pencil"></i>
-                                                </a>
-                                            @endcan
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                    <div class="col-lg-12 mt-2">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title">{{__('All Country Tax')}}</h4>
+                                <div class="d-flex justify-content-between">
+                                    @can('country-tax-delete')
+                                        <x-bulk-action.dropdown/>
+                                    @endcan
+
+                                    <div>
+                                        <a href="#"
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#country_tax_new_modal" class="btn btn-sm btn-info text-light">{{__('Add
+                                            new country tax')}}</a>
+                                    </div>
+                                </div>
+
+                                <div class="table-wrap table-responsive">
+                                    <table class="table table-default">
+                                        <thead>
+                                            <x-bulk-action.th/>
+                                            <th>{{__('ID')}}</th>
+                                            <th>{{__('Name')}}</th>
+                                            <th>{{__('Tax')}}</th>
+                                            <th>{{__('Action')}}</th>
+                                        </thead>
+                                        <tbody>
+                                        @foreach($all_country_tax as $tax)
+                                            <tr>
+                                                <x-bulk-action.td :id="$tax->id"/>
+                                                <td>{{ $tax->id }}</td>
+                                                <td>{{ optional($tax->country)->name }}</td>
+                                                <td>{{ $tax->tax_percentage }}</td>
+                                                <td>
+                                                    @can('country-tax-delete')
+                                                        <x-table.btn.swal.delete
+                                                            :route="route('tenant.admin.tax.country.delete', $tax->id)"/>
+                                                    @endcan
+                                                    @can('country-tax-edit')
+                                                        <a href="#"
+                                                           data-bs-toggle="modal"
+                                                           data-bs-target="#country_tax_edit_modal"
+                                                           class="btn btn-sm btn-primary btn-xs mb-3 mr-1 country_tax_edit_btn"
+                                                           data-id="{{$tax->id}}"
+                                                           data-country_id="{{$tax->country_id}}"
+                                                           data-tax_percentage="{{$tax->tax_percentage}}"
+                                                        >
+                                                            <i class="mdi mdi-pencil"></i>
+                                                        </a>
+                                                    @endcan
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
     </div>
+
     @can('country-tax-edit')
         <div class="modal fade" id="country_tax_edit_modal" aria-hidden="true">
             <div class="modal-dialog">
@@ -137,6 +144,7 @@
         </div>
     </div>
 @endsection
+
 @section('scripts')
     <x-datatable.js/>
     <x-table.btn.swal.js/>

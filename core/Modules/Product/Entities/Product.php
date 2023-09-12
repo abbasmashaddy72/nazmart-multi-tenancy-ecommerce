@@ -25,6 +25,7 @@ use Modules\Attributes\Entities\SubCategory;
 use Modules\Badge\Entities\Badge;
 use Modules\Campaign\Entities\CampaignProduct;
 use Modules\Campaign\Entities\CampaignSoldProduct;
+use Modules\RefundModule\Entities\RefundProduct;
 
 class Product extends Model
 {
@@ -141,6 +142,11 @@ class Product extends Model
     public function product_delivery_option(): HasManyThrough
     {
         return $this->hasManyThrough(DeliveryOption::class, ProductDeliveryOption::class, 'product_id', 'id', 'id', 'delivery_option_id');
+    }
+
+    public function refunded_product(): HasOne
+    {
+        return $this->hasOne(RefundProduct::class);
     }
 
     protected static function newFactory()
