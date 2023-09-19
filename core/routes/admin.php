@@ -315,8 +315,8 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::get('/order-report','order_report')->name('admin.package.order.report');
         //payment log route
         Route::post('/generate-invoice/frontend-user', 'generate_package_invoice')->name('package.invoice.generate');
-        Route::post('/generate-invoice/frontend-user/rtl', 'generate_package_invoice_rtl')->name('package.invoice.generate.rtl');
-//        Route::get('/generate-invoice/frontend-user/rtl', 'generate_package_invoice_rtl')->name('package.invoice.generate.rtl');
+//        Route::post('/generate-invoice/frontend-user/rtl', 'generate_package_invoice_rtl')->name('package.invoice.generate.rtl');
+        Route::get('/generate-invoice/frontend-user/rtl', 'generate_package_invoice_rtl')->name('package.invoice.generate.rtl');
         Route::get('/payment-logs','all_payment_logs')->name('admin.payment.logs');
         Route::post('/payment-logs/delete/{id}','payment_logs_delete')->name('admin.payment.delete');
         Route::post('/payment-logs/approve/{id}','payment_logs_approve')->name('admin.payment.approve');

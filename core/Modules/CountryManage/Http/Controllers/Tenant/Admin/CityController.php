@@ -81,14 +81,13 @@ class CityController extends Controller
     //todo: delete multi city
     public function bulk_action_city(Request $request){
         City::whereIn('id',$request->ids)->delete();
-
-        return redirect()->back()->with(FlashMsg::create_succeed('Selected City Successfully Deleted'));
+        return redirect()->back()->with(toastr_success(__('Selected City Successfully Deleted')));
     }
 
     //todo: import settings
     public function import_settings()
     {
-        return view('countrymanage::tenant.admin.city.import-city');
+        return view('countrymanage::city.import-city');
     }
 
     //todo: import settings update

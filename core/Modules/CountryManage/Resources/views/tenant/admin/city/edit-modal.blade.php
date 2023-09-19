@@ -12,7 +12,7 @@
 
                 <div class="modal-body">
                     <div class="single-input">
-                        <label for="country_id" class="label-title mt-3">{{ __('Select Country') }}</label>
+                        <label class="label-title mt-3">{{ __('Select Country') }}</label>
                         <select name="country" id="country_id" class="form-control select22-country">
                             <option value="">{{ __('Select Country') }}</option>
                             @foreach($all_countries as $data)
@@ -22,7 +22,7 @@
                     </div>
 
                     <div class="single-input mb-3">
-                        <label for="state_id" class="label-title mt-3">{{ __('Select State') }}</label>
+                        <label class="label-title mt-3">{{ __('Select State') }}</label>
                         <select name="state" id="state_id" class="form-control get_country_state select22-state">
                             <option value="">{{ __('Select State') }}</option>
                         </select>

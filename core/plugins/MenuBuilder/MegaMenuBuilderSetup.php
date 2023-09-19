@@ -5,13 +5,12 @@ namespace Plugins\MenuBuilder;
 use App\Facades\GlobalLanguage;
 use App\Helpers\ModuleMetaData;
 use Plugins\MenuBuilder\MegaMenus\BlogMegaMenu;
-use Plugins\MenuBuilder\MegaMenus\ThemesMegaMenu;
 
 class MegaMenuBuilderSetup  {
     private function register_core_mega_menu()
     {
         return [
-            ThemesMegaMenu::class
+            BlogMegaMenu::class
         ];
     }
     private function register_external_mega_menu()
@@ -38,7 +37,7 @@ class MegaMenuBuilderSetup  {
             $instance = new $item();
             $lang = $lang ?? GlobalLanguage::default_slug();
             $name = str_replace('[lang]',$lang,$instance->name());
-            $name = htmlspecialchars(strip_tags($name));
+            $name = htmlspecialchars(strip_tags(get_static_option($name)));
             $output .= '<li data-ptype="'.$item.'"><label class="menu-item-title"> <input type="checkbox" class="menu-item-checkbox"> ';
             $output .= $name.__(' Mega Menu').'</label></li>';
         }

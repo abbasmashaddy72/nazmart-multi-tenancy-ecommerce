@@ -9,6 +9,8 @@ use Modules\CountryManage\Entities\State;
 
 class TaxClass extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'name',
     ];

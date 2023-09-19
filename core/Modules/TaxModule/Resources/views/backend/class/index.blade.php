@@ -1,6 +1,5 @@
-@extends("tenant.admin.admin-master")
-
-@section("title", __("Tax Class"))
+@extends("backend.admin-master")
+@section("site-title", __("Tax Class"))
 
 @section("style")
 
@@ -8,8 +7,8 @@
 
 @section("content")
     <div>
-        <x-flash-msg/>
-        <x-error-msg/>
+        <x-msg.flash />
+        <x-msg.error />
     </div>
 
     <div class="card">
@@ -20,7 +19,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="mx-4 mt-2">
-                    <small class="text-secondary">{{ __("If a class has any associated options, you can't delete the class from here. You need to delete all options first, or you can use a force delete option.") }}</small>
+                    <small class="text-secondary">{{ __("if a class have any you can't delete class from hare you need to delete all options first or you can force for delete") }}</small>
                 </div>
             </div>
             <div class="col-md-7">
@@ -39,9 +38,9 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $class->name }}</td>
                                 <td>
-                                    <a class="btn btn-info" href="{{ route('tenant.admin.tax-module.tax-class-option', $class->id) }}">{{ __("View") }}</a>
+                                    <a class="btn btn-info" href="{{ route('admin.tax-module.tax-class-option', $class->id) }}">{{ __("View") }}</a>
                                     <button data-id="{{ $class->id }}" data-name="{{ $class->name }}" id="updateTaxClassButton" class="btn btn-primary" data-bs-target="#updateTaxClass" data-bs-toggle="modal">{{ __("Edit") }}</button>
-                                    <button id="deleteTaxClassButton" data-id="{{ $class->id }}" data-option-count="{{ $class->class_option_count }}" data-href="{{ route("tenant.admin.tax-module.tax-class-delete", $class->id) }}" class="btn btn-danger">{{ __("Delete") }}</button>
+                                    <button id="deleteTaxClassButton" data-id="{{ $class->id }}" data-option-count="{{ $class->class_option_count }}" data-href="{{ route("admin.tax-module.tax-class-delete", $class->id) }}" class="btn btn-danger">{{ __("Delete") }}</button>
                                 </td>
                             </tr>
                         @endforeach
@@ -49,11 +48,10 @@
                 </table>
                 </div>
             </div>
-
             <div class="col-md-5">
                 <div class="card-body border">
                     <h3 class="title">{{ __("Create tax class") }}</h3>
-                    <form action="{{ route('tenant.admin.tax-module.tax-class') }}" method="post">
+                    <form action="{{ route('admin.tax-module.tax-class') }}" method="post">
                         @csrf
 
                         <div class="form-group">
@@ -73,7 +71,7 @@
     <div class="modal fade" id="updateTaxClass" tabindex="-1" aria-labelledby="exampleUpdateTaxClass" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="{{ route('tenant.admin.tax-module.tax-class') }}" method="post">
+                <form action="{{ route('admin.tax-module.tax-class') }}" method="post">
                     @csrf
                     @method("PUT")
                     <input type="hidden" name="id" value="" id="tax-class-id" class="form-control">
@@ -98,14 +96,13 @@
     </div>
 @endsection
 
-@section("scripts")
+@section("script")
     <script>
         $(document).on("click", "#updateTaxClassButton", function (){
             $("#updateTaxClass #tax-class-id").val($(this).attr("data-id"));
             $("#updateTaxClass #update-tax-class-name").val($(this).attr("data-name"));
 
         })
-
         $(document).on("click","#deleteTaxClassButton", function (){
             let countOption = $(this).attr("data-option-count");
             let formData = new FormData();
@@ -115,23 +112,22 @@
 
             if(countOption > 0){
                 Swal.fire({
-                    title: `{{__('Are you sure?')}}`,
-                    text: `{{__("if delete this tax class then all tax class option will be deleted and You won't be able to revert those!")}}`,
+                    title: 'Are you sure?',
+                    text: "if delete this tax class then all tax class option will be deleted and You won't be able to revert those!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: `{{__('Yes, delete it!')}}`,
-                    cancelButtonText: `{{__('Cancel')}}`
+                    confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        send_ajax_request("GET", formData,$(this).data("data-href"), () => {
+                        send_ajax_request("GET",formData,$(this).data("data-href"), () => {
                             // before send request
-                            toastr.warning(`{{__("Request send please wait while")}}`);
+                            toastr.warning("Request send please wait while");
                         }, (data) => {
                             Swal.fire(
-                                `{{__('Deleted!')}}`,
-                                `{{__('Your file has been deleted.')}}`,
+                                'Deleted!',
+                                'Your file has been deleted.',
                                 'success'
                             );
 
@@ -144,23 +140,22 @@
             }
 
             Swal.fire({
-                title: `{{__('Are you sure?')}}`,
-                text: `{!! __("You won't be able to revert this!") !!}`,
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: `{{__('Yes, delete it!')}}`,
-                cancelButtonText: `{{__('Cancel')}}`
+                confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
                     send_ajax_request("post",formData,$(this).data("data-href"), () => {
                         // before send request
-                        toastr.warning(`{{__("Request send please wait while")}}`);
+                        toastr.warning("Request send please wait while");
                     }, (data) => {
                         Swal.fire(
-                            `{{__('Deleted!')}}`,
-                            `{{__('Your file has been deleted.')}}`,
+                            'Deleted!',
+                            'Your file has been deleted.',
                             'success'
                         );
 
@@ -171,32 +166,5 @@
                 }
             });
         });
-
-        function send_ajax_request(request_type,request_data,url,before_send,success_response,errors){
-            $.ajax({
-                url: url,
-                type: request_type,
-                beforeSend: (typeof before_send !== "undefined" && typeof before_send === "function") ? before_send : () => { return ""; } ,
-                processData: false,
-                contentType: false,
-                data: request_data,
-                success:  (typeof success_response !== "undefined" && typeof success_response === "function") ? success_response : () => { return ""; },
-                error:  (typeof errors !== "undefined" && typeof errors === "function") ? errors : () => { return ""; }
-            });
-        }
-
-        function prepare_errors(data,form,msgContainer,btn){
-            let errors = data.responseJSON;
-
-            if(errors.success !== undefined){
-                toastr.error(errors.msg.errorInfo[2]);
-                toastr.error(errors.custom_msg);
-            }
-
-            $.each(errors.errors,function (index,value){
-                console.log(value)
-                toastr.error(value[0]);
-            })
-        }
     </script>
 @endsection

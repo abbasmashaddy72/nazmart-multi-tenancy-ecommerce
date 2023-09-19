@@ -10,7 +10,7 @@
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="country" class="label-title mt-3">{{ __('Select Country') }}</label>
+                        <label class="label-title mt-3">{{ __('Select Country') }}</label>
                         <select name="country" id="country" class="form-control select2-country">
                             <option value="">{{ __('Select Country') }}</option>
                             @foreach($all_countries as $data)
@@ -20,8 +20,8 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="state" class="label-title mt-3">{{ __('Select State') }}</label>
-                        <select name="state" id="state" class="form-control get_country_state select2-state w-100">
+                        <label class="label-title mt-3">{{ __('Select State') }}</label>
+                        <select name="state" id="state" class="form-control get_country_state select2-state">
                             <option value="">{{ __('Select State') }}</option>
                         </select>
                         <p class="info_msg"></p>

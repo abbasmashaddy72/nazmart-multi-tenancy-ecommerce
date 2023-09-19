@@ -53,7 +53,7 @@ Route::middleware([
         /*-----------------------------------
                     CITY ROUTES
         ------------------------------------*/
-        Route::group(['prefix'=>'city', 'as' => 'city.'],function() {
+        Route::group(['prefix'=>'city', 'as' => 'city.'],function(){
             Route::controller(CityController::class)->group(function () {
                 Route::match(['get','post'],'/','all_city')->name('all');
                 Route::post('edit-city/{id?}','edit_city')->name('edit');
@@ -64,9 +64,9 @@ Route::middleware([
                 Route::get('paginate/data', 'pagination')->name('paginate.data');
                 Route::get('search-city', 'search_city')->name('search');
 
-//                Route::get('csv/import','import_settings')->name('import.csv.settings');
-//                Route::post('csv/import','update_import_settings')->name('import.csv.update.settings');
-//                Route::post('csv/import/database','import_to_database_settings')->name('import.database');
+                Route::get('csv/import','import_settings')->name('import.csv.settings');
+                Route::post('csv/import','update_import_settings')->name('import.csv.update.settings');
+                Route::post('csv/import/database','import_to_database_settings')->name('import.database');
             });
         });
 

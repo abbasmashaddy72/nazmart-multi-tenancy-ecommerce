@@ -347,7 +347,7 @@ class ProductCheckoutService
         $physical_items = Cart::content('default')->where('options.type', \App\Enums\ProductTypeEnum::PHYSICAL);
 
         // Checking shipping method is selected
-        if (count($physical_items) > 0) {
+        if (count($physical_items) > !0) {
             if (!$this->check_shipping_method($user, $validated_data)) {
                 return false;
             }

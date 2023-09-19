@@ -22,6 +22,8 @@ class LandlordAdminController extends Controller
     private const BASE_VIEW_PATH = 'landlord.admin.';
 
     public function dashboard(){
+        (new ModuleMetaData())->getMegaMenu();
+
         $total_admin= Admin::count();
 
         $total_user = 0;

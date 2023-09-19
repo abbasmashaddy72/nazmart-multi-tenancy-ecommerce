@@ -1,6 +1,5 @@
-@extends("tenant.admin.admin-master")
-
-@section("title", __("Tax Class"))
+@extends("backend.admin-master")
+@section("site-title", __("Tax Class"))
 
 @section("style")
 
@@ -8,8 +7,8 @@
 
 @section("content")
     <div class="message-wrapper">
-        <x-flash-msg/>
-        <x-error-msg/>
+        <x-msg.flash />
+        <x-msg.error />
     </div>
     <div class="card">
         <div class="card-header d-flex justify-content-between">
@@ -26,7 +25,7 @@
                 <li>{{ __("The tax will be applied to all countries if you do not select any") }}</li>
                 <li>{{ __('The "Name" and "Priority" field is a required entry for data storage in the database. If the name is not provided, the corresponding field data will not be stored.') }}</li>
             </ol>
-            <form id="tax-class-option-form" action="{{ route('tenant.admin.tax-module.tax-class-option', $taxClass->id) }}" method="post">
+            <form id="tax-class-option-form" action="{{ route('admin.tax-module.tax-class-option', $taxClass->id) }}" method="post">
                 @csrf
                 <table class="table table-responsive" id="tax-option-table">
                     <thead>
@@ -56,7 +55,7 @@
     </div>
 @endsection
 
-@section("scripts")
+@section("script")
     <script>
         // todo:: if user clicked on this button then trigger tax class option form to submit
         $(document).on("click", ".store-tax-option", function (){
@@ -81,7 +80,7 @@
             let country_id = el.val();
 
             // todo:: send request for fetching tax class option data
-            send_ajax_request("get", '',"{{ route('tenant.admin.tax-module.country.state.info.ajax') }}?id=" + country_id, () => {}, (data) => {
+            send_ajax_request("get", '',"{{ route('country.state.info.ajax') }}?id=" + country_id, () => {}, (data) => {
                 el.parent().parent().find("#state_id").html(data);
             }, (errors) => prepare_errors(errors))
         });
@@ -92,7 +91,7 @@
             let state_id = el.val();
 
             // todo:: send request for fetching tax class option data
-            send_ajax_request("get", '',"{{ route('tenant.admin.tax-module.state.city.info.ajax') }}?id=" + state_id, () => {}, (data) => {
+            send_ajax_request("get", '',"{{ route('state.city.info.ajax') }}?id=" + state_id, () => {}, (data) => {
                 el.parent().parent().find("#city_id").html(data);
             }, (errors) => prepare_errors(errors))
         });
@@ -112,32 +111,5 @@
                 $(this).parent().parent().remove();
             });
         });
-
-        function send_ajax_request(request_type,request_data,url,before_send,success_response,errors){
-            $.ajax({
-                url: url,
-                type: request_type,
-                beforeSend: (typeof before_send !== "undefined" && typeof before_send === "function") ? before_send : () => { return ""; } ,
-                processData: false,
-                contentType: false,
-                data: request_data,
-                success:  (typeof success_response !== "undefined" && typeof success_response === "function") ? success_response : () => { return ""; },
-                error:  (typeof errors !== "undefined" && typeof errors === "function") ? errors : () => { return ""; }
-            });
-        }
-
-        function prepare_errors(data,form,msgContainer,btn){
-            let errors = data.responseJSON;
-
-            if(errors.success !== undefined){
-                toastr.error(errors.msg.errorInfo[2]);
-                toastr.error(errors.custom_msg);
-            }
-
-            $.each(errors.errors,function (index,value){
-                console.log(value)
-                toastr.error(value[0]);
-            })
-        }
     </script>
 @endsection

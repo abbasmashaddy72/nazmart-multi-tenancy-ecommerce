@@ -1,24 +1,19 @@
-@extends('tenant.admin.admin-master')
-
+@extends('backend.layout.master')
 @section('title', __('Import Cities'))
-
 @section('style')
-    <x-datatable.css/>
+    <x-data-table.data-table-css />
 @endsection
-
 @section('content')
     <div class="dashboard__body">
         <div class="row">
             <div class="col-lg-8">
-                <x-error-msg/>
-                <x-flash-msg/>
-
+                <x-validation.error/>
                 <div class="customMarkup__single">
                     <div class="customMarkup__single__item">
-                        <h4 class="customMarkup__single__title text-capitalize">{{ __('Import City (Only CSV File)') }}</h4>
+                        <h4 class="customMarkup__single__title">{{ __('Import City (only csv file)') }}</h4>
                         <div class="customMarkup__single__inner mt-4">
                             @if(empty($import_data))
-                                <form action="{{route('tenant.admin.city.import.csv.update.settings')}}" method="post" enctype="multipart/form-data">
+                                <form action="{{route('admin.city.import.csv.update.settings')}}" method="post" enctype="multipart/form-data">
                                     @csrf
                                     <div class="form-group">
                                         <label for="#">{{__('File')}}</label>
@@ -35,7 +30,7 @@
                                         }
                                 @endphp
 
-                                <form action="{{route('tenant.admin.city.import.database')}}" method="post" enctype="multipart/form-data">
+                                <form action="{{route('admin.city.import.database')}}" method="post" enctype="multipart/form-data">
                                     @csrf
                                     @csrf
                                     <table class="table table-striped">
@@ -110,7 +105,7 @@
     </div>
 @endsection
 
-@section('scripts')
+@section('script')
 
     <script>
         (function($){
@@ -135,7 +130,7 @@
                     let country = $(this).val();
                     $.ajax({
                         method: 'post',
-                        url: "{{ route('tenant.admin.au.state.all') }}",
+                        url: "{{ route('au.state.all') }}",
                         data: {
                             country: country
                         },
