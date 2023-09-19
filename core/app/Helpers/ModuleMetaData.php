@@ -144,6 +144,11 @@ class ModuleMetaData
             $paymentMeta = $this->getPaymentMetaInfo($metaInfo);
             if (!empty($paymentMeta)) {
                 foreach ($paymentMeta as $key => $meta) {
+                    if (tenant() && property_exists($meta, 'tenant') && !$meta->tenant)
+                    {
+                        continue;
+                    }
+
                     if (property_exists($meta, 'slug') && $meta?->status) {
                         $outputMarkup[$eachIndex]['name'] = $meta->slug;
                         $outputMarkup[$eachIndex]['image'] = $this->getPaymentGatewayImagePath($meta->slug);
