@@ -1930,3 +1930,43 @@ Version: 1.0.0
   width: 100%;
   height: 350px;
 }
+/*mega menu new css*/
+
+.mega-menu-title {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 24px;
+  color: var(--heading-color);
+}
+.sub-menu.megamenu-wrapper {
+  max-width: 1200px !important;
+  min-width: 1200px !important;
+  width: 100%;
+  transform: translateX(-50%);
+  padding: 20px !important;
+}
+.themePreview {
+  background: #fff;
+}
+.themePreview_single {
+  position: relative;
+}
+/*.themePreview_contents {*/
+/*  position: absolute;*/
+/*  bottom: 0;*/
+/*}*/
+.themePreview_thumb {
+  height: 200px;
+  border: 1px solid #ddd;
+  overflow: hidden;
+}
+.themePreview_thumb img {
+  height: auto;
+}
+.themePreview_contents_title {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--heading-color);
+  margin-top: 10px;
+}

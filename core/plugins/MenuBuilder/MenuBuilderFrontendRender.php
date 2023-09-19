@@ -197,10 +197,35 @@ class MenuBuilderFrontendRender
         }
         //check it has children
         if (property_exists($menu_item,'children')){
-            $output .= $this->render_children_item($menu_item->children,$default_lang);
+            $has_megamenu = $this->checkChildrenHasMegaMenu($menu_item->children);
+            $output .= $this->render_children_item($menu_item->children, $default_lang, $has_megamenu ? 'megamenu-wrapper' : '');
         }
         $output .= '</li>';
         return $output;
+    }
+
+    private function checkChildrenHasMegaMenu($children_items)
+    {
+        $has_megamenu = false;
+        foreach ($children_items ?? [] as $item)
+        {
+            if (!empty($item))
+            {
+                if (property_exists($item, 'ptype'))
+                {
+                    preg_match('/MegaMenus/', $item->ptype,$matches);
+                    if (!empty($matches))
+                    {
+                        $has_megamenu = true;
+                    }
+                }
+            }
+
+            if ($has_megamenu)
+            {
+                return $has_megamenu;
+            }
+        }
     }
 
     protected function childmenuCheck(array $param){
@@ -223,10 +248,11 @@ class MenuBuilderFrontendRender
     }
 
 
-    protected function render_children_item($menu_item,$default_lang){
+    protected function render_children_item($menu_item,$default_lang,$megamenu = ''){
         if (empty((array)$menu_item)){return;}
         $output= '';
-        $output .= '<ul class="sub-menu">'."\n";
+        $output .= '<ul class="sub-menu '.$megamenu.'">'."\n";
+
         foreach ( $menu_item as $ch_item) {
             $this->page_id +=1;
             $output .=  $this->render_menu_item( $ch_item, $this->page_id, $default_lang);

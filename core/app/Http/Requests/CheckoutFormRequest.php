@@ -91,27 +91,27 @@ class CheckoutFormRequest extends FormRequest
     public function messages()
     {
         return [
-            'shift_name.required' => 'Name field is required.',
-            'shift_phone.required' => 'Phone field is required.',
-            'shift_email.email' => 'Email field must be valid email.',
-            'shift_country.required' => 'Country field is required.',
-            'shift_state.required' => 'State field is required.',
-            'shift_city.required' => 'City field is required.',
-            'shift_address.required' => 'Address field is required.',
+            'shift_name.required' => __('Name field is required.'),
+            'shift_phone.required' => __('Phone field is required.'),
+            'shift_email.email' => __('Email field must be valid email.'),
+            'shift_country.required' => __('Country field is required.'),
+            'shift_state.required' => __('State field is required.'),
+            'shift_city.required' => __('City field is required.'),
+            'shift_address.required' => __('Address field is required.'),
 
-            'name.required' => 'Name field is required.',
-            'phone.required' => 'Phone field is required.',
-            'country.required' => 'Country field is required.',
-            'state.required' => 'State field is required.',
-            'city.required' => 'City field is required.',
-            'address.required' => 'Address field is required.',
+            'name.required' => __('Name field is required.'),
+            'phone.required' => __('Phone field is required.'),
+            'country.required' => __('Country field is required.'),
+            'state.required' => __('State field is required.'),
+            'city.required' => __('City field is required.'),
+            'address.required' => __('Address field is required.'),
 
-            'create_username.required' => 'Name field is required.',
-            'create_password.required' => 'Password field is required.',
-            'create_password.same' => 'Password and password confirmation must match.',
+            'create_username.required' => __('Name field is required.'),
+            'create_password.required' => __('Password field is required.'),
+            'create_password.same' => __('Password and password confirmation must match.'),
 
-            'manual_trasaction_id.required' => 'Transaction ID is required.',
-            'payment_gateway.required' => 'Payment Gateway is required.'
+            'manual_trasaction_id.required' => __('Transaction ID is required.'),
+            'payment_gateway.required' => __('Payment Gateway is required.')
         ];
     }
 }

@@ -122,9 +122,7 @@
                $('.alert').hide();
 
             });
-
         });
-
     })(jQuery);
 </script>
 @yield('scripts')

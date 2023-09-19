@@ -139,7 +139,7 @@
                     },
                     success:function(res){
                         if(res.status === 'nothing'){
-                            $('.search_result').html('<h3 class="text-center text-danger">'+"{{ __('Nothing Found') }}"+'</h3>');
+                            $('.search_result').html('<h3 class="text-center text-danger">'+"{{ __('No Data Found') }}"+'</h3>');
                         }else{
                             $('.search_result').html(res);
                         }

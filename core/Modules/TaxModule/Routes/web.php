@@ -34,6 +34,9 @@ Route::middleware([
             Route::post("tax-class-option/{id}", [AdminTaxController::class, "handleTaxClassOption"])->name("tax-class-option");
 //        Route::put("tax-class-option", [AdminTaxController::class,"handleTaxClassOption"]);
 //        Route::delete("tax-class-option", [AdminTaxController::class,"deleteTaxClassOption"])->name('tax-class-option-delete');
+
+            Route::get('country-state', [AdminTaxController::class, 'getCountryStateInfo'])->name('country.state.info.ajax');
+            Route::get('state-city', [AdminTaxController::class, 'getCountryCityInfo'])->name('state.city.info.ajax');
         });
 
         /*-----------------------------------

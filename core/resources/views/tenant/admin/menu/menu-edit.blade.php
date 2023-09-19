@@ -87,9 +87,12 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            {!! render_mega_menu_list('no_lang') !!}
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="col-lg-8">
                                    <div class="menu-structure-wrapper">
                                        <div class="card">
