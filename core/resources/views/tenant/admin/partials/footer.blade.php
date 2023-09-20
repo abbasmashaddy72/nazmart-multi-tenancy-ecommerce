@@ -65,6 +65,8 @@
         "use strict";
 
         $(document).ready(function ($) {
+            sidebar();
+
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl)
@@ -182,6 +184,21 @@
             }
         }
     });
+
+    function sidebar()
+    {
+        let tax_system = $("#tax_system").val();
+        let tax_manage_menu = $('#tax-manage-menu-items');
+        let country_state = tax_manage_menu.find('ul').children().slice(0,2);
+        let tax_class = tax_manage_menu.find('ul').children().slice(3,4);
+        if(tax_system === 'zone_wise_tax_system'){
+            country_state.fadeIn();
+            tax_class.fadeOut();
+        } else {
+            country_state.fadeOut();
+            tax_class.fadeIn();
+        }
+    }
 </script>
 
 <script>

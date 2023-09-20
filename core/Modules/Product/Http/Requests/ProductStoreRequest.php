@@ -57,6 +57,8 @@ class ProductStoreRequest extends FormRequest
             "min_purchase" => "nullable",
             "max_purchase" => "nullable",
             "is_refundable" => "nullable",
+            "is_taxable" => "nullable",
+            "tax_class" => "required_if:is_taxable,==,yes",
             "is_inventory_warn_able" => "nullable",
             "policy_description" => "nullable"
          ];
@@ -65,7 +67,7 @@ class ProductStoreRequest extends FormRequest
     protected function prepareForValidation()
     {
         return $this->merge([
-            "is_inventory_warn_able" => $this->is_inventory_warning
+            "is_inventory_warn_able" => $this->is_inventory_warning,
         ]);
     }
 
@@ -78,7 +80,8 @@ class ProductStoreRequest extends FormRequest
             "sku.required" => __("SKU Stock Kipping Unit is required"),
             "uni.required" => __("Please Select a unit type"),
             "uom.required" => __("UOM Unit of measurement field is required."),
-            "unit_id.required" => __("Unit of product is required.")
+            "unit_id.required" => __("Unit of product is required."),
+            "tax_class.required_if" => __("Tax class is required.")
         ];
     }
 

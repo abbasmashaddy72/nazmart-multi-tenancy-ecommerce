@@ -35,7 +35,7 @@
                                         <label><input name="prices_include_tax" @checked(get_static_option("prices_include_tax") == 'yes') value="yes" type="radio" style="" class="">{{__('Yes, I will enter prices inclusive of tax')}}</label>
                                     </li>
                                     <li>
-                                    <label><input name="prices_include_tax" @checked(get_static_option("prices_include_tax") == 'no') value="no" type="radio" style="" class="">{{__('No, I will enter prices exclusive of tax')}}</label>
+                                        <label><input name="prices_include_tax" @checked(get_static_option("prices_include_tax") == 'no') value="no" type="radio" style="" class="">{{__('No, I will enter prices exclusive of tax')}}</label>
                                     </li>
                                 </ul>
                             </fieldset>
@@ -76,7 +76,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row display_price_wrapper">
                             <label for="tax_round_at_subtotal" class="col-md-4">{{ __("Display prices in the shop") }}</label>
                             <div class="col-md-8">
                                 <select id="display_price_in_the_shop" name="display_price_in_the_shop" class="form-control">
@@ -124,6 +124,7 @@
 
         tax_system();
         sidebar();
+        display_price_in_shop($('input[name=prices_include_tax]:checked'));
 
         $(document).on("change", "#tax_system", function () {
             tax_system();
@@ -134,6 +135,12 @@
             {
                 tax_type.after('<label class="info-message text-primary mt-2">{{__('Press update, you will get country and state tax option on sidebar')}}</label>')
             }
+        });
+
+        $(document).on('change', 'input[name=prices_include_tax]', function () {
+            let el = $(this);
+
+            display_price_in_shop(el);
         });
 
         function tax_system()
@@ -159,6 +166,16 @@
             } else {
                 country_state.fadeOut();
                 tax_class.fadeIn();
+            }
+        }
+
+        function display_price_in_shop(selector)
+        {
+            if(selector.val() === 'yes')
+            {
+                $('.display_price_wrapper').fadeIn();
+            } else {
+                $('.display_price_wrapper').hide();
             }
         }
     </script>

@@ -172,7 +172,7 @@
                                 </div>
                                 <div class="tab-pane fade" id="v-price-tab" role="tabpanel"
                                      aria-labelledby="v-price-tab">
-                                    <x-product::product-price/>
+                                    <x-product::product-price :taxClasses="$data['tax_classes']"/>
                                 </div>
                                 <div class="tab-pane fade" id="v-inventory-tab" role="tabpanel"
                                      aria-labelledby="v-inventory-tab">
@@ -306,11 +306,16 @@
                         $('#product-slug').val(convertToSlug(title_text))
                     });
 
+                    $(document).on('change', '.is_taxable_wrapper select[name=is_taxable]', function () {
+                        $('.tax_classes_wrapper').toggle();
+                        $('.tax_classes_wrapper select[name=tax_class]').prop('selectedIndex', 0);
+                    });
+
                     $(document).on("submit", "#product-create-form", function (e) {
                         e.preventDefault();
 
                         send_ajax_request("post", new FormData(e.target), $(this).attr("data-request-route"), function () {
-                            toastr.warning("{{__('Request sent successfully')}}");
+                            {{--toastr.warning("{{__('Request sent successfully')}}");--}}
                         }, function (data) {
                             if (data.success) {
                                 toastr.success("{{__('Product Created Successfully')}}");

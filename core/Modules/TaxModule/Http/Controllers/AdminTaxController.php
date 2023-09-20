@@ -88,11 +88,13 @@ class AdminTaxController extends Controller
         return view("taxmodule::backend.class-option.index", compact('taxClass','countries'));
     }
 
-    public function handleTaxClassOption(StoreTaxOptionPostRequest $request, $id){
+    public function handleTaxClassOption(StoreTaxOptionPostRequest $request, $id)
+    {
         try {
             \DB::beginTransaction();
 
             $taxClassOptions = $this->prepareTaxClassOptions($request->validated(), $id);
+
             // todo:: first delete all tax class option
             TaxClassOption::where("class_id", $id)->delete();
             // todo:: now store bulk items into tax class options

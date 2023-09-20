@@ -26,13 +26,33 @@ use Modules\Badge\Entities\Badge;
 use Modules\Campaign\Entities\CampaignProduct;
 use Modules\Campaign\Entities\CampaignSoldProduct;
 use Modules\RefundModule\Entities\RefundProduct;
+use Modules\TaxModule\Entities\TaxClass;
 
 class Product extends Model
 {
-    use HasFactory , SoftDeletes;
+    use SoftDeletes;
 
     protected $withCount = ['inventoryDetail'];
-    protected $fillable = ["name","slug","summary","description","brand_id","status_id","cost","price","sale_price","image_id","badge_id","min_purchase","max_purchase","is_refundable","is_inventory_warn_able","is_in_house"];
+    protected $fillable = [
+        "name",
+        "slug",
+        "summary",
+        "description",
+        "brand_id",
+        "status_id",
+        "cost",
+        "price",
+        "sale_price",
+        "image_id",
+        "badge_id",
+        "min_purchase",
+        "max_purchase",
+        "is_refundable",
+        "is_inventory_warn_able",
+        "is_in_house",
+        "is_taxable",
+        "tax_class_id"
+    ];
 
     public function scopePublished()
     {
@@ -144,13 +164,13 @@ class Product extends Model
         return $this->hasManyThrough(DeliveryOption::class, ProductDeliveryOption::class, 'product_id', 'id', 'id', 'delivery_option_id');
     }
 
+    public function product_tax_class(): HasOne
+    {
+        return $this->hasOne(TaxClass::class, 'id', 'tax_class_id');
+    }
+
     public function refunded_product(): HasOne
     {
         return $this->hasOne(RefundProduct::class);
-    }
-
-    protected static function newFactory()
-    {
-        return \Modules\Product\Database\factories\ProductFactory::new();
     }
 }

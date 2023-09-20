@@ -2,6 +2,7 @@
     <div class="row mt-4 gy-5">
         @foreach($products as $product)
             @php
+                dd((new \App\Http\Services\TaxRenderService($product))->getProductPrice());
                 $data = get_product_dynamic_price($product);
                 $campaign_name = $data['campaign_name'];
                 $regular_price = $data['regular_price'];

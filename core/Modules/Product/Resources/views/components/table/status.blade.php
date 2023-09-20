@@ -1,6 +1,6 @@
 
 <div class="status-dropdown">
-    <button value="{{ $statuses?->where("id",$statusId ?? 1)?->first()?->name }}" data-id="{{ $id ?? 0 }}" class="btn dropdown-toggle add-dropdown-text status-dropdown-button" data-bs-toggle="dropdown" aria-expanded="false">
+    <button value="{{ $statuses?->where("id",$statusId ?? 1)?->first()?->name }}" data-id="{{ $id ?? 0 }}" class="text-capitalize btn dropdown-toggle add-dropdown-text status-dropdown-button" data-bs-toggle="dropdown" aria-expanded="false">
         {{ $statuses?->where("id",$statusId ?? 2)?->first()?->name }}</button>
     <ul class="dropdown-menu">
         @foreach($statuses as $status)

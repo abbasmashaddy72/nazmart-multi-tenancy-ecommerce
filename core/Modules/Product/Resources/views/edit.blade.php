@@ -115,7 +115,7 @@
                                 </div>
                                 <div class="tab-pane fade" id="v-price-tab" role="tabpanel"
                                      aria-labelledby="v-price-tab">
-                                    <x-product::product-price :product="$product"/>
+                                    <x-product::product-price :product="$product" :tax_classes="$data['tax_classes']"/>
                                 </div>
                                 <div class="tab-pane fade" id="v-inventory-tab" role="tabpanel"
                                      aria-labelledby="v-inventory-tab">
