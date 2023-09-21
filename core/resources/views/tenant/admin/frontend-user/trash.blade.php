@@ -1,6 +1,6 @@
 @extends(route_prefix().'admin.admin-master')
 
-@section('title') {{__('All Users')}} @endsection
+@section('title') {{__('All Deleted Users')}} @endsection
 
 @section('style')
     <x-datatable.css/>
@@ -12,10 +12,10 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
-                    <h4 class="card-title mb-4">{{__('All users')}}</h4>
+                    <h4 class="card-title mb-4">{{__('All deleted users')}}</h4>
 
                     <div class="btn-wrapper">
-                        <a class="btn btn-danger btn-sm" href="{{route('tenant.admin.user.trash')}}">{{__('Trash')}} {{$trashed_users > 0 ? '('.$trashed_users.')' : ''}}</a>
+                        <a class="btn btn-info btn-sm" href="{{route('tenant.admin.user')}}">{{__('Back')}}</a>
                     </div>
                 </div>
 
@@ -44,28 +44,10 @@
                                    @endif
                                </td>
                                <td>
-                                   <x-delete-popover url="{{route('tenant.admin.user.delete',$user->id)}}" popover="{{__('Delete')}}"/>
-                                   <x-link-with-popover url="{{route('tenant.admin.user.edit.profile',$user->id)}}" popover="{{__('Edit')}}">
-                                       <i class="mdi mdi-account-edit"></i>
+                                   <x-link-with-popover url="{{route('tenant.admin.user.trash.restore', $user->id)}}" popover="{{__('Restore')}}" class="success">
+                                       {{__('Restore')}}
                                    </x-link-with-popover>
-
-
-                                <x-modal.button target="tenant_password_change" extra="user_change_password_btn" type="info" dataid="{{$user->id}}">
-                                    {{__('Change Password')}}
-                                </x-modal.button>
-
-                                   <x-modal.button target="send_mail_to_tenant_modal" extra="send_mail_to_tenant_btn" type="success" dataid="{{$user->email}}">
-                                       {{__('Send Mail')}}
-                                   </x-modal.button>
-
-
-                                   @if($user->email_verified < 1)
-                                       <form action="{{route(route_prefix().'admin.user.resend.verify.mail')}}" method="post" enctype="multipart/form-data">
-                                           @csrf
-                                           <input type="hidden" name="id" value="{{$user->id}}">
-                                           <button class="btn btn-secondary mb-3 mr-1 btn-sm " type="submit">{{__('Send Verify Mail')}}</button>
-                                       </form>
-                                   @endif
+                                   <x-delete-popover url="{{route('tenant.admin.user.trash.delete', $user->id)}}" method="POST" popover="{{__('Delete')}}"/>
                                </td>
                            </tr>
                        @endforeach

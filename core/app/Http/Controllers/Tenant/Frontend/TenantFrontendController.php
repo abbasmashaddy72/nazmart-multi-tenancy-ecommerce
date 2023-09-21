@@ -42,6 +42,7 @@ use Modules\Blog\Entities\Blog;
 use Artesaos\SEOTools\Traits\SEOTools as SEOToolsTrait;
 use Modules\Campaign\Entities\Campaign;
 use Modules\Campaign\Entities\CampaignSoldProduct;
+use Modules\CountryManage\Entities\Country;
 use Modules\CountryManage\Entities\State;
 use Modules\DigitalProduct\Entities\DigitalAuthor;
 use Modules\DigitalProduct\Entities\DigitalCategories;
@@ -1400,7 +1401,9 @@ class TenantFrontendController extends Controller
         if (auth('web')->check()) {
             return redirect()->route('tenant.user.home');
         }
-        return view('tenant.frontend.user.register');
+
+        $countries = Country::published()->get();
+        return view('tenant.frontend.user.register', compact('countries'));
     }
 
     protected function tenant_user_create(Request $request)
@@ -1410,9 +1413,10 @@ class TenantFrontendController extends Controller
             'email' => ['required', 'string', 'email', 'max:191', 'unique:users'],
             'username' => ['required', 'string', 'max:191', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'country' => ['required', 'string'],
-            'state' => ['required', 'string'],
-            'city' => ['nullable', 'string'],
+            'country' => ['required'],
+            'state' => ['nullable'],
+            'city' => ['nullable'],
+            'postal_code' => ['nullable', 'string'],
         ]);
 
         $user = DB::table('users')->insert([
@@ -1421,6 +1425,7 @@ class TenantFrontendController extends Controller
             'country' => $request['country'],
             'state' => $request['state'],
             'city' => $request['city'],
+            'postal_code' => $request['postal_code'],
             'username' => $request['username'],
             'password' => Hash::make($request['password']),
             'created_at' => Carbon::now(),

@@ -275,8 +275,6 @@ Route::middleware([
         Route::get('/download/{slug}', 'download')->name('user.dashboard.download.file');
         Route::post('/package-order/cancel', 'package_order_cancel')->name('user.dashboard.package.order.cancel');
         Route::post('/package-user/generate-invoice', 'generate_package_invoice')->name('frontend.package.invoice.generate');
-
-        Route::get('/country-wise-state-tax', 'stateAjax')->name('user.dashboard.get.state.ajax');
     });
 
     //User Support Ticket Routes

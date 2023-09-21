@@ -79,6 +79,4 @@ class RegisterController extends Controller
     {
         return view('landlord.frontend.auth.register');
     }
-
-
 }

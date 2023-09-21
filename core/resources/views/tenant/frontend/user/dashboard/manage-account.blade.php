@@ -78,25 +78,6 @@
                 $('.media_upload_form_btn').trigger('click');
             });
 
-            var selectdCountry = "{{$user_details->country}}";
-            $('#country option[value="' + selectdCountry + '"]').attr('selected', true);
-
-            $(document).on('change', 'select[name=country]', function () {
-                let el = $(this);
-                let country = el.val();
-
-                $.ajax({
-                    url: '{{route('tenant.user.dashboard.get.state.ajax')}}',
-                    type: 'GET',
-                    data: {
-                        country_id: country
-                    },
-                    success: function (data) {
-                        $('select[name=state]').html(data.markup);
-                    }
-                })
-            });
-
             $(document).on('click', '.address-submit-btn', function (e) {
                 e.preventDefault();
                 let name = $('.address_form input[name=full_name]').val();
@@ -104,7 +85,8 @@
                 let phone = $('.address_form input[name=phone]').val();
                 let country = $('.address_form select[name=country]').val();
                 let state = $('.address_form select[name=state]').val();
-                let city = $('.address_form input[name=city]').val();
+                let city = $('.address_form select[name=city]').val();
+                let postal_code = $('.address_form input[name=postal_code]').val();
                 let address = $('.address_form textarea[name=address]').val();
 
                 $.ajax({
@@ -118,6 +100,7 @@
                         country: country,
                         state: state,
                         city: city,
+                        postal_code: postal_code,
                         address: address
                     },
                     beforeSend: function () {
@@ -143,7 +126,6 @@
             $(document).on('submit', 'form.profile-edit-form', function (e) {
                 e.preventDefault();
 
-                let el = $(this);
                 let form = new FormData(e.target);
 
                 $.ajax({
@@ -210,7 +192,58 @@
                         });
                     }
                 });
-            })
+            });
+
+            $(document).on('change', 'select[name=country]', function (e) {
+                e.preventDefault();
+
+                let country_id = $(this).val();
+
+                $.post(`{{route('tenant.admin.au.state.all')}}`,
+                    {
+                        _token: `{{csrf_token()}}`,
+                        country: country_id
+                    },
+                    function (data) {
+                        let stateField = $('.stateField');
+                        stateField.empty();
+                        stateField.append(`<option value="">{{__('Select a state')}}</option>`);
+
+                        let cityField = $('.cityField');
+                        cityField.empty();
+                        cityField.append(`<option value="">{{__('Select a city')}}</option>`);
+
+                        $.each(data.states , function (index, value) {
+                            stateField.append(
+                                `<option value="${value.id}">${value.name}</option>`
+                            );
+                        });
+                    }
+                )
+            });
+
+            $(document).on('change', 'select[name=state]', function (e) {
+                e.preventDefault();
+
+                let state_id = $(this).val();
+
+                $.post(`{{route('tenant.admin.au.city.all')}}`,
+                    {
+                        _token: `{{csrf_token()}}`,
+                        state: state_id
+                    },
+                    function (data) {
+                        let cityField = $('.cityField');
+                        cityField.empty();
+
+                        $.each(data.cities , function (index, value) {
+                            cityField.append(
+                                `<option value="${value.id}">${value.name}</option>`
+                            );
+                        });
+                    }
+                )
+            });
         })
     </script>
 @endsection

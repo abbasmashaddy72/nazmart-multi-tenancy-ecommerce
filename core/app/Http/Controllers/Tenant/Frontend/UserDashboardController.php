@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Modules\Blog\Entities\Blog;
 use Barryvdh\DomPDF\Facade as PDF;
+use Modules\CountryManage\Entities\City;
 use Modules\CountryManage\Entities\Country;
 use Modules\CountryManage\Entities\State;
 use Modules\DigitalProduct\Entities\DigitalProduct;
@@ -131,11 +132,11 @@ class UserDashboardController extends Controller
             'name' => 'required|string|max:191',
             'email' => 'required|email|max:191',
             'phone' => 'nullable|string|max:191',
-            'state' => 'nullable|string|max:191',
-            'city' => 'nullable|string|max:191',
-            'zipcode' => 'nullable|string|max:191',
-            'country' => 'nullable|string|max:191',
+            'country' => 'required',
+            'state' => 'nullable',
+            'city' => 'nullable',
             'address' => 'nullable|string',
+            'postal_code' => 'nullable|string|max:191',
             'image' => 'nullable|string',
         ],[
             'name.' => __('name is required'),
@@ -153,6 +154,7 @@ class UserDashboardController extends Controller
                 'state' => SanitizeInput::esc_html($request->state),
                 'city' => SanitizeInput::esc_html($request->city),
                 'country' => SanitizeInput::esc_html($request->country),
+                'postal_code' => SanitizeInput::esc_html($request->postal_code),
                 'image' => SanitizeInput::esc_html($request->image)
             ]
         );
@@ -204,11 +206,15 @@ class UserDashboardController extends Controller
     public function manage_account()
     {
         $user_details = Auth::guard('web')->user();
-        $countries = Country::where('status', 'publish')->select('id', 'name')->get();
+        $countries = Country::published()->select('id', 'name')->get();
+        $states = State::where(['status' => 'publish', 'country_id' => $user_details->country])->select('id', 'name')->get();
+        $cities = City::where(['status' => 'publish', 'state_id' => $user_details->state])->select('id', 'name')->get();
 
         return view(self::BASE_PATH.'manage-account', compact([
             'user_details',
             'countries',
+            'states',
+            'cities'
         ]));
     }
 
@@ -226,6 +232,7 @@ class UserDashboardController extends Controller
             'country' => 'required',
             'state' => 'nullable',
             'city' => 'required',
+            'postal_code' => 'required',
             'address' => 'required'
         ]);
 
@@ -239,10 +246,11 @@ class UserDashboardController extends Controller
                 'user_id' => $user->id,
                 'country_id' => $request->country,
                 'state_id' => $request->state,
+                'city' => $request->city,
                 'full_name' => SanitizeInput::esc_html($request->name),
                 'phone' => SanitizeInput::esc_html($request->phone),
                 'email' => SanitizeInput::esc_html(strtolower($request->email)),
-                'city' => SanitizeInput::esc_html($request->city),
+                'postal_code' => SanitizeInput::esc_html($request->postal_code),
                 'address' => SanitizeInput::esc_html($request->address)
             ]
         );
@@ -475,25 +483,5 @@ class UserDashboardController extends Controller
 
         }
         return redirect()->back()->with(['msg' => __('Order Cancel'), 'type' => 'warning']);
-    }
-
-
-    public function stateAjax(Request $request)
-    {
-        $request->validate([
-            'country_id' => 'required'
-        ]);
-
-        $states = State::where(['status' => 'publish' ,'country_id' => $request->country_id])->select('id', 'name', 'country_id')->get();
-
-        $markup = '';
-        foreach ($states ?? [] as $state)
-        {
-            $markup .= '<option value="'.$state->id.'">'.$state->name.'</option>';
-        }
-
-        return response()->json([
-            'markup' => $markup
-        ]);
     }
 }

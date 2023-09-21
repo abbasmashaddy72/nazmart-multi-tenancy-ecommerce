@@ -15,6 +15,7 @@ class AdminUserController extends Controller
         $states = State::where('country_id', $request->country)
             ->select("id","name")
             ->where('status', 'publish')->get();
+
         return response()->json([
             'status' => 'success',
             'states' => $states,
@@ -24,7 +25,8 @@ class AdminUserController extends Controller
     //todo: get city
     public function get_state_city(Request $request)
     {
-        $cities = City::where('state_id', $request->state)->where('status', 1)->get();
+        $cities = City::where('state_id', $request->state)->where('status', 'publish')->get();
+
         return response()->json([
             'status' => 'success',
             'cities' => $cities,

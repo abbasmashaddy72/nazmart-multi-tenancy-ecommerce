@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tenant\Admin;
 
+use App\Helpers\FlashMsg;
 use App\Helpers\ResponseMessage;
 use App\Helpers\SanitizeInput;
 use App\Http\Controllers\Controller;
@@ -32,7 +33,9 @@ class FrontendUserManageController extends Controller
 
     public function all_users(){
         $all_users = User::latest()->paginate(10);
-        return view(self::BASE_PATH.'index',compact('all_users'));
+        $trashed_users = User::onlyTrashed()->count();
+
+        return view(self::BASE_PATH.'index',compact('all_users', 'trashed_users'));
     }
 
     public function new_user()
@@ -130,6 +133,21 @@ class FrontendUserManageController extends Controller
         $user->delete();
 
         return response()->danger(ResponseMessage::delete(__('Tenant deleted successfully')));
+    }
+
+    public function trashed_users(){
+        $all_users = User::onlyTrashed()->paginate(10);
+        return view(self::BASE_PATH.'trash',compact('all_users'));
+    }
+
+    public function trashed_restore($id){
+        User::onlyTrashed()->where('id', $id)->restore();
+        return back()->with(FlashMsg::restore_succeed('user'));
+    }
+
+    public function trashed_delete(Request $request, $id){
+        User::onlyTrashed()->where('id', $id)->forceDelete();
+        return back()->with(FlashMsg::delete_succeed('user'));
     }
 
     public function update_change_password(Request $request)
