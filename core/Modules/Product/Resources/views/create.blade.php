@@ -222,8 +222,9 @@
         </div>
         <x-media-upload.markup/>
         @endsection
+
         @section('scripts')
-            <script src="{{ global_asset('assets/common/js/jquery-ui.min.js') }}" rel="stylesheet"></script>
+            <script src="{{global_asset('assets/common/js/jquery-ui.min.js') }}" rel="stylesheet"></script>
             <script src="{{global_asset('assets/tenant/backend/js/bootstrap-taginput.min.js')}}"></script>
             <script src="{{global_asset('assets/common/js/select2.min.js')}}"></script>
 
@@ -334,7 +335,6 @@
                                 nav_product.effect("shake", {direction: "up left", times: 2, distance: 3}, 500);
                             }
                         }, function (xhr) {
-                            console.log(xhr)
                             ajax_toastr_error_message(xhr);
                         });
                     })

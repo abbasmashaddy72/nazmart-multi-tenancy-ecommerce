@@ -1,6 +1,6 @@
 <div class="form-group">
     <label for="status">{{$title}}</label>
-    <select name="{{$name}}" class="form-control {{$class ?? ''}}">
+    <select name="{{$name}}" class="form-control {{$class ?? ''}}" id="{{$id ?? ''}}">
        {{$slot}}
     </select>
     @if(isset($info))

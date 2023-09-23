@@ -30,9 +30,29 @@
                     <x-fields.input type="email" name="email" value="{{$user->email}}" label="{{__('Email')}}"/>
                     <x-fields.input type="text" name="mobile" value="{{$user->mobile}}" label="{{__('Mobile')}}"/>
 
-                    <x-fields.country-select name="country" value="{{$user->country}}" label="{{__('Country')}}"/>
-                    <x-fields.input type="text" name="city" value="{{$user->city}}" label="{{__('City')}}"/>
-                    <x-fields.input type="text" name="state" value="{{$user->state}}" label="{{__('State')}}"/>
+                    <x-fields.select title="Country" name="country" class="countryField" id="countryField">
+                        <option value="">{{__('Select a country')}}</option>
+                        @foreach($countries ?? [] as $country)
+                            <option @selected($country->id == $user->country) value="{{$country->id}}">{{$country->name}}</option>
+                        @endforeach
+                    </x-fields.select>
+
+                    <x-fields.select title="State" name="state" class="stateField" id="stateField">
+                        <option value="">{{__('Select a state')}}</option>
+                        @foreach($states ?? [] as $country)
+                            <option @selected($country->id == $user->state) value="{{$country->id}}">{{$country->name}}</option>
+                        @endforeach
+                    </x-fields.select>
+
+                    <x-fields.select title="City" name="city" class="cityField" id="cityField">
+                        <option value="">{{__('Select a city')}}</option>
+                        @foreach($cities ?? [] as $country)
+                            <option @selected($country->id == $user->city) value="{{$country->id}}">{{$country->name}}</option>
+                        @endforeach
+                    </x-fields.select>
+
+                    <x-fields.input type="text" name="postal_code" value="{{$user->postal_code}}" label="{{__('Postal Code')}}"/>
+
                     <x-fields.input type="text" name="company" value="{{$user->company}}" label="{{__('Company')}}"/>
                     <x-fields.input type="text" name="address" value="{{$user->address}}"  label="{{__('Address')}}"/>
 
@@ -52,5 +72,60 @@
 
 @section('scripts')
     <x-media-upload.js/>
+
+    <script>
+        $(document).ready(function () {
+            $(document).on('change', 'select[name=country]', function (e) {
+                e.preventDefault();
+
+                let country_id = $(this).val();
+
+                $.post(`{{route('tenant.admin.au.state.all')}}`,
+                    {
+                        _token: `{{csrf_token()}}`,
+                        country: country_id
+                    },
+                    function (data) {
+                        let stateField = $('.stateField');
+                        stateField.empty();
+                        stateField.append(`<option value="">{{__('Select a state')}}</option>`);
+
+                        let cityField = $('.cityField');
+                        cityField.empty();
+                        cityField.append(`<option value="">{{__('Select a city')}}</option>`);
+
+                        $.each(data.states , function (index, value) {
+                            stateField.append(
+                                `<option value="${value.id}">${value.name}</option>`
+                            );
+                        });
+                    }
+                )
+            });
+
+            $(document).on('change', 'select[name=state]', function (e) {
+                e.preventDefault();
+
+                let state_id = $(this).val();
+
+                $.post(`{{route('tenant.admin.au.city.all')}}`,
+                    {
+                        _token: `{{csrf_token()}}`,
+                        state: state_id
+                    },
+                    function (data) {
+                        let cityField = $('.cityField');
+                        cityField.empty();
+
+                        $.each(data.cities , function (index, value) {
+                            cityField.append(
+                                `<option value="${value.id}">${value.name}</option>`
+                            );
+                        });
+                    }
+                )
+            });
+        });
+    </script>
 @endsection
 

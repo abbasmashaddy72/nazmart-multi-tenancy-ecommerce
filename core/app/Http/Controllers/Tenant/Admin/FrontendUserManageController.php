@@ -21,6 +21,9 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Modules\Blog\Entities\Blog;
+use Modules\CountryManage\Entities\City;
+use Modules\CountryManage\Entities\Country;
+use Modules\CountryManage\Entities\State;
 use Modules\Service\Entities\Service;
 use function __;
 use function auth;
@@ -40,7 +43,8 @@ class FrontendUserManageController extends Controller
 
     public function new_user()
     {
-        return view(self::BASE_PATH.'new');
+        $countries = Country::published()->select('id', 'name')->get();
+        return view(self::BASE_PATH.'new', compact('countries'));
     }
 
     public function new_user_store(Request $request)
@@ -49,10 +53,11 @@ class FrontendUserManageController extends Controller
             'name'=> 'required|string|max:191',
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'country'=> 'nullable',
-            'city'=> 'nullable',
+            'country'=> 'required|integer',
+            'state'=> 'nullable|integer',
+            'city'=> 'nullable|integer',
+            'postal_code'=> 'nullable',
             'mobile'=> 'nullable',
-            'state'=> 'nullable',
             'address'=> 'nullable',
             'image'=> 'nullable',
             'company'=> 'nullable',
@@ -63,10 +68,11 @@ class FrontendUserManageController extends Controller
             'email' => SanitizeInput::esc_html($request->email),
             'password' => Hash::make($request->password),
             'username' => Str::slug(SanitizeInput::esc_html($request->username)),
-            'country' => SanitizeInput::esc_html($request->country),
-            'city' => SanitizeInput::esc_html($request->city),
+            'country' => $request->country,
+            'state' => $request->state,
+            'city' => $request->city,
+            'postal_code' => SanitizeInput::esc_html($request->postal_code),
             'mobile' => SanitizeInput::esc_html($request->mobile),
-            'state' => SanitizeInput::esc_html($request->state),
             'address' => SanitizeInput::esc_html($request->address),
             'image' => $request->image,
             'company' => SanitizeInput::esc_html($request->company),
@@ -75,7 +81,7 @@ class FrontendUserManageController extends Controller
         try {
             $sub =  __("Account created");
             $msg = '<p>'.__('Hello').' '.$request->name.',</p>';
-            $msg .= '<p>'.__("Your user account is created successfully. Click below to continue browsing your account").'</p>';
+            $msg .= '<p>'.__("Your user account is created successfully. click below to continue browsing your account").'</p>';
             $msg .= '<a href="'.url('/').'">'.__('Open').'</a>';
 
             Mail::to(trim($request->email))->send(new BasicMail($msg,$sub));
@@ -88,9 +94,12 @@ class FrontendUserManageController extends Controller
 
     public function edit_profile($id)
     {
-
         $user = User::find($id);
-        return view(self::BASE_PATH.'edit',compact('user'));
+        $countries = Country::published()->select('id', 'name')->get();
+        $states = State::where(['status' => 'publish', 'country_id' => $user->country])->select('id', 'name')->get();
+        $cities = City::where(['status' => 'publish', 'state_id' => $user->state])->select('id', 'name')->get();
+
+        return view(self::BASE_PATH.'edit',compact('user','countries', 'states', 'cities'));
     }
 
     public function update_edit_profile(Request $request)
@@ -100,10 +109,11 @@ class FrontendUserManageController extends Controller
             'name'=> 'required|string|max:191',
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users','email')->ignore($request->id)],
             'username' => ['required', 'string','max:255', Rule::unique('users','username')->ignore($request->id)],
-            'country'=> 'nullable',
-            'city'=> 'nullable',
+            'country'=> 'required|integer',
+            'state'=> 'nullable|integer',
+            'city'=> 'nullable|integer',
+            'postal_code'=> 'nullable',
             'mobile'=> 'nullable',
-            'state'=> 'nullable',
             'address'=> 'nullable',
             'image'=> 'nullable',
             'company'=> 'nullable',
@@ -114,10 +124,11 @@ class FrontendUserManageController extends Controller
             'email' => SanitizeInput::esc_html($request->email),
             'password' => Hash::make($request->password),
             'username' => Str::slug(SanitizeInput::esc_html($request->username)),
-            'country' => SanitizeInput::esc_html($request->country),
-            'city' => SanitizeInput::esc_html($request->city),
+            'country' => $request->country,
+            'state' => $request->state,
+            'city' => $request->city,
+            'postal_code' => SanitizeInput::esc_html($request->postal_code),
             'mobile' => SanitizeInput::esc_html($request->mobile),
-            'state' => SanitizeInput::esc_html($request->state),
             'address' => SanitizeInput::esc_html($request->address),
             'image' => SanitizeInput::esc_html($request->image),
             'company' => SanitizeInput::esc_html($request->company),

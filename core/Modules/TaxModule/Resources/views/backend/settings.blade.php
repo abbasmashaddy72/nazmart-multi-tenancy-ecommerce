@@ -45,6 +45,7 @@
                             <label for="calculate_tax_based_on" class="col-md-4">{{ __("Calculate tax based on") }}</label>
                             <div class="col-md-8">
                                 <select name="calculate_tax_based_on" id="calculate_tax_based_on" class="form-control">
+                                    <option @selected(get_static_option("calculate_tax_based_on") == "customer_account_address") value="customer_account_address"> {{ __("Customer Account Address") }} </option>
                                     <option @selected(get_static_option("calculate_tax_based_on") == "customer_billing_address") value="customer_billing_address"> {{ __("Customer Billing Address") }} </option>
                                 </select>
                             </div>
