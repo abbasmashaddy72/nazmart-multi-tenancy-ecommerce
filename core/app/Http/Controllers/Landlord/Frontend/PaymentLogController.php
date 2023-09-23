@@ -56,6 +56,7 @@ class PaymentLogController extends Controller
         $zero_price_condition = 'required';
         if($plan->price == 0)
         {
+            $manual_transection_condition = 'nullable';
             $zero_price_condition = 'nullable';
             $request->selected_payment_gateway = 'manual_payment';
 
