@@ -534,5 +534,12 @@
         $(document).on('click', '#final-submit', () => {
             $('#user_add_subscription_form').submit();
         });
+
+        $('.close-bars, .body-overlay').on('click', function () {
+            $('.dashboard-close, .dashboard-close-main, .body-overlay').removeClass('active');
+        });
+        $('.sidebar-icon').on('click', function () {
+            $('.dashboard-close, .dashboard-close-main, .body-overlay').addClass('active');
+        });
     </script>
 @endsection

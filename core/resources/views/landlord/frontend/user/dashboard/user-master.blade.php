@@ -153,17 +153,4 @@
     </div>
 @endsection
 
-@section('scripts')
-    <script>
-        $('.close-bars, .body-overlay').on('click', function () {
-            $('.dashboard-close, .dashboard-close-main, .body-overlay').removeClass('active');
-        });
-        $('.sidebar-icon').on('click', function () {
-            $('.dashboard-close, .dashboard-close-main, .body-overlay').addClass('active');
-        });
-    </script>
-
-    @yield('scripts')
-@endsection
-
 
