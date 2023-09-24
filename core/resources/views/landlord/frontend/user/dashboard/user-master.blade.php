@@ -136,7 +136,6 @@
                         </div>
                     </div>
 
-
                     <div class="dashboard-right">
                         <div class="parent">
                             <div class="col-xl-12">
@@ -151,19 +150,6 @@
             </div>
         </div>
     </div>
-@endsection
-
-@section('scripts')
-    <script>
-        $('.close-bars, .body-overlay').on('click', function () {
-            $('.dashboard-close, .dashboard-close-main, .body-overlay').removeClass('active');
-        });
-        $('.sidebar-icon').on('click', function () {
-            $('.dashboard-close, .dashboard-close-main, .body-overlay').addClass('active');
-        });
-    </script>
-
-    @yield('scripts')
 @endsection
 
 

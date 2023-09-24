@@ -4,7 +4,9 @@ namespace Modules\TaxModule\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\CountryManage\Entities\City;
 use Modules\CountryManage\Entities\Country;
+use Modules\CountryManage\Entities\State;
 use Modules\TaxModule\Entities\TaxClass;
 use Modules\TaxModule\Entities\TaxClassOption;
 use Modules\TaxModule\Http\Requests\StoreTaxOptionPostRequest;
@@ -86,11 +88,13 @@ class AdminTaxController extends Controller
         return view("taxmodule::backend.class-option.index", compact('taxClass','countries'));
     }
 
-    public function handleTaxClassOption(StoreTaxOptionPostRequest $request, $id){
+    public function handleTaxClassOption(StoreTaxOptionPostRequest $request, $id)
+    {
         try {
             \DB::beginTransaction();
 
             $taxClassOptions = $this->prepareTaxClassOptions($request->validated(), $id);
+
             // todo:: first delete all tax class option
             TaxClassOption::where("class_id", $id)->delete();
             // todo:: now store bulk items into tax class options
@@ -130,5 +134,29 @@ class AdminTaxController extends Controller
         }
 
         return $arr;
+    }
+
+    public function getCountryStateInfo(Request $request){
+        $request->validate(["id" => "required"]);
+
+        $states = State::select('id', 'name')->where('country_id', $request->id)->get();
+        $html = "<option value=''>".__('Select State')."</option>";
+        foreach($states as $state){
+            $html .= "<option value='". $state->id ."'>" . $state->name . "</option>";
+        }
+
+        return $html;
+    }
+
+    public function getCountryCityInfo(Request $request){
+        $request->validate(["id" => "required"]);
+
+        $cities = City::select('id', 'name')->where('state_id', $request->id)->get();
+        $html = "<option value=''>". __("Select City") ."</option>";
+        foreach($cities as $city){
+            $html .= "<option value='". $city->id ."'>" . $city->name . "</option>";
+        }
+
+        return $html;
     }
 }

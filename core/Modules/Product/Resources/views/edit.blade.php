@@ -115,7 +115,7 @@
                                 </div>
                                 <div class="tab-pane fade" id="v-price-tab" role="tabpanel"
                                      aria-labelledby="v-price-tab">
-                                    <x-product::product-price :product="$product"/>
+                                    <x-product::product-price :product="$product" :taxClasses="$data['tax_classes']"/>
                                 </div>
                                 <div class="tab-pane fade" id="v-inventory-tab" role="tabpanel"
                                      aria-labelledby="v-inventory-tab">
@@ -211,6 +211,10 @@
                     $(this).closest('.inventory_item').find('.item_attribute_value').html(terms_html);
                 });
 
+                $(document).on('change', '.is_taxable_wrapper select[name=is_taxable]', function () {
+                    $('.tax_classes_wrapper').toggle();
+                    $('.tax_classes_wrapper select[name=tax_class]').prop('selectedIndex', 0);
+                });
 
                 $(document).ready(function () {
                     String.prototype.capitalize = String.prototype.capitalize || function () {

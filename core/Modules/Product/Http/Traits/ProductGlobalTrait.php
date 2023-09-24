@@ -2,6 +2,7 @@
 
 namespace Modules\Product\Http\Traits;
 
+use App\Enums\ProductTypeEnum;
 use App\Helpers\SanitizeInput;
 use App\Http\Services\CustomPaginationService;
 use Illuminate\Database\Eloquent\Builder;
@@ -127,7 +128,7 @@ trait ProductGlobalTrait {
 
     private function product_type(): int
     {
-        return 1;
+        return ProductTypeEnum::PHYSICAL;
     }
 
     public function ProductData($data): array
@@ -141,8 +142,11 @@ trait ProductGlobalTrait {
             "price" => $data["price"],
             "sale_price" => $data["sale_price"],
             "cost" => $data["cost"],
+            "is_taxable" => $data["is_taxable"] == 'yes', // yes = 1, no = 0
+            "tax_class_id" => $data["tax_class"],
             "badge_id" => $data["badge_id"],
             "brand_id" => $data["brand"],
+            "status_id" => 1,
             "product_type" => $this->product_type() ?? 2,
             "min_purchase" => $data["min_purchase"],
             "max_purchase" => $data["max_purchase"],

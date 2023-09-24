@@ -391,6 +391,9 @@ Route::middleware([
         Route::get('/edit-profile/{id}', 'edit_profile')->name('admin.user.edit.profile');
         Route::post('/update-profile', 'update_edit_profile')->name('admin.user.update.profile');
         Route::post('/delete/{id}', 'delete')->name('admin.user.delete');
+        Route::get('/trash', 'trashed_users')->name('admin.user.trash');
+        Route::get('/trash/restore/{id}', 'trashed_restore')->name('admin.user.trash.restore');
+        Route::post('/trash/delete/{id}', 'trashed_delete')->name('admin.user.trash.delete');
         Route::post('/change-password', 'update_change_password')->name('admin.user.change.password');
         Route::get('/view/{id}', 'view_profile')->name('admin.user.view');
         Route::post('/send-mail', 'send_mail')->name('admin.user.send.mail');

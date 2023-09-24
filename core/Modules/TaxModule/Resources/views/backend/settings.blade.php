@@ -1,6 +1,6 @@
 @extends('tenant.admin.admin-master')
 
-@section("site-title", __("Tax module settings"))
+@section("title", __("Tax Module Settings"))
 
 @section("content")
     <div class="card">
@@ -8,7 +8,7 @@
             <h3 class="title">{{ __("Tax module settings") }}</h3>
         </div>
         <div class="card-body">
-            <form action="{{ route('admin.tax-module.settings') }}" method="post" class="row">
+            <form action="{{ route('tenant.admin.tax-module.settings') }}" method="post" class="row">
                 @csrf
                 @method('PUT')
                 <div class="col-md-6">
@@ -20,8 +20,8 @@
                         </label>
                         <div class="col-md-8">
                             <select class="form-control" name="tax_system" id="tax_system">
-                                <option {{ get_static_option("tax_system") == "zone_wise_tax_system" ? "selected" : "" }} value="zone_wise_tax_system">{{ __("Zone wise tax system") }}</option>
-                                <option {{ get_static_option("tax_system") == "advance_tax_system" ? "selected" : "" }} value="advance_tax_system">{{ __("Advance Tax system") }}</option>
+                                <option @selected(get_static_option('tax_system') == "zone_wise_tax_system") value="zone_wise_tax_system">{{ __("Zone wise tax system") }}</option>
+                                <option @selected(get_static_option("tax_system") == "advance_tax_system") value="advance_tax_system">{{ __("Advance Tax system") }}</option>
                             </select>
                         </div>
                     </div>
@@ -32,10 +32,10 @@
                             <fieldset id="prices_entered_with_tax" class="col-md-8">
                                 <ul>
                                     <li>
-                                        <label><input name="prices_include_tax" {{ get_static_option("prices_include_tax") == 'yes' ? "checked" : "" }} value="yes" type="radio" style="" class=""> Yes, I will enter prices inclusive of tax</label>
+                                        <label><input name="prices_include_tax" @checked(get_static_option("prices_include_tax") == 'yes') value="yes" type="radio" style="" class="">{{__('Yes, I will enter prices inclusive of tax')}}</label>
                                     </li>
                                     <li>
-                                        <label><input name="prices_include_tax" {{ get_static_option("prices_include_tax") == 'no' ? "checked" : "" }} value="no" type="radio" style="" class=""> No, I will enter prices exclusive of tax</label>
+                                        <label><input name="prices_include_tax" @checked(get_static_option("prices_include_tax") == 'no') value="no" type="radio" style="" class="">{{__('No, I will enter prices exclusive of tax')}}</label>
                                     </li>
                                 </ul>
                             </fieldset>
@@ -45,8 +45,8 @@
                             <label for="calculate_tax_based_on" class="col-md-4">{{ __("Calculate tax based on") }}</label>
                             <div class="col-md-8">
                                 <select name="calculate_tax_based_on" id="calculate_tax_based_on" class="form-control">
-                                    <option {{ get_static_option("calculate_tax_based_on") == "customer_billing_address" ? "selected" : "" }} value="customer_billing_address"> {{ __("Customer Billing Address") }} </option>
-                                    <option {{ get_static_option("calculate_tax_based_on") == "vendor_shop_address" ? "selected" : "" }} value="vendor_shop_address"> {{ __("Vendor Base Address") }} </option>
+                                    <option @selected(get_static_option("calculate_tax_based_on") == "customer_account_address") value="customer_account_address"> {{ __("Customer Account Address") }} </option>
+                                    <option @selected(get_static_option("calculate_tax_based_on") == "customer_billing_address") value="customer_billing_address"> {{ __("Customer Billing Address") }} </option>
                                 </select>
                             </div>
                         </div>
@@ -57,12 +57,12 @@
                                 <select name="shipping_tax_class" id="shipping_tax_class" class="form-control">
                                     <option value="shipping_tax_class_based_on_cart_items"> {{__("Shipping tax class based on cart items")}} </option>
                                     @foreach($taxClasses as $taxClass)
-                                        <option {{ get_static_option("shipping_tax_class") == $taxClass->id ? "selected" : "" }} value="{{ $taxClass->id }}"> {{ $taxClass->name }} </option>
+                                        <option @selected(get_static_option("shipping_tax_class") == $taxClass->id) value="{{ $taxClass->id }}"> {{ $taxClass->name }} </option>
                                     @endforeach
                                 </select>
 
                                 <div class="mt-2">
-                                    <a href="{{ route('admin.tax-module.tax-class') }}" class="text-primary">{{ __("Add tax class") }}</a>
+                                    <a href="{{ route('tenant.admin.tax-module.tax-class') }}" class="text-primary">{{ __("Add tax class") }}</a>
                                 </div>
                             </div>
                         </div>
@@ -77,12 +77,12 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row display_price_wrapper">
                             <label for="tax_round_at_subtotal" class="col-md-4">{{ __("Display prices in the shop") }}</label>
                             <div class="col-md-8">
                                 <select id="display_price_in_the_shop" name="display_price_in_the_shop" class="form-control">
-                                    <option {{ get_static_option("display_price_in_the_shop") == "including" ? "selected" : "" }} value="including"> {{__("Including tax")}} </option>
-                                    <option {{ get_static_option("display_price_in_the_shop") == "exclusive" ? "selected" : "" }} value="exclusive"> {{ __("Exclusive tax") }} </option>
+                                    <option @selected(get_static_option("display_price_in_the_shop") == "including") value="including"> {{__("Including tax")}} </option>
+                                    <option @selected(get_static_option("display_price_in_the_shop") == "exclusive") value="exclusive"> {{ __("Exclusive tax") }} </option>
                                 </select>
                             </div>
                         </div>
@@ -92,8 +92,8 @@
                                 <label for="tax_round_at_subtotal" class="col-md-4">{{ __("Display tax totals") }}</label>
                                 <div class="col-md-8">
                                     <select id="display_tax_total" name="display_tax_total" class="form-control">
-                                        <option {{ get_static_option("display_tax_total") == "itemized" ? "selected" : "" }} value="itemized"> {{__("Itemized")}} </option>
-                                        <option {{ get_static_option("display_tax_total") == "single" ? "selected" : "" }} value="single"> {{ __("As a single total") }} </option>
+                                        <option @selected(get_static_option("display_tax_total") == "itemized") value="itemized"> {{__("Itemized")}} </option>
+                                        <option @selected(get_static_option("display_tax_total") == "single") value="single"> {{ __("As a single total") }} </option>
                                     </select>
                                 </div>
                             </div>
@@ -117,26 +117,67 @@
     </div>
 @endsection
 
-@section("script")
+@section("scripts")
     <script>
         $(document).on("click", "#enable-info-about-tax-system", function (){
             $(".info-tax-system").toggleClass("d-none");
         });
 
         tax_system();
+        sidebar();
+        display_price_in_shop($('input[name=prices_include_tax]:checked'));
 
-        $(document).on("change", "#tax_system", function (){
+        $(document).on("change", "#tax_system", function () {
             tax_system();
+
+            let tax_type = $(this);
+            $('label.info-message').remove();
+            if (tax_type.val() === 'zone_wise_tax_system')
+            {
+                tax_type.after('<label class="info-message text-primary mt-2">{{__('Press update, you will get country and state tax option on sidebar')}}</label>')
+            }
         });
 
-        function tax_system(){
+        $(document).on('change', 'input[name=prices_include_tax]', function () {
+            let el = $(this);
+
+            display_price_in_shop(el);
+        });
+
+        function tax_system()
+        {
             let tax_system = $("#tax_system").val();
-            if(tax_system == 'zone_wise_tax_system'){
+            if(tax_system === 'zone_wise_tax_system'){
                 $("#advance_tax_system_settings").fadeOut();
                 return "";
             }
 
             $("#advance_tax_system_settings").fadeIn();
+        }
+
+        function sidebar()
+        {
+            let tax_system = $("#tax_system").val();
+            let tax_manage_menu = $('#tax-manage-menu-items');
+            let country_state = tax_manage_menu.find('ul').children().slice(0,2);
+            let tax_class = tax_manage_menu.find('ul').children().slice(3,4);
+            if(tax_system === 'zone_wise_tax_system'){
+                country_state.fadeIn();
+                tax_class.fadeOut();
+            } else {
+                country_state.fadeOut();
+                tax_class.fadeIn();
+            }
+        }
+
+        function display_price_in_shop(selector)
+        {
+            if(selector.val() === 'yes')
+            {
+                $('.display_price_wrapper').fadeIn();
+            } else {
+                $('.display_price_wrapper').hide();
+            }
         }
     </script>
 @endsection

@@ -11,7 +11,14 @@
     <div class="col-12 stretch-card">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title mb-4">{{__('All users')}}</h4>
+                <div class="d-flex justify-content-between">
+                    <h4 class="card-title mb-4">{{__('All users')}}</h4>
+
+                    <div class="btn-wrapper">
+                        <a class="btn btn-danger btn-sm" href="{{route('tenant.admin.user.trash')}}">{{__('Trash')}} {{$trashed_users > 0 ? '('.$trashed_users.')' : ''}}</a>
+                    </div>
+                </div>
+
                 <x-error-msg/>
                 <x-flash-msg/>
 

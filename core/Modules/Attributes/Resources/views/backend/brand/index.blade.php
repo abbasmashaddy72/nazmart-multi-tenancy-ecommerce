@@ -206,7 +206,6 @@
 @section('scripts')
     <x-datatable.js />
     <x-table.btn.swal.js />
-    <x-icon-picker/>
     <x-media-upload.js/>
 
     <script>

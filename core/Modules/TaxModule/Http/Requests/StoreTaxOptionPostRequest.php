@@ -10,12 +10,14 @@ class StoreTaxOptionPostRequest extends FormRequest
     {
         return [
 //            'class_id' => "nullable",
-            'tax_name' => "required",
+            'tax_name' => "required|array",
+            'tax_name.*' => "required|string",
             'country_id' => "nullable",
             'state_id' => "nullable",
             'city_id' => "nullable",
             'postal_code' => "nullable",
-            'priority' => "nullable",
+            'priority' => "required|array",
+            'priority.*' => "required|string",
             'is_compound' => "nullable",
             'is_shipping' => "nullable",
             'rate' => "nullable",
@@ -25,5 +27,13 @@ class StoreTaxOptionPostRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    public function messages()
+    {
+        return [
+            'tax_name.*' => __('Each tax name must not be empty'),
+            'priority.*' => __('Each priority must not be empty')
+        ];
     }
 }

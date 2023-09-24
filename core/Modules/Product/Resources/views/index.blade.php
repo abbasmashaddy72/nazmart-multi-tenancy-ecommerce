@@ -151,6 +151,7 @@
         </div>
     </div>
 @endsection
+
 @section('scripts')
     <x-product::table.status-js />
     <x-product::table.bulk-action-js :url="route('tenant.admin.product.bulk.destroy')"/>

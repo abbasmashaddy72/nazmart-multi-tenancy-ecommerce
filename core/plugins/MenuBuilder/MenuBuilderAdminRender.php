@@ -70,7 +70,7 @@ class MenuBuilderAdminRender
             $output .= '<label for="items_id">' . __('Select Items') . '</label>';
             $output .= '<select name="items_id" multiple="" class="form-control">';
             $instance = new $attributes_string['ptype']();
-//            dd($instance);
+
             $model_name = '\\'.$instance->model();
             $model = new $model_name();
             /*if ($instance->query_type() === 'old_lang'){

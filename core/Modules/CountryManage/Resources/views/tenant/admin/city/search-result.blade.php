@@ -46,7 +46,7 @@
         </tr>
     @empty
         <tr>
-            <td class="">{{__('No Data Available')}}</td>
+            <td colspan="6" class="text-center">{{__('No Data Available')}}</td>
         </tr>
     @endforelse
     </tbody>

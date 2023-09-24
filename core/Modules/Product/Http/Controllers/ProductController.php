@@ -39,6 +39,7 @@ use Modules\Product\Entities\ProductTag;
 use Modules\Product\Entities\ProductUom;
 use Modules\Product\Http\Requests\ProductStoreRequest;
 use Modules\Product\Http\Services\Admin\AdminProductServices;
+use Modules\TaxModule\Entities\TaxClass;
 use Stripe\Service\ProductService;
 
 class ProductController extends Controller
@@ -77,6 +78,7 @@ class ProductController extends Controller
             "all_attribute" => ProductAttribute::all()->groupBy('title')->map(fn($query) => $query[0]),
             "product_colors" => Color::all(),
             "product_sizes" => Size::all(),
+            "tax_classes" => TaxClass::all()
         ];
 
         return view('product::create', compact('data'));
@@ -132,6 +134,7 @@ class ProductController extends Controller
             "all_attribute" => ProductAttribute::all()->groupBy('title')->map(fn($query) => $query[0]),
             "product_colors" => Color::all(),
             "product_sizes" => Size::all(),
+            "tax_classes" => TaxClass::all(),
             'aria_name' => $aria_name
         ];
 

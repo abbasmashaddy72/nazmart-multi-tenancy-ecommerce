@@ -11,6 +11,7 @@
         <th> {{__("Name")}} </th>
         <th> {{__("Brand")}} </th>
         <th> {{__("Categories")}} </th>
+        <th> {{__("Tax Info")}} </th>
         <th> {{__("Stock Qty")}} </th>
         <th> {{__("Status")}} </th>
         <th> {{__("Actions")}} </th>
@@ -61,6 +62,15 @@
                     <span class="category-field">@if($product?->subCategory?->name)
                             <b> {{__('Sub Category')}}:  </b>
                         @endif{{ $product?->subCategory?->name }} </span><br>
+                </td>
+
+                <td class="price-td">
+                    <span class="category-field">
+                        @if($product?->product_tax_class)
+                            <b> {{__('Tax class')}}: </b><br>
+                        @endif
+                        <span style="font-size: 15px">{{ $product?->product_tax_class?->name }}</span>
+                    </span>
                 </td>
 
                 <td class="price-td" data-label="Quantity">
