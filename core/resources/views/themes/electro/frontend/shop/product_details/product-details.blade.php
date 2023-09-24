@@ -166,6 +166,8 @@
              $is_expired = $data['is_expired'];
          }
 
+         $final_price = calculatePrice($sale_price, $product);
+
          $quickView = false;
     @endphp
 

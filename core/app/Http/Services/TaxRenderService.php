@@ -15,8 +15,7 @@ class TaxRenderService
         $this->prices['sale_price'] = (double) $this->product_object->sale_price;
 
         $this->getCampaignPrice();
-
-        dd($this->getTaxedPrice());
+        $this->getTaxedPrice();
 
         return $this->prices;
     }
@@ -58,7 +57,15 @@ class TaxRenderService
                 $product = $this->product_object;
                 if($product->is_taxable)
                 {
-                    dd($this->getTaxClassOptions($product));
+                    $tax_options = $this->getTaxClassOptions($product);
+                    $tax_rate = 0;
+                    foreach ($tax_options ?? [] as $option)
+                    {
+                        $tax_rate += $option['option']->rate;
+                    }
+
+                    $sale_price = $this->prices['sale_price'];
+                    $this->prices['sale_price'] = $sale_price + ($sale_price * ($tax_rate / 100));
                 }
             }
         }
@@ -102,7 +109,11 @@ class TaxRenderService
                 ];
             }
 
+            $max_priority = max(array_column($prioritize_option, 'priority'));
 
+            return array_filter($prioritize_option, function($item) use ($max_priority) {
+                return $item['priority'] == $max_priority;
+            });
         }
     }
 

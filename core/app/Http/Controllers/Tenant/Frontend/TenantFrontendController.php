@@ -109,7 +109,7 @@ class TenantFrontendController extends Controller
         $shop_page_slug = get_page_slug(get_static_option('shop_page'), 'shop_page');
         if ($slug === $shop_page_slug) {
             if (tenant()) {
-                $product_object = Product::where('status_id', 1)->latest()->paginate(12);
+                $product_object = Product::where('status_id', 1)->latest()->withSum('taxOptions', 'rate')->paginate(12);
                 $categories = Category::whereHas('product', function ($query) {
                     $query->where('status_id', 1);
                 })->select('id', 'name', 'slug')->withCount('product')->get();
@@ -196,7 +196,7 @@ class TenantFrontendController extends Controller
 
     public function shop_page(Request $request)
     {
-        $product_object = Product::with('badge', 'campaign_product')
+        $product_object = Product::with('badge', 'campaign_product', 'taxOptions')
             ->where('status_id', 1);
 
         if ($request->has('category')) {
@@ -296,7 +296,7 @@ class TenantFrontendController extends Controller
 
         $search = $request->search;
 
-        $product_object = Product::with('badge', 'campaign_product')
+        $product_object = Product::with('badge', 'campaign_product', 'taxOptions')
             ->where('status_id', 1)
             ->where("name", "LIKE", "%" . $search . "%")
             ->orWhere("sale_price", $search);
@@ -327,7 +327,7 @@ class TenantFrontendController extends Controller
 
     public function product_quick_view(Request $request)
     {
-        $product = Product::with('badge', 'campaign_product')->findOrFail($request->id);
+        $product = Product::with('badge', 'campaign_product', 'taxOptions')->findOrFail($request->id)->withSum('taxOptions', 'rate');
         $modal_object = themeView('shop.markup_for_controller.quick_view_product_modal', compact('product'))->render();
 
         return response()->json(['product_modal' => $modal_object]);
@@ -350,6 +350,7 @@ class TenantFrontendController extends Controller
                     ->where('category_id', '=', $product_category)
                     ->get();
             })
+            ->withSum('taxOptions', 'rate')
             ->inRandomOrder()
             ->take(5)
             ->get();
@@ -413,7 +414,7 @@ class TenantFrontendController extends Controller
 
         if (!empty($product->campaign_product)) {
             $sold_count = CampaignSoldProduct::where('product_id', $request->product_id)->first();
-            $product = Product::where('id', $request->product_id)->first();
+            $product = Product::where('id', $request->product_id)->withSum('taxOptions','rate')->first();
 
             $product_left = $sold_count !== null ? $product->campaign_product->units_for_sale - $sold_count->sold_count : null;
         } else {
@@ -431,7 +432,7 @@ class TenantFrontendController extends Controller
 
         try {
             $cart_data = $request->all();
-            $product = Product::findOrFail($cart_data['product_id']);
+            $product = Product::withSum('taxOptions','rate')->findOrFail($cart_data['product_id']);
 
             $sale_price = $product->sale_price;
             $additional_price = 0;
@@ -445,7 +446,8 @@ class TenantFrontendController extends Controller
                 $additional_cost = $product_inventory_details->add_cost;
             }
 
-            $final_sale_price = $sale_price + $additional_price;
+            $final_price = calculatePrice($sale_price, $product);
+            $final_sale_price = $final_price + $additional_price;
 
             $product_image = $product->image_id;
             if ($cart_data['product_variant']) {
@@ -2042,6 +2044,7 @@ HTML;
                 'reviews'
             )
             ->where("status_id", 1)
+            ->withSum('taxOptions', 'rate')
             ->firstOrFail();
 
         // get selected attributes in this product ( $available_attributes )

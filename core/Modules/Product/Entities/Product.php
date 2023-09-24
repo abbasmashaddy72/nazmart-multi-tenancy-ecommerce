@@ -27,6 +27,7 @@ use Modules\Campaign\Entities\CampaignProduct;
 use Modules\Campaign\Entities\CampaignSoldProduct;
 use Modules\RefundModule\Entities\RefundProduct;
 use Modules\TaxModule\Entities\TaxClass;
+use Modules\TaxModule\Entities\TaxClassOption;
 
 class Product extends Model
 {
@@ -172,5 +173,10 @@ class Product extends Model
     public function refunded_product(): HasOne
     {
         return $this->hasOne(RefundProduct::class);
+    }
+
+    public function taxOptions() : HasManyThrough
+    {
+        return $this->hasManyThrough(TaxClassOption::class,TaxClass::class,'id','class_id','tax_class_id','id');
     }
 }

@@ -209,16 +209,17 @@ function product_prices($product_object, $class = '')
 {
     $markup = '';
     $sale_price = $product_object->sale_price;
+    $final_price = calculatePrice($sale_price, $product_object);
     if ($product_object->price != null) {
         $regular_price = $product_object->price;
 
-        $markup = '<span class="flash-prices ' . $class . '">' . amount_with_currency_symbol($sale_price) . '</span>';
+        $markup = '<span class="flash-prices ' . $class . '">' . amount_with_currency_symbol($final_price) . '</span>';
         $markup .= '<span class="flash-old-prices">' . amount_with_currency_symbol($regular_price) . '</span>';
 
         return $markup;
     }
 
-    return '<span class="flash-prices ' . $class . '">' . amount_with_currency_symbol($sale_price) . '</span>';
+    return '<span class="flash-prices ' . $class . '">' . amount_with_currency_symbol($final_price) . '</span>';
 }
 
 function campaign_product_prices($product_object, $campaign_price, $class = '')
@@ -1976,4 +1977,12 @@ function render_site_seo()
        <meta name="twitter:description" content="$site_tw_meta_description">
        <meta name="twitter:image" content="{$site_tw_meta_image}">
 HTML;
+}
+
+function calculatePrice($price, $product,$for = "product"){
+    return \Modules\TaxModule\Services\CalculateTaxServices::productPrice($price, $product,$for);
+}
+
+function calculatePercentageAmount($price, $percentage): float|int{
+    return ($price * $percentage) / 100;
 }
