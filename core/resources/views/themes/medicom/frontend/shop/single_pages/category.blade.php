@@ -112,6 +112,8 @@
                                         $regular_price = $data['regular_price'];
                                         $sale_price = $data['sale_price'];
                                         $discount = $data['discount'];
+
+                                        $final_price = calculatePrice($sale_price, $product);
                                     @endphp
 
                                     <div class="col-xxl-4 col-lg-6 col-sm-6">
@@ -138,12 +140,12 @@
                                             <div class="global-card-contents">
                                                 <div class="global-card-contents-flex">
                                                     <h5 class="global-card-contents-title">
-                                                        <a href="javascript:void(0)"> {{Str::words($product->name, 15)}} </a>
+                                                        <a href="{{to_product_details($product->slug)}}"> {{product_limited_text($product->name)}} </a>
                                                     </h5>
                                                     {!! render_product_star_rating_markup_with_count($product) !!}
                                                 </div>
                                                 <div class="price-update-through mt-3">
-                                                    <span class="flash-prices color-two"> {{amount_with_currency_symbol($sale_price)}} </span>
+                                                    <span class="flash-prices color-two"> {{amount_with_currency_symbol($final_price)}} </span>
                                                     <span
                                                         class="flash-old-prices"> {{$regular_price != null ? amount_with_currency_symbol($regular_price) : ''}} </span>
                                                 </div>

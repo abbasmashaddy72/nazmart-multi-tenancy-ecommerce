@@ -30,7 +30,7 @@
                             $discount = null;
                             if ($product->price)
                                 {
-                                    $discount = round(($product->sale_price / $product->price)*100, 2);
+                                    $discount = round(($product->sale_price / $product->price)*100);
                                 }
                         @endphp
 

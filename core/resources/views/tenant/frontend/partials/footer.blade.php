@@ -392,7 +392,7 @@
                         $('.track-icon-list').load(location.href + " .track-icon-list");
                     }
                 },
-                erorr: function (err) {
+                error: function (err) {
                     toastr.error('{{ __("An error occurred") }}')
                 }
             });
@@ -725,16 +725,6 @@
     $(document).on('click', '.quick_view_add_to_cart', function (e) {
         e.preventDefault();
 
-        let quick_view_has_campaign = '{{empty($campaign_product) ? 0 : 1}}';
-        let quick_view_campaign_expired = '{{isset($is_expired) ? $is_expired : 0}}';
-
-        if(quick_view_has_campaign === 1){
-            if (quick_view_campaign_expired === 0){
-                toastr.error('The campaign is over, Sorry! you can not cart this product');
-                return false;
-            }
-        }
-
         let selected_size = $('#selected_size').val();
         let selected_color = $('#selected_color').val();
 
@@ -784,7 +774,7 @@
                         track_icon_list.fadeIn();
                     }
                 },
-                erorr: function (err) {
+                error: function (err) {
                     toastr.error('{{ __("An error occurred") }}')
                 }
             });
@@ -852,7 +842,7 @@
                         $('.track-icon-list').load(location.href + " .track-icon-list");
                     }
                 },
-                erorr: function (err) {
+                error: function (err) {
                     toastr.error('{{ __("An error occurred") }}')
                 }
             });
@@ -863,16 +853,6 @@
 
     $(document).on('click', '.quick_view_but_now', function (e) {
         e.preventDefault();
-
-        let quick_view_has_campaign = '{{empty($campaign_product) ? 0 : 1}}';
-        let quick_view_campaign_expired = '{{isset($is_expired) ? $is_expired : 0}}';
-
-        if(quick_view_has_campaign === 1){
-            if (quick_view_campaign_expired === 0){
-                toastr.error('The campaign is over, Sorry! you can not cart this product');
-                return false;
-            }
-        }
 
         let selected_size = $('#selected_size').val();
         let selected_color = $('#selected_color').val();
@@ -924,7 +904,7 @@
                         location.href = "{{ route('tenant.shop.checkout') }}";
                     }, 2000)
                 },
-                erorr: function (err) {
+                error: function (err) {
                     toastr.error('{{ __("An error occurred") }}')
                 }
             });

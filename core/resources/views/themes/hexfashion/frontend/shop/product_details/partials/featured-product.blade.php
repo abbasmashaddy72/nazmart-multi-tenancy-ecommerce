@@ -30,7 +30,7 @@
                             $discount = null;
                             if ($product->price)
                                 {
-                                    $discount = round(($product->sale_price / $product->price)*100, 2);
+                                    $discount = round(($product->sale_price / $product->price)*100);
                                 }
                         @endphp
 
@@ -52,39 +52,16 @@
                                             @endif
                                         </div>
                                     @endif
-
-                                    <ul class="global-card-thumb-icons">
-                                        <li class="icon-list" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="{{__('add to cart')}}">
-                                            <a class="icon cart-loading" href="javascript:void(0)"> <i
-                                                    class="las la-shopping-cart"></i> </a>
-                                        </li>
-                                        <li class="icon-list" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="{{__('add to Wishlist')}}">
-                                            <a class="icon cart-loading" href="javascript:void(0)"> <i
-                                                    class="lar la-heart"></i> </a>
-                                        </li>
-                                        <li class="icon-list" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="{{__('add to Compare')}}">
-                                            <a class="icon cart-loading" href="javascript:void(0)"> <i
-                                                    class="las la-retweet"></i> </a>
-                                        </li>
-                                        <li class="icon-list" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="{{__('Preview')}}">
-                                            <a class="icon popup-modal cart-loading" href="javascript:void(0)"> <i
-                                                    class="lar la-eye"></i> </a>
-                                        </li>
-                                    </ul>
                                 </div>
                                 <div class="global-card-contents">
                                     <div class="global-card-contents-flex">
                                         <h5 class="global-card-contents-title">
-                                            <a href="javascript:void(0)"> {{Str::words($product->name, 4)}} </a>
+                                            <a href="{{to_product_details($product->slug)}}"> {{product_limited_text($product->name)}} </a>
                                         </h5>
 
                                          {!! render_product_star_rating_markup_with_count($product) !!}
-
                                     </div>
+
                                     <div class="price-update-through mt-3">
                                         {!! product_prices($product, 'color-two') !!}
                                     </div>

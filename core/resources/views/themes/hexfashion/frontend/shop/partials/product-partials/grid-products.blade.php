@@ -35,7 +35,7 @@
                     <div class="global-card-contents">
                         <div class="global-card-contents-flex">
                             <h5 class="global-card-contents-title text-capitalize">
-                                <a href="{{to_product_details($product->slug)}}"> {{Str::words($product->name, 15)}} </a>
+                                <a href="{{to_product_details($product->slug)}}"> {{product_limited_text($product->name)}} </a>
                             </h5>
                             {!! render_product_star_rating_markup_with_count($product) !!}
                         </div>

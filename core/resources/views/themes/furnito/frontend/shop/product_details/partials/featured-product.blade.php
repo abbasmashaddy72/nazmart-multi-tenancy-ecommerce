@@ -30,7 +30,7 @@
                             $discount = null;
                             if ($product->price)
                                 {
-                                    $discount = round(($product->sale_price / $product->price)*100, 2);
+                                    $discount = round(($product->sale_price / $product->price)*100);
                                 }
                         @endphp
 
@@ -79,7 +79,7 @@
                                 <div class="global-card-contents">
                                     <div class="global-card-contents-flex">
                                         <h5 class="global-card-contents-title">
-                                            <a href="javascript:void(0)"> {{Str::words($product->name, 4)}} </a>
+                                            <a href="{{to_product_details($product->slug)}}"> {{product_limited_text($product->name, 'title')}} </a>
                                         </h5>
 
                                          {!! render_product_star_rating_markup_with_count($product) !!}

@@ -53,17 +53,13 @@ function get_static_option_central($option_name, $default = null)
 function tenant_has_digital_product()
 {
     $digital_product = false;
-    if (tenant())
-    {
+    if (tenant()) {
         $plan_features = tenant()?->payment_log?->package?->plan_features;
-        if (!empty($plan_features))
-        {
+        if (!empty($plan_features)) {
             $features = $plan_features->pluck('feature_name');
 
-            if (!empty($features))
-            {
-                if (in_array('digital_product', $features->toArray()))
-                {
+            if (!empty($features)) {
+                if (in_array('digital_product', $features->toArray())) {
                     $digital_product = true;
                 }
             }
@@ -105,7 +101,7 @@ function get_attachment_image_by_id($id, $size = null, $default = false): array
         $path_prefix = is_null(tenant()) ? 'assets/landlord' : 'assets/tenant';
         $path = global_asset($path_prefix . '/uploads/media-uploader/' . $tenant_subdomain);
         $base_path = global_assets_path($path_prefix . '/uploads/media-uploader/' . $tenant_subdomain);
-        $image_url = $path .'/'. $image_details->path;
+        $image_url = $path . '/' . $image_details->path;
         switch ($size) {
             case "large":
                 if ($base_path . 'large/large-' . $image_details->path && !is_dir($base_path . 'large/large-' . $image_details->path)) {
@@ -207,12 +203,14 @@ function get_attachment_image_by_path($id, $path, $alt = null, $size = null, $de
 
 function product_prices($product_object, $class = '')
 {
-    $markup = '';
-    $sale_price = $product_object->sale_price;
-    $final_price = calculatePrice($sale_price, $product_object);
-    if ($product_object->price != null) {
-        $regular_price = $product_object->price;
+    $data = get_product_dynamic_price($product_object);
+    $regular_price = $data['regular_price'];
+    $sale_price = $data['sale_price'];
 
+    $final_price = calculatePrice($sale_price, $product_object);
+
+    $markup = '';
+    if ($regular_price != null) {
         $markup = '<span class="flash-prices ' . $class . '">' . amount_with_currency_symbol($final_price) . '</span>';
         $markup .= '<span class="flash-old-prices">' . amount_with_currency_symbol($regular_price) . '</span>';
 
@@ -335,7 +333,7 @@ function render_image_markup_by_attachment_id($id, $class = null, $size = 'full'
     if (!empty($image_details)) {
         $class_list = !empty($class) ? 'class="' . $class . '"' : '';
         $lazy = $is_lazy ? 'loading="lazy"' : '';
-        $output = '<img src="' . $image_details['img_url'] . '" ' . $class_list . ' alt="' . $image_details['img_alt'] .'" '.$lazy.'/>';
+        $output = '<img src="' . $image_details['img_url'] . '" ' . $class_list . ' alt="' . $image_details['img_alt'] . '" ' . $lazy . '/>';
     }
 
     return $output;
@@ -444,9 +442,9 @@ function render_star($rating, $class = '')
     return $markup;
 }
 
-function mares_product_star_rating($rating, $class='')
+function mares_product_star_rating($rating, $class = '')
 {
-    $markup = '<ul class="'.$class.'">';
+    $markup = '<ul class="' . $class . '">';
     if (!empty($rating)) {
         for ($i = 0; $i < $rating; $i++) {
             $markup .= '<li> <i class="las la-star"></i> </li>';
@@ -494,17 +492,15 @@ function get_tenant_highlighted_text($title, $class = 'color-two')
 
 function highlighted_text($data, $class = '', $inner_tag = 'span')
 {
-    $inner_tag = str_replace(['<','>','</','/'],'', $inner_tag);
+    $inner_tag = str_replace(['<', '>', '</', '/'], '', $inner_tag);
 
     $final_markup = '';
-    if (count($data) > 1)
-    {
+    if (count($data) > 1) {
         $full_element = trim($data[0]);
         $targeted_element = trim($data[1]);
 
-        if (str_contains($full_element, $targeted_element))
-        {
-            $highlight_markup = '<'.$inner_tag.' class="'.$class.'">'.$targeted_element.'</'.$inner_tag.'>';
+        if (str_contains($full_element, $targeted_element)) {
+            $highlight_markup = '<' . $inner_tag . ' class="' . $class . '">' . $targeted_element . '</' . $inner_tag . '>';
             $final_markup = str_replace($targeted_element, $highlight_markup, $full_element);
         }
     }
@@ -665,8 +661,8 @@ function campaign_running_status($product_object)
 
 function render_product_dynamic_price_markup($product_object, $sale_price_markup_tag = 'span', $sale_price_class = '', $regular_price_markup_tag = 'span', $regular_price_class = '')
 {
-    $sale_price_markup_tag = str_replace(['<','>','/'], '', $sale_price_markup_tag);
-    $regular_price_markup_tag = str_replace(['<','>','/'], '', $regular_price_markup_tag);
+    $sale_price_markup_tag = str_replace(['<', '>', '/'], '', $sale_price_markup_tag);
+    $regular_price_markup_tag = str_replace(['<', '>', '/'], '', $regular_price_markup_tag);
 
     $price_data = get_product_dynamic_price($product_object);
 
@@ -674,8 +670,7 @@ function render_product_dynamic_price_markup($product_object, $sale_price_markup
     $regular_price = amount_with_currency_symbol($price_data['regular_price']);
 
     $markup = "<{$sale_price_markup_tag} class='{$sale_price_class}'>{$sale_price}</{$sale_price_markup_tag}>";
-    if ($price_data['regular_price'] > 0)
-    {
+    if ($price_data['regular_price'] > 0) {
         $markup .= "<{$regular_price_markup_tag} class='{$regular_price_class}'>{$regular_price}</$regular_price_markup_tag>";
     }
 
@@ -689,7 +684,7 @@ function get_digital_product_dynamic_price($product_object)
     (double)$sale_price = $product_object->sale_price;
     $discount = 0;
 
-    if (!is_null($product_object->promotional_date) && (!is_null($product_object->promotional_price) || $product_object->promotional_price >! 0)) {
+    if (!is_null($product_object->promotional_date) && (!is_null($product_object->promotional_price) || $product_object->promotional_price > !0)) {
         $today_date = Carbon::now();
         $end_date = \Carbon\Carbon::parse($product_object?->promotional_date);
 
@@ -1769,11 +1764,9 @@ function externalAddonImagepath($moduleName)
 function getPricePlanBasedAllThemeData($themeNameArray)
 {
     $themeList = [];
-    $all_theme =  \App\Facades\ThemeDataFacade::getAllThemeData();
-    foreach($all_theme as $key => $theme)
-    {
-        if (in_array($key, $themeNameArray))
-        {
+    $all_theme = \App\Facades\ThemeDataFacade::getAllThemeData();
+    foreach ($all_theme as $key => $theme) {
+        if (in_array($key, $themeNameArray)) {
             $themeList[] = $theme;
         }
     }
@@ -1798,15 +1791,12 @@ function tenant_plan_sidebar_permission($permission_name, $tenant = null) // Pla
     $tenant = !empty($tenant) ? $tenant : tenant();
     $current_tenant_payment_data = $tenant->payment_log ?? [];
 
-    if (!empty($current_tenant_payment_data))
-    {
+    if (!empty($current_tenant_payment_data)) {
         $package = $current_tenant_payment_data->package;
-        if (!empty($package))
-        {
+        if (!empty($package)) {
             $features = $package->plan_features->pluck('feature_name')->toArray();
 
-            if (in_array($permission_name, (array)$features))
-            {
+            if (in_array($permission_name, (array)$features)) {
                 $inventory = true;
             }
         }
@@ -1821,14 +1811,11 @@ function tenant_plan_payment_gateway_list()
     $tenant = !empty($tenant) ? $tenant : tenant();
     $current_tenant_payment_data = $tenant->payment_log ?? [];
 
-    if (!empty($current_tenant_payment_data))
-    {
+    if (!empty($current_tenant_payment_data)) {
         $package = $current_tenant_payment_data->package;
-        if (!empty($package))
-        {
+        if (!empty($package)) {
             $features = $package->plan_payment_gateways->pluck('payment_gateway_name');
-            if (!empty($features))
-            {
+            if (!empty($features)) {
                 $gateway = $features->toArray();
             }
         }
@@ -1843,14 +1830,11 @@ function tenant_plan_theme_list()
     $tenant = !empty($tenant) ? $tenant : tenant();
     $current_tenant_payment_data = $tenant->payment_log ?? [];
 
-    if (!empty($current_tenant_payment_data))
-    {
+    if (!empty($current_tenant_payment_data)) {
         $package = $current_tenant_payment_data->package;
-        if (!empty($package))
-        {
+        if (!empty($package)) {
             $features = $package->plan_themes->pluck('theme_slug');
-            if (!empty($features))
-            {
+            if (!empty($features)) {
                 $themes = $features->toArray();
             }
         }
@@ -1934,7 +1918,7 @@ function render_preloaded_image($image, $styles = '')
     $image = get_attachment_image_by_id($image, 'tiny');
     $image = !empty($image) ? $image['img_url'] : '';
 
-    return 'style="background-image: url('.$image.');'.$styles.'"';
+    return 'style="background-image: url(' . $image . ');' . $styles . '"';
 }
 
 function render_site_seo()
@@ -1979,10 +1963,12 @@ function render_site_seo()
 HTML;
 }
 
-function calculatePrice($price, $product,$for = "product"){
-    return \Modules\TaxModule\Services\CalculateTaxServices::productPrice($price, $product,$for);
+function calculatePrice($price, $product, $for = "product")
+{
+    return \Modules\TaxModule\Services\CalculateTaxServices::productPrice($price, $product, $for);
 }
 
-function calculatePercentageAmount($price, $percentage): float|int{
+function calculatePercentageAmount($price, $percentage): float|int
+{
     return ($price * $percentage) / 100;
 }

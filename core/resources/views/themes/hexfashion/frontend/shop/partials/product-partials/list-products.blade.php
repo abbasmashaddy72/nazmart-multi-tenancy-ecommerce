@@ -36,7 +36,7 @@
                     <div class="global-flex-card-contents">
                         {!! render_product_star_rating_markup_with_count($product) !!}
                         <h5 class="global-flex-card-contents-title fw-500 mt-3">
-                            <a href="{{route('tenant.shop.product.details', $product->slug)}}"> {{Str::words($product->name, 15)}} </a>
+                            <a href="{{route('tenant.shop.product.details', $product->slug)}}"> {{product_limited_text($product->name, 'title')}} </a>
                         </h5>
                         <div class="price-update-through mt-4">
                             <span class="flash-prices color-two"> {{amount_with_currency_symbol($final_price)}} </span>
