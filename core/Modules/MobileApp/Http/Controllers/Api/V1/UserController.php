@@ -272,9 +272,8 @@ class UserController extends Controller
     //User Profile
     public function profile()
     {
-
         $user_id = auth('sanctum')->id();
-        $user = User::with('userCountry', 'userState', 'delivery_address')
+        $user = User::with('userCountry', 'userState', 'userCity','delivery_address')
             ->where('id', $user_id)->first();
 
         $image_url = null;

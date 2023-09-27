@@ -14,21 +14,18 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Auth;
 use Modules\CountryManage\Entities\Country;
 use Modules\CountryManage\Entities\State;
-use function GuzzleHttp\Promise\all;
+use Modules\TaxModule\Traits\TaxCalculatorTrait;
 
 class CheckoutPaymentController extends Controller
 {
+    use TaxCalculatorTrait;
     public function checkout_page()
     {
-        $cart_data = Cart::content();
         $billing_info = Auth::guard('web')->user()?->delivery_address;
         $countries = Country::where('status', 'publish')->get();
         $states = State::where('status', 'publish')->get();
 
-        $data = get_product_shipping_tax_data($billing_info);
-        $product_tax = $data['product_tax'];
-
-        return themeView('shop.checkout.checkout_page', compact('cart_data', 'billing_info', 'countries', 'states', 'product_tax'));
+        return themeView('shop.checkout.checkout_page', compact( 'billing_info', 'countries', 'states'));
     }
 
     public function checkout(CheckoutFormRequest $request)

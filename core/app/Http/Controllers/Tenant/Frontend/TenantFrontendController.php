@@ -63,6 +63,9 @@ use Modules\ShippingModule\Entities\ShippingMethod;
 use Modules\ShippingModule\Entities\ZoneRegion;
 use Modules\TaxModule\Entities\CountryTax;
 use Modules\TaxModule\Entities\StateTax;
+use Modules\TaxModule\Entities\TaxClassOption;
+use Modules\TaxModule\Services\CalculateTaxBasedOnCustomerAddress;
+use Modules\TaxModule\Services\CalculateTaxServices;
 use function GuzzleHttp\Promise\all;
 
 class TenantFrontendController extends Controller
@@ -446,8 +449,7 @@ class TenantFrontendController extends Controller
                 $additional_cost = $product_inventory_details->add_cost;
             }
 
-            $final_price = calculatePrice($sale_price, $product);
-            $final_sale_price = $final_price + $additional_price;
+            $final_sale_price = $sale_price + $additional_price;
 
             $product_image = $product->image_id;
             if ($cart_data['product_variant']) {
@@ -479,6 +481,7 @@ class TenantFrontendController extends Controller
             ];
             $options['base_cost'] = $product->cost + ($additional_cost ?? 0);
             $options['type'] = ProductTypeEnum::PHYSICAL;
+            $options["tax_options_sum_rate"] = $product->tax_options_sum_rate ?? 0;
 
             Cart::instance("default")->add(['id' => $cart_data['product_id'], 'name' => $product->name, 'qty' => $cart_data['quantity'], 'price' => $final_sale_price, 'weight' => '0', 'options' => $options]);
 
@@ -652,7 +655,7 @@ class TenantFrontendController extends Controller
 
         if (!empty($product->campaign_product)) {
             $sold_count = CampaignSoldProduct::where('product_id', $request->product_id)->first();
-            $product = Product::where('id', $request->product_id)->first();
+            $product = Product::where('id', $request->product_id)->withSum("taxOptions", "rate")->first();
 
             $product_left = $sold_count !== null ? $product->campaign_product->units_for_sale - $sold_count->sold_count : null;
         } else {
@@ -671,7 +674,7 @@ class TenantFrontendController extends Controller
         DB::beginTransaction();
         try {
             $cart_data = $request->all();
-            $product = Product::findOrFail($cart_data['product_id']);
+            $product = Product::findOrFail($cart_data['product_id'])->withSum("taxOptions", "rate");
 
             $sale_price = $product->sale_price;
             $additional_price = 0;
@@ -716,6 +719,8 @@ class TenantFrontendController extends Controller
                 'category' => $category,
                 'subcategory' => $subcategory
             ];
+
+            $options["tax_options_sum_rate"] = $product->tax_options_sum_rate ?? 0;
 
             Cart::instance("compare")->add(['id' => $cart_data['product_id'], 'name' => $product->name, 'qty' => $cart_data['quantity'], 'price' => $final_sale_price, 'weight' => '0', 'options' => $options]);
 
@@ -1039,13 +1044,15 @@ class TenantFrontendController extends Controller
     {
         $request->validate([
             'country' => 'required',
-            'state' => 'nullable'
+            'state' => 'nullable',
+            'city' => 'nullable'
         ]);
 
         $country = $request->country;
         $state = $request->state;
+        $city = $request->city;
 
-        $product_tax = $this->get_product_shipping_tax($request);
+        $shipping_tax = $this->get_product_shipping_tax($request);
 
         $shipping_zones = ZoneRegion::whereJsonContains('country', $request->country)->get();
         if (!empty($request->state))
@@ -1065,7 +1072,7 @@ class TenantFrontendController extends Controller
         $shipping_methods = ShippingMethod::whereIn('zone_id', $zone_ids)->get();
         $default_shipping = ShippingMethod::where('is_default', 1)->get();
 
-        $shipping_tax_markup = themeView('shop.checkout.markup_for_controller.shipping_tax_ajax', compact('product_tax', 'shipping_methods', 'default_shipping', 'country', 'state'))->render();
+        $shipping_tax_markup = themeView('shop.checkout.markup_for_controller.shipping_tax_ajax', compact('shipping_tax', 'shipping_methods', 'default_shipping', 'country', 'state', 'city'))->render();
 
         return response()->json([
             'type' => 'success',
@@ -1075,9 +1082,10 @@ class TenantFrontendController extends Controller
 
     public function sync_product_total_wth_shipping_method(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'country' => 'required',
             'state' => 'nullable',
+            'city' => 'nullable',
             'shipping_method' => 'required',
             'total' => 'required'
         ]);
@@ -1093,17 +1101,41 @@ class TenantFrontendController extends Controller
         }
 
         if ($selected_shipping_method?->options?->tax_status == 1) {
-            $country_tax = CountryTax::where('country_id', $request->country)->select('tax_percentage')->first();
-            if ($request->state !== null) {
-                $state_tax = StateTax::where(['country_id' => $request->country, 'state_id' => $request->state])->select('tax_percentage')->first();
+            if (get_static_option('tax_system') != 'advance_tax_system')
+            {
+                $country_tax = CountryTax::where('country_id', $request->country)->select('tax_percentage')->first();
+                if ($request->state !== null) {
+                    $state_tax = StateTax::where(['country_id' => $request->country, 'state_id' => $request->state])->select('tax_percentage')->first();
+                }
+
+                $tax = isset($state_tax) && $state_tax != null ? $state_tax : $country_tax;
+
+                $taxed_shipping_charge = $tax != null ? (($tax->tax_percentage / 100) * $shipping_charge) : $shipping_charge;
+            }
+            else
+            {
+                $shippingTaxClass = \Modules\TaxModule\Entities\TaxClassOption::where("class_id", get_static_option("shipping_tax_class"));
+                if(!empty($country_id)){
+                    $shippingTaxClass->where("country_id", $data["country"]);
+                }
+                if(!empty($state_id)){
+                    $shippingTaxClass->where("state_id", $data["state"]);
+                }
+                if(!empty($city_id)){
+                    $shippingTaxClass->where("city_id", $data["city"]);
+                }
+
+                $shippingTaxClass = $shippingTaxClass->sum("rate");
+
+                // add shipping charge tax
+                $taxed_shipping_charge = calculatePrice($shipping_charge, $shippingTaxClass, "shipping");
             }
 
-            $tax = isset($state_tax) && $state_tax != null ? $state_tax : $country_tax;
-
-            $taxed_shipping_charge = $tax != null ? (($tax->tax_percentage / 100) * $shipping_charge) : $shipping_charge;
-            $total = $taxed_shipping_charge + $request->total + $shipping_charge;
+            $total = $taxed_shipping_charge + $request->total;
+            $selected_shipping_method->options->final_cost = $taxed_shipping_charge;
         } else {
             $total = $request->total + $shipping_charge;
+            $selected_shipping_method->options->final_cost = $shipping_charge;
         }
 
         return response()->json([
@@ -1119,7 +1151,7 @@ class TenantFrontendController extends Controller
     public function sync_product_coupon(Request $request)
     {
         $all_cart_items = Cart::content();
-        $products = Product::with("category", "subCategory", "childCategory")->whereIn('id', $all_cart_items?->pluck("id")?->toArray())->get();
+        $products = Product::with("category", "subCategory", "childCategory", 'taxOptions')->whereIn('id', $all_cart_items?->pluck("id")?->toArray())->get();
         $subtotal = Cart::subtotal(2, '.', '');
 
         $coupon_amount_total = CheckoutCouponService::calculateCoupon($request, $subtotal, $products, 'DISCOUNT');

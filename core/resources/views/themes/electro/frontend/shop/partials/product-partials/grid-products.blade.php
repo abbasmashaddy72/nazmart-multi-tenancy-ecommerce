@@ -2,7 +2,6 @@
     <div class="row mt-4 gy-5">
         @foreach($products as $product)
             @php
-//                dd((new \App\Http\Services\TaxRenderService($product))->getProductPrice());
                 $data = get_product_dynamic_price($product);
                 $campaign_name = $data['campaign_name'];
                 $regular_price = $data['regular_price'];
@@ -36,7 +35,7 @@
                     <div class="global-card-contents">
                         <div class="global-card-contents-flex">
                             <h5 class="global-card-contents-title text-capitalize">
-                                <a href="{{to_product_details($product->slug)}}"> {{Str::words($product->name, 15)}} </a>
+                                <a href="{{to_product_details($product->slug)}}"> {{product_limited_text($product->name)}} </a>
                             </h5>
                             {!! render_product_star_rating_markup_with_count($product) !!}
                         </div>

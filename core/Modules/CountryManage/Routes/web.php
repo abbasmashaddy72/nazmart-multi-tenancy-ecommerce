@@ -69,12 +69,19 @@ Route::middleware([
 //                Route::post('csv/import/database','import_to_database_settings')->name('import.database');
             });
         });
-
-        //todo public routes for user and admin
-        Route::controller(AdminUserController::class)->group(function(){
-            Route::post('get-state','get_country_state')->name('au.state.all');
-            Route::post('get-city','get_state_city')->name('au.city.all');
-        });
     });
 });
 
+
+Route::middleware([
+    'web',
+    InitializeTenancyByDomainCustomisedMiddleware::class,
+    PreventAccessFromCentralDomains::class,
+    'set_lang',
+])->prefix('admin-home')->name('tenant.admin.')->group(function () {
+//todo public routes for user and admin
+    Route::controller(AdminUserController::class)->group(function () {
+        Route::post('get-state', 'get_country_state')->name('au.state.all');
+        Route::post('get-city', 'get_state_city')->name('au.city.all');
+    });
+});

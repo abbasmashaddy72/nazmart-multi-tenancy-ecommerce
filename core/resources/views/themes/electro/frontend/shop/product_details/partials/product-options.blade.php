@@ -52,6 +52,10 @@
            class="status-details-title color-stock fw-600"> {!! $stock_count > 0 ? '<span class="text-success">'.__('In Stock').'</span>' : '<span class="text-danger">'.__('Out of Stock').'</span>' !!} </a>
     </div>
 
+        @php
+            $final_price = calculatePrice($sale_price, $product);
+        @endphp
+
     <div class="price-update-through mt-4">
         <h3 class="ff-rubik flash-prices"
             data-main-price="{{ $final_price }}"

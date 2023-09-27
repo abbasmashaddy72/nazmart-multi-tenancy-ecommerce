@@ -113,6 +113,8 @@
     <script src="{{global_asset('assets/common/js/md5.js')}}"></script>
 @endif
 
+<script src="{{global_asset('assets/common/js/custom-sweetalert-two.js')}}"></script>
+
 @include('landlord.frontend.partials.gdpr-cookie')
 
 @php

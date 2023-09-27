@@ -273,17 +273,17 @@
                         rating: selected_rating
                     },
                     beforeSend: function () {
-                        toastr.warning('{{__('Submitting please wait.')}}')
+                        CustomSweetalertTwo.warning('{{__('Submitting please wait.')}}')
                         submit_btn_el.text('{{__('Submitting..')}}');
                     },
                     success: function (data) {
                         if (data.type === 'success') {
-                            toastr.success(data.msg)
+                            CustomSweetalertTwo.success(data.msg);
                             setTimeout(() => {
                                 location.reload();
                             }, 300);
                         } else {
-                            toastr.error(data.msg)
+                            CustomSweetalertTwo.error(data.msg);
                             submit_btn_el.closest('form')[0].reset();
                         }
 
@@ -292,7 +292,7 @@
                     error: function (data) {
                         var response = data.responseJSON.errors;
                         $.each(response, function (value, index) {
-                            toastr.error(index)
+                            CustomSweetalertTwo.error(index);
                         });
 
                         submit_btn_el.text('{{__('Submit Review')}}');
@@ -365,7 +365,7 @@
 
             // if selected attribute set is not available
             if (Object.keys(selected_options).length) {
-                toastr.error('{{__('Attribute not available')}}')
+                CustomSweetalertTwo.error(`{{__('Attribute not available')}}`);
             }
 
             return '';
@@ -444,10 +444,10 @@
                         success: function (data) {
                             if (data.status === 'invalid') {
                                 el.text('{{__("Login")}}')
-                                toastr.warning(data.msg);
+                                CustomSweetalertTwo.warning(data.msg);
                             } else {
                                 el.text('{{__("Login Success.. Redirecting ..")}}');
-                                toastr.success(data.msg);
+                                CustomSweetalertTwo.success(data.msg);
 
                                 setTimeout(() => {
                                     location.reload();
@@ -457,7 +457,7 @@
                         error: function (data) {
                             var response = data.responseJSON.errors;
                             $.each(response, function (value, index) {
-                                toastr.error(index);
+                                CustomSweetalertTwo.error(index);
                             });
                             el.text('{{__("Login")}}');
                         }
@@ -742,33 +742,24 @@
                         } else if (data.error_msg) {
                             toastr.error(data.error_msg);
                         } else {
-                            toastr.success(data.msg, '{{__('Go to Cart')}}', '#', 60000);
+                            CustomSweetalertTwo.success(data.msg);
+
                             $('.track-icon-list').hide();
                             $('.track-icon-list').load(location.href + " .track-icon-list");
                             $('.track-icon-list').fadeIn();
                         }
                     },
-                    erorr: function (err) {
-                        toastr.error('{{ __("An error occurred") }}')
+                    error: function (err) {
+                        CustomSweetalertTwo.error('{{ __("An error occurred") }}');
                     }
                 });
             } else {
-                toastr.error('{{ __("Select all attribute to proceed") }}')
+                CustomSweetalertTwo.error('{{ __("Select all attribute to proceed") }}');
             }
         });
 
         $(document).on('click', '.add_to_wishlist_single_page', function (e) {
             e.preventDefault();
-
-            let has_campaign = '{{empty($campaign_product) ? 0 : 1}}';
-            let campaign_expired = '{{isset($is_expired) ? $is_expired : 0}}';
-
-            if (has_campaign == 1) {
-                if (campaign_expired == 0) {
-                    toastr.error('{{__('The campaign is over, Sorry! you can not cart this product')}}');
-                    return false;
-                }
-            }
 
             let selected_size = $('#selected_size').val();
             let selected_color = $('#selected_color').val();
@@ -807,32 +798,22 @@
                         } else if (data.error_msg) {
                             toastr.error(data.error_msg);
                         } else {
-                            toastr.success(data.msg, '{{__('Go to Cart')}}', '#', 60000);
+                            CustomSweetalertTwo.success(data.msg);
                             $('.track-icon-list').load(location.href + " .track-icon-list");
                         }
                     },
-                    erorr: function (err) {
-                        toastr.error('{{ __("An error occurred") }}')
+                    error: function (err) {
+                        CustomSweetalertTwo.error('{{ __("An error occurred") }}');
                     }
                 });
             } else {
-                toastr.error('{{ __("Select all attribute to proceed") }}')
+                CustomSweetalertTwo.error('{{ __("Select all attribute to proceed") }}');
             }
         });
 
 
         $(document).on('click', '.compare-btn', function (e) {
             e.preventDefault();
-
-            let has_campaign = '{{empty($campaign_product) ? 0 : 1}}';
-            let campaign_expired = '{{isset($is_expired) ? $is_expired : 0}}';
-
-            if (has_campaign == 1) {
-                if (campaign_expired == 0) {
-                    toastr.error('{{__('The campaign is over, Sorry! you can not cart this product')}}');
-                    return false;
-                }
-            }
 
             let selected_size = $('#selected_size').val();
             let selected_color = $('#selected_color').val();
@@ -871,31 +852,21 @@
                         } else if (data.error_msg) {
                             toastr.error(data.error_msg);
                         } else {
-                            toastr.success(data.msg, '{{__('Go to Cart')}}', '#', 60000);
+                            CustomSweetalertTwo.success(data.msg);
                             $('.track-icon-list').load(location.href + " .track-icon-list");
                         }
                     },
-                    erorr: function (err) {
-                        toastr.error('{{ __("An error occurred") }}')
+                    error: function (err) {
+                        CustomSweetalertTwo.error('{{ __("An error occurred") }}');
                     }
                 });
             } else {
-                toastr.error('{{ __("Select all attribute to proceed") }}')
+                CustomSweetalertTwo.error('{{ __("Select all attribute to proceed") }}');
             }
         });
 
         $(document).on('click', '.but_now_single_page', function (e) {
             e.preventDefault();
-
-            let has_campaign = '{{empty($campaign_product) ? 0 : 1}}';
-            let campaign_expired = '{{isset($is_expired) ? $is_expired : 0}}';
-
-            if (has_campaign == 1) {
-                if (campaign_expired == 0) {
-                    toastr.error('{{__('The campaign is over, Sorry! you can not cart this product')}}');
-                    return false;
-                }
-            }
 
             let selected_size = $('#selected_size').val();
             let selected_color = $('#selected_color').val();
@@ -930,24 +901,24 @@
                     },
                     success: function (data) {
                         if (data.quantity_msg) {
-                            toastr.warning(data.quantity_msg, 5000);
+                            CustomSweetalertTwo.warning(data.quantity_msg);
                         } else if (data.error_msg) {
-                            toastr.error(data.error_msg, 5000);
+                            CustomSweetalertTwo.error(data.error_msg);
                         }
 
                         if (data.type === 'success') {
-                            toastr.success(data.msg);
+                            CustomSweetalertTwo.success(data.msg);
                             setTimeout(() => {
                                 location.href = data.redirect;
                             }, 2000)
                         }
                     },
-                    erorr: function (err) {
-                        toastr.error('{{ __("An error occurred") }}', 5000)
+                    error: function (err) {
+                        CustomSweetalertTwo.error(`{{ __("An error occurred") }}`);
                     }
                 });
             } else {
-                toastr.error('{{ __("Select all attribute to proceed") }}', 5000)
+                CustomSweetalertTwo.error(`{{ __("Select all attribute to proceed") }}`);
             }
         });
     </script>

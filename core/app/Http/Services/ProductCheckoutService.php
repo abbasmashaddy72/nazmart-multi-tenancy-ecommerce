@@ -24,6 +24,7 @@ use Modules\ShippingModule\Entities\ShippingMethod;
 use Modules\ShippingModule\Entities\ZoneRegion;
 use Modules\TaxModule\Entities\CountryTax;
 use Modules\TaxModule\Entities\StateTax;
+use Modules\TaxModule\Services\CalculateTaxBasedOnCustomerAddress;
 use Xgenious\Paymentgateway\Facades\XgPaymentGateway;
 
 class ProductCheckoutService
@@ -284,6 +285,56 @@ class ProductCheckoutService
         return $arr;
     }
 
+    public function getProductTaxedFinalPrice(...$data)
+    {
+        $carts = Cart::instance("default")->content();
+        $itemsTotal = null;
+        $enableTaxAmount = !\Modules\TaxModule\Services\CalculateTaxServices::isPriceEnteredWithTax();
+
+        $tax = CalculateTaxBasedOnCustomerAddress::init();
+        $uniqueProductIds = $carts->pluck("id")->unique()->toArray();
+
+        dd($data);
+//        $address_data =
+        $country_id = $data['country'];
+        $state_id = $data['state'];
+        $city_id = $data['city'];
+
+        $shippingTaxClass = \Modules\TaxModule\Entities\TaxClassOption::where("class_id", get_static_option("shipping_tax_class"));
+        if(!empty($country_id)){
+            $shippingTaxClass->where("country_id", $country_id);
+        }
+        if(!empty($state_id)){
+            $shippingTaxClass->where("state_id", $state_id);
+        }
+        if(!empty($city_id)){
+            $shippingTaxClass->where("city_id", $city_id);
+        }
+
+        $shippingTaxClass = $shippingTaxClass->sum("rate");
+
+        if(empty($uniqueProductIds))
+        {
+            $taxProducts = collect([]);
+        }
+        else
+        {
+            if(\Modules\TaxModule\Services\CalculateTaxBasedOnCustomerAddress::is_eligible()){
+                $taxProducts = $tax
+                    ->productIds($uniqueProductIds)
+                    ->customerAddress($country_id, $state_id, $city_id)
+                    ->generate();
+            }
+            else
+            {
+                $taxProducts = collect([]);
+            }
+        }
+
+
+        dd($taxProducts);
+    }
+
     public function getFinalPriceDetails($user, $validated_data)
     {
         $shipping_method = $validated_data['shipping_method'];
@@ -303,8 +354,10 @@ class ProductCheckoutService
             $data = $this->get_product_shipping_tax(['country' => $user['country'], 'state' => $user['state'], 'shipping_method' => (int)$shipping_method]);
             $discounted_price = CheckoutCouponService::calculateCoupon($coupon, $price['PHYSICAL']['total'], $products, 'DISCOUNT');
 
-            $product_tax = $data['product_tax'];
+            $product_tax = $data['shipping_tax'];
             $shipping_cost = $data['shipping_cost'];
+
+            $this->getProductTaxedFinalPrice($validated_data, $price, $user);
 
             $taxed_price = ($price['PHYSICAL']['total'] * $product_tax) / 100;
             $subtotal = $price['PHYSICAL']['total'];
@@ -497,34 +550,60 @@ class ProductCheckoutService
         $shipping_cost = 0;
         $product_tax = 0;
 
-        if ($request['state'] && $request['country']) {
-            $product_tax = StateTax::where(['country_id' => $request['country'], 'state_id' => $request['state']])->select('id', 'tax_percentage')->first();
+        if (get_static_option('tax_system') != 'advance_tax_system')
+        {
+            if ($request['state'] && $request['country']) {
+                $product_tax = StateTax::where(['country_id' => $request['country'], 'state_id' => $request['state']])->select('id', 'tax_percentage')->first();
 
-            if (empty($product_tax)) {
+                if (empty($product_tax)) {
+                    $product_tax = CountryTax::where('country_id', $request['country'])->select('id', 'tax_percentage')->first();
+                }
+
+                if ($product_tax) {
+                    $product_tax = $product_tax->toArray()['tax_percentage'];
+                }
+            } else {
                 $product_tax = CountryTax::where('country_id', $request['country'])->select('id', 'tax_percentage')->first();
+                if ($product_tax) {
+                    $product_tax = $product_tax->toArray()['tax_percentage'];
+                }
             }
 
-            if ($product_tax) {
-                $product_tax = $product_tax->toArray()['tax_percentage'];
+            $shipping = ShippingMethod::find($request['shipping_method']);
+            $shipping_option = $shipping->options ?? null;
+
+            if ($shipping_option != null && $shipping_option?->tax_status == 1) {
+                $shipping_cost = $shipping_option?->cost + (($shipping_option?->cost * $product_tax) / 100);
+            } else {
+                $shipping_cost = $shipping_option?->cost;
             }
-        } else {
-            $product_tax = CountryTax::where('country_id', $request['country'])->select('id', 'tax_percentage')->first();
-            if ($product_tax) {
-                $product_tax = $product_tax->toArray()['tax_percentage'];
+
+            $taxed_shipping_charge = $shipping_cost;
+            $shippingTaxClass = $product_tax;
+        }
+        else
+        {
+            $shipping = ShippingMethod::find($request['shipping_method']);
+            $shipping_option = $shipping->options ?? null;
+
+            $shippingTaxClass = \Modules\TaxModule\Entities\TaxClassOption::where("class_id", get_static_option("shipping_tax_class"));
+            if(!empty($country_id)){
+                $shippingTaxClass->where("country_id", $request["country"]);
             }
+            if(!empty($state_id)){
+                $shippingTaxClass->where("state_id", $request["state"]);
+            }
+            if(!empty($city_id)){
+                $shippingTaxClass->where("city_id", $request["city"]);
+            }
+
+            $shippingTaxClass = $shippingTaxClass->sum("rate");
+
+            $taxed_shipping_charge = calculatePrice($shipping_option?->cost, $shippingTaxClass, "shipping");
         }
 
-        $shipping = ShippingMethod::find($request['shipping_method']);
-        $shipping_option = $shipping->options ?? null;
-
-        if ($shipping_option != null && $shipping_option?->tax_status == 1) {
-            $shipping_cost = $shipping_option?->cost + (($shipping_option?->cost * $product_tax) / 100);
-        } else {
-            $shipping_cost = $shipping_option?->cost;
-        }
-
-        $data['product_tax'] = $product_tax;
-        $data['shipping_cost'] = $shipping_cost;
+        $data['shipping_tax'] = $shippingTaxClass;
+        $data['shipping_cost'] = $taxed_shipping_charge;
 
         return $data;
     }

@@ -1,8 +1,8 @@
 @php
     $user_delivery_address = $user_details?->delivery_address;
 
-    $shipping_states = \Modules\CountryManage\Entities\State::where(['status' => 'publish' ,'country_id' => $user_delivery_address->country_id])->get();
-    $shipping_cities = \Modules\CountryManage\Entities\City::where(['status' => 'publish' ,'state_id' => $user_delivery_address->state_id])->get();
+    $shipping_states = \Modules\CountryManage\Entities\State::where(['status' => 'publish' ,'country_id' => $user_delivery_address->country_id ?? ''])->get();
+    $shipping_cities = \Modules\CountryManage\Entities\City::where(['status' => 'publish' ,'state_id' => $user_delivery_address->state_id ?? ''])->get();
 @endphp
 
 <div class="seller-profile-details-wrapper">
@@ -34,7 +34,7 @@
                             <select class="form--control countryField" name="country" id="countryField">
                                 <option value="">{{__('Select a country')}}</option>
                                 @foreach($countries ?? [] as $country)
-                                    <option @selected($country->id == $user_delivery_address->country_id) value="{{$country->id}}">{{$country->name}}</option>
+                                    <option @selected($country->id == ($user_delivery_address->country_id ?? '')) value="{{$country->id}}">{{$country->name}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -44,7 +44,7 @@
                             <select class="form--control stateField" name="state" id="stateField">
                                 <option value="">{{__('Select a state')}}</option>
                                 @foreach($shipping_states ?? [] as $country)
-                                    <option @selected($country->id == $user_delivery_address->state_id) value="{{$country->id}}">{{$country->name}}</option>
+                                    <option @selected($country->id == ($user_delivery_address->state_id ?? '')) value="{{$country->id}}">{{$country->name}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -54,14 +54,14 @@
                             <select class="form--control cityField" name="city" id="cityField">
                                 <option value="">{{__('Select a city')}}</option>
                                 @foreach($shipping_cities ?? [] as $country)
-                                    <option @selected($country->id == $user_delivery_address->city) value="{{$country->id}}">{{$country->name}}</option>
+                                    <option @selected($country->id == ($user_delivery_address->city ?? '')) value="{{$country->id}}">{{$country->name}}</option>
                                 @endforeach
                             </select>
                         </div>
 
                         <div class="single-info-input margin-top-30">
                             <label class="info-title"> {{__('Your Postal Code')}} <x-fields.mandatory-indicator/></label>
-                            <input class="form--control" type="text" placeholder="{{__('Type your postal code')}}" name="postal_code" value="{{$user_delivery_address->postal_code}}">
+                            <input class="form--control" type="text" placeholder="{{__('Type your postal code')}}" name="postal_code" value="{{$user_delivery_address->postal_code ?? ''}}">
                         </div>
                     </div>
 
