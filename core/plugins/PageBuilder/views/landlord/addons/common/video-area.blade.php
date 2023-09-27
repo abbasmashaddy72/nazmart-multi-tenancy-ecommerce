@@ -1,4 +1,5 @@
-<section class="choose-area video-section section-bg-1" data-padding-top="{{$data['padding_top']}}" data-padding-bottom="{{$data['padding_bottom']}}" id="{{$data['section_id']}}">
+<section class="choose-area video-section section-bg-1" data-padding-top="{{$data['padding_top']}}"
+         data-padding-bottom="{{$data['padding_bottom']}}" id="{{$data['section_id']}}">
     <div class="container">
         <div class="row align-items-center justify-content-center flex-column-reverse flex-lg-row">
             <div class="col-xl-6 mt-4">
@@ -10,7 +11,7 @@
                         $video_control = $data['video_control'] ? 'controls=1' : 'controls=0';
                     @endphp
                     <iframe class="video_iframe"
-                            src="https://www.youtube.com/embed/Tr5y7wtJXnA?{{$video_autoplay}}&{{$video_mute}}&{{$video_loop}}&{{$video_control}}"
+                            src="{{$data['video_link'] ?? ''}}?{{$video_autoplay}}&{{$video_mute}}&{{$video_loop}}&{{$video_control}}"
                             title="{{str_replace(['{h}','{/h}'], '', $data['title']) ?? ''}}"
                             allowfullscreen
                     ></iframe>
