@@ -1,6 +1,12 @@
 @php
-    $subtotal = \Gloudemans\Shoppingcart\Facades\Cart::subtotal(2, '.', ',');
-    $total = \Gloudemans\Shoppingcart\Facades\Cart::priceTotal(2, '.', ',');
+    $subtotal = 0;
+    $carts = Cart::content();
+    foreach ($carts ?? [] as $item)
+    {
+        $subtotal += calculatePrice($item->price, $item->options) * $item->qty;
+    }
+
+    $total = $subtotal;
 @endphp
 
 <h4 class="coupon-contents-title"> {{__('Cart Total:')}} </h4>

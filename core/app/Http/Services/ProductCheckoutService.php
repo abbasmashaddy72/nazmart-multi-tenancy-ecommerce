@@ -24,7 +24,9 @@ use Modules\ShippingModule\Entities\ShippingMethod;
 use Modules\ShippingModule\Entities\ZoneRegion;
 use Modules\TaxModule\Entities\CountryTax;
 use Modules\TaxModule\Entities\StateTax;
+use Modules\TaxModule\Entities\TaxClassOption;
 use Modules\TaxModule\Services\CalculateTaxBasedOnCustomerAddress;
+use Modules\TaxModule\Services\CalculateTaxServices;
 use Xgenious\Paymentgateway\Facades\XgPaymentGateway;
 
 class ProductCheckoutService
@@ -34,8 +36,7 @@ class ProductCheckoutService
         $user = Auth::guard('web')->user();
 
         // If user does not exist
-        if (!$user)
-        {
+        if (!$user) {
             $name = $validated_data['name'];
             $email = trim(strtolower($validated_data['email']));
             $phone = $validated_data['phone'];
@@ -46,19 +47,17 @@ class ProductCheckoutService
             $state_id = $validated_data['state'];
             $state_name = State::find($state_id)->first()->name;
 
-            $city = $validated_data['city'];
+            $city = $validated_data['city'] ?? 0;
             $address = $validated_data['address'];
 
             // If user wants to create account while checkout
-            if (array_key_exists('create_accounts_input', $validated_data) && $validated_data['create_accounts_input'] != null)
-            {
+            if (array_key_exists('create_accounts_input', $validated_data) && $validated_data['create_accounts_input'] != null) {
                 $username = $validated_data['create_username'];
                 $password = $validated_data['create_password'];
 
                 $user = $this->loginIfUserExist($validated_data);
                 if (!$user || 'user_exist' == $user) {
-                    if ('user_exist' == $user)
-                    {
+                    if ('user_exist' == $user) {
                         return [];
                     }
 
@@ -80,9 +79,7 @@ class ProductCheckoutService
                         'address' => $user_delivery_address->address
                     ];
                 }
-            }
-            else
-            {
+            } else {
                 $user = [
                     'id' => null,
                     'name' => $name,
@@ -96,13 +93,10 @@ class ProductCheckoutService
                     'address' => $address
                 ];
             }
-        }
-        // If user is logged in
-        else
-        {
+        } // If user is logged in
+        else {
             // If user delivery address exist
-            if ($user->delivery_address)
-            {
+            if ($user->delivery_address) {
                 $user_address = $user->delivery_address;
                 $user = [
                     'id' => $user->id,
@@ -116,8 +110,7 @@ class ProductCheckoutService
                 ];
 
                 // If user want to ship another address
-                if ($validated_data['shift_another_address'])
-                {
+                if ($validated_data['shift_another_address']) {
                     $user = [
                         'id' => $user['id'],
                         'name' => $validated_data['shift_name'],
@@ -129,10 +122,8 @@ class ProductCheckoutService
                         'address' => $validated_data['shift_address']
                     ];
                 }
-            }
-            // If user has not set any delivery address
-            else
-            {
+            } // If user has not set any delivery address
+            else {
                 $user = [
                     'id' => $user->id,
                     'name' => $user->name,
@@ -170,8 +161,7 @@ class ProductCheckoutService
         }
 
         // If user exist but not authenticated
-        if ($user)
-        {
+        if ($user) {
             return 'user_exist';
         }
 
@@ -208,8 +198,7 @@ class ProductCheckoutService
             'updated_at' => now()
         ]);
 
-        if ($user)
-        {
+        if ($user) {
             $this->loginUser($user->username, $data['password']);
         }
 
@@ -285,54 +274,76 @@ class ProductCheckoutService
         return $arr;
     }
 
-    public function getProductTaxedFinalPrice(...$data)
+    public function getProductTaxedFinalPrice($user, $validated_data)
     {
         $carts = Cart::instance("default")->content();
-        $itemsTotal = null;
-        $enableTaxAmount = !\Modules\TaxModule\Services\CalculateTaxServices::isPriceEnteredWithTax();
+        $enableTaxAmount = !CalculateTaxServices::isPriceEnteredWithTax();
 
         $tax = CalculateTaxBasedOnCustomerAddress::init();
         $uniqueProductIds = $carts->pluck("id")->unique()->toArray();
 
-        dd($data);
-//        $address_data =
-        $country_id = $data['country'];
-        $state_id = $data['state'];
-        $city_id = $data['city'];
+        $country_id = $user['country'];
+        $state_id = $user['state'];
+        $city_id = $user['city'];
 
-        $shippingTaxClass = \Modules\TaxModule\Entities\TaxClassOption::where("class_id", get_static_option("shipping_tax_class"));
-        if(!empty($country_id)){
+        $shippingTaxClass = TaxClassOption::where("class_id", get_static_option("shipping_tax_class"));
+        if (!empty($country_id)) {
             $shippingTaxClass->where("country_id", $country_id);
         }
-        if(!empty($state_id)){
+        if (!empty($state_id)) {
             $shippingTaxClass->where("state_id", $state_id);
         }
-        if(!empty($city_id)){
+        if (!empty($city_id)) {
             $shippingTaxClass->where("city_id", $city_id);
         }
 
         $shippingTaxClass = $shippingTaxClass->sum("rate");
 
-        if(empty($uniqueProductIds))
-        {
+        if (empty($uniqueProductIds)) {
             $taxProducts = collect([]);
-        }
-        else
-        {
-            if(\Modules\TaxModule\Services\CalculateTaxBasedOnCustomerAddress::is_eligible()){
+        } else {
+            if (CalculateTaxBasedOnCustomerAddress::is_eligible()) {
                 $taxProducts = $tax
                     ->productIds($uniqueProductIds)
                     ->customerAddress($country_id, $state_id, $city_id)
                     ->generate();
-            }
-            else
-            {
+            } else {
                 $taxProducts = collect([]);
             }
         }
 
 
-        dd($taxProducts);
+        $subtotal = null;
+        $itemsTotal = null;
+        $v_tax_total = 0;
+
+        foreach ($carts ?? [] as $data) {
+            $taxAmount = $taxProducts->where("id", $data->id)->first();
+
+            if (!empty($taxAmount)) {
+                $taxAmount->tax_options_sum_rate = $taxAmount->tax_options_sum_rate ?? 0;
+                $price = calculatePrice($data->price, $taxAmount);
+                $regular_price = calculatePrice($data->options->regular_price, $data->options);
+                $v_tax_total += calculatePrice($data->price, $taxAmount, "percentage") * $data->qty;
+            } else {
+                $price = calculatePrice($data->price, $data->options);
+                $regular_price = calculatePrice($data->options->regular_price, $data->options);
+            }
+
+            $subtotal += $price * $data->qty;
+            $itemsTotal = $subtotal + $v_tax_total;
+        }
+
+        $shipping_methods = ShippingMethod::with('options')->where('id', $validated_data['shipping_method'])->first();
+        $shipping_price = calculatePrice($shipping_methods?->options?->cost, $shippingTaxClass, "shipping");
+
+
+        return [
+            'tax' => $v_tax_total,
+            'shipping_cost' => $shipping_price,
+            'subtotal' => $subtotal,
+            'total' => $itemsTotal
+        ];
     }
 
     public function getFinalPriceDetails($user, $validated_data)
@@ -357,11 +368,18 @@ class ProductCheckoutService
             $product_tax = $data['shipping_tax'];
             $shipping_cost = $data['shipping_cost'];
 
-            $this->getProductTaxedFinalPrice($validated_data, $price, $user);
-
-            $taxed_price = ($price['PHYSICAL']['total'] * $product_tax) / 100;
-            $subtotal = $price['PHYSICAL']['total'];
-            $total['total'] = $price['PHYSICAL']['total'] + $taxed_price + $shipping_cost;
+            if (get_static_option('tax_system') == 'advance_tax_system')
+            {
+                $final_details = $this->getProductTaxedFinalPrice($user, $validated_data);
+                $product_tax = $final_details['tax'];
+                $shipping_cost = $final_details['shipping_cost'];
+                $subtotal = $final_details['subtotal'];
+                $total['total'] = $final_details['total'] + $final_details['shipping_cost'];
+            } else {
+                $taxed_price = ($price['PHYSICAL']['total'] * $product_tax) / 100;
+                $subtotal = $price['PHYSICAL']['total'];
+                $total['total'] = $price['PHYSICAL']['total'] + $taxed_price + $shipping_cost;
+            }
 
             $discount = $discounted_price != 0 ? $discounted_price : 0;
             if ($discounted_price > 0) {
@@ -550,8 +568,7 @@ class ProductCheckoutService
         $shipping_cost = 0;
         $product_tax = 0;
 
-        if (get_static_option('tax_system') != 'advance_tax_system')
-        {
+        if (get_static_option('tax_system') != 'advance_tax_system') {
             if ($request['state'] && $request['country']) {
                 $product_tax = StateTax::where(['country_id' => $request['country'], 'state_id' => $request['state']])->select('id', 'tax_percentage')->first();
 
@@ -580,20 +597,18 @@ class ProductCheckoutService
 
             $taxed_shipping_charge = $shipping_cost;
             $shippingTaxClass = $product_tax;
-        }
-        else
-        {
+        } else {
             $shipping = ShippingMethod::find($request['shipping_method']);
             $shipping_option = $shipping->options ?? null;
 
             $shippingTaxClass = \Modules\TaxModule\Entities\TaxClassOption::where("class_id", get_static_option("shipping_tax_class"));
-            if(!empty($country_id)){
+            if (!empty($country_id)) {
                 $shippingTaxClass->where("country_id", $request["country"]);
             }
-            if(!empty($state_id)){
+            if (!empty($state_id)) {
                 $shippingTaxClass->where("state_id", $request["state"]);
             }
-            if(!empty($city_id)){
+            if (!empty($city_id)) {
                 $shippingTaxClass->where("city_id", $request["city"]);
             }
 

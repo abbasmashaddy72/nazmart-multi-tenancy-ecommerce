@@ -17,11 +17,11 @@
                     </div>
                     <div class="single-input mt-4">
                         <label class="label-title mb-3"> {{__('State')}} </label>
-                        <select class="form--control shift-another-state" name="shift_state" id="state"></select>
+                        <select class="form--control shift-another-state stateField" name="shift_state" id="state"></select>
                     </div>
                     <div class="single-input mt-4">
                         <label class="label-title mb-3"> {{__('City/Town')}} </label>
-                        <input class="form--control" type="text" placeholder="Type City/Town" name="shift_city">
+                        <select class="form--control shift-another-city cityField" name="shift_city" id="city"></select>
                     </div>
                 </div>
                 <div class="checkout-form-flex">

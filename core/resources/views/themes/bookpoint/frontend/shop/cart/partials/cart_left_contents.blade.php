@@ -63,22 +63,22 @@
                             </div>
                         </td>
                         <td class="price-td"
-                            data-label="Price"> {{float_amount_with_currency_symbol($data->price)}} </td>
+                            data-label="Price"> {{amount_with_currency_symbol(calculatePrice($data->price, $data->options))}} </td>
                         <td class="ff-jost" data-label="Quantity">
                             @if($data->options->type == \App\Enums\ProductTypeEnum::PHYSICAL)
                                 <div class="product-quantity">
                                     @if(!$wishlist)
                                         <span class="substract">
-                                        <i class="las la-minus"></i>
-                                    </span>
+                                            <i class="las la-minus"></i>
+                                        </span>
                                     @endif
                                     <input class="quantity-input"
                                            {{ $wishlist ? "disabled='true' readonly='true'" : "" }} type="number"
                                            value="{{$data->qty}}">
                                     @if(!$wishlist)
                                         <span class="plus">
-                                        <i class="las la-plus"></i>
-                                    </span>
+                                            <i class="las la-plus"></i>
+                                        </span>
                                     @endif
                                 </div>
                             @else
@@ -88,7 +88,7 @@
                             @endif
                         </td>
                         @php
-                            $subtotal = $data->price * $data->qty;
+                            $subtotal = calculatePrice($data->price, $data->options) * $data->qty;
                         @endphp
                         <td class="price-td"
                             data-label="Subtotal"> {{float_amount_with_currency_symbol($subtotal)}} </td>

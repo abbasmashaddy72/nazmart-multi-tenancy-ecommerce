@@ -940,27 +940,31 @@ class TenantFrontendController extends Controller
             ]);
         }
 
-        $sold_count = CampaignSoldProduct::where('product_id', $request->product_id)->first();
-        $product = Product::where('id', $request->product_id)->first();
-        $product_left = $sold_count !== null ? $product->campaign_product->units_for_sale - $sold_count->sold_count : null;
+        $product = Product::where('id', $request->product_id)->withSum('taxOptions','rate')->first();
+        $dynamic_campaign = get_product_dynamic_price($product);
+        if($dynamic_campaign['is_running'])
+        {
+            $sold_count = CampaignSoldProduct::where('product_id', $request->product_id)->first();
+            $product_left = $sold_count !== null ? $product->campaign_product->units_for_sale - $sold_count->sold_count : null;
 
-        // now we will check if product left is equal or bigger than quantity than we will check
-        if (!($request->quantity <= $product_left) && $sold_count) {
-            return response()->json([
-                'type' => 'warning',
-                'quantity_msg' => __('Requested amount can not be cart. Campaign product stock limit is over!')
-            ]);
+            // now we will check if product left is equal or bigger than quantity than we will check
+            if (!($request->quantity <= $product_left) && $sold_count) {
+                return response()->json([
+                    'type' => 'warning',
+                    'quantity_msg' => __('Requested amount can not be cart. Campaign product stock limit is over!')
+                ]);
+            }
         }
 
         DB::beginTransaction();
         try {
             $cart_data = $request->all();
-            $product = Product::findOrFail($cart_data['product_id']);
+            $product = Product::where('id', $cart_data['product_id'])->withSum('taxOptions','rate')->first();
 
             $sale_price = $product->sale_price;
             $additional_price = 0;
 
-            if ($product->campaign_product) {
+            if ($dynamic_campaign['is_running'] && $product->campaign_product) {
                 $sale_price = $product?->campaign_product?->campaign_price;
             }
 
@@ -969,7 +973,7 @@ class TenantFrontendController extends Controller
                 $additional_cost = $product_inventory_details->add_cost;
             }
 
-            $final_sale_price = $sale_price + $additional_price;
+            $final_sale_price = calculatePrice($sale_price + $additional_price, $product);
 
             $product_image = $product->image_id;
             if ($cart_data['product_variant']) {

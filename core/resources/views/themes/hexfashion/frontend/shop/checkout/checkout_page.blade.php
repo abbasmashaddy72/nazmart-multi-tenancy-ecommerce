@@ -14,7 +14,6 @@
             flex-wrap: wrap;
             display: flex;
         }
-
         .payment-gateway-wrapper ul li {
             max-width: 100px;
             cursor: pointer;
@@ -132,6 +131,69 @@
 
 @section('content')
     @if(Cart::count() > 0)
+        @php
+            $carts = Cart::instance("default")->content();
+            $itemsTotal = null;
+            $enableTaxAmount = !\Modules\TaxModule\Services\CalculateTaxServices::isPriceEnteredWithTax();
+
+            $tax = Modules\TaxModule\Services\CalculateTaxBasedOnCustomerAddress::init();
+            $uniqueProductIds = $carts->pluck("id")->unique()->toArray();
+
+            $country_id = old("country_id") ?? 0;
+            $state_id = old("state_id") ?? 0;
+            $city_id = old("city") ?? 0;
+
+            if (auth('web')->check())
+            {
+                $auth_user = auth('web')->user();
+
+                if (get_static_option('calculate_tax_based_on') == 'customer_billing_address')
+                {
+                    if ($auth_user->delivery_address)
+                    {
+                        $country_id = $auth_user?->delivery_address?->country_id;
+                        $state_id = $auth_user?->delivery_address?->state_id;
+                        $city_id = $auth_user?->delivery_address?->city;
+                    }
+                } else {
+                    $country_id = $auth_user->country;
+                    $state_id = $auth_user->state;
+                    $city_id = $auth_user->city;
+                }
+            }
+
+            $shippingTaxClass = \Modules\TaxModule\Entities\TaxClassOption::where("class_id", get_static_option("shipping_tax_class"));
+            if(!empty($country_id)){
+                $shippingTaxClass->where("country_id", $country_id);
+            }
+            if(!empty($state_id)){
+                $shippingTaxClass->where("state_id", $state_id);
+            }
+            if(!empty($city_id)){
+                $shippingTaxClass->where("city_id", $city_id);
+            }
+
+            $shippingTaxClass = $shippingTaxClass->sum("rate");
+
+            if(empty($uniqueProductIds))
+            {
+                $taxProducts = collect([]);
+            }
+            else
+            {
+                if(\Modules\TaxModule\Services\CalculateTaxBasedOnCustomerAddress::is_eligible()){
+                    $taxProducts = $tax
+                        ->productIds($uniqueProductIds)
+                        ->customerAddress($country_id, $state_id, $city_id)
+                        ->generate();
+                }
+                else
+                {
+                    $taxProducts = collect([]);
+                }
+            }
+        @endphp
+
         <div class="checkout-area padding-top-75 padding-bottom-50">
             <div class="container container-one">
                 <x-error-msg/>
@@ -253,70 +315,74 @@
                 }
             });
 
-            $(document).on('change', 'select[name=shift_country]', function (e){
-                let el = $(this);
-                let country = el.val();
+            {{--$(document).on('change', 'select[name=shift_country]', function (e){--}}
+            {{--    let el = $(this);--}}
+            {{--    let country = el.val();--}}
 
-                $.ajax({
-                    url: '{{route('tenant.shop.checkout.state.ajax')}}',
-                    type: 'GET',
-                    data: {
-                        country: country
-                    },
+            {{--    $.ajax({--}}
+            {{--        url: '{{route('tenant.shop.checkout.state.ajax')}}',--}}
+            {{--        type: 'GET',--}}
+            {{--        data: {--}}
+            {{--            country: country--}}
+            {{--        },--}}
 
-                    beforeSend: () => {
-                        el.parent().parent().find('.shift-another-state').html('');
-                       $('.loader').show();
-                    },
-                    success: (data) => {
-                        el.parent().parent().find('.shift-another-state').html(data.markup);
-                        $('.loader').hide();
-                    },
-                    error: () => {}
-                });
-            });
+            {{--        beforeSend: () => {--}}
+            {{--            el.parent().parent().find('.shift-another-state').html('');--}}
+            {{--           $('.loader').show();--}}
+            {{--        },--}}
+            {{--        success: (data) => {--}}
+            {{--            el.parent().parent().find('.shift-another-state').html(data.markup);--}}
+            {{--            $('.loader').hide();--}}
+            {{--        },--}}
+            {{--        error: () => {}--}}
+            {{--    });--}}
+            {{--});--}}
 
-            $(document).on('change', '.billing_address_country[name=country]', function (e){
-                let el = $(this);
-                let country = el.val();
+            {{--$(document).on('change', '.billing_address_country[name=country]', function (e){--}}
+            {{--    let el = $(this);--}}
+            {{--    let country = el.val();--}}
 
-                $.ajax({
-                    url: '{{route('tenant.shop.checkout.state.ajax')}}',
-                    type: 'GET',
-                    data: {
-                        country: country
-                    },
+            {{--    $.ajax({--}}
+            {{--        url: '{{route('tenant.shop.checkout.state.ajax')}}',--}}
+            {{--        type: 'GET',--}}
+            {{--        data: {--}}
+            {{--            country: country--}}
+            {{--        },--}}
 
-                    beforeSend: () => {
-                        el.parent().parent().find('.billing_address_state').html('');
-                        $('.loader').show();
-                    },
-                    success: (data) => {
-                        el.parent().parent().find('.billing_address_state').html(data.markup);
-                        $('.loader').hide();
-                    },
-                    error: () => {}
-                });
-            });
+            {{--        beforeSend: () => {--}}
+            {{--            el.parent().parent().find('.billing_address_state').html('');--}}
+            {{--            $('.loader').show();--}}
+            {{--        },--}}
+            {{--        success: (data) => {--}}
+            {{--            el.parent().parent().find('.billing_address_state').html(data.markup);--}}
+            {{--            $('.loader').hide();--}}
+            {{--        },--}}
+            {{--        error: () => {}--}}
+            {{--    });--}}
+            {{--});--}}
 
             $(document).on('change', '.shift-another-country, .shift-another-state', function (e){
                 let country = $('.shift-another-country :selected').val();
                 let state = $('.shift-another-state :selected').val();
+                let city = $('.shift-another-city :selected').val();
 
                 $('.coupon-country').val(country);
                 $('.coupon-state').val(state);
+                $('.coupon-city').val(city);
 
-                getCountryStateBasedTotal(country, state);
+                getCountryStateBasedTotal(country, state, city);
             });
 
             $(document).on('change', '.billing_address_country, .billing_address_state', function (e){
                 let country = $('.billing_address_country :selected').val();
                 let state = $('.billing_address_state :selected').val();
+                let city = $('.billing_address_city :selected').val();
 
                 $('.coupon-country').val(country);
                 $('.coupon-state').val(state);
+                $('.coupon-city').val(city);
 
-                getCountryStateBasedTotal(country, state);
+                getCountryStateBasedTotal(country, state, city);
             });
 
             $(document).on('click', 'input[name=shipping_method]', function (){
@@ -335,7 +401,7 @@
             function getShippingMethodBasedTotal(shipping_method ,country, state, total) {
                 let checkout_btn = $('.checkout_disable');
                 checkout_btn.addClass('proceed_checkout_btn');
-                checkout_btn.css({'background': 'var(--main-color-two)', 'border': '2px solid var(--main-color-two)', 'color': '#fff', 'cursor': 'pointer'});
+                checkout_btn.css({'background': 'var(--main-color-one)', 'border': '2px solid var(--main-color-one)', 'color': '#fff', 'cursor': 'pointer'});
 
                 $.ajax({
                     url: '{{route('tenant.shop.checkout.sync-product-shipping.ajax')}}',
@@ -351,8 +417,9 @@
                     success: (data) => {
                         if (data.type === 'success')
                         {
+                            console.log(data);
                             let currency = '{{site_currency_symbol()}}';
-                            $('.price-shipping span').last().html(currency + data.selected_shipping_method.options.cost);
+                            $('.price-shipping span').last().html(currency + data.selected_shipping_method.options.final_cost);
                             $('.price-total span').last().html(currency + data.total);
                             $('.loader').hide();
 
@@ -368,13 +435,14 @@
                 });
             }
 
-            function getCountryStateBasedTotal(country, state) {
+            function getCountryStateBasedTotal(country, state, city) {
                 $.ajax({
                     url: '{{route('tenant.shop.checkout.sync-product-total.ajax')}}',
                     type: 'GET',
                     data: {
                         country: country,
-                        state: state
+                        state: state,
+                        city: city
                     },
 
                     beforeSend: () => {
@@ -386,6 +454,7 @@
 
                         $('.coupon-country').val(country);
                         $('.coupon-state').val(state);
+                        $('.coupon-city').val(city);
                     },
                     error: () => {}
                 });
@@ -423,7 +492,7 @@
 
                         $('.loader').hide();
 
-                        if (data.type == 'success')
+                        if (data.type === 'success')
                         {
                             let currency_symbol = '{{site_currency_symbol()}}';
                             $('.price-total').attr('data-total', data.coupon_amount);
@@ -525,6 +594,57 @@
                 } else {
                     toastr.error('{{__('You need to agree to our Terms & Conditions to complete the order')}}');
                 }
+            });
+
+            $(document).on('change', 'select[name=shift_country], select[name=country]', function (e) {
+                e.preventDefault();
+
+                let country_id = $(this).val();
+
+                $.post(`{{route('tenant.admin.au.state.all')}}`,
+                    {
+                        _token: `{{csrf_token()}}`,
+                        country: country_id
+                    },
+                    function (data) {
+                        let stateField = $('.stateField');
+                        stateField.empty();
+                        stateField.append(`<option value="">{{__('Select a state')}}</option>`);
+
+                        let cityField = $('.cityField');
+                        cityField.empty();
+                        cityField.append(`<option value="">{{__('Select a city')}}</option>`);
+
+                        $.each(data.states , function (index, value) {
+                            stateField.append(
+                                `<option value="${value.id}">${value.name}</option>`
+                            );
+                        });
+                    }
+                )
+            });
+
+            $(document).on('change', 'select[name=shift_state], select[name=state]', function (e) {
+                e.preventDefault();
+
+                let state_id = $(this).val();
+
+                $.post(`{{route('tenant.admin.au.city.all')}}`,
+                    {
+                        _token: `{{csrf_token()}}`,
+                        state: state_id
+                    },
+                    function (data) {
+                        let cityField = $('.cityField');
+                        cityField.empty();
+
+                        $.each(data.cities , function (index, value) {
+                            cityField.append(
+                                `<option value="${value.id}">${value.name}</option>`
+                            );
+                        });
+                    }
+                )
             });
         });
     </script>

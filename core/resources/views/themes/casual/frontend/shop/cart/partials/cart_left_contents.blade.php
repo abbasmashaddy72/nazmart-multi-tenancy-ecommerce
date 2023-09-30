@@ -63,7 +63,7 @@
                             </div>
                         </td>
                         <td class="price-td"
-                            data-label="Price"> {{float_amount_with_currency_symbol($data->price)}} </td>
+                            data-label="Price"> {{amount_with_currency_symbol(calculatePrice($data->price, $data->options))}} </td>
                         <td class="ff-jost" data-label="Quantity">
                             @if($data->options->type == \App\Enums\ProductTypeEnum::PHYSICAL)
                                 <div class="product-quantity">
@@ -88,7 +88,7 @@
                             @endif
                         </td>
                         @php
-                            $subtotal = $data->price * $data->qty;
+                            $subtotal = calculatePrice($data->price, $data->options) * $data->qty;
                         @endphp
                         <td class="price-td"
                             data-label="Subtotal"> {{float_amount_with_currency_symbol($subtotal)}} </td>

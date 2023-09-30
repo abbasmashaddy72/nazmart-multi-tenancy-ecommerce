@@ -139,18 +139,22 @@
             $tax = Modules\TaxModule\Services\CalculateTaxBasedOnCustomerAddress::init();
             $uniqueProductIds = $carts->pluck("id")->unique()->toArray();
 
-            $country_id = old("country_id") ?? (auth('web')->check() ? auth('web')->user()->country : 0);
-            $state_id = old("state_id") ?? (auth('web')->check() ? auth('web')->user()->state : 0);
-            $city_id = old("city") ?? (auth('web')->check() ? auth('web')->user()->city : 0);
+            $country_id = old("country_id") ?? 0;
+            $state_id = old("state_id") ?? 0;
+            $city_id = old("city") ?? 0;
 
             if (auth('web')->check())
             {
                 $auth_user = auth('web')->user();
-                if ($auth_user->delivery_address)
+
+                if (get_static_option('calculate_tax_based_on') == 'customer_billing_address')
                 {
-                    $country_id = $auth_user?->delivery_address?->country_id;
-                    $state_id = $auth_user?->delivery_address?->state_id;
-                    $city_id = $auth_user?->delivery_address?->city;
+                    if ($auth_user->delivery_address)
+                    {
+                        $country_id = $auth_user?->delivery_address?->country_id;
+                        $state_id = $auth_user?->delivery_address?->state_id;
+                        $city_id = $auth_user?->delivery_address?->city;
+                    }
                 } else {
                     $country_id = $auth_user->country;
                     $state_id = $auth_user->state;

@@ -67,7 +67,7 @@
                                     <div class="single-addto-cart-wrappers">
                                         @php
                                             $cart = \Gloudemans\Shoppingcart\Facades\Cart::instance("wishlist")->content();
-                                            $subtotal = \Gloudemans\Shoppingcart\Facades\Cart::instance("wishlist")->subtotal();
+                                            $subtotal = 0;
                                         @endphp
                                         @forelse($cart as $cart_item)
                                             <div class="single-addto-carts">
@@ -96,7 +96,7 @@
                                                             @endif
                                                         </span>
                                                         <div class="price-updates mt-2">
-                                                            <span class="price-title fs-16 fw-500 color-heading"> {{amount_with_currency_symbol($cart_item->price)}} </span>
+                                                            <span class="price-title fs-16 fw-500 color-heading"> {{amount_with_currency_symbol(calculatePrice($cart_item->price, $cart_item->options))}} </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -112,7 +112,7 @@
                                     @if($cart->count() != 0)
                                         <div class="cart-total-amount">
                                             <h6 class="amount-title"> {{__('Total Amount:')}} </h6>
-                                            <span class="fs-18 fw-500 color-light"> {{site_currency_symbol().$subtotal}} </span>
+                                            <span class="fs-18 fw-500 color-light"> {{amount_with_currency_symbol($subtotal)}} </span>
                                         </div>
                                         <div class="btn-wrapper mt-3">
                                             <a href="{{route('tenant.shop.wishlist.page')}}" class="cart-btn cart-btn-outline radius-0 w-100"> {{__('View Wishlist')}} </a>
@@ -128,7 +128,7 @@
                                     <div class="single-addto-cart-wrappers">
                                         @php
                                             $cart = \Gloudemans\Shoppingcart\Facades\Cart::instance("default")->content();
-                                            $subtotal = \Gloudemans\Shoppingcart\Facades\Cart::instance("default")->subtotal();
+                                            $subtotal = 0;
                                         @endphp
                                         @forelse($cart as $cart_item)
                                             <div class="single-addto-carts">
@@ -158,8 +158,12 @@
                                                             @endif
                                                         </span>
 
+                                                        @php
+                                                            $subtotal += calculatePrice($cart_item->price * $cart_item->qty, $cart_item->options)
+                                                        @endphp
+
                                                         <div class="price-updates">
-                                                            <span class="price-title fs-16 fw-500 color-heading"> {{amount_with_currency_symbol($cart_item->price)}} </span>
+                                                            <span class="price-title fs-16 fw-500 color-heading"> {{amount_with_currency_symbol(calculatePrice($cart_item->price, $cart_item->options))}} </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -174,7 +178,7 @@
 
                                     @if($cart->count() != 0)
                                         <div class="cart-total-amount">
-                                            <h6 class="amount-title"> {{__('Total Amount:')}} </h6> <span class="fs-18 fw-500 color-light"> {{site_currency_symbol().$subtotal}} </span></div>
+                                            <h6 class="amount-title"> {{__('Total Amount:')}} </h6> <span class="fs-18 fw-500 color-light"> {{amount_with_currency_symbol($subtotal)}} </span></div>
                                         <div class="btn-wrapper mt-3">
                                             <a href="{{route('tenant.shop.checkout')}}" class="cart-btn radius-0 w-100"> {{__('CheckOut')}} </a>
                                         </div>

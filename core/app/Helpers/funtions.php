@@ -1409,7 +1409,7 @@ function get_product_shipping_tax_data($billing_info)
             }
             $data['product_tax'] = !empty($tax) ? $tax['tax_percentage'] : 0;
         } else {
-            $tax = CountryTax::where('country_id', $billing_info->country_id)->select('id', 'tax_percentage')->first()->toArray();
+            $tax = CountryTax::where('country_id', $billing_info->country_id)->select('id', 'tax_percentage')->first();
             $tax = !empty($tax) ? $tax->toArray() : null;
             $data['product_tax'] = !empty($tax) ? $tax['tax_percentage'] : 0;
         }

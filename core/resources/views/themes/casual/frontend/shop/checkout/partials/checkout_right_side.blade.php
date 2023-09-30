@@ -16,7 +16,27 @@
                 <button type="button" class="btn-submit coupon-btn"> {{__('Apply Coupon')}}</button>
             </form>
             <div class="checkout-cart-wrapper coupon-border mt-4 mb-4">
-                @foreach($cart_data as $data)
+                @php
+                    $subtotal = null;
+                    $itemsTotal = null;
+                    $v_tax_total = 0;
+                @endphp
+                @foreach($carts ?? [] as $data)
+                    @php
+                        $default_shipping_cost = null;
+                        $taxAmount = $taxProducts->where("id" , $data->id)->first();
+
+                        if(!empty($taxAmount)){
+                            $taxAmount->tax_options_sum_rate = $taxAmount->tax_options_sum_rate ?? 0;
+                            $price = calculatePrice($data->price, $taxAmount);
+                            $regular_price = calculatePrice($data->options->regular_price, $data->options);
+                            $v_tax_total += calculatePrice($data->price, $taxAmount, "percentage") * $data->qty;
+                        }else{
+                            $price = calculatePrice($data->price, $data->options);
+                            $regular_price = calculatePrice($data->options->regular_price, $data->options);
+                        }
+                    @endphp
+
                     <div class="single-checkout-cart-items mt-3">
                         <div class="single-check-carts">
                             <div class="check-cart-flex-contents">
@@ -26,7 +46,8 @@
                                     </a>
                                 </div>
                                 <div class="checkout-cart-img-contents">
-                                    <h6 class="checkout-cart-title"><a href="javascript:void(0)"> {{$data->name}} </a>
+                                    <h6 class="checkout-cart-title">
+                                        <a href="javascript:void(0)"> {{$data->name}} </a>
                                     </h6>
 
                                     <span class="name-subtitle d-block mt-2">
@@ -49,22 +70,29 @@
                                 </div>
                             </div>
                             <span
-                                class="checkout-cart-price color-heading fw-500"> {{amount_with_currency_symbol($data->price * $data->qty)}} </span>
+                                class="checkout-cart-price color-heading fw-500"> {{amount_with_currency_symbol($price * $data->qty)}} </span>
                         </div>
                     </div>
+
+                    @php
+                        $subtotal += $price * $data->qty;
+                        $itemsTotal = $subtotal + $v_tax_total;
+                    @endphp
                 @endforeach
             </div>
             <div class="coupon-contents-details mt-4">
                 <ul class="coupon-contents-details-list coupon-border">
                     <li class="coupon-contents-details-list-item">
                         <h6 class="coupon-contents-details-list-item-title"> {{__('Sub Total')}} </h6> <span
-                            class="coupon-contents-details-list-item-price fw-500"> {{site_currency_symbol().Cart::subtotal()}} </span>
+                            class="coupon-contents-details-list-item-price fw-500"> {{amount_with_currency_symbol($subtotal)}} </span>
                     </li>
                 </ul>
                 <div class="shipping_method_wrapper">
                     @php
+                        $tax_ = 0;
                         $has_delivery_address = false;
                         $user = Auth::guard('web')->user();
+
                         if ($user != null)
                         {
                             if ($user?->delivery_address != null)
@@ -85,9 +113,13 @@
                                     }
 
                                 $shipping_methods = \Modules\ShippingModule\Entities\ShippingMethod::with('options')->whereIn('zone_id', $shipping_zones)->get();
+
+                                $location_tax_data = get_product_shipping_tax_data($user?->delivery_address);
+                                $tax_ = calculatePercentageAmount($itemsTotal, $location_tax_data['product_tax'] ?? 0) ?? 0;
                             }
                         }
                     @endphp
+
 
                     @if($user != null)
                         <ul class="coupon-contents-details-list coupon-border">
@@ -95,22 +127,23 @@
                             @foreach($shipping_methods ?? [] as $key => $method)
                                 @php
                                     $is_default = false;
-                                    if ($key == 0)
+                                    if ($method->is_default)
                                     {
                                         $is_default = true;
                                         $default_shipping = $method;
                                     }
                                 @endphp
 
-                                <li class="coupon-contents-details-list-item" data-country="{{isset($country) ?? 0}}"
-                                    data-state="{{isset($state) ?? 0}}">
+                                <li class="coupon-contents-details-list-item" data-country="{{isset($country) ? $country : 0}}"
+                                    data-state="{{isset($state) ? $state : 0}}" data-city="{{isset($city) ? $city : 0}}">
                                     <span class="coupon-radio-item">
                                         <input type="radio" class="shipping_methods"
                                                id="shipping-option-{{$method['id']}}"
                                                name="shipping_method" value="{{$method['id']}}">
                                         <label for="shipping-option-{{$method['id']}}">{{$method['name']}}</label>
                                     </span>
-                                    <span>{{amount_with_currency_symbol($method['options']['cost'])}}</span>
+
+                                    <span>{{amount_with_currency_symbol(calculatePrice($method['options']['cost'], $shippingTaxClass, "shipping"))}}</span>
                                 </li>
                             @endforeach
                         </ul>
@@ -118,45 +151,44 @@
 
                     <div class="shipping_tax_total">
                         <ul class="coupon-contents-details-list coupon-border">
-                            <li class="coupon-contents-details-list-item"><span> {{__('Tax (Incl)')}} </span>
-                                <span> {{$product_tax.'%'}} </span></li>
+                            @if(get_static_option('tax_system') == 'advance_tax_system')
+                                @if($enableTaxAmount)
+                                    <li class="coupon-contents-details-list-item"><span> {{__('Tax (Incl)')}} </span>
+                                        <span> {{amount_with_currency_symbol($v_tax_total)}} </span>
+                                    </li>
+                                @else
+                                    <li class="coupon-contents-details-list-item"><span> {{__('Tax (Incl)')}} </span>
+                                        <span> {{ get_static_option("display_price_in_the_shop") == 'including' ? __("Inclusive Tax") : "" }} </span>
+                                    </li>
+                                @endif
+                            @else
+                                <li class="coupon-contents-details-list-item"><span> {{__('Tax (Incl)')}} </span>
+                                    <span> {{ amount_with_currency_symbol($tax_) }} </span>
+                                </li>
+                            @endif
+
+
                             <li class="coupon-contents-details-list-item coupon-price"><span> {{__('Coupon Discount (-)')}} </span>
                                 <span> {{amount_with_currency_symbol(0.00)}} </span></li>
                             <li class="coupon-contents-details-list-item price-shipping">
                                 <span> {{__('Shipping Cost (+)')}} </span>
-                                <span> {{isset($is_default) && $is_default ? amount_with_currency_symbol($default_shipping['options']['cost']) : '--'}} </span>
+                                <span> {{isset($is_default) && $is_default ? amount_with_currency_symbol(0) : '--'}} </span>
                             </li>
                         </ul>
                         <ul class="coupon-contents-details-list coupon-border">
-                            @php
-                                $subtotal = (double) Cart::subtotal(0, '', '');
-                                $taxed_price = ($subtotal * $product_tax) / 100;
-
-                                $shipping_tax = 0;
-                                if (Auth::guard('web')->check())
-                                {
-                                    if ($has_delivery_address)
-                                    {
-                                        if(isset($default_shipping) && $default_shipping?->options?->tax_status)
-                                        {
-                                            $shipping_tax = ($default_shipping['options']['cost'] * $product_tax) / 100;
-                                        }
-                                        $shipping = isset($is_default) && $is_default ? $default_shipping['options']['cost'] ?? 0 : 0;
-                                    } else {
-                                        $shipping = 0;
-                                    }
-                                } else {
-                                    $shipping = 0;
-                                }
-
-                                $total = $subtotal + ($taxed_price + $shipping_tax) + $shipping;
-                            @endphp
-                            <li class="coupon-contents-details-list-item price-total"
-                                data-total="{{$subtotal+$taxed_price}}" {{!isset($is_default) ? 'data-total='.$total.'' : ''}}
-                            ">
-                            <h6 class="coupon-title"> {{__('Total Amount')}} </h6> <span
-                                class="coupon-price fw-500 color-heading"> {{site_currency_symbol().$total}} </span>
-                            </li>
+                            @if(get_static_option('tax_system') == 'advance_tax_system')
+                                <li class="coupon-contents-details-list-item price-total"
+                                    data-total="{{$subtotal+$v_tax_total}}" {{!isset($is_default) ? 'data-total='.$itemsTotal.'' : ''}}>
+                                    <h6 class="coupon-title"> {{__('Total Amount')}} </h6> <span
+                                        class="coupon-price fw-500 color-heading"> {{amount_with_currency_symbol($itemsTotal)}} </span>
+                                </li>
+                            @else
+                                <li class="coupon-contents-details-list-item price-total"
+                                    data-total="{{$subtotal+$tax_}}" {{!isset($is_default) ? 'data-total='.$itemsTotal+$tax_.'' : ''}}>
+                                    <h6 class="coupon-title"> {{__('Total Amount')}} </h6> <span
+                                        class="coupon-price fw-500 color-heading"> {{amount_with_currency_symbol($itemsTotal+$tax_)}} </span>
+                                </li>
+                            @endif
                         </ul>
                     </div>
                 </div>

@@ -35,7 +35,7 @@
                             </div>
                             <div class="single-input mt-4">
                                 <label class="label-title mb-3"> {{__('Email Address')}} </label>
-                                <input class="form--control" type="text" placeholder="{{__('Type Email')}}" name="email" value="@auth('web'){{$billing_info ? $billing_info->email : auth('web')->user()?->email}}@else{{old('email')}}@endauth" {{$readonly}}>
+                                <input class="form--control" type="email" placeholder="{{__('Type Email')}}" name="email" value="@auth('web'){{$billing_info ? $billing_info->email : auth('web')->user()?->email}}@else{{old('email')}}@endauth" {{$readonly}}>
                             </div>
                         </div>
                         <div class="checkout-form-flex">
@@ -54,7 +54,7 @@
                             </div>
                             <div class="single-input mt-4">
                                 <label class="label-title mb-3"> {{__('State')}} </label>
-                                <select class="form--control billing_address_state" name="state" id="state">
+                                <select class="form--control billing_address_state stateField" name="state" id="state">
                                     @if($billing_info != null)
                                         <option {{$readonly}}>{{$billing_info?->state?->name}}</option>
                                     @endif
@@ -62,7 +62,11 @@
                             </div>
                             <div class="single-input mt-4">
                                 <label class="label-title mb-3"> {{__('City/Town')}} </label>
-                                <input class="form--control" type="text" placeholder="{{__('Type City/Town')}}" name="city" value="@auth('web'){{$billing_info ? $billing_info->city : (!empty(auth('web')->user()?->city) ? auth('web')->user()?->city : old('city'))}}@else{{old('city')}}@endauth" {{$readonly}}>
+                                <select class="form--control billing_address_city cityField" name="city" id="city">
+                                    @if($billing_info != null)
+                                        <option {{$readonly}}>{{$billing_info?->city_rel?->name}}</option>
+                                    @endif
+                                </select>
                             </div>
                         </div>
                         <div class="checkout-form-flex">
