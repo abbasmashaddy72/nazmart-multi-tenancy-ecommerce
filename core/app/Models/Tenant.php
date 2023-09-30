@@ -15,6 +15,8 @@ class Tenant extends BaseTenant implements TenantWithDatabase
 {
     use HasDatabase,HasDomains;
 
+    protected $dates = ['expire_date'];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class,'user_id','id');

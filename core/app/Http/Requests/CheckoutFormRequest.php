@@ -32,7 +32,7 @@ class CheckoutFormRequest extends FormRequest
                 'shift_email' => "required|email",
                 'shift_country' => "required|numeric",
                 'shift_state' => "required|numeric",
-                'shift_city' => "required",
+                'shift_city' => "nullable|numeric",
                 'shift_address' => "required"
             ];
         } else {
@@ -43,7 +43,7 @@ class CheckoutFormRequest extends FormRequest
                     'email' => "required|email",
                     'country' => "required|numeric",
                     'state' => "required|numeric",
-                    'city' => "required",
+                    'city' => "nullable",
                     'address' => "required"
                 ];
 
@@ -62,7 +62,7 @@ class CheckoutFormRequest extends FormRequest
                         'email' => "required|email", // user unique email needed?
                         'country' => "required|numeric",
                         'state' => "required|numeric",
-                        'city' => "required",
+                        'city' => "required|nullable",
                         'address' => "required"
                     ];
                 }

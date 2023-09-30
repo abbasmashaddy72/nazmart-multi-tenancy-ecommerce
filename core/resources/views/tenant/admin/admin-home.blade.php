@@ -14,15 +14,11 @@
                     </span>
 
                     @if(optional(tenant()->payment_log)->status == 'trial')
-                        @php
-                            $days = get_trial_days_left(tenant());
-                        @endphp
-
-                        <strong class="text-capitalize"> ( {{optional(tenant()->payment_log)->status}} : {{$days ?? ''}} {{__('Days Left')}})</strong>
+                        <strong class="text-capitalize"> ( {{optional(tenant()->payment_log)->status}} : {{tenant()->expire_date?->diffForHumans() ?? ''}})</strong>
                         <a class="btn btn-dark btn-sm pull-right" href="{{route('landlord.homepage') .'#price_plan_section'}}" target="_blank">{{__('Renew Plan')}}</a
                     @else
-                        @if($current_package->expire_date != null)
-                            <strong> ( {{__('Expire Date :')}} {{$current_package->expire_date .' - '. $current_package->expire_date?->diffForHumans() ?? ''}} )</strong>
+                        @if(tenant()->expire_date != null)
+                            <strong> ( {{__('Expire Date :')}} {{tenant()->expire_date .' - '. tenant()->expire_date?->diffForHumans() ?? ''}} )</strong>
 
                             <a class="btn btn-dark btn-sm pull-right" href="{{route('landlord.homepage') .'#price_plan_section'}}" target="_blank">{{__('Renew Plan')}}</a>
                         @else

@@ -43,7 +43,7 @@
                                     <div class="single-icon cart-shopping">
                                         @php
                                             $cart = \Gloudemans\Shoppingcart\Facades\Cart::instance("wishlist")->content();
-                                            $subtotal = \Gloudemans\Shoppingcart\Facades\Cart::instance("wishlist")->subtotal();
+                                            $subtotal = 0;
                                         @endphp
                                         <a href="javascript:void(0)" class="icon"> <i class="lar la-heart"></i>
                                         </a>
@@ -76,7 +76,7 @@
                                                                 </span>
 
                                                                 <div class="price-updates margin-top-10">
-                                                                    <span class="price-title fs-16 fw-500 color-heading"> {{amount_with_currency_symbol($cart_item->price)}} </span>
+                                                                    <span class="price-title fs-16 fw-500 color-heading"> {{amount_with_currency_symbol(calculatePrice($cart_item->price, $cart_item->options))}} </span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -97,7 +97,7 @@
                                     <div class="single-icon cart-shopping">
                                         @php
                                             $cart = \Gloudemans\Shoppingcart\Facades\Cart::instance("default")->content();
-                                            $subtotal = \Gloudemans\Shoppingcart\Facades\Cart::instance("default")->subtotal();
+                                            $subtotal = 0;
                                         @endphp
                                         <a href="javascript:void(0)" class="icon"> <i class="las la-shopping-cart"></i>
                                         </a>
@@ -129,8 +129,12 @@
                                                                     @endif
                                                                 </span>
 
+                                                                @php
+                                                                    $subtotal += calculatePrice($cart_item->price * $cart_item->qty, $cart_item->options)
+                                                                @endphp
+
                                                                 <div class="price-updates margin-top-10">
-                                                                    <span class="price-title fs-16 fw-500 color-heading"> {{amount_with_currency_symbol($cart_item->price)}} </span>
+                                                                    <span class="price-title fs-16 fw-500 color-heading"> {{amount_with_currency_symbol(calculatePrice($cart_item->price, $cart_item->options))}} </span>
                                                                 </div>
                                                             </div>
                                                         </div>

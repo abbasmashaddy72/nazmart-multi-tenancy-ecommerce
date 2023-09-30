@@ -18,7 +18,8 @@
             ],
             "script": [],
             "blade": [],
-            "navbarArea": "navbar"
+            "navbarArea": "navbar",
+            "breadcrumbArea": "breadcrumb"
         }
     ],
     "footerHook": [

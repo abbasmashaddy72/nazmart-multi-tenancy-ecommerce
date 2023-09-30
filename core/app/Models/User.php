@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Modules\CountryManage\Entities\City;
 use Modules\CountryManage\Entities\Country;
 use Modules\CountryManage\Entities\State;
 use Modules\Wallet\Entities\Wallet;
@@ -111,6 +112,11 @@ class User extends Authenticatable
     public function userState()
     {
         return $this->hasOne(State::class, 'name', 'state');
+    }
+
+    public function userCity()
+    {
+        return $this->hasOne(City::class, 'name', 'city');
     }
 
     public function wallet_tenant_list(): HasMany

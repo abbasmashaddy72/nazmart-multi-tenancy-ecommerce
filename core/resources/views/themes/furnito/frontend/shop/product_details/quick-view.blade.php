@@ -35,14 +35,20 @@
                         <div class="quick-view-thumb position-relative">
                             <img src="{{ $image_details["img_url"] }}">
                             <div class="global-card-thumb-badge right-side">
-                                <span class="global-card-thumb-badge-box bg-color-two"> 10% Off </span>
+                                @if(!empty($discount))
+                                    <span class="global-card-thumb-badge-box bg-color-two"> {{$discount}}% {{__('off')}} </span>
+                                @endif
+
+                                @if(!empty($product->badge))
+                                    <span class="global-card-thumb-badge-box bg-color-new"> {{$product?->badge?->name}} </span>
+                                @endif
                             </div>
                         </div>
                 </div>
             </div>
 
             <div class="col-lg-8 col-xl-7 quick-view-shop-wrapper">
-                @include('tenant.frontend.shop.product_details.partials.product-options')
+                @include(include_theme_path('shop.product_details.partials.product-options'))
             </div>
         </div>
     </div>

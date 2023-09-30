@@ -187,7 +187,7 @@
 
     function sidebar()
     {
-        let tax_system = $("#tax_system").val();
+        let tax_system = `{{get_static_option('tax_system') ?? 'zone_wise_tax_system'}}`;
         let tax_manage_menu = $('#tax-manage-menu-items');
         let country_state = tax_manage_menu.find('ul').children().slice(0,2);
         let tax_class = tax_manage_menu.find('ul').children().slice(3,4);

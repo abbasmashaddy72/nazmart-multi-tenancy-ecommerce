@@ -29,9 +29,9 @@
 
                             $discount = null;
                             if ($product->price)
-                                {
-                                    $discount = round(($product->sale_price / $product->price)*100, 2);
-                                }
+                            {
+                                $discount = round(($product->sale_price / $product->price) * 100);
+                            }
                         @endphp
 
                         <div class="slick-slider-items wow {{$class}}" data-wow-delay=".{{$delay}}s">
@@ -53,28 +53,28 @@
                                         </div>
                                     @endif
 
-                                    <ul class="global-card-thumb-icons">
-                                        <li class="icon-list" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="{{__('add to cart')}}">
-                                            <a class="icon cart-loading" href="javascript:void(0)"> <i
-                                                    class="las la-shopping-cart"></i> </a>
-                                        </li>
-                                        <li class="icon-list" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="{{__('add to Wishlist')}}">
-                                            <a class="icon cart-loading" href="javascript:void(0)"> <i
-                                                    class="lar la-heart"></i> </a>
-                                        </li>
-                                        <li class="icon-list" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="{{__('add to Compare')}}">
-                                            <a class="icon cart-loading" href="javascript:void(0)"> <i
-                                                    class="las la-retweet"></i> </a>
-                                        </li>
-                                        <li class="icon-list" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="{{__('Preview')}}">
-                                            <a class="icon popup-modal cart-loading" href="javascript:void(0)"> <i
-                                                    class="lar la-eye"></i> </a>
-                                        </li>
-                                    </ul>
+{{--                                    <ul class="global-card-thumb-icons">--}}
+{{--                                        <li class="icon-list" data-bs-toggle="tooltip" data-bs-placement="top"--}}
+{{--                                            title="{{__('add to cart')}}">--}}
+{{--                                            <a class="icon cart-loading" href="javascript:void(0)"> <i--}}
+{{--                                                    class="las la-shopping-cart"></i> </a>--}}
+{{--                                        </li>--}}
+{{--                                        <li class="icon-list" data-bs-toggle="tooltip" data-bs-placement="top"--}}
+{{--                                            title="{{__('add to Wishlist')}}">--}}
+{{--                                            <a class="icon cart-loading" href="javascript:void(0)"> <i--}}
+{{--                                                    class="lar la-heart"></i> </a>--}}
+{{--                                        </li>--}}
+{{--                                        <li class="icon-list" data-bs-toggle="tooltip" data-bs-placement="top"--}}
+{{--                                            title="{{__('add to Compare')}}">--}}
+{{--                                            <a class="icon cart-loading" href="javascript:void(0)"> <i--}}
+{{--                                                    class="las la-retweet"></i> </a>--}}
+{{--                                        </li>--}}
+{{--                                        <li class="icon-list" data-bs-toggle="tooltip" data-bs-placement="top"--}}
+{{--                                            title="{{__('Preview')}}">--}}
+{{--                                            <a class="icon popup-modal cart-loading" href="javascript:void(0)"> <i--}}
+{{--                                                    class="lar la-eye"></i> </a>--}}
+{{--                                        </li>--}}
+{{--                                    </ul>--}}
                                 </div>
                                 <div class="global-card-contents">
                                     <div class="global-card-contents-flex">

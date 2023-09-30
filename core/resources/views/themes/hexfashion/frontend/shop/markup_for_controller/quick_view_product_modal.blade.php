@@ -29,12 +29,16 @@
                class="status-details-title color-stock fw-600"> {!! $stock_count > 0 ? '<span class="text-success">'.__('In Stock').'</span>' : '<span class="text-danger">'.__('Out of Stock').'</span>' !!} </a>
         </div>
 
+        @php
+            $final_price = calculatePrice($sale_price, $product);
+        @endphp
+
         <div class="price-update-through mt-4">
             <h3 class="ff-rubik flash-prices"
-                data-main-price="{{ $sale_price }}"
+                data-main-price="{{ $final_price }}"
                 data-currency-symbol="{{ site_currency_symbol() }}"
                 id="price"
-            > {{amount_with_currency_symbol($sale_price)}} </h3>
+            > {{amount_with_currency_symbol($final_price)}} </h3>
             <span
                 class="fs-22 flash-old-prices"> {{$deleted_price != null ? amount_with_currency_symbol($deleted_price) : ''}} </span>
         </div>
@@ -166,19 +170,18 @@
 
             <div class="details-checkout-shop shop-border-top pt-4 mt-4">
                 <span class="guaranteed-checkout fw-500 color-heading"> {{__('Guaranteed Safe Checkout')}} </span>
+                @php
+                    $payment_gateway_images = \App\Models\PaymentGateway::where('status', 1)->get('image')->pluck('image');
+                @endphp
+
                 <ul class="payment-list mt-3">
-                    <li class="single-list">
-                        <a href="javascript:void(0)"> <img src="{{global_asset('assets/img/single-page/payment1.png')}}" alt=""> </a>
-                    </li>
-                    <li class="single-list">
-                        <a href="javascript:void(0)"> <img src="{{global_asset('assets/img/single-page/payment2.png')}}" alt=""> </a>
-                    </li>
-                    <li class="single-list">
-                        <a href="javascript:void(0)"> <img src="{{global_asset('assets/img/single-page/payment3.png')}}" alt=""> </a>
-                    </li>
-                    <li class="single-list">
-                        <a href="javascript:void(0)"> <img src="{{global_asset('assets/img/single-page/payment4.png')}}" alt=""> </a>
-                    </li>
+                    @foreach($payment_gateway_images as $image)
+                        <li class="single-list">
+                            <a href="javascript:void(0)">
+                                {!! render_image_markup_by_attachment_id($image) !!}
+                            </a>
+                        </li>
+                    @endforeach
                 </ul>
             </div>
         </div>

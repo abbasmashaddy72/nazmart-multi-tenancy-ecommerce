@@ -37,15 +37,15 @@
             </li>
             <li class="lists">
                 <span class="list-span"> {{__('City:')}} </span>
-                <span class="list-strong"> {{$city_show->name}} </span>
+                <span class="list-strong"> {{$city_show->name ?? ''}} </span>
             </li>
             <li class="lists">
                 <span class="list-span"> {{__('State:')}} </span>
-                <span class="list-strong"> {{$state_show->name}}</span>
+                <span class="list-strong"> {{$state_show->name ?? ''}}</span>
             </li>
             <li class="lists">
                 <span class="list-span"> {{__('Country:')}} </span>
-                <span class="list-strong"> {{$country_show->name}}</span>
+                <span class="list-strong"> {{$country_show->name ?? ''}}</span>
             </li>
             <li class="lists">
                 <span class="list-span"> {{__('Postal Code:')}} </span>

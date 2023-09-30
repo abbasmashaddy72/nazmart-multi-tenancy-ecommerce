@@ -21,7 +21,7 @@
      }
 
      $quickView = true;
-    $image_details = get_attachment_image_by_id($product->image_id, 'full');
+     $image_details = get_attachment_image_by_id($product->image_id, 'full');
 @endphp
 <div class="modal-dialog modal-xl">
     <div class="modal-content p-5">

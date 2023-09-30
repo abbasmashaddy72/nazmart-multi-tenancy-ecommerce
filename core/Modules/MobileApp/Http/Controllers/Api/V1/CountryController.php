@@ -4,6 +4,7 @@ namespace Modules\MobileApp\Http\Controllers\Api\V1;
 
 use FontLib\Table\Type\name;
 use Illuminate\Routing\Controller;
+use Modules\CountryManage\Entities\City;
 use Modules\CountryManage\Entities\Country;
 use Modules\CountryManage\Entities\State;
 
@@ -39,6 +40,21 @@ class CountryController extends Controller
         ]);
     }
 
+    public function cityByStateId($id)
+    {
+        if(empty($id)){
+            return response()->json([
+                'message' => __('provide a valid state id')
+            ])->setStatusCode(422);
+        }
+
+        $cities = City::select('id', 'name','state_id')->where('state_id',$id)->orderBy('name', 'asc')->paginate(10);
+
+        return response()->json([
+            'cities' => $cities
+        ]);
+    }
+
     public function searchCountry($name)
     {
         if(empty($name)){
@@ -66,6 +82,21 @@ class CountryController extends Controller
 
         return response()->json([
             'state' => $state
+        ]);
+    }
+
+    public function searchCity($name)
+    {
+        if(empty($name)){
+            return response()->json([
+                'message' => __('provide a valid city name')
+            ])->setStatusCode(422);
+        }
+
+        $city = City::where('name', 'LIKE', '%'.$name.'%')->select('id', 'name','state_id')->orderBy('name', 'asc')->paginate(10);
+
+        return response()->json([
+            'city' => $city
         ]);
     }
 }

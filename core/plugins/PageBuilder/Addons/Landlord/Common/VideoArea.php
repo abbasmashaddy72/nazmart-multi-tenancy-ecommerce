@@ -104,7 +104,7 @@ class VideoArea extends PageBuilderBase
         $data = [
             'title' => $title,
             'subtitle' => $subtitle,
-            'video_link' => $video_link,
+            'video_link' => $this->getYoutubeEmbedUrl($video_link),
             'video_autoplay' => $video_autoplay,
             'video_mute' => $video_mute,
             'video_loop' => $video_loop,
@@ -116,6 +116,23 @@ class VideoArea extends PageBuilderBase
 
         return self::renderView('landlord.addons.common.video-area', $data);
 
+    }
+
+    function getYoutubeEmbedUrl($url)
+    {
+        $youtube_id = '';
+        $shortUrlRegex = '/youtu.be\/([a-zA-Z0-9_]+)\??/i';
+        $longUrlRegex = '/youtube.com\/((?:embed)|(?:watch))((?:\?v\=)|(?:\/))(\w+)/i';
+
+        if (preg_match($longUrlRegex, $url, $matches)) {
+            $youtube_id = $matches[count($matches) - 1];
+        }
+
+        if (preg_match($shortUrlRegex, $url, $matches)) {
+            $youtube_id = $matches[count($matches) - 1];
+        }
+
+        return 'https://www.youtube.com/embed/' . $youtube_id ;
     }
 
     public function enable(): bool

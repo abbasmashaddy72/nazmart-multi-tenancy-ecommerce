@@ -33,7 +33,7 @@ class CalculateTaxServices
             $price = $price + calculatePercentageAmount($price, $product);
         }elseif(
             $init->taxSystem() == 'advance_tax_system'
-            && get_static_option("calculate_tax_based_on") == 'customer_billing_address'
+            && (get_static_option("calculate_tax_based_on") == 'customer_billing_address' || get_static_option("calculate_tax_based_on") == 'customer_account_address')
             && $init->priceIncludeTax() == 'no' && $for == 'percentage'
         ){
             $price = calculatePercentageAmount($price, $product->tax_options_sum_rate);

@@ -143,8 +143,14 @@
                         }, 500)
                     }
                 });
-            });
 
+                $('.close-bars, .body-overlay').on('click', function () {
+                    $('.dashboard-close, .dashboard-close-main, .body-overlay').removeClass('active');
+                });
+                $('.sidebar-icon').on('click', function () {
+                    $('.dashboard-close, .dashboard-close-main, .body-overlay').addClass('active');
+                });
+            });
         })(jQuery);
     </script>
 @endsection

@@ -2,15 +2,21 @@
     <div class="coupon-wrapper border-1">
         <div class="coupon-contents coupon-padding">
             @php
-                $subtotal = \Gloudemans\Shoppingcart\Facades\Cart::subtotal(2, '.', ',');
-                $total = \Gloudemans\Shoppingcart\Facades\Cart::priceTotal(2, '.', ',');
+                $subtotal = 0;
+                $carts = Cart::content();
+                foreach ($carts ?? [] as $item)
+                {
+                    $subtotal += calculatePrice($item->price, $item->options) * $item->qty;
+                }
+
+                $total = $subtotal;
             @endphp
 
             <h4 class="coupon-contents-title"> {{__('Cart Total:')}} </h4>
             <div class="coupon-contents-details mt-4">
                 <ul class="coupon-contents-details-list coupon-border">
                     <li class="coupon-contents-details-list-item">
-                        <h6 class="coupon-contents-details-list-item-title"> {{__('Sub Total')}} </h6> <span class="coupon-contents-details-list-item-price fw-500"> {{site_currency_symbol().$subtotal}} </span>
+                        <h6 class="coupon-contents-details-list-item-title"> {{__('Sub Total')}} </h6> <span class="coupon-contents-details-list-item-price fw-500"> {{amount_with_currency_symbol($subtotal)}} </span>
                     </li>
                 </ul>
                 <ul class="coupon-contents-details-list coupon-border">
@@ -18,7 +24,7 @@
                 </ul>
                 <ul class="coupon-contents-details-list coupon-border">
                     <li class="coupon-contents-details-list-item">
-                        <h6 class="coupon-title"> {{__('Total Amount')}} </h6> <span class="coupon-price fw-500 color-heading"> {{site_currency_symbol().$total}} </span>
+                        <h6 class="coupon-title"> {{__('Total Amount')}} </h6> <span class="coupon-price fw-500 color-heading"> {{amount_with_currency_symbol($total)}} </span>
                     </li>
                 </ul>
                 <div class="btn-wrapper mt-3">

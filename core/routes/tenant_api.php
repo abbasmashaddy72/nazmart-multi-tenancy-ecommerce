@@ -35,7 +35,6 @@ use App\Http\Middleware\Tenant\TenantMobileAppPermission;
 
 Route::middleware([
     'api',
-//    InitializeTenancyByDomain::class,
     TenantMobileAppPermission::class,
     InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
@@ -47,8 +46,10 @@ Route::middleware([
         Route::post('social/login',[UserController::class,'socialLogin']);
         Route::get('/country',[CountryController::class,'country']);
         Route::get('/state/{country_id}',[CountryController::class,'stateByCountryId']);
+        Route::get('/city/{state_id}',[CountryController::class,'cityByStateId']); // New
         Route::get('/search/country/{name}',[CountryController::class,'searchCountry']);
         Route::get('/search/state/{name}',[CountryController::class,'searchState']);
+        Route::get('/search/city/{name}',[CountryController::class,'searchCity']); // New
         Route::post('/send-otp-in-mail',[UserController::class,'sendOTP']);
         Route::post('/otp-success',[UserController::class,'sendOTPSuccess']);
         Route::post('/reset-password',[UserController::class,'resetPassword']);

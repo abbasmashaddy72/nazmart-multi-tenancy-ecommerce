@@ -165,7 +165,7 @@ class CalculateTaxBasedOnCustomerAddress
     public static function is_eligible(): bool
     {
         return get_static_option("tax_system") == "advance_tax_system" &&
-            get_static_option("calculate_tax_based_on") == "customer_billing_address" &&
+            (get_static_option("calculate_tax_based_on") == "customer_billing_address" || get_static_option("calculate_tax_based_on") == "customer_account_address") &&
             get_static_option("prices_include_tax") == "no";
     }
 

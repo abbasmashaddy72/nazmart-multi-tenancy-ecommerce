@@ -7,6 +7,8 @@
                 $regular_price = $data['regular_price'];
                 $sale_price = $data['sale_price'];
                 $discount = $data['discount'];
+
+                $final_price = calculatePrice($sale_price, $product);
             @endphp
 
             <div class="col-sm-12 mt-4">
@@ -34,10 +36,10 @@
                     <div class="global-flex-card-contents">
                         {!! render_product_star_rating_markup_with_count($product) !!}
                         <h5 class="global-flex-card-contents-title fw-500 mt-3">
-                            <a href="{{route('tenant.shop.product.details', $product->slug)}}"> {{Str::words($product->name, 15)}} </a>
+                            <a href="{{route('tenant.shop.product.details', $product->slug)}}"> {{product_limited_text($product->name, 'title')}} </a>
                         </h5>
                         <div class="price-update-through mt-4">
-                            <span class="flash-prices color-two"> {{amount_with_currency_symbol($sale_price)}} </span>
+                            <span class="flash-prices color-two"> {{amount_with_currency_symbol($final_price)}} </span>
                             <span class="flash-old-prices"> {{$regular_price != null ? amount_with_currency_symbol($regular_price) : ''}} </span>
                         </div>
                         <p class="global-flex-card-contents-para extra-padding-right mt-4"> {{Str::words($product->summary, 30)}} </p>

@@ -7,9 +7,22 @@
                 <div class="carts-contents">
                     @php
                         $slug = \Modules\Product\Entities\Product::select('id', 'slug')->find($data->id)?->slug;
+
+                        if ($data->options->type == \App\Enums\ProductTypeEnum::DIGITAL)
+                        {
+                            $product = \Modules\DigitalProduct\Entities\DigitalProduct::find($data->id)->select('id', 'slug')->first();
+                            $product_details_route = route('tenant.digital.shop.product.details', $slug);
+                            $product_type = 'Digital';
+                        } else {
+                            $product = \Modules\Product\Entities\Product::find($data->id)->select('id', 'slug')->first();
+                            $product_details_route = route('tenant.shop.product.details', $slug);
+                            $product_type = 'Normal';
+                        }
                     @endphp
 
                     <a href="{{route('tenant.shop.product.details', $slug)}}" class="name-title"> {{$data->name}} </a>
+                    <p class="badge bg-primary text-white text-small" style="vertical-align: text-top">{{$product_type}}</p>
+
                     <span class="name-subtitle d-block mt-2">
                         @if($data?->options?->color_name)
                             {{__('Color:')}} {{$data?->options?->color_name}} ,
@@ -29,7 +42,7 @@
                 </div>
             </div>
         </td>
-        <td class="price-td" data-label="Price"> {{amount_with_currency_symbol($data->price)}} </td>
+        <td class="price-td" data-label="Price"> {{amount_with_currency_symbol(calculatePrice($data->price, $data->options))}} </td>
         <td class="ff-jost" data-label="Quantity">
             <div class="product-quantity">
                                     <span class="substract">
@@ -42,7 +55,7 @@
             </div>
         </td>
         @php
-            $subtotal = $data->price * $data->qty;
+            $subtotal = calculatePrice($data->price * $data->qty, $data->options);
         @endphp
         <td class="price-td" data-label="Subtotal"> {{amount_with_currency_symbol($subtotal)}} </td>
         <td class="ff-jost" data-label="Close" data-product_hash_id="{{$data->rowId}}">

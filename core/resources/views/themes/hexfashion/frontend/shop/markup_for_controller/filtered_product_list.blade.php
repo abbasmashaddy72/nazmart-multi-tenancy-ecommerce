@@ -6,6 +6,7 @@
         $sale_price = $data['sale_price'];
         $discount = $data['discount'];
 
+        $final_price = calculatePrice($sale_price, $product);
     @endphp
 
     <div class="col-sm-12 mt-4">
@@ -38,10 +39,10 @@
                     <p><span class="total-ratings">(185)</span></p>
                 </div>
                 <h5 class="global-flex-card-contents-title fw-500 mt-3">
-                    <a href="javascript:void(0)"> {{Str::words($product->name, 8)}} </a>
+                    <a href="javascript:void(0)"> {{product_limited_text($product->name)}} </a>
                 </h5>
                 <div class="price-update-through mt-4">
-                    <span class="flash-prices color-two"> {{amount_with_currency_symbol($sale_price)}} </span>
+                    <span class="flash-prices color-two"> {{amount_with_currency_symbol($final_price)}} </span>
                     <span class="flash-old-prices"> {{$regular_price != null ? amount_with_currency_symbol($regular_price) : ''}} </span>
                 </div>
                 <p class="global-flex-card-contents-para extra-padding-right mt-4"> {{Str::words($product->summary, 30)}} </p>
