@@ -13040,8 +13040,15 @@ input[type=number] {
   visibility: visible;
   opacity: 1;
   margin-top: 30px;
+  background: #f9f9f9;;
+  padding: 20px;
 }
-
+.checkout-form-flex:not(:first-child) .single-input {
+    margin-top: 24px;
+}
+.checkout-form-contents .form-group .form-control {
+    background: #fff;
+}
 .checkout-signup-form-wrapper {
   max-width: 700px;
   height: 0;

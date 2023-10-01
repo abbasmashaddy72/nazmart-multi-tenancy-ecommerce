@@ -106,17 +106,17 @@ class User extends Authenticatable
 
     public function userCountry()
     {
-        return $this->hasOne(Country::class, 'name', 'country');
+        return $this->hasOne(Country::class, 'id', 'country');
     }
 
     public function userState()
     {
-        return $this->hasOne(State::class, 'name', 'state');
+        return $this->hasOne(State::class, 'id', 'state');
     }
 
     public function userCity()
     {
-        return $this->hasOne(City::class, 'name', 'city');
+        return $this->hasOne(City::class, 'id', 'city');
     }
 
     public function wallet_tenant_list(): HasMany

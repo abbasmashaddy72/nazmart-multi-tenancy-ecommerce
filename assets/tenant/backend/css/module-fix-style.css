@@ -1475,6 +1475,8 @@ table.dataTable thead td {
     font-weight: 500;
     margin-bottom: .5rem;
     display: block;
+    margin-bottom: 7px;
+    font-weight: bold;
 }
 
 .all-widgets.available-form-field {
@@ -2191,4 +2193,33 @@ table.dataTable tbody tr {
     .media-uploader-image-info{
         display: none !important;
     }
+}
+
+#prices_entered_with_tax ul li {
+    list-style: none;
+}
+#prices_entered_with_tax ul li:not(:first-child) {
+    margin-top: 15px;
+}
+
+#advance_tax_system_settings .form-group.row {
+    display: flex;
+    align-content: flex-start;
+    flex-wrap: wrap;
+}
+#prices_entered_with_tax ul li label input {
+    margin-right: 8px;
+}
+.form-check-label .form-control-check {
+    margin-right: 7px;
+}
+.card-header {
+    padding: 1.2rem 1rem;
+    background: unset;
+}
+.card-header .title {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 24px;
+    margin: 0;
 }

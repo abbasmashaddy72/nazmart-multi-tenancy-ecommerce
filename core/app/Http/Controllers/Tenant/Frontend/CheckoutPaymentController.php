@@ -21,11 +21,12 @@ class CheckoutPaymentController extends Controller
     use TaxCalculatorTrait;
     public function checkout_page()
     {
-        $billing_info = Auth::guard('web')->user()?->delivery_address;
+        $account_info = Auth::guard('web')->user();
+        $billing_info = $account_info?->delivery_address;
         $countries = Country::where('status', 'publish')->get();
         $states = State::where('status', 'publish')->get();
 
-        return themeView('shop.checkout.checkout_page', compact( 'billing_info', 'countries', 'states'));
+        return themeView('shop.checkout.checkout_page', compact( 'account_info','billing_info', 'countries', 'states'));
     }
 
     public function checkout(CheckoutFormRequest $request)
@@ -35,7 +36,7 @@ class CheckoutPaymentController extends Controller
 
         if ($this->terminateIfUnauthenticated())
         {
-            return back()->withErrors(__('Your cart contains digital products. Please login first to purchase.'));
+            return back()->withErrors(__('Your cart contains digital products. please login first to purchase.'));
         }
 
         $checkout_service = new ProductCheckoutService();

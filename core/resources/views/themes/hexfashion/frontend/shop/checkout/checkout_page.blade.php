@@ -361,7 +361,7 @@
             {{--    });--}}
             {{--});--}}
 
-            $(document).on('change', '.shift-another-country, .shift-another-state', function (e){
+            $(document).on('change', '.shift-another-country, .shift-another-state, .shift-another-city', function (e){
                 let country = $('.shift-another-country :selected').val();
                 let state = $('.shift-another-state :selected').val();
                 let city = $('.shift-another-city :selected').val();
@@ -373,7 +373,7 @@
                 getCountryStateBasedTotal(country, state, city);
             });
 
-            $(document).on('change', '.billing_address_country, .billing_address_state', function (e){
+            $(document).on('change', '.billing_address_country, .billing_address_state, .billing_address_city', function (e){
                 let country = $('.billing_address_country :selected').val();
                 let state = $('.billing_address_state :selected').val();
                 let city = $('.billing_address_city :selected').val();
@@ -637,6 +637,7 @@
                     function (data) {
                         let cityField = $('.cityField');
                         cityField.empty();
+                        cityField.append(`<option value="">{{__('Select a city')}}</option>`);
 
                         $.each(data.cities , function (index, value) {
                             cityField.append(

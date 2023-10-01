@@ -2616,7 +2616,8 @@ blockquote .blockquote-contents-title {
   visibility: visible;
   opacity: 1;
   margin-top: 30px;
-  background: #fff;
+  background: #f9f9f9;
+  padding: 20px;
 }
 
 .create-accounts {

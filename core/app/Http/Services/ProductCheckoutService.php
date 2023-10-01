@@ -126,13 +126,13 @@ class ProductCheckoutService
             else {
                 $user = [
                     'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'mobile' => ($user->mobile ?? $validated_data['phone']) ?? 0,
-                    'country' => $validated_data['country'] ?? null,
-                    'state' => $validated_data['state'] ?? null,
-                    'city' => $user->city,
-                    'address' => $user->address
+                    'name' => $validated_data['name'] ?? $user->name,
+                    'email' => $validated_data['email'] ?? $user->email,
+                    'mobile' => ($validated_data['phone'] ?? $user->mobile) ?? 0,
+                    'country' => $validated_data['country'] ?? $user->country,
+                    'state' => $validated_data['state'] ?? $user->state,
+                    'city' => $validated_data['city'] ?? $user->city,
+                    'address' => $validated_data['address'] ?? $user->address
                 ];
             }
         }
@@ -312,7 +312,6 @@ class ProductCheckoutService
             }
         }
 
-
         $subtotal = null;
         $itemsTotal = null;
         $v_tax_total = 0;
@@ -335,14 +334,17 @@ class ProductCheckoutService
         }
 
         $shipping_methods = ShippingMethod::with('options')->where('id', $validated_data['shipping_method'])->first();
-        $shipping_price = calculatePrice($shipping_methods?->options?->cost, $shippingTaxClass, "shipping");
+        $shipping_price = $shipping_methods?->options?->cost;
 
+        if ($shipping_methods?->options?->tax_status == 1) {
+            $shipping_price = calculatePrice($shipping_methods?->options?->cost, $shippingTaxClass, "shipping");
+        }
 
         return [
             'tax' => $v_tax_total,
             'shipping_cost' => $shipping_price,
             'subtotal' => $subtotal,
-            'total' => $itemsTotal
+            'total' => $itemsTotal + $shipping_price
         ];
     }
 
@@ -374,7 +376,7 @@ class ProductCheckoutService
                 $product_tax = $final_details['tax'];
                 $shipping_cost = $final_details['shipping_cost'];
                 $subtotal = $final_details['subtotal'];
-                $total['total'] = $final_details['total'] + $final_details['shipping_cost'];
+                $total['total'] = $final_details['total'];
             } else {
                 $taxed_price = ($price['PHYSICAL']['total'] * $product_tax) / 100;
                 $subtotal = $price['PHYSICAL']['total'];
