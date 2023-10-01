@@ -39,7 +39,7 @@
                             <td>{{ __("State") }}</td>
                             <td>{{ __("City") }}</td>
                             <td>{{ __("Postal Code") }}</td>
-                            <td>{{ __("Rate") }}</td>
+                            <td>{{ __("Rate (%)") }}</td>
                             <td class="d-none">{{ __("Compound") }}</td>
                             <td>{{ __("Shipping") }}</td>
                             <td>* {{ __("Priority") }}</td>

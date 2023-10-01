@@ -1,7 +1,7 @@
 <span class="checkout-title fw-500 color-heading"> <i class="las la-exclamation-circle"></i> {{__('Returning Customer?')}} <a class="click-open-form" href="javascript:void(0)"> {{__('Click here to Login')}} </a> </span>
 
 <div class="checkout-form-open">
-    <div class="checkout-form-contents border-1 form-padding">
+    <div class="checkout-form-contents">
         <h2 class="checkout-form-contents-title"> {{__('Sign In')}} </h2>
         <div class="login-form mt-4">
             <div class="contact-page-form style-01" id="login_form_order_page">

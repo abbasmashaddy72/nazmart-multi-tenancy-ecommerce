@@ -83,7 +83,7 @@
 
                                 <div class="checkout-form-open">
                                     <div class="checkout-form-flex">
-                                        <div class="single-input mt-4">
+                                        <div class="single-input">
                                             <label class="label-title mb-3"> {{__('Username')}} </label>
                                             <input class="form--control" type="text" name="create_username" placeholder="{{__('Type a unique username')}}">
                                         </div>

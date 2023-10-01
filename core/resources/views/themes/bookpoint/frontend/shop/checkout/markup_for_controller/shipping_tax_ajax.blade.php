@@ -29,8 +29,6 @@
             $taxProducts = collect([]);
         }
     }
-
-    dd($taxProducts);
 @endphp
 
 @php

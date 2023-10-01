@@ -15,14 +15,12 @@
     <div class="card">
         <div class="card-header">
             <h3 class="title">{{ __("Manage Tax Class") }}</h3>
+            <div class="mt-2">
+                <small class="text-secondary">{{ __("If a class has any associated options, you can't delete the class from here. You need to delete all options first, or you can use a force delete option.") }}</small>
+            </div>
         </div>
 
         <div class="row">
-            <div class="col-md-12">
-                <div class="mx-4 mt-2">
-                    <small class="text-secondary">{{ __("If a class has any associated options, you can't delete the class from here. You need to delete all options first, or you can use a force delete option.") }}</small>
-                </div>
-            </div>
             <div class="col-md-7">
                 <div class="card-body">
                     <table class="table table-responsive">
