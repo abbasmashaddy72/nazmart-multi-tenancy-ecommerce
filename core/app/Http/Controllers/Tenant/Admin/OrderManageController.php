@@ -485,7 +485,7 @@ class OrderManageController extends Controller
         // You can additionally save generated invoice to configured disk
 
         if ($taxPosition == 'total') {
-            $invoiceInstance->totalTaxes($tax_rate ?? 0, true);
+            $invoiceInstance->totalTaxes($tax_rate ?? 0, false);
         }
 
         $invoice = $invoiceInstance->save();
