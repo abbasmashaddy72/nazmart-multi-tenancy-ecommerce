@@ -283,7 +283,7 @@
                                 toastr.error(data.msg);
                             }
                         }, function (xhr) {
-                            console.log(xhr)
+
                             ajax_toastr_error_message(xhr);
                         });
                     })
@@ -440,14 +440,13 @@
                         }
 
                         $.each(errors.errors, function (index, value) {
-                            console.log(value)
+
                             toastr.error(value[0]);
                         });
                     }
 
 
                     function ajax_toastr_error_message(xhr) {
-                        console.log(xhr.responseJSON.errors)
                         $.each(xhr.responseJSON.errors, function (key, value) {
                             toastr.error((key.capitalize()).replace("-", " ").replace("_", " "), value);
                         });

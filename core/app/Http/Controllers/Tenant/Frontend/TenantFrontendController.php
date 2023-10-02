@@ -1709,6 +1709,7 @@ class TenantFrontendController extends Controller
 
         $products = $products->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
             ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
+            ->withSum('taxOptions', 'rate')
             ->take($request->limit ?? 6)
             ->get();
 
@@ -1793,6 +1794,7 @@ HTML;
 
             $products = $products->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
+                ->withSum('taxOptions', 'rate')
                 ->take($request->limit ?? 8)
                 ->get();
         } else {
@@ -1828,6 +1830,7 @@ HTML;
 
             $products = $products->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
+                ->withSum('taxOptions', 'rate')
                 ->take($request->limit ?? 8)
                 ->get();
         } else {
@@ -1837,6 +1840,7 @@ HTML;
             $products = $products->whereIn('id', $category_id)
                 ->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
+                ->withSum('taxOptions', 'rate')
                 ->take($request->limit ?? 8)
                 ->get();
         }
@@ -1892,7 +1896,7 @@ HTML;
             $category_id = Category::where('slug', $request->category)->firstOrFail();
 
             $products_id = ProductCategory::where('category_id', $category_id->id)->pluck('product_id')->toArray();
-            $products->whereIn('id', $products_id);
+            $products->whereIn('id', $products_id)->withSum('taxOptions', 'rate');
 
             $products = $products->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->take($request->limit ?? 8)
@@ -1901,7 +1905,7 @@ HTML;
             $allId = explode(',', $request->allId);
             $category_id = ProductCategory::whereIn('category_id', $allId)->pluck('product_id')->toArray();
 
-            $products = $products->whereIn('id', $category_id)
+            $products = $products->whereIn('id', $category_id)->withSum('taxOptions', 'rate')
                 ->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->take($request->limit ?? 8)
                 ->get();
@@ -1929,6 +1933,7 @@ HTML;
 
             $products = $products->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
+                ->withSum('taxOptions', 'rate')
                 ->take($request->limit ?? 8)
                 ->get();
         } else {
@@ -1938,6 +1943,7 @@ HTML;
             $products = $products->whereIn('id', $category_id)
                 ->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
+                ->withSum('taxOptions', 'rate')
                 ->take($request->limit ?? 8)
                 ->get();
         }
@@ -1964,6 +1970,7 @@ HTML;
 
             $products = $products->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
+                ->withSum('taxOptions', 'rate')
                 ->take($request->limit ?? 8)
                 ->get();
         } else {
@@ -1973,6 +1980,7 @@ HTML;
             $products = $products->whereIn('id', $category_id)
                 ->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
+                ->withSum('taxOptions', 'rate')
                 ->take($request->limit ?? 8)
                 ->get();
         }
@@ -1997,6 +2005,7 @@ HTML;
 
             $products = $products->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
+                ->withSum('taxOptions', 'rate')
                 ->take($request->limit ?? 8)
                 ->get();
         } else {
@@ -2006,6 +2015,7 @@ HTML;
             $products = $products->whereIn('id', $category_id)
                 ->orderBy($request->sort_by ?? 'id', $request->sort_to ?? 'desc')
                 ->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')
+                ->withSum('taxOptions', 'rate')
                 ->take($request->limit ?? 8)
                 ->get();
         }
@@ -2035,6 +2045,7 @@ HTML;
                     ->where('category_id', '=', $product_category)
                     ->get();
             })
+            ->withSum('taxOptions', 'rate')
             ->inRandomOrder()
             ->take(5)
             ->get();
@@ -2245,6 +2256,7 @@ HTML;
             ->where("name", "LIKE", "%" . htmlspecialchars(strip_tags($search)) . "%")
             ->orWhere("sale_price", $search)
             ->select('id', 'slug', 'name', 'price', 'sale_price', 'image_id', 'product_type')
+            ->withSum('taxOptions', 'rate')
             ->take(20)
             ->get();
 
@@ -2267,8 +2279,8 @@ HTML;
             $data_regular_price = $data['regular_price'];
             $data_sale_price = $data['sale_price'];
 
-            $sale_price = $data_sale_price;
-            $deleted_price = $data_regular_price != null ? float_amount_with_currency_symbol($data_regular_price) : '';
+            $sale_price = isset($item->tax_options_sum_rate) ? calculatePrice($data_sale_price, $item) : $data_sale_price;
+            $deleted_price = $data_regular_price != null ? amount_with_currency_symbol($data_regular_price) : '';
 
             $image = render_image_markup_by_attachment_id($item->image_id);
 
@@ -2282,7 +2294,7 @@ HTML;
                                    </div>
                                     <div class="product-price mt-2">
                                           <div class="price-update-through">
-                                                <span class="flash-price fw-500"> ' . float_amount_with_currency_symbol($sale_price) . ' </span>
+                                                <span class="flash-price fw-500"> ' . amount_with_currency_symbol($sale_price) . ' </span>
                                                 <span class="flash-old-prices"> ' . $deleted_price . ' </span>
                                            </div>
                                     </div>

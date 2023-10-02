@@ -171,7 +171,6 @@
                         id : id,
                     },
                     success: function (data){
-                        console.log(data)
                         $(this).parent().find('button.'+currentPriority).removeClass(currentPriority).addClass(priority).text(priority);
                     }
                 })

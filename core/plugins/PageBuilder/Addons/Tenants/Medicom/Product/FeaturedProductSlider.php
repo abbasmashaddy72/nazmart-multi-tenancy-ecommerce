@@ -76,6 +76,8 @@ class FeaturedProductSlider extends PageBuilderBase
             $products->whereIn('id', $products_id);
         }
 
+        $products->withSum('taxOptions', 'rate');
+
         if(!empty($item_show)){
             $products = $products->take($item_show)->get();
         }else{

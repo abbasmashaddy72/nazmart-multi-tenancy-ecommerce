@@ -417,7 +417,6 @@
                     success: (data) => {
                         if (data.type === 'success')
                         {
-                            console.log(data);
                             let currency = '{{site_currency_symbol()}}';
                             $('.price-shipping span').last().html(currency + data.selected_shipping_method.options.final_cost);
                             $('.price-total span').last().html(currency + data.total);

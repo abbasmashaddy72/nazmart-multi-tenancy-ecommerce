@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Middleware\RestrictApi;
 use Illuminate\Support\Facades\Route;
 use Modules\MobileApp\Http\Controllers\Api\V1\UserController;
 use Modules\MobileApp\Http\Controllers\MobileIntroApiController;
@@ -38,6 +39,7 @@ Route::middleware([
     TenantMobileAppPermission::class,
     InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
+//    RestrictApi::class
 ])->prefix('api/tenant')->group(function () {
     Route::prefix("v1")->group(function () {
         Route::post('/register',[UserController::class,'register']);

@@ -82,7 +82,7 @@
                                 </h2>
                                 <div class="collection-bottom margin-top-15">
                                     @include(include_theme_path('shop.partials.product-options-bottom'))
-                                    <h3 class="common-price-title color-three fs-20 ff-roboto"> {{amount_with_currency_symbol($sale_price)}} </h3>
+                                    <h3 class="common-price-title color-three fs-20 ff-roboto"> {{amount_with_currency_symbol(calculatePrice($sale_price, $product))}} </h3>
                                 </div>
                             </div>
                         </div>
@@ -134,7 +134,7 @@
                         $('.loader').fadeOut(200);
                     },
                     error: function (data) {
-                        console.log('error')
+
                     }
                 });
             });

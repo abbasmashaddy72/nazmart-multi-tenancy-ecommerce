@@ -87,7 +87,7 @@ class PopularProducts extends PageBuilderBase
             $products->orderByDesc('id');
         }
 
-        $products = $products->take(!empty($item_show) ? $item_show : 4)->get();
+        $products = $products->withSum('taxOptions', 'rate')->take(!empty($item_show) ? $item_show : 4)->get();
 
         $data = [
             'padding_top'=> $padding_top,

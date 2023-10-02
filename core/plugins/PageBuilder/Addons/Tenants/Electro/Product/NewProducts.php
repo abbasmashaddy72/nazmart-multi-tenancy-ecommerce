@@ -75,6 +75,7 @@ class NewProducts extends PageBuilderBase
 
         $products = Product::with('badge', 'campaign_product', 'inventory', 'inventoryDetail')
             ->published()
+            ->withSum('taxOptions', 'rate')
             ->orderBy('id', $item_order ?? 'desc')
             ->take(!empty($item_show) ? $item_show : 3)->get();
 

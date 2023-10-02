@@ -74,7 +74,7 @@ class FlashStore extends PageBuilderBase
 
         if (!empty($products_id))
         {
-            $products = Product::whereIn('id',$products_id);
+            $products = Product::whereIn('id',$products_id)->withSum('taxOptions', 'rate');
 
             if(!empty($item_show)){
                 $products = $products->take($item_show)->get();

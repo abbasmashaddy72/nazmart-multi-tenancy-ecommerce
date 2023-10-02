@@ -114,9 +114,9 @@ class ProductTypeList extends PageBuilderBase
         }
 
         if(!empty($item_show)){
-            $products = $products->orderBy($sort_by, $sort_to)->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')->take($item_show)->get();
+            $products = $products->orderBy($sort_by, $sort_to)->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')->withSum('taxOptions', 'rate')->take($item_show)->get();
         }else{
-            $products = $products->orderBy($sort_by, $sort_to)->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')->take(6)->get();
+            $products = $products->orderBy($sort_by, $sort_to)->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')->withSum('taxOptions', 'rate')->take(6)->get();
         }
 
         $data = [

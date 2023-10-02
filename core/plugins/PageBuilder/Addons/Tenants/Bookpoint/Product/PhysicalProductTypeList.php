@@ -133,7 +133,7 @@ class PhysicalProductTypeList extends PageBuilderBase
             $products->take(6);
         }
 
-        $products = $products->get();
+        $products = $products->withSum('taxOptions', 'rate')->get();
 
         $data = [
             'padding_top'=> $padding_top,

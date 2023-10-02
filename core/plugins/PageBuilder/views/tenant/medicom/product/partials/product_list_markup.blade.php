@@ -30,7 +30,7 @@
                 {!! render_product_star_rating_markup_with_count($product) !!}
 
                 <div class="price-update-through mt-3">
-                    <span class="flash-prices color-three"> {{amount_with_currency_symbol($sale_price)}} </span>
+                    <span class="flash-prices color-three"> {{amount_with_currency_symbol(calculatePrice($sale_price, $product))}} </span>
                     <span class="flash-old-prices"> {{$regular_price != null ? amount_with_currency_symbol($regular_price) : ''}} </span>
                 </div>
             </div>

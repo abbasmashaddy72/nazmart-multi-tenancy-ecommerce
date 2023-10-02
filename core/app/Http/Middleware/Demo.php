@@ -62,7 +62,6 @@ class Demo
                 }
                 return redirect()->back()->with(['type' => 'warning' , 'msg' => $msg]);
             }
-
         }
 
         return $next($request);

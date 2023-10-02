@@ -88,7 +88,7 @@
                                                 </div>
                                             </div>
 
-                                            {!! render_mega_menu_list('no_lang') !!}
+{{--                                            {!! render_mega_menu_list('no_lang') !!}--}}
                                         </div>
                                     </div>
                                 </div>

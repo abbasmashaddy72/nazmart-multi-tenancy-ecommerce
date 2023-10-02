@@ -99,7 +99,7 @@ class FeaturedCollection extends PageBuilderBase
             $products->whereIn('id', $product_id);
         }
 
-        $products = $products->orderBy('created_at', $item_order ?? 'desc')->take($item_show ?? 4)->get();
+        $products = $products->withSum('taxOptions', 'rate')->orderBy('created_at', $item_order ?? 'desc')->take($item_show ?? 4)->get();
 
         $data = [
             'padding_top'=> $padding_top,

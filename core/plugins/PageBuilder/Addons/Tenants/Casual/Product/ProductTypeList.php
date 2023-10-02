@@ -128,7 +128,7 @@ class ProductTypeList extends PageBuilderBase
             $products->whereIn('id', $products_id);
         }
 
-        $products = $products->orderBy($sort_by, $sort_to)->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')->take($item_show ?? 6)->get();
+        $products = $products->orderBy($sort_by, $sort_to)->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')->withSum('taxOptions', 'rate')->take($item_show ?? 6)->get();
 
         $data = [
             'padding_top'=> $padding_top,

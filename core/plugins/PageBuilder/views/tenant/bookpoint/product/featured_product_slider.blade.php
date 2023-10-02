@@ -58,7 +58,7 @@
                                 {!! render_product_star_rating_markup_with_count($product) !!}
 
                                 <div class="price-update-through mt-3">
-                                    <span class="fs-24 fw-500 flash-prices color-one"> {{float_amount_with_currency_symbol($price)}} </span>
+                                    <span class="fs-24 fw-500 flash-prices color-one"> {{amount_with_currency_symbol($price)}} </span>
                                 </div>
                             </div>
                         </div>
