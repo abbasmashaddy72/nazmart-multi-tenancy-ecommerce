@@ -93,6 +93,7 @@ class TrendingProducts extends PageBuilderBase
         $products = Product::with('badge', 'campaign_product', 'inventory', 'inventoryDetail')
                     ->where('status_id', 1)
                     ->whereIn('id', $product_id ?? [])
+                    ->withSum('taxOptions', 'rate')
                     ->orderBy('created_at', $item_order ?? 'desc')
                     ->take($item_show ?? 4)->get();
 

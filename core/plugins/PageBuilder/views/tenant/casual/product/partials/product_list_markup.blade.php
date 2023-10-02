@@ -36,7 +36,7 @@
                 <div class="collection-flex">
                     <div class="price-update-through margin-top-15">
                         <span
-                            class="fs-22 ff-roboto fw-500 flash-prices color-one"> {{amount_with_currency_symbol($sale_price)}} </span>
+                            class="fs-22 ff-roboto fw-500 flash-prices color-one"> {{amount_with_currency_symbol(calculatePrice($sale_price, $product))}} </span>
                         <span
                             class="fs-18 flash-old-prices"> {{amount_with_currency_symbol($regular_price)}} </span>
                     </div>

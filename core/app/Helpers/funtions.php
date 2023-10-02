@@ -225,7 +225,7 @@ function campaign_product_prices($product_object, $campaign_price, $class = '')
     $markup = '';
     $sale_price = $product_object->sale_price;
 
-    $markup = '<span class="flash-prices ' . $class . '">' . amount_with_currency_symbol($campaign_price) . '</span>';
+    $markup = '<span class="flash-prices ' . $class . '">' . amount_with_currency_symbol(calculatePrice($campaign_price, $product_object)) . '</span>';
     $markup .= '<span class="flash-old-prices">' . amount_with_currency_symbol($sale_price) . '</span>';
 
     return $markup;
@@ -666,7 +666,8 @@ function render_product_dynamic_price_markup($product_object, $sale_price_markup
 
     $price_data = get_product_dynamic_price($product_object);
 
-    $sale_price = amount_with_currency_symbol($price_data['sale_price']);
+
+    $sale_price = amount_with_currency_symbol(calculatePrice($price_data['sale_price'], $product_object));
     $regular_price = amount_with_currency_symbol($price_data['regular_price']);
 
     $markup = "<{$sale_price_markup_tag} class='{$sale_price_class}'>{$sale_price}</{$sale_price_markup_tag}>";

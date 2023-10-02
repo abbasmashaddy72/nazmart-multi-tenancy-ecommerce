@@ -78,8 +78,8 @@
 
                                 <div class="price-update-through mt-3">
                                     <span
-                                        class="fs-24 fw-500 flash-prices color-one"> {{float_amount_with_currency_symbol($sale_price)}} </span>
-                                    <s class="old-prices"> {{float_amount_with_currency_symbol($regular_price)}} </s>
+                                        class="fs-24 fw-500 flash-prices color-one"> {{amount_with_currency_symbol(calculatePrice($sale_price, $product))}} </span>
+                                    <s class="old-prices"> {{amount_with_currency_symbol($regular_price)}} </s>
                                 </div>
                             </div>
                         </div>

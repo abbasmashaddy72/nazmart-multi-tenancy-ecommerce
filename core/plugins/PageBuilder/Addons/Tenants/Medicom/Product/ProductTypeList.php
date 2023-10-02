@@ -112,7 +112,7 @@ class ProductTypeList extends PageBuilderBase
             $products->whereIn('id', $products_id);
         }
 
-        $products = $products->orderBy($sort_by, $sort_to)->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id');
+        $products = $products->orderBy($sort_by, $sort_to)->select('id', 'name', 'slug', 'price', 'sale_price', 'badge_id', 'image_id')->withSum('taxOptions', 'rate');
 
         if(!empty($item_show)){
             $products = $products->take($item_show)->get();

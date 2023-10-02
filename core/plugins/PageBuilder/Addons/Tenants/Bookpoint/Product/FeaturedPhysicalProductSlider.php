@@ -84,7 +84,7 @@ class FeaturedPhysicalProductSlider extends PageBuilderBase
             $products->take(4);
         }
 
-        $products = $products->get();
+        $products = $products->withSum('taxOptions', 'rate')->get();
 
         $data = [
             'title' => $title,

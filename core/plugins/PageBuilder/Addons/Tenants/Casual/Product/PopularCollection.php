@@ -98,7 +98,7 @@ class PopularCollection extends PageBuilderBase
             $products->whereIn('id', $products_id);
         }
 
-        $products = $products->take($item_show ?? 4)->get();
+        $products = $products->withSum('taxOptions', 'rate')->take($item_show ?? 4)->get();
 
         $data = [
             'title' => $title,
