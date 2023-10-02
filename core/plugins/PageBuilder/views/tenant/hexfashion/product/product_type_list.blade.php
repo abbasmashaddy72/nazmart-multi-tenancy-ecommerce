@@ -107,7 +107,7 @@
                             $('.loader').fadeOut(200);
                         },
                         error: function (data){
-                            console.log('error')
+
                         }
                     });
                 }

@@ -42,7 +42,7 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <div class="order-success-area section-title margin-bottom-60 text-center">
+                    <div class="order-success-area section-title margin-bottom-50 text-center">
                         <h1 class="title">{{get_static_option('site_order_success_page_title')}}</h1>
                         <p class="order-page-description section-para">{{get_static_option('site_order_success_page_description')}}</p>
                     </div>
@@ -139,7 +139,7 @@
                                                 <tr>
                                                     <td></td>
                                                     <td class="font-weight-bold">{{__('Tax:')}}</td>
-                                                    <td>{{json_decode($payment_details->payment_meta)?->product_tax}}%</td>
+                                                    <td>{{amount_with_currency_symbol(json_decode($payment_details->payment_meta)?->product_tax)}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td></td>

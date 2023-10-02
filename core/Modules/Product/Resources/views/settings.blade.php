@@ -202,7 +202,6 @@
                 }
 
                 $.each(errors.errors, function (index, value) {
-                    console.log(value)
                     toastr.error(value[0]);
                 });
             }

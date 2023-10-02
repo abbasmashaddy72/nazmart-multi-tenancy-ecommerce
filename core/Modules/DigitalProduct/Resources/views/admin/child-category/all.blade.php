@@ -277,7 +277,7 @@
                         subcategory_select.html(data.markup);
                     },
                     error: function (data) {
-                        console.log(data)
+
                     }
                 });
             });
@@ -301,7 +301,7 @@
                         subcategory_select.html(data.markup);
                     },
                     error: function (data) {
-                        console.log(data)
+
                     }
                 });
             });
