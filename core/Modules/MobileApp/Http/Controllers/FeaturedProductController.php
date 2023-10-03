@@ -29,14 +29,14 @@ class FeaturedProductController extends Controller
             $campaignId = $id;
         }else{
             $mobileCampaign = MobileCampaign::first();
-            $campaignId = $mobileCampaign->campaign_id;
+            $campaignId = $mobileCampaign ? $mobileCampaign->campaign_id : null;
         }
 
         $campaign = Campaign::where("id" , $campaignId)->first();
         $selectedCampaignProductId = CampaignProduct::select("product_id")
             ->where("campaign_id", $campaignId)->get()->pluck("product_id")->toArray();
         // get all product from this campaign
-        $products = Product::whereIn('id',$selectedCampaignProductId)->get();
+        $products = Product::whereIn('id',$selectedCampaignProductId)->withSum('taxOptions', 'rate')->get();
 
         $products = MobileFeatureProductResource::collection($products)->toArray($products);
 

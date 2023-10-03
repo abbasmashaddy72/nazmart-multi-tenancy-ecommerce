@@ -1846,6 +1846,8 @@ function tenant_plan_theme_list()
 
 function product_limited_text($text, $type = 'title')
 {
+    $product_text = '';
+
     switch ($type) {
         case 'title':
             $limit = get_static_option('product_title_length') ?? 15;

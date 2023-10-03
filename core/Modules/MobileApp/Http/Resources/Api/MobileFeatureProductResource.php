@@ -20,7 +20,10 @@ class MobileFeatureProductResource extends JsonResource
         // campaign data check
         $campaign_product = !is_null($this->campaignProduct) ? $this->campaignProduct : getCampaignProductById($this->id);
         $sale_price = $campaign_product ? optional($campaign_product)->campaign_price : $this->sale_price;
+        $sale_price = calculatePrice($sale_price, $this);
+
         $deleted_price = !is_null($campaign_product) ? $this->sale_price : $this->price;
+        $deleted_price = calculatePrice($deleted_price, $this);
 
         $campaign_percentage = !is_null($campaign_product) ? getPercentage($this->sale_price, $sale_price) : false;
 
@@ -38,7 +41,7 @@ class MobileFeatureProductResource extends JsonResource
             "img_url" => $image_url ?? null,
             "campaign_percentage" => round($campaign_percentage,2),
             "price" => round($deleted_price,2),
-            "discount_price" => round($sale_price,2),
+            "discount_price" => round($sale_price, 2),
             "badge" => [
                 "badge_name" => $this->badge?->name ?? null,
                 "image" => $image_url,

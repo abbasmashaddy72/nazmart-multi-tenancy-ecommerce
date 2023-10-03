@@ -45,6 +45,7 @@ trait ProductGlobalTrait {
             $all_products = Product::query()->with('campaign_sold_product','category','subCategory','childCategory','campaign_product', 'inventory','badge','uom')
                 ->withAvg("reviews", "rating")
                 ->withCount("reviews")
+                ->withSum('taxOptions','rate')
                 ->where('status_id', 1);
         }
 

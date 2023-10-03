@@ -67,6 +67,7 @@ class ProductController extends Controller
                 'delivery_option',
             )
             ->where("status_id", 1)
+            ->withSum('taxOptions', 'rate')
             ->first();
 
         if(empty($product)){
@@ -179,23 +180,29 @@ class ProductController extends Controller
         unset($product->category->image_id);
 
         // todo:: write code for product sub category only add image path into category array
-        $subCategoryImage = get_attachment_image_by_id($product->subCategory->image_id);
-        $product->subCategory->categoryImage = !empty($subCategoryImage) ? $subCategoryImage['img_url'] : '';
-        unset($product->subCategory->image_id);
-        unset($product->subCategory->laravel_through_key);
-        unset($product->subCategory->image_id);
+        if ($product->subCategory)
+        {
+            $subCategoryImage = get_attachment_image_by_id($product->subCategory?->image_id);
+            $product->subCategory->categoryImage = !empty($subCategoryImage) ? $subCategoryImage['img_url'] : '';
+            unset($product->subCategory->image_id);
+            unset($product->subCategory->laravel_through_key);
+            unset($product->subCategory->image_id);
+        }
 
         // todo:: write code for product sub category only add image path into category array
-        $product->childCategory->transform(function ($item){
-            $image = $item->image_id;
-            unset($item->image_id);
-            unset($item->image_id);
-            unset($item->laravel_through_key);
+        if ($product->childCategory)
+        {
+            $product->childCategory->transform(function ($item){
+                $image = $item->image_id;
+                unset($item->image_id);
+                unset($item->image_id);
+                unset($item->laravel_through_key);
 
-            $image = get_attachment_image_by_id($image);
-            $item->image = !empty($image) ? $image['img_url'] : '';
-            return $item;
-        });
+                $image = get_attachment_image_by_id($image);
+                $item->image = !empty($image) ? $image['img_url'] : '';
+                return $item;
+            });
+        }
 
         foreach($product->gallery_images as $gallery){
             $image = get_attachment_image_by_id($gallery->id);
@@ -249,6 +256,7 @@ class ProductController extends Controller
                     ->where('category_id', '=', $product_category)
                     ->get();
             })
+            ->withSum('taxOptions', 'rate')
             ->inRandomOrder()
             ->take(5)
             ->get();
