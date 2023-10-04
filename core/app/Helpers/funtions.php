@@ -623,7 +623,7 @@ function get_product_dynamic_price($product_object)
             if ($start_date->lessThanOrEqualTo(now()) && $end_date->greaterThanOrEqualTo(now())) {
                 (string)$campaign_name = $product_object?->campaign_product?->campaign?->title;
                 (double)$sale_price = $product_object?->campaign_product?->campaign_price;
-                (double)$regular_price = $product_object->sale_price;
+                (double)$regular_price = $product_object->sale_price ?? 1;
 
                 $discount = 100 - round(($sale_price / $regular_price) * 100);
                 $is_expired = 1; // 1 means campaign exist and running

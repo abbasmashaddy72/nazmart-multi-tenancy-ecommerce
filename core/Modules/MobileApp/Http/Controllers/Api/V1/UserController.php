@@ -154,7 +154,7 @@ class UserController extends Controller
     {
         $user_id = auth('sanctum')->user()->id;
 
-        return response()->json(["data" => UserDeliveryAddress::with(["state", "country:id,name", "state:id,name"])->where('user_id', $user_id)->get()]);
+        return response()->json(["data" => UserDeliveryAddress::with(["state", "country:id,name", "state:id,name", "city_rel:id,name"])->where('user_id', $user_id)->get()]);
     }
 
     // send otp
@@ -587,13 +587,13 @@ class UserController extends Controller
     {
         $user_id = auth('sanctum')->user()->id;
 
-        return ProductOrder::where('user_id', $user_id)->paginate(10)->withQueryString();
+        return ProductOrder::with('getCountry', 'getState', 'getCity')->where('user_id', $user_id)->paginate(10)->withQueryString();
     }
 
     public function single_order_details($order_id)
     {
         $user_id = auth('sanctum')->user()->id;
-        $order_details = ProductOrder::where(['user_id' => $user_id, 'id' => $order_id])->first();
+        $order_details = ProductOrder::with('getCountry', 'getState', 'getCity')->where(['user_id' => $user_id, 'id' => $order_id])->first();
 
         $details = [];
         foreach (json_decode($order_details->order_details) as $key => $order)
@@ -645,7 +645,7 @@ class UserController extends Controller
                 'product_id' => $product,
             ])->first();
 
-            if (empty($refund) && empty($order_product))
+            if (empty($refund))
             {
                 RefundProduct::create([
                     'user_id' => $user_id,
@@ -671,7 +671,7 @@ class UserController extends Controller
     {
         $user_id = auth('sanctum')->user()->id;
 
-        return RefundProduct::with('user', 'product')->where('user_id', $user_id)->paginate(10)->withQueryString();
+        return RefundProduct::with('user', 'user.userCountry:id,name', 'user.userState:id,name', 'user.userCity:id,name', 'product')->where('user_id', $user_id)->paginate(10)->withQueryString();
     }
 
     public function refund_create_ticket(Request $request)

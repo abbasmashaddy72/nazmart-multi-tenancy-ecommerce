@@ -2134,7 +2134,7 @@ HTML;
 
             $additional_info_store[md5(json_encode($sorted_inventory_item))] = [
                 'pid_id' => $id, //Info: ProductInventoryDetails id
-                'additional_price' => $item_additional_price,
+                'additional_price' => calculatePrice($item_additional_price, $product),
                 'stock_count' => $item_additional_stock,
                 'image' => $image,
             ];
@@ -2177,7 +2177,7 @@ HTML;
 
                 $additional_info_store[md5(json_encode($sorted_inventory_item))] = [
                     'pid_id' => $product_id,
-                    'additional_price' => $item_additional_price,
+                    'additional_price' => calculatePrice($item_additional_price, $product),
                     'stock_count' => $item_additional_stock,
                     'image' => $image,
                 ];

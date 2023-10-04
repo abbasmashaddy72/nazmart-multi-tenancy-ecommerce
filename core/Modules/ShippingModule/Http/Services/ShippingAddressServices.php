@@ -17,7 +17,7 @@ class ShippingAddressServices
 
         return response()->json([
             'success' => (bool) $query ?? false,
-            "msg" => !empty($query) ? "Successfully created new shipping address" : "Failed to create new shipping address" ,
+            "msg" => !empty($query) ? __("Successfully created new shipping address") : __("Failed to create new shipping address"),
             'data' => $query,
         ]);
     }

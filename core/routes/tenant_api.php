@@ -51,7 +51,7 @@ Route::middleware([
         Route::get('/city/{state_id}',[CountryController::class,'cityByStateId']); // New
         Route::get('/search/country/{name}',[CountryController::class,'searchCountry']);
         Route::get('/search/state/{name}',[CountryController::class,'searchState']);
-        Route::get('/search/city/{name}',[CountryController::class,'searchCity']); // New
+        Route::get('/search/city/{id}/{name}',[CountryController::class,'searchCity']); // New
         Route::post('/send-otp-in-mail',[UserController::class,'sendOTP']);
         Route::post('/otp-success',[UserController::class,'sendOTPSuccess']);
         Route::post('/reset-password',[UserController::class,'resetPassword']);

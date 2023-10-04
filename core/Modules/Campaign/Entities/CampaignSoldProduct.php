@@ -36,5 +36,6 @@ class CampaignSoldProduct extends Model
         'product_id',
         'sold_count',
         'total_amount',
+        'campaign_id'
     ];
 }
