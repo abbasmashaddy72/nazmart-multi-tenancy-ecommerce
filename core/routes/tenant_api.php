@@ -108,6 +108,8 @@ Route::middleware([
         Route::post('/coupon',[ProductController::class,'productCoupon']);
         Route::post('/shipping-charge',[ProductController::class,'shippingCharge']);
 
+
+
         Route::post('/checkout',[ProductController::class,'checkout']);
         Route::post('/update-payment',[ProductController::class,'paymentUpdate']);
 

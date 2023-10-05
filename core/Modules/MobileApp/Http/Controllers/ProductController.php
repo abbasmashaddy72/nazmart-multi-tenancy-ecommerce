@@ -41,6 +41,7 @@ use Modules\TaxModule\Entities\CountryTax;
 use Modules\TaxModule\Entities\StateTax;
 use Modules\TaxModule\Entities\TaxClassOption;
 use Modules\TaxModule\Services\CalculateTaxBasedOnCustomerAddress;
+use Modules\TaxModule\Services\CalculateTaxServices;
 
 class ProductController extends Controller
 {
@@ -397,7 +398,8 @@ class ProductController extends Controller
         $request->validate([
             'country' => 'required',
             'state' => 'nullable',
-            'city' => 'nullable'
+            'city' => 'nullable',
+            'product_ids' => 'required'
         ]);
 
         $product_tax = $this->get_product_shipping_tax($request);
@@ -422,15 +424,72 @@ class ProductController extends Controller
         foreach ($shipping_methods ?? [] as $method)
         {
             $method->options->cost = $this->calculateShippingWithTax($method, $request);
+            $product_tax = 0;
         }
 
         $default_shipping = $shipping_methods->where('is_default', 1)->first();
 
+        $product_tax_info = $this->calculateProductWithTax($request->product_ids, $request->country, $request->state, $request->city);
+
         return response()->json([
             'tax' => $product_tax,
             'shipping_options' => $shipping_methods,
-            'default_shipping_options' => $default_shipping
+            'default_shipping_options' => $default_shipping,
+            'product_tax_info' => $product_tax_info
         ]);
+    }
+
+    private function calculateProductWithTax($product_ids, $country, $state, $city)
+    {
+        $ids = json_decode($product_ids);
+
+        $enableTaxAmount = !CalculateTaxServices::isPriceEnteredWithTax();
+        $shippingTaxClass = TaxClassOption::where("class_id", get_static_option("shipping_tax_class"))->sum("rate");
+        $tax = CalculateTaxBasedOnCustomerAddress::init();
+        $uniqueProductIds = $ids;
+
+        $country_id = $country ?? 0;
+        $state_id = $state ?? 0;
+        $city_id = $city ?? 0;
+
+        if(empty($uniqueProductIds))
+        {
+            $taxProducts = collect([]);
+        }
+        else
+        {
+            if(CalculateTaxBasedOnCustomerAddress::is_eligible()){
+                $taxProducts = $tax
+                    ->productIds($uniqueProductIds)
+                    ->customerAddress($country_id, $state_id, $city_id)
+                    ->generate();
+            }
+            else
+            {
+                $taxProducts = collect([]);
+            }
+        }
+
+        $products = Product::whereIn('id', $uniqueProductIds)->withSum('taxOptions', 'rate')->get();
+        $v_tax_total = 0;
+        $tax_data = [];
+        foreach ($products ?? [] as $data)
+        {
+            $taxAmount = $taxProducts->where("id" , $data->id)->first();
+
+            if(!empty($taxAmount)){
+                $taxAmount->tax_options_sum_rate = $taxAmount->tax_options_sum_rate ?? 0;
+                $v_tax_total = calculatePrice($data->sale_price, $taxAmount, "percentage");
+            }
+
+            $tax_data[] = [
+                'product_id' => $data->id,
+                'tax_amount' => $v_tax_total,
+                'tax_type' => 'amount'
+            ];
+        }
+
+        return $tax_data;
     }
 
     private function calculateShippingWithTax($method, $request)

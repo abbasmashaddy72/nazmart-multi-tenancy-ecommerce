@@ -12,13 +12,13 @@
                         <div class="single-slider-item">
                             <div class="single-category center-text">
                                 <div class="single-category-thumb">
-                                    <a href="{{route('tenant.shop.category.products', ['category', $category->slug])}}">
+                                    <a href="{{route('tenant.shop.category.products', [$category->slug, 'category'])}}">
                                         {!! render_image_markup_by_attachment_id($category->image_id) !!}
                                     </a>
                                 </div>
                                 <div class="single-category-contents mt-4">
                                     <h3 class="single-category-contents-title fw-400">
-                                        <a href="{{route('tenant.shop.category.products', ['category', $category->slug])}}">
+                                        <a href="{{route('tenant.shop.category.products', [$category->slug, 'category'])}}">
                                             {{$category->name}}
                                         </a>
                                     </h3>

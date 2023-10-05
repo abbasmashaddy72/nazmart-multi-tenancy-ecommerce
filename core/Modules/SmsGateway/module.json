@@ -1,11 +1,11 @@
 {
-    "name": "WooCommerce",
-    "alias": "woocommerce",
+    "name": "SmsGateway",
+    "alias": "smsgateway",
     "description": "",
     "keywords": [],
     "priority": 0,
     "providers": [
-        "Modules\\WooCommerce\\Providers\\WooCommerceServiceProvider"
+        "Modules\\SmsGateway\\Providers\\SmsGatewayServiceProvider"
     ],
     "aliases": {},
     "files": [],
@@ -17,8 +17,8 @@
             "show_admin_tenant": true,
             "menu_item": [
                 {
-                    "id" : "woocommerce-manage-menu",
-                    "label": "WooCommerce",
+                    "id" : "sms-gateway-menu",
+                    "label": "SMS Gateway",
                     "route": "tenant.admin.woocommerce",
                     "parent": null,
                     "icon": "mdi mdi-wordpress",
@@ -26,14 +26,14 @@
                     "class": "plugin-menu"
                 },
                 {
-                    "id" : "woocommerce-manage-index",
-                    "label": "Product List",
+                    "id" : "sms-manage-index",
+                    "label": "SMS Settings",
                     "route": "tenant.admin.woocommerce",
                     "tenantRoute": "tenant.admin.woocommerce",
                     "parent": "woocommerce-manage-menu"
                 },
                 {
-                    "id" : "woocommerce-manage-settings-import",
+                    "id" : "sms-manage-settings-import",
                     "label": "Import Settings",
                     "route": "tenant.admin.woocommerce.settings.import",
                     "tenantRoute": "tenant.admin.woocommerce.settings.import",

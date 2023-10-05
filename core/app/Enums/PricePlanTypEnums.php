@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
+use App\Helpers\ModuleMetaData;
 use ReflectionClass;
 
 class PricePlanTypEnums
@@ -52,9 +53,25 @@ class PricePlanTypEnums
             'app_api' => __('app api')
         ];
 
-        if (moduleExists('WooCommerce'))
+        $external_plugins = (new ModuleMetaData())->getExternalPluginsName();
+        foreach ($external_plugins ?? [] as $plugin)
         {
-            $all_features['woocommerce'] = __('woocommerce');
+            if (array_key_exists('name', $plugin) && array_key_exists('alias', $plugin))
+            {
+                if (moduleExists($plugin['name']))
+                {
+                    $all_features[$plugin['alias']] = __($plugin['name']);
+                }
+            }
+        }
+
+        // Todo: remove this woocommerce fallback when the woocommerce plugin will get official update
+        if (!array_key_exists('woocommerce', $all_features))
+        {
+            if (moduleExists('WooCommerce'))
+            {
+                $all_features['woocommerce'] = __('woocommerce');
+            }
         }
 
         return $all_features;
