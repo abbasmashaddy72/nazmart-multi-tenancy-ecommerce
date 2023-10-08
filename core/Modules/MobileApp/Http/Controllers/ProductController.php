@@ -80,7 +80,9 @@ class ProductController extends Controller
             ])->setStatusCode(404);
         }
 
-        $product->sale_price = calculatePrice($product->sale_price, $product);
+        $dynamic_campaign = get_product_dynamic_price($product);
+        $product->regular_price = calculatePrice($dynamic_campaign['regular_price'], $product);
+        $product->sale_price = calculatePrice($dynamic_campaign['sale_price'], $product);
 
         // get selected attributes in this product ( $available_attributes )
         $inventoryDetails = optional($product->inventoryDetail);
@@ -299,7 +301,7 @@ class ProductController extends Controller
         return [
             'product' => $product,
             'product_url' => route("tenant.shop.product.details", $product->slug),
-            'related_products' => $related_products,
+            'related_products' => MobileFeatureProductResource::collection($related_products),
             'user_has_item' => $user_has_item,
             'ratings' => $ratings,
             'avg_rating' => $avg_rating,
@@ -471,10 +473,10 @@ class ProductController extends Controller
         }
 
         $products = Product::whereIn('id', $uniqueProductIds)->withSum('taxOptions', 'rate')->get();
-        $v_tax_total = 0;
         $tax_data = [];
         foreach ($products ?? [] as $data)
         {
+            $v_tax_total = 0;
             $taxAmount = $taxProducts->where("id" , $data->id)->first();
 
             if(!empty($taxAmount)){

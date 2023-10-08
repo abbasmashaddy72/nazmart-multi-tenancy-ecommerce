@@ -1007,6 +1007,7 @@ class TenantFrontendController extends Controller
 
             $options['type'] = ProductTypeEnum::PHYSICAL;
             $options['base_cost'] = $product->cost + ($additional_cost ?? 0);
+            $options["tax_options_sum_rate"] = $product->tax_options_sum_rate ?? 0;
 
             Cart::add(['id' => $cart_data['product_id'], 'name' => $product->name, 'qty' => $cart_data['quantity'], 'price' => $final_sale_price, 'weight' => '0', 'options' => $options]);
             DB::commit();

@@ -534,6 +534,7 @@ class TenantManageController extends Controller
     public function account_settings_update(Request $request)
     {
          $request->validate([
+            'tenant_account_auto_remove' => 'nullable',
             'tenant_account_delete_notify_mail_days' => 'required',
             'account_remove_day_within_expiration' => 'required|alpha_num|min:1',
         ]);
@@ -545,11 +546,17 @@ class TenantManageController extends Controller
             return redirect()->back()->with(['type'=> 'danger', 'msg' => sprintf('You can not set remove account day above %d',$limit_days)]);
         }
 
-        update_static_option('tenant_account_delete_notify_mail_days',json_encode($request->tenant_account_delete_notify_mail_days));
-        update_static_option('account_remove_day_within_expiration',$request->account_remove_day_within_expiration);
+        update_static_option('tenant_account_auto_remove', $request->tenant_account_auto_remove);
+        if ($request->tenant_account_auto_remove)
+        {
+            update_static_option('tenant_account_delete_notify_mail_days',json_encode($request->tenant_account_delete_notify_mail_days));
+            update_static_option('account_remove_day_within_expiration',$request->account_remove_day_within_expiration);
+        } else {
+            delete_static_option('tenant_account_delete_notify_mail_days');
+            delete_static_option('account_remove_day_within_expiration');
+        }
 
         return response()->success(ResponseMessage::success());
-
     }
 
     public function verify_account(Request $request)

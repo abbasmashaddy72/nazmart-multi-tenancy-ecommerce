@@ -4,16 +4,19 @@ namespace App\Http\Controllers\Landlord\Admin;
 
 use App\Helpers\ModuleMetaData;
 use App\Http\Controllers\Controller;
+use App\Mail\BasicMail;
 use App\Models\Admin;
 use App\Models\Brand;
 use App\Models\PaymentLogs;
 use App\Models\PricePlan;
+use App\Models\Tenant;
 use App\Models\Testimonial;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Modules\Blog\Entities\Blog;
 use function view;
 

@@ -19,7 +19,7 @@ class AccountRemoval extends Command
     {
         parent::__construct();
     }
-    
+
     public function handle()
     {
         $remove_account_status = get_static_option('tenant_account_auto_remove') ?? '';

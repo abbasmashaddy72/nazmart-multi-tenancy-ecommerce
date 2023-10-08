@@ -27,7 +27,7 @@ class StoreShippingAddressRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "shipping_address_name" => "required",
+            "shipping_address_name" => "nullable",
             "full_name" => "required|string",
             "address" => "required|string",
             "country_id" => "required|integer",

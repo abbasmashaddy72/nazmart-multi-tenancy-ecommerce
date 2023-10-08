@@ -19,13 +19,17 @@ class MobileFeatureProductResource extends JsonResource
     {
         // campaign data check
         $campaign_product = !is_null($this->campaignProduct) ? $this->campaignProduct : getCampaignProductById($this->id);
-        $sale_price = $campaign_product ? optional($campaign_product)->campaign_price : $this->sale_price;
-        $sale_price = calculatePrice($sale_price, $this);
+//        $sale_price = $campaign_product ? optional($campaign_product)->campaign_price : $this->sale_price;
+//        $sale_price = calculatePrice($sale_price, $this);
 
-        $deleted_price = !is_null($campaign_product) ? $this->sale_price : $this->price;
-        $deleted_price = calculatePrice($deleted_price, $this);
+        $dynamic_campaign = get_product_dynamic_price($this);
+        $deleted_price = calculatePrice($dynamic_campaign['regular_price'], $this);
+        $sale_price = calculatePrice($dynamic_campaign['sale_price'], $this);
 
-        $campaign_percentage = !is_null($campaign_product) ? getPercentage($this->sale_price, $sale_price) : false;
+//        $deleted_price = !is_null($campaign_product) ? $this->sale_price : $this->price;
+//        $deleted_price = calculatePrice($deleted_price, $this);
+
+        $campaign_percentage = !is_null($campaign_product) ? getPercentage($deleted_price, $sale_price) : false;
 
         $add_to_cart = ProductInventoryDetail::where("product_id",$this->id)->count();
 
@@ -42,6 +46,7 @@ class MobileFeatureProductResource extends JsonResource
             "campaign_percentage" => round($campaign_percentage,2),
             "price" => round($deleted_price,2),
             "discount_price" => round($sale_price, 2),
+            "tax_options_sum_rate" => $this->tax_options_sum_rate ?? 0,
             "badge" => [
                 "badge_name" => $this->badge?->name ?? null,
                 "image" => $image_url,
