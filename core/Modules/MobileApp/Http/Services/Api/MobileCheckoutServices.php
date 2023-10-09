@@ -21,6 +21,9 @@ use Modules\ShippingModule\Entities\ShippingMethod;
 use Modules\ShippingModule\Entities\ZoneRegion;
 use Modules\TaxModule\Entities\CountryTax;
 use Modules\TaxModule\Entities\StateTax;
+use Modules\TaxModule\Entities\TaxClassOption;
+use Modules\TaxModule\Services\CalculateTaxBasedOnCustomerAddress;
+use Modules\TaxModule\Services\CalculateTaxServices;
 
 class MobileCheckoutServices
 {
@@ -138,7 +141,7 @@ class MobileCheckoutServices
                 'name' => $item->name,
                 'price' => $item->price,
                 'qty' => $item->qty,
-                'variant_id' => $item?->options?->variant_id,
+                'variant_id' => $item?->options?->variant_id ?? null,
                 'image' => $item?->options?->image
             ];
             $i++;
@@ -177,7 +180,7 @@ class MobileCheckoutServices
         ];
 
         $price = $this->getTotalPriceDetails($validated_data);
-        $products = Product::whereIn('id' ,$price['products_id'])->get();
+        $products = Product::whereIn('id' ,$price['products_id'])->withSum('taxOptions', 'rate')->get();
 
         $data = $this->get_product_shipping_tax(['country' => $user['country'], 'state' => $user['state'], 'shipping_method' => (int)$shipping_method]);
         $discounted_price = CheckoutCouponService::calculateCoupon($coupon, $price['total'], $products, 'DISCOUNT');
@@ -185,9 +188,20 @@ class MobileCheckoutServices
         $product_tax = $data['product_tax'];
         $shipping_cost = $data['shipping_cost'];
 
-        $taxed_price = ($price['total'] * $product_tax) / 100;
-        $subtotal = $price['total'];
-        $total['total'] = $price['total'] + $taxed_price + $shipping_cost;
+        if (get_static_option('tax_system') == 'advance_tax_system')
+        {
+            $final_details = $this->getProductTaxedFinalPrice($user, $validated_data);
+            $product_tax = $final_details['tax'];
+            $shipping_cost = $final_details['shipping_cost'];
+            $subtotal = $final_details['subtotal'];
+            $total['total'] = $final_details['total'];
+        }
+        else
+        {
+            $taxed_price = ($price['total'] * $product_tax) / 100;
+            $subtotal = $price['total'];
+            $total['total'] = $price['total'] + $taxed_price + $shipping_cost;
+        }
 
         $discount = $discounted_price != 0 ? $discounted_price : 0;
         if ($discounted_price > 0)
@@ -199,6 +213,80 @@ class MobileCheckoutServices
         $total['payment_meta'] = $this->payment_meta(compact('product_tax', 'shipping_cost', 'subtotal', 'total'));
 
         return $total;
+    }
+
+    public function getProductTaxedFinalPrice($user, $validated_data)
+    {
+        $carts = collect(json_decode($validated_data['cart']));
+        $enableTaxAmount = !CalculateTaxServices::isPriceEnteredWithTax();
+
+        $tax = CalculateTaxBasedOnCustomerAddress::init();
+        $uniqueProductIds = $carts->pluck("id")->unique()->toArray();
+
+        $country_id = $user['country'];
+        $state_id = $user['state'];
+        $city_id = $user['city'];
+
+        $shippingTaxClass = TaxClassOption::where("class_id", get_static_option("shipping_tax_class"));
+        if (!empty($country_id)) {
+            $shippingTaxClass->where("country_id", $country_id);
+        }
+        if (!empty($state_id)) {
+            $shippingTaxClass->where("state_id", $state_id);
+        }
+        if (!empty($city_id)) {
+            $shippingTaxClass->where("city_id", $city_id);
+        }
+
+        $shippingTaxClass = $shippingTaxClass->sum("rate");
+
+        if (empty($uniqueProductIds)) {
+            $taxProducts = collect([]);
+        } else {
+            if (CalculateTaxBasedOnCustomerAddress::is_eligible()) {
+                $taxProducts = $tax
+                    ->productIds($uniqueProductIds)
+                    ->customerAddress($country_id, $state_id, $city_id)
+                    ->generate();
+            } else {
+                $taxProducts = collect([]);
+            }
+        }
+
+        $subtotal = null;
+        $itemsTotal = null;
+        $v_tax_total = 0;
+
+        foreach ($carts ?? [] as $data) {
+            $taxAmount = $taxProducts->where("id", $data->id)->first();
+
+            if (!empty($taxAmount)) {
+                $taxAmount->tax_options_sum_rate = $taxAmount->tax_options_sum_rate ?? 0;
+                $price = calculatePrice($data->price, $taxAmount);
+//                $regular_price = calculatePrice($data->options->regular_price, $data->options);
+                $v_tax_total += calculatePrice($data->price, $taxAmount, "percentage") * $data->qty;
+            } else {
+                $price = calculatePrice($data->price, $data->options);
+//                $regular_price = calculatePrice($data->options->regular_price, $data->options);
+            }
+
+            $subtotal += $price * $data->qty;
+            $itemsTotal = $subtotal + $v_tax_total;
+        }
+
+        $shipping_methods = ShippingMethod::with('options')->where('id', $validated_data['shipping_method'])->first();
+        $shipping_price = $shipping_methods?->options?->cost;
+
+        if ($shipping_methods?->options?->tax_status == 1) {
+            $shipping_price = calculatePrice($shipping_methods?->options?->cost, $shippingTaxClass, "shipping");
+        }
+
+        return [
+            'tax' => $v_tax_total,
+            'shipping_cost' => $shipping_price,
+            'subtotal' => $subtotal,
+            'total' => $itemsTotal + $shipping_price
+        ];
     }
 
     public function createOrder($validated_data, $user)
@@ -242,7 +330,7 @@ class MobileCheckoutServices
 
         foreach ($totalPriceDetails['products_id'] as $key => $ids)
         {
-            $products = Product::whereIn('id', $totalPriceDetails['products_id'])->get();
+            $products = Product::whereIn('id', $totalPriceDetails['products_id'])->withSum('taxOptions', 'rate')->get();
             $coupon = (object)[
                 "coupon" => $validated_data['used_coupon']
             ];

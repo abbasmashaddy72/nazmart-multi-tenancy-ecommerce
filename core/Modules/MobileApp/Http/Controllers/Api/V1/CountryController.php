@@ -85,15 +85,15 @@ class CountryController extends Controller
         ]);
     }
 
-    public function searchCity($name)
+    public function searchCity($id, $name)
     {
-        if(empty($name)){
+        if(empty($id) && empty($name)){
             return response()->json([
                 'message' => __('provide a valid city name')
             ])->setStatusCode(422);
         }
 
-        $city = City::where('name', 'LIKE', '%'.$name.'%')->select('id', 'name','state_id')->orderBy('name', 'asc')->paginate(10);
+        $city = City::where('state_id', $id)->where('name', 'LIKE', '%'.$name.'%')->select('id', 'name','state_id')->orderBy('name', 'asc')->paginate(10);
 
         return response()->json([
             'city' => $city

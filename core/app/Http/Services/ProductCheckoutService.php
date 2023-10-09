@@ -322,11 +322,11 @@ class ProductCheckoutService
             if (!empty($taxAmount)) {
                 $taxAmount->tax_options_sum_rate = $taxAmount->tax_options_sum_rate ?? 0;
                 $price = calculatePrice($data->price, $taxAmount);
-                $regular_price = calculatePrice($data->options->regular_price, $data->options);
+//                $regular_price = calculatePrice($data->options->regular_price, $data->options);
                 $v_tax_total += calculatePrice($data->price, $taxAmount, "percentage") * $data->qty;
             } else {
                 $price = calculatePrice($data->price, $data->options);
-                $regular_price = calculatePrice($data->options->regular_price, $data->options);
+//                $regular_price = calculatePrice($data->options->regular_price, $data->options);
             }
 
             $subtotal += $price * $data->qty;

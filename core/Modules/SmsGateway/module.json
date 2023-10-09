@@ -1,0 +1,52 @@
+{
+    "name": "SmsGateway",
+    "alias": "smsgateway",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\SmsGateway\\Providers\\SmsGatewayServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": [],
+    "nazmartMetaData": {
+        "plugin_type": "external",
+        "admin_settings": {
+            "show_admin_landlord": false,
+            "show_admin_tenant": true,
+            "menu_item": [
+                {
+                    "id" : "sms-gateway-menu",
+                    "label": "SMS Gateway",
+                    "route": "tenant.admin.woocommerce",
+                    "parent": null,
+                    "icon": "mdi mdi-wordpress",
+                    "permissions": "woocommerce",
+                    "class": "plugin-menu"
+                },
+                {
+                    "id" : "sms-manage-index",
+                    "label": "SMS Settings",
+                    "route": "tenant.admin.woocommerce",
+                    "tenantRoute": "tenant.admin.woocommerce",
+                    "parent": "woocommerce-manage-menu"
+                },
+                {
+                    "id" : "sms-manage-settings-import",
+                    "label": "Import Settings",
+                    "route": "tenant.admin.woocommerce.settings.import",
+                    "tenantRoute": "tenant.admin.woocommerce.settings.import",
+                    "parent": "woocommerce-manage-menu"
+                },
+                {
+                    "id" : "woocommerce-manage-settings",
+                    "label": "Settings",
+                    "route": "tenant.admin.woocommerce.settings",
+                    "tenantRoute": "tenant.admin.woocommerce.settings",
+                    "parent": "woocommerce-manage-menu"
+                }
+            ]
+        }
+    }
+}

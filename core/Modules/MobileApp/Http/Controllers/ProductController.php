@@ -39,6 +39,9 @@ use Modules\ShippingModule\Entities\Zone;
 use Modules\ShippingModule\Entities\ZoneRegion;
 use Modules\TaxModule\Entities\CountryTax;
 use Modules\TaxModule\Entities\StateTax;
+use Modules\TaxModule\Entities\TaxClassOption;
+use Modules\TaxModule\Services\CalculateTaxBasedOnCustomerAddress;
+use Modules\TaxModule\Services\CalculateTaxServices;
 
 class ProductController extends Controller
 {
@@ -67,6 +70,7 @@ class ProductController extends Controller
                 'delivery_option',
             )
             ->where("status_id", 1)
+            ->withSum('taxOptions', 'rate')
             ->first();
 
         if(empty($product)){
@@ -75,6 +79,10 @@ class ProductController extends Controller
                 "msg" => "no product found"
             ])->setStatusCode(404);
         }
+
+        $dynamic_campaign = get_product_dynamic_price($product);
+        $product->regular_price = calculatePrice($dynamic_campaign['regular_price'], $product);
+        $product->sale_price = calculatePrice($dynamic_campaign['sale_price'], $product);
 
         // get selected attributes in this product ( $available_attributes )
         $inventoryDetails = optional($product->inventoryDetail);
@@ -119,7 +127,7 @@ class ProductController extends Controller
 
             $additional_info_store[$hash] = [
                 'pid_id' => $id, //Info: ProductInventoryDetails id
-                'additional_price' => $item_additional_price,
+                'additional_price' => calculatePrice($item_additional_price, $product),
                 'stock_count' => $item_additional_stock,
                 'image' => $image,
             ];
@@ -164,7 +172,7 @@ class ProductController extends Controller
 
                 $additional_info_store[$hash] = [
                     'pid_id' => $product_id,
-                    'additional_price' => $item_additional_price,
+                    'additional_price' => calculatePrice($item_additional_price, $product),
                     'stock_count' => $item_additional_stock,
                     'image' => $image,
                 ];
@@ -179,25 +187,31 @@ class ProductController extends Controller
         unset($product->category->image_id);
 
         // todo:: write code for product sub category only add image path into category array
-        $subCategoryImage = get_attachment_image_by_id($product->subCategory->image_id);
-        $product->subCategory->categoryImage = !empty($subCategoryImage) ? $subCategoryImage['img_url'] : '';
-        unset($product->subCategory->image_id);
-        unset($product->subCategory->laravel_through_key);
-        unset($product->subCategory->image_id);
+        if ($product->subCategory)
+        {
+            $subCategoryImage = get_attachment_image_by_id($product->subCategory?->image_id);
+            $product->subCategory->categoryImage = !empty($subCategoryImage) ? $subCategoryImage['img_url'] : '';
+            unset($product->subCategory->image_id);
+            unset($product->subCategory->laravel_through_key);
+            unset($product->subCategory->image_id);
+        }
 
         // todo:: write code for product sub category only add image path into category array
-        $product->childCategory->transform(function ($item){
-            $image = $item->image_id;
-            unset($item->image_id);
-            unset($item->image_id);
-            unset($item->laravel_through_key);
+        if ($product->childCategory)
+        {
+            $product->childCategory->transform(function ($item){
+                $image = $item->image_id;
+                unset($item->image_id);
+                unset($item->image_id);
+                unset($item->laravel_through_key);
 
-            $image = get_attachment_image_by_id($image);
-            $item->image = !empty($image) ? $image['img_url'] : '';
-            return $item;
-        });
+                $image = get_attachment_image_by_id($image);
+                $item->image = !empty($image) ? $image['img_url'] : '';
+                return $item;
+            });
+        }
 
-        foreach($product->gallery_images as $gallery){
+        foreach($product->gallery_images as $gallery) {
             $image = get_attachment_image_by_id($gallery->id);
             $gallery->image = !empty($image) ? $image['img_url'] : '';
             unset($gallery->id);
@@ -249,6 +263,7 @@ class ProductController extends Controller
                     ->where('category_id', '=', $product_category)
                     ->get();
             })
+            ->withSum('taxOptions', 'rate')
             ->inRandomOrder()
             ->take(5)
             ->get();
@@ -286,7 +301,7 @@ class ProductController extends Controller
         return [
             'product' => $product,
             'product_url' => route("tenant.shop.product.details", $product->slug),
-            'related_products' => $related_products,
+            'related_products' => MobileFeatureProductResource::collection($related_products),
             'user_has_item' => $user_has_item,
             'ratings' => $ratings,
             'avg_rating' => $avg_rating,
@@ -384,11 +399,21 @@ class ProductController extends Controller
     {
         $request->validate([
             'country' => 'required',
-            'state' => 'nullable'
+            'state' => 'nullable',
+            'city' => 'nullable',
+            'product_ids' => 'required'
         ]);
+
         $product_tax = $this->get_product_shipping_tax($request);
 
-        $shipping_zones = ZoneRegion::whereJsonContains('country', $request->country)->get();
+        if ($request->has('state') && $request->has('country'))
+        {
+            $shipping_zones = ZoneRegion::whereJsonContains('country', $request->country)->whereJsonContains('state', $request->state)->get();
+        }
+        elseif($request->has('country') && !$request->has('state'))
+        {
+            $shipping_zones = ZoneRegion::whereJsonContains('country', $request->country)->get();
+        }
 
         $zone_ids = [];
         foreach ($shipping_zones ?? [] as $zone) {
@@ -397,14 +422,95 @@ class ProductController extends Controller
 
         $shipping_methods = ShippingMethod::whereIn('zone_id', $zone_ids)
             ->orWhere('is_default', 1)->get();
+
+        foreach ($shipping_methods ?? [] as $method)
+        {
+            $method->options->cost = $this->calculateShippingWithTax($method, $request);
+            $product_tax = 0;
+        }
+
         $default_shipping = $shipping_methods->where('is_default', 1)->first();
 
+        $product_tax_info = $this->calculateProductWithTax($request->product_ids, $request->country, $request->state, $request->city);
 
         return response()->json([
             'tax' => $product_tax,
             'shipping_options' => $shipping_methods,
-            'default_shipping_options' => $default_shipping
+            'default_shipping_options' => $default_shipping,
+            'product_tax_info' => $product_tax_info
         ]);
+    }
+
+    private function calculateProductWithTax($product_ids, $country, $state, $city)
+    {
+        $ids = json_decode($product_ids);
+
+        $enableTaxAmount = !CalculateTaxServices::isPriceEnteredWithTax();
+        $shippingTaxClass = TaxClassOption::where("class_id", get_static_option("shipping_tax_class"))->sum("rate");
+        $tax = CalculateTaxBasedOnCustomerAddress::init();
+        $uniqueProductIds = $ids;
+
+        $country_id = $country ?? 0;
+        $state_id = $state ?? 0;
+        $city_id = $city ?? 0;
+
+        if(empty($uniqueProductIds))
+        {
+            $taxProducts = collect([]);
+        }
+        else
+        {
+            if(CalculateTaxBasedOnCustomerAddress::is_eligible()){
+                $taxProducts = $tax
+                    ->productIds($uniqueProductIds)
+                    ->customerAddress($country_id, $state_id, $city_id)
+                    ->generate();
+            }
+            else
+            {
+                $taxProducts = collect([]);
+            }
+        }
+
+        $products = Product::whereIn('id', $uniqueProductIds)->withSum('taxOptions', 'rate')->get();
+        $tax_data = [];
+        foreach ($products ?? [] as $data)
+        {
+            $v_tax_total = 0;
+            $taxAmount = $taxProducts->where("id" , $data->id)->first();
+
+            if(!empty($taxAmount)){
+                $taxAmount->tax_options_sum_rate = $taxAmount->tax_options_sum_rate ?? 0;
+                $v_tax_total = calculatePrice($data->sale_price, $taxAmount, "percentage");
+            }
+
+            $tax_data[] = [
+                'product_id' => $data->id,
+                'tax_amount' => $v_tax_total,
+                'tax_type' => 'amount'
+            ];
+        }
+
+        return $tax_data;
+    }
+
+    private function calculateShippingWithTax($method, $request)
+    {
+        $shippingTaxClass = TaxClassOption::where("class_id", get_static_option("shipping_tax_class"));
+        if(!empty($country_id)){
+            $shippingTaxClass->where("country_id", $request->country);
+        }
+        if(!empty($state_id)){
+            $shippingTaxClass->where("state_id", $request->state);
+        }
+        if(!empty($city_id)){
+            $shippingTaxClass->where("city_id", $request->city);
+        }
+
+        $shippingTaxClass = $shippingTaxClass->sum("rate");
+
+        // add shipping charge tax
+        return calculatePrice($method->options->cost, $shippingTaxClass, "shipping");
     }
 
     private function get_product_shipping_tax($request)
@@ -414,18 +520,22 @@ class ProductController extends Controller
 
         if ($request->state && $request->country) {
             $product_tax = StateTax::where(['country_id' => $request->country, 'state_id' => $request->state])
-                ->select('id', 'tax_percentage')->first();
+                ->select('id', 'tax_percentage')
+                ->first();
 
             if (!empty($product_tax)) {
-                $product_tax = $product_tax->toArray()['tax_percentage'];
+                $product_tax = $product_tax->toArray();
+                $product_tax = $product_tax ? $product_tax['tax_percentage'] : 0;
             } else {
                 if (!empty($country_tax))
                 {
-                    $product_tax = $country_tax->toArray()['tax_percentage'];
+                    $product_tax = $country_tax->toArray();
+                    $product_tax = $product_tax ? $product_tax['tax_percentage'] : 0;
                 }
             }
         } else {
             $product_tax = $country_tax->toArray()['tax_percentage'];
+            $product_tax = $product_tax ? $product_tax['tax_percentage'] : 0;
         }
 
         return $product_tax;
@@ -448,7 +558,7 @@ class ProductController extends Controller
 
         // Checking shipping method is selected
         if(!$order_log_id) {
-            return back()->withErrors(['error' => 'Please select a shipping method']);
+            return back()->withErrors(['error' => __('Please select a shipping method')]);
         }
 
         return response()->json([

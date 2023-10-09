@@ -647,4 +647,47 @@ class ModuleMetaData
 
         return $all_blades;
     }
+
+    public function getAllExternalPlugins(): array
+    {
+        $allMetaData = $this->getAllMetaData();
+
+        $allExternalPlugins = [];
+        foreach ($allMetaData ?? [] as $key => $metaData)
+        {
+            if (property_exists($metaData, 'plugin_type') && !empty($metaData->plugin_type))
+            {
+                if ($metaData->plugin_type == 'external')
+                {
+                    $allExternalPlugins[$key] = $this->getIndividualModuleMetaData($key);
+                }
+            }
+        }
+
+        return $allExternalPlugins;
+    }
+
+    public function getExternalPluginsName(): array
+    {
+        $externalPlugins = $this->getAllExternalPlugins();
+
+        $pluginInfo = [];
+        foreach ($externalPlugins ?? [] as $key => $plugin)
+        {
+            if (!empty($plugin))
+            {
+                if (!property_exists($plugin, 'name') || !property_exists($plugin, 'alias'))
+                {
+                    continue;
+                }
+
+                $pluginInfo[$key] = [
+                    'name' => $plugin->name,
+                    'alias' => $plugin->alias
+                ];
+            }
+        }
+
+        return $pluginInfo;
+    }
 }

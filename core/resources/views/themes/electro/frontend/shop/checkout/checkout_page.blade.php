@@ -583,7 +583,7 @@
                 $('.create-account-wrapper .checkout-form-open').toggleClass('active')
             });
 
-            $(document).on('click', '.proceed_checkout_btn', function (e){
+            $(document).on('click', '.proceed_checkout_btn', function (e) {
                 e.preventDefault();
 
                 let agreed = $('#agree:checked');

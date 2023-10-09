@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware\Tenant;
 
+use App\Models\CustomDomain;
 use App\Models\StaticOption;
 use Closure;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ class TenantConfigMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+
         // switches timezone according to tenant timezone from database value
         if (tenant()){
             $smtp_settings_values = StaticOption::select(['option_name','option_value'])->whereIn('option_name',[

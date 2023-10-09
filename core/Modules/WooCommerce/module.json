@@ -11,6 +11,7 @@
     "files": [],
     "requires": [],
     "nazmartMetaData": {
+        "plugin_type": "external",
         "admin_settings": {
             "show_admin_landlord": false,
             "show_admin_tenant": true,

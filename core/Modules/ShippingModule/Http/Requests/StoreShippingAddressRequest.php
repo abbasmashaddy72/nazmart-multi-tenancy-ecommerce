@@ -27,13 +27,13 @@ class StoreShippingAddressRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "shipping_address_name" => "required",
+            "shipping_address_name" => "nullable",
             "full_name" => "required|string",
             "address" => "required|string",
             "country_id" => "required|integer",
             "state_id" => "required|integer",
-            "city" => "required|string",
-            "zip_code" => "nullable|integer",
+            "city" => "required",
+            "postal_code" => "nullable|integer",
             "phone" => "required|string",
             "email" => "required|string",
             "user_id" => "required"
@@ -60,7 +60,8 @@ class StoreShippingAddressRequest extends FormRequest
         }
 
         return $this->merge([
-            "user_id" => $user_id
+            "user_id" => $user_id,
+            "city" => $this->city_id
         ]);
     }
 

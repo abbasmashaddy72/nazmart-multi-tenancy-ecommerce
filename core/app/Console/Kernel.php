@@ -23,6 +23,13 @@ class Kernel extends ConsoleKernel
             ->everyMinute()
             ->withoutOverlapping()
             ->sendOutputTo(storage_path() . '/logs/queue-jobs.log');
+
+        if (app()->environment('local'))
+        {
+            try {
+                $schedule->command('telescope:prune')->daily();
+            } catch (\Exception $exception) {}
+        }
     }
 
     protected function commands()

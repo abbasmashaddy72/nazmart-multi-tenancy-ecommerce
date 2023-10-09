@@ -1007,6 +1007,7 @@ class TenantFrontendController extends Controller
 
             $options['type'] = ProductTypeEnum::PHYSICAL;
             $options['base_cost'] = $product->cost + ($additional_cost ?? 0);
+            $options["tax_options_sum_rate"] = $product->tax_options_sum_rate ?? 0;
 
             Cart::add(['id' => $cart_data['product_id'], 'name' => $product->name, 'qty' => $cart_data['quantity'], 'price' => $final_sale_price, 'weight' => '0', 'options' => $options]);
             DB::commit();
@@ -1420,7 +1421,12 @@ class TenantFrontendController extends Controller
             'password.required' => __('Password required'),
             'password.min' => __('Password length must be 6 characters')
         ]);
-        if (Auth::guard('web')->attempt(['username' => $request->username, 'password' => $request->password], $request->get('remember'))) {
+
+        if
+        (
+            Auth::guard('web')->attempt(['username' => $request->username, 'password' => $request->password], $request->get('remember'))
+            || Auth::guard('web')->attempt(['email' => $request->username, 'password' => $request->password], $request->get('remember'))
+        ) {
             return response()->json([
                 'msg' => __('Login Success Redirecting'),
                 'type' => 'success',
@@ -2134,7 +2140,7 @@ HTML;
 
             $additional_info_store[md5(json_encode($sorted_inventory_item))] = [
                 'pid_id' => $id, //Info: ProductInventoryDetails id
-                'additional_price' => $item_additional_price,
+                'additional_price' => calculatePrice($item_additional_price, $product),
                 'stock_count' => $item_additional_stock,
                 'image' => $image,
             ];
@@ -2177,7 +2183,7 @@ HTML;
 
                 $additional_info_store[md5(json_encode($sorted_inventory_item))] = [
                     'pid_id' => $product_id,
-                    'additional_price' => $item_additional_price,
+                    'additional_price' => calculatePrice($item_additional_price, $product),
                     'stock_count' => $item_additional_stock,
                     'image' => $image,
                 ];

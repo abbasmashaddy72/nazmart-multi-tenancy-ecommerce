@@ -27,6 +27,7 @@
         "kkomelin/laravel-translatable-string-exporter": "^1.11",
         "laravel/framework": "^9.0",
         "laravel/sanctum": "^3.2",
+        "laravel/telescope": "^4.16",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",
         "laraveldaily/laravel-invoices": "^3.0",
@@ -92,7 +93,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "laravel/telescope"
+            ]
         }
     },
     "config": {

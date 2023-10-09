@@ -154,7 +154,7 @@ class UserController extends Controller
     {
         $user_id = auth('sanctum')->user()->id;
 
-        return response()->json(["data" => UserDeliveryAddress::with(["state", "country:id,name", "state:id,name"])->where('user_id', $user_id)->get()]);
+        return response()->json(["data" => UserDeliveryAddress::with(["state", "country:id,name", "state:id,name", "city_rel:id,name"])->where('user_id', $user_id)->get()]);
     }
 
     // send otp
@@ -183,7 +183,7 @@ class UserController extends Controller
 
         if (is_null($user)) {
             return response()->json([
-                'message' => __('Something went wrong, plese try after sometime,'),
+                'message' => __('Something went wrong, please try after sometime,'),
             ])->setStatusCode(422);
         }
 
@@ -325,20 +325,20 @@ class UserController extends Controller
         $user_id = auth('sanctum')->user()->id;
 
         $request->validate([
-            'name' => 'required|string|max:191',
+            'full_name' => 'required|string|max:191',
             'email' => 'required|email|max:191|unique:users,id,' . $request->user_id,
-            'phone' => 'nullable|string|max:191',
-            'state' => 'nullable|string|max:191',
-            'city' => 'nullable|string|max:191',
-            'zipcode' => 'nullable|string|max:191',
-            'country' => 'nullable|string|max:191',
+            'country_code' => 'nullable|string|max:191',
+            'mobile' => 'nullable|string|max:191',
+            'country_id' => 'required',
+            'state_id' => 'required',
+            'city_id' => 'nullable',
+            'postal_code' => 'nullable|string|max:191',
             'address' => 'nullable|string',
         ], [
-            'name.' => __('name is required'),
+            'full_name.' => __('name is required'),
             'email.required' => __('email is required'),
             'email.email' => __('provide valid email'),
         ]);
-
 
         if ($request->file('file')) {
             (new MediaUploaderController())->upload_media_file($request);
@@ -347,14 +347,14 @@ class UserController extends Controller
 
         User::find($user_id)->update(
             [
-                'name' => $request->name,
+                'name' => $request->full_name,
                 'email' => $request->email,
                 'image' => $last_image_id ?? $user->image,
-                'phone' => $request->phone,
-                'state' => $request->state,
-                'city' => $request->city,
-                'zipcode' => $request->zipcode,
-                'country' => $request->country,
+                'mobile' => ($request->country_code ?? '') . $request->mobile,
+                'country_id' => $request->country_id,
+                'state_id' => $request->state_id,
+                'city_id' => $request->city_id,
+                'postal_code' => $request->postal_code,
                 'address' => $request->address,
             ]
         );
@@ -587,13 +587,13 @@ class UserController extends Controller
     {
         $user_id = auth('sanctum')->user()->id;
 
-        return ProductOrder::where('user_id', $user_id)->paginate(10)->withQueryString();
+        return ProductOrder::with('getCountry', 'getState', 'getCity')->where('user_id', $user_id)->paginate(10)->withQueryString();
     }
 
     public function single_order_details($order_id)
     {
         $user_id = auth('sanctum')->user()->id;
-        $order_details = ProductOrder::where(['user_id' => $user_id, 'id' => $order_id])->first();
+        $order_details = ProductOrder::with('getCountry', 'getState', 'getCity')->where(['user_id' => $user_id, 'id' => $order_id])->first();
 
         $details = [];
         foreach (json_decode($order_details->order_details) as $key => $order)
@@ -645,7 +645,7 @@ class UserController extends Controller
                 'product_id' => $product,
             ])->first();
 
-            if (empty($refund) && empty($order_product))
+            if (empty($refund))
             {
                 RefundProduct::create([
                     'user_id' => $user_id,
@@ -671,7 +671,7 @@ class UserController extends Controller
     {
         $user_id = auth('sanctum')->user()->id;
 
-        return RefundProduct::with('user', 'product')->where('user_id', $user_id)->paginate(10)->withQueryString();
+        return RefundProduct::with('user', 'user.userCountry:id,name', 'user.userState:id,name', 'user.userCity:id,name', 'product')->where('user_id', $user_id)->paginate(10)->withQueryString();
     }
 
     public function refund_create_ticket(Request $request)

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Modules\CountryManage\Entities\City;
 use Modules\CountryManage\Entities\Country;
 use Modules\CountryManage\Entities\State;
 use Modules\ShippingModule\Entities\UserShippingAddress;
@@ -65,6 +66,11 @@ class ProductOrder extends Model
     public function getState(): HasOne
     {
         return $this->hasOne(State::class, 'id', 'state');
+    }
+
+    public function getCity(): HasOne
+    {
+        return $this->hasOne(City::class, 'id', 'city');
     }
 
     public function sale_details()

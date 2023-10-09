@@ -31,13 +31,14 @@ class CheckoutToPaymentService
 
         foreach ($ordered_products ?? [] as $product) {
             $dynamic_campaign = get_product_dynamic_price($product);
-            if ($dynamic_campaign['is_running'] && $product->campaign_product !== null) {
+            if ($dynamic_campaign['is_running']) {
                 $sold_count = CampaignSoldProduct::where('product_id', $product->product_id)->first();
                 if (empty($sold_count)) {
                     CampaignSoldProduct::create([
                         'product_id' => $product->product_id,
                         'sold_count' => 1,
                         'total_amount' => $product->campaign_product->campaign_price,
+                        'campaign_id' =>  $product->campaign_product->campaign_id,
                         'created_at' => now(),
                         'updated_at' => now()
                     ]);
