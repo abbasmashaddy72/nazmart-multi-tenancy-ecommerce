@@ -21,7 +21,7 @@
                     remember : remember,
                 },
                 success: function (data){
-                    if(data.status == 'invalid'){
+                    if(data.status === 'invalid'){
                         el.text('{{__("Login")}}')
                         formContainer.find('.error-wrap').html('<div class="alert alert-danger">'+data.msg+'</div>');
                     }else{

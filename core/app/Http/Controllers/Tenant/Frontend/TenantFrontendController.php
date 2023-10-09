@@ -1421,7 +1421,12 @@ class TenantFrontendController extends Controller
             'password.required' => __('Password required'),
             'password.min' => __('Password length must be 6 characters')
         ]);
-        if (Auth::guard('web')->attempt(['username' => $request->username, 'password' => $request->password], $request->get('remember'))) {
+
+        if
+        (
+            Auth::guard('web')->attempt(['username' => $request->username, 'password' => $request->password], $request->get('remember'))
+            || Auth::guard('web')->attempt(['email' => $request->username, 'password' => $request->password], $request->get('remember'))
+        ) {
             return response()->json([
                 'msg' => __('Login Success Redirecting'),
                 'type' => 'success',

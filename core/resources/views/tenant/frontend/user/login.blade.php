@@ -22,11 +22,11 @@
                             <form action="" method="post" enctype="multipart/form-data" class="account-form" id="login_form_order_page">
                                 <div class="error-wrap"></div>
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">{{__('Username')}}<span class="required">*</span></label>
-                                    <input type="text" name="username" class="form-control" id="exampleInputEmail1" placeholder="{{__('Type Your Username')}}">
+                                    <label for="exampleInputEmail1">{{__('Email or Username')}}<x-fields.mandatory-indicator/></label>
+                                    <input type="text" name="username" class="form-control" id="exampleInputEmail1" placeholder="{{__('Type Your Email or Username')}}">
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">{{__('Password')}}<span class="required">*</span></label>
+                                    <label for="exampleInputEmail1">{{__('Password')}}<x-fields.mandatory-indicator/></label>
                                     <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="{{__('Password')}}">
                                 </div>
 
