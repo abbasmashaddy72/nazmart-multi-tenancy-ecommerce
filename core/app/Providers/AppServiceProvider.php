@@ -42,6 +42,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('ImageRenderFacade', function (){
             return new RenderImageMarkupService();
         });
+
+        /* LARAVEL TELESCOPE */
+        if ($this->app->environment('local')) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
+        }
     }
 
     /**

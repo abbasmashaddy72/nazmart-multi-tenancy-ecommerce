@@ -25,3 +25,4 @@ core/npm-debug.log
 core/yarn-error.log
 core/bootstrap/cache
 /.vscode
+/vendor
