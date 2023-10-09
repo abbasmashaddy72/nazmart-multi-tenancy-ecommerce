@@ -127,7 +127,7 @@ class AdminLoginController extends Controller
             'username' => $username,
             'token' => $token
         ]);
-    }
+    } 
 
     public function UserResetPassword(Request $request)
     {
