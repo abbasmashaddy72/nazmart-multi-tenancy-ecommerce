@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\SmsGateway\Database\Seeders;
+namespace Modules\SmsGateway\SmsGateway\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;

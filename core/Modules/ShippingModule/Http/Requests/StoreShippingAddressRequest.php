@@ -32,7 +32,7 @@ class StoreShippingAddressRequest extends FormRequest
             "address" => "required|string",
             "country_id" => "required|integer",
             "state_id" => "required|integer",
-            "city" => "required",
+            "city" => "nullable",
             "postal_code" => "nullable|integer",
             "phone" => "required|string",
             "email" => "required|string",

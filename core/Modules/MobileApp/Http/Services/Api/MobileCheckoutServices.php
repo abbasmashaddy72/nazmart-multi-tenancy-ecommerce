@@ -11,6 +11,7 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Modules\CountryManage\Entities\City;
 use Modules\CountryManage\Entities\Country;
 use Modules\CountryManage\Entities\State;
 use Modules\Product\Entities\Product;
@@ -41,7 +42,9 @@ class MobileCheckoutServices
             $state_id = $validated_data['state'];
             $state_name = State::find($state_id)->first()->name;
 
-            $city = $validated_data['city'];
+            $city = $validated_data['city'] ?? null;
+            $city_name = !empty($validated_data['city']) ? City::find($city)->first()->name : null;
+
             $address = $validated_data['address'];
 
             $user = [
@@ -54,6 +57,7 @@ class MobileCheckoutServices
                 'state_name' => $state_name,
                 'state' => $state_id,
                 'city' => $city,
+                'city_name' => $city_name,
                 'address' => $address
             ];
 
@@ -69,8 +73,8 @@ class MobileCheckoutServices
                     'name' => $name,
                     'email' => $email,
                     'mobile' => $phone,
-                    'country' => $country_name,
-                    'state' => $state_name,
+                    'country' => $country_id,
+                    'state' => $state_id,
                     'city' => $city,
                     'address' => $address
                 ]);

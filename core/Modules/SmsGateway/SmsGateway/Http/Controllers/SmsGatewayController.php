@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\SmsGateway\Http\Controllers;
+namespace Modules\SmsGateway\SmsGateway\Http\Controllers;
 
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
