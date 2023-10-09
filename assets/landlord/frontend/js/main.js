@@ -504,9 +504,10 @@
 
         $(document).on("click", ".toggle-password", function(e) {
             e.preventDefault();
-            $(this).toggleClass("show-pass");
-            let input = $(this).parent().find("input");
-            if (input.attr("type") == "password") {
+            let toggle_password = $('.toggle-password');
+            toggle_password.toggleClass("show-pass");
+            let input = toggle_password.parent().find("input");
+            if (input.attr("type") === "password") {
                 input.attr("type", "text");
             } else {
                 input.attr("type", "password");
