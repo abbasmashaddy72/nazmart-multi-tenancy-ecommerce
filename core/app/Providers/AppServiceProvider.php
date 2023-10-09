@@ -44,7 +44,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         /* LARAVEL TELESCOPE */
-        if ($this->app->environment('local')) {
+        if ($this->app->environment('local') && request()->is(['nazmart.test','127.0.0.1','localhost'])) {
             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
             $this->app->register(TelescopeServiceProvider::class);
         }
