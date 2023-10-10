@@ -42,7 +42,7 @@ class MobileCheckoutFormRequest extends FormRequest
                     'email' => "required|email",
                     'country' => "required|numeric",
                     'state' => "required|numeric",
-                    'city' => "required",
+                    'city' => "nullable",
                     'address' => "required"
                 ];
 

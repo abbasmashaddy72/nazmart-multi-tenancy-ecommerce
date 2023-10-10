@@ -5,12 +5,10 @@ namespace App\Http;
 use App\Http\Middleware\Demo;
 use App\Http\Middleware\Landlord\AdminGlobalVariable;
 use App\Http\Middleware\Landlord\GlobalVariableMiddleware;
-use App\Http\Middleware\Landlord\PreventExisintgLifetimePlanPurchase;
 use App\Http\Middleware\Landlord\TenantAdminPanelMailVerifyMiddleware;
 use App\Http\Middleware\Landlord\TenantMailVerifyMiddleware;
 use App\Http\Middleware\MaintenanceModeMiddleware;
 use App\Http\Middleware\SetLang;
-use App\Http\Middleware\Tenant\PackageAccessMiddleware;
 use App\Http\Middleware\Tenant\PackageExpireMiddleware;
 use App\Http\Middleware\Tenant\PageLimitMiddleware;
 use App\Http\Middleware\Tenant\RedirectIfNoDigitalProduct;
@@ -34,7 +32,7 @@ class Kernel extends HttpKernel
      * @var array<int, class-string|string>
      */
     protected $middleware = [
-         \App\Http\Middleware\TrustHosts::class,
+        //  \App\Http\Middleware\TrustHosts::class, //need to be disabled to work with mult-tenancy
         \App\Http\Middleware\TrustProxies::class,
         \Fruitcake\Cors\HandleCors::class,
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,

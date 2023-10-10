@@ -399,16 +399,16 @@
             Password Show Hide On Click
         ========================================
         */
-        $(document).on("click", ".toggle-password", function(e) {
-            e.preventDefault();
-            $(this).toggleClass("show-pass");
-            let input = $(this).parent().find("input");
-            if (input.attr("type") == "password") {
-                input.attr("type", "text");
-            } else {
-                input.attr("type", "password");
-            }
-        });
+        // $(document).on("click", ".toggle-password", function(e) {
+        //     e.preventDefault();
+        //     $(this).toggleClass("show-pass");
+        //     let input = $(this).parent().find("input");
+        //     if (input.attr("type") === "password") {
+        //         input.attr("type", "text");
+        //     } else {
+        //         input.attr("type", "password");
+        //     }
+        // });
 
         /*
         ========================================

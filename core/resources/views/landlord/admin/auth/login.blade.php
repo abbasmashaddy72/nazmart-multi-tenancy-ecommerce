@@ -97,6 +97,5 @@
                 msgWrap.innerHTML = child;
             });
         })
-
     </script>
 @endsection

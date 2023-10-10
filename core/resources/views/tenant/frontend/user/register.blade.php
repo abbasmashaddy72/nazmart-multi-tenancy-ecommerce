@@ -4,9 +4,38 @@
     {{__('User Register')}}
 @endsection
 
+@section('style')
+    <style>
+        .toggle-password {
+            position: absolute;
+            bottom: 13px;
+            right: 20px;
+            cursor: pointer;
+        }
+        .generate-password:hover{
+            color: var(--main-color-one);
+        }
+        .single-input{
+            position: relative;
+            z-index: 1;
+            display: inline-block;
+        }
+        .toggle-password.show-pass .show-icon {
+            display: none;
+        }
+        .toggle-password.show-pass .hide-icon {
+            display: block;
+        }
+        .hide-icon {
+            display: none;
+        }
+    </style>
+@endsection
+
 @section('page-title')
     {{__('User Register')}}
 @endsection
+
 @section('content')
     <div class="sign-in-area-wrapper" data-padding-top="50" data-padding-bottom="50">
         <div class="container">
@@ -79,21 +108,33 @@
 
                                 <div class="row">
                                     <div class="col-md-12 col-lg-6">
-                                        <div class="form-group">
+                                        <div class="form-group single-input">
                                             <label for="exampleInputEmail1">{{__('Password')}} <x-fields.mandatory-indicator/></label>
                                             <input type="password" name="password" class="form-control"
                                                    id="exampleInputPassword1"
                                                    placeholder="{{__('Password')}}">
+                                            <div class="icon toggle-password">
+                                                <div class="show-icon"><i class="las la-eye-slash"></i></div>
+                                                <span class="hide-icon"> <i class="las la-eye"></i> </span>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-12 col-lg-6">
-                                        <div class="form-group">
+                                        <div class="form-group single-input">
                                             <label for="exampleInputEmail1">{{__('Confirmed Password')}} <x-fields.mandatory-indicator/></label>
                                             <input type="password" name="password_confirmation" class="form-control"
                                                    id="exampleInputPassword1"
                                                    placeholder="{{__('Confirmed Password')}}">
+                                            <div class="icon toggle-password">
+                                                <div class="show-icon"><i class="las la-eye-slash"></i></div>
+                                                <span class="hide-icon"> <i class="las la-eye"></i> </span>
+                                            </div>
                                         </div>
                                     </div>
+                                </div>
+
+                                <div class="input-item mt-2">
+                                    <a class="generate-password" href="javascript:void(0)"><i class="las la-lock"></i> {{__('Generate random password')}}</a>
                                 </div>
 
                                 <div class="btn-wrapper mt-4">
@@ -112,6 +153,7 @@
 
 @endsection
 @section('scripts')
+    <x-custom-js.generate-password/>
     <script>
         (function ($) {
             "use strict";
@@ -167,6 +209,13 @@
                             });
                         }
                     )
+                });
+
+                $(document).on('click', '.generate-password', function () {
+                    let password = generateRandomPassword();
+
+                    $('input[name=password]').val(password);
+                    $('input[name=password_confirmation]').val(password);
                 });
             });
         })(jQuery);

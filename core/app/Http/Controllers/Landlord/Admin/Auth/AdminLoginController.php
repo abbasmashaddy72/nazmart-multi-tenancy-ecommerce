@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Landlord\Admin\Auth;
 use App\Http\Controllers\Controller;
 use App\Mail\AdminResetEmail;
 use App\Models\Admin;
-use App\Models\PaymentLogs;
-use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,10 +27,11 @@ class AdminLoginController extends Controller
         $this->middleware('guest:admin')->except('logout');
     }
 
-    public function login_form(){
+    public function login_form() {
         return view('landlord.admin.auth.login');
     }
-    public function logout_admin(){
+
+    public function logout_admin() {
         Auth::guard('admin')->logout();
         return redirect()->route(route_prefix().'admin.login');
     }
@@ -101,6 +100,7 @@ class AdminLoginController extends Controller
                 'username' => $user_info->username,
                 'message' => $message
             ];
+
             try {
                 Mail::to($user_info->email)->send(new AdminResetEmail($data));
             } catch (\Exception $e) {

@@ -25,6 +25,5 @@
     "WebHook": true,
     "Integrations": true,
     "WooCommerce": true,
-    "Anabo": true,
     "SmsGateway": true
 }

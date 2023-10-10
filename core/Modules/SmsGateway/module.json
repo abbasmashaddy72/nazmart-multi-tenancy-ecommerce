@@ -13,24 +13,24 @@
     "nazmartMetaData": {
         "plugin_type": "external",
         "admin_settings": {
-            "show_admin_landlord": false,
+            "show_admin_landlord": true,
             "show_admin_tenant": true,
             "menu_item": [
                 {
                     "id" : "sms-gateway-menu",
                     "label": "SMS Gateway",
-                    "route": "tenant.admin.woocommerce",
+                    "route": "landlord.admin.sms.settings",
                     "parent": null,
                     "icon": "mdi mdi-wordpress",
-                    "permissions": "woocommerce",
+                    "permissions": "sms-gateway",
                     "class": "plugin-menu"
                 },
                 {
                     "id" : "sms-manage-index",
                     "label": "SMS Settings",
-                    "route": "tenant.admin.woocommerce",
-                    "tenantRoute": "tenant.admin.woocommerce",
-                    "parent": "woocommerce-manage-menu"
+                    "route": "landlord.admin.sms.settings",
+                    "tenantRoute": "landlord.admin.sms.settings",
+                    "parent": "sms-gateway-menu"
                 },
                 {
                     "id" : "sms-manage-settings-import",

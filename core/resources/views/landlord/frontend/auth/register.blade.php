@@ -16,6 +16,9 @@
         .payment-gateway-wrapper ul li img{
             width: 100%;
         }
+        .generate-password:hover{
+            color: var(--main-color-one);
+        }
     </style>
 
     <section class="signup-area padding-top-100 padding-bottom-100">
@@ -62,7 +65,11 @@
                             </div>
                         </div>
 
-                        <div class="checkbox-inlines mt-4">
+                        <div class="input-item mt-2">
+                            <a class="generate-password" href="javascript:void(0)"><i class="las la-lock"></i> {{__('Generate random password')}}</a>
+                        </div>
+
+                        <div class="checkbox-inlines mt-5">
                             @php
                                 $terms_condition_page = get_page_slug(get_static_option('terms_condition')) ?? '#';
                                 $privacy_policy_page = get_page_slug(get_static_option('privacy_policy')) ?? '#';
@@ -84,6 +91,8 @@
 @endsection
 
 @section('scripts')
+    <x-custom-js.generate-password/>
+
     {{--    Register Via Axax--}}
     <script>
         var registerFormButton = document.getElementById('register_button');
@@ -159,5 +168,14 @@
                 $('.loader').hide();
             });
         })
+
+        $(document).ready(function () {
+            $(document).on('click', '.generate-password', function () {
+                let password = generateRandomPassword();
+
+                $('input[name=password]').val(password);
+                $('input[name=password_confirmation]').val(password);
+            });
+        });
     </script>
 @endsection

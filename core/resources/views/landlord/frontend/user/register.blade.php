@@ -15,7 +15,7 @@
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-8">
                     <div class="sign-up register">
-                        <h4 class="title">{{__('sign up')}}</h4>
+                        <h4 class="title">{{__('Sign up')}}</h4>
                         <div class="form-wrapper">
                             <x-error-msg/>
                             <x-flash-msg/>
@@ -91,10 +91,10 @@
 @section('scripts')
     <script>
         (function($){
-        "use strict";
-        $(document).ready(function () {
-            <x-btn.custom :id="'register'" :title="__('Please Wait..')"/>
-        });
+            "use strict";
+            $(document).ready(function () {
+                <x-btn.custom :id="'register'" :title="__('Please Wait..')"/>
+            });
         })(jQuery);
     </script>
 @endsection
