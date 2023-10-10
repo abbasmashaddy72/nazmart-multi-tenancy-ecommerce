@@ -24,5 +24,6 @@
     "SalesReport": true,
     "WebHook": true,
     "Integrations": true,
-    "WooCommerce": true
+    "WooCommerce": true,
+    "SmsGateway": true
 }

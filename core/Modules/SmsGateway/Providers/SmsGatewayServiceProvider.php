@@ -1,10 +1,9 @@
 <?php
 
-namespace Modules\SmsGateway\SmsGateway\Providers;
+namespace Modules\SmsGateway\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
-use Modules\SmsGateway\SmsGateway\Providers\RouteServiceProvider;
 
 class SmsGatewayServiceProvider extends ServiceProvider
 {
