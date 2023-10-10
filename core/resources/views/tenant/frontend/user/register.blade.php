@@ -12,12 +12,30 @@
             right: 20px;
             cursor: pointer;
         }
+        .generate-password:hover{
+            color: var(--main-color-one);
+        }
+        .single-input{
+            position: relative;
+            z-index: 1;
+            display: inline-block;
+        }
+        .toggle-password.show-pass .show-icon {
+            display: none;
+        }
+        .toggle-password.show-pass .hide-icon {
+            display: block;
+        }
+        .hide-icon {
+            display: none;
+        }
     </style>
 @endsection
 
 @section('page-title')
     {{__('User Register')}}
 @endsection
+
 @section('content')
     <div class="sign-in-area-wrapper" data-padding-top="50" data-padding-bottom="50">
         <div class="container">

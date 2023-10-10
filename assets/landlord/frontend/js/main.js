@@ -513,6 +513,7 @@
                 input.attr("type", "password");
             }
         });
+
         /* 
         ========================================
             Click add Items
