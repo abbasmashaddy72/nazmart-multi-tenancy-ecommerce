@@ -134,7 +134,7 @@
                                 </div>
 
                                 <div class="input-item mt-2">
-                                    <a class="generate-password" href="javascript:void(0)"><i class="las la-lock"></i> {{__('Generate random password')}}</a>
+                                    <a class="generate-password" href="javascript:void(0)"><i class="las la-magic"></i> {{__('Generate random password')}}</a>
                                 </div>
 
                                 <div class="btn-wrapper mt-4">

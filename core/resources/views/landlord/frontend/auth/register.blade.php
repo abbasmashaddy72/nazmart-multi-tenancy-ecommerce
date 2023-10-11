@@ -8,7 +8,7 @@
     {{__('Register')}}
 @endsection
 
-@section('content')
+@section('style')
     <style>
         .payment-gateway-wrapper ul{
             display: flex;
@@ -20,7 +20,9 @@
             color: var(--main-color-one);
         }
     </style>
+@endsection
 
+@section('content')
     <section class="signup-area padding-top-100 padding-bottom-100">
         <div class="container">
             <div class="signin-wrappers style-02">
@@ -31,33 +33,38 @@
                     <h2 class="single-title"> {{__('Sign Up')}} </h2>
                     <form class="login-form padding-top-20" action="#" method="POST">
                         <div class="single-input">
-                            <label class="label-title mb-3"> {{__('Name')}} </label>
-                            <input class="form--control" type="text" name="name" placeholder="{{__('Type First Name')}}"
+                            <label class="label-title mb-3"> {{__('Name')}} <x-fields.mandatory-indicator/></label>
+                            <input class="form--control" type="text" name="name" placeholder="{{__('Type first name')}}"
                                    value="{{old('name')}}">
                         </div>
                         <div class="single-input mt-4">
-                            <label class="label-title mb-3"> {{__('User Name')}} </label>
-                            <input class="form--control" type="text" placeholder="{{__('Type User Name')}}" name="username" value="{{old('username')}}">
+                            <label class="label-title mb-3"> {{__('User Name')}} <x-fields.mandatory-indicator/></label>
+                            <input class="form--control" type="text" placeholder="{{__('Type user name')}}" name="username" value="{{old('username')}}">
                         </div>
                         <div class="single-input mt-4">
-                            <label class="label-title mb-3"> {{__('Email Address')}} </label>
-                            <input class="form--control" type="email" name="email" placeholder="{{__('Type Email')}}" value="{{old('email')}}">
+                            <label class="label-title mb-3"> {{__('Email Address')}} <x-fields.mandatory-indicator/></label>
+                            <input class="form--control" type="email" name="email" placeholder="{{__('Type email')}}" value="{{old('email')}}">
+                        </div>
+
+                        <div class="single-input mt-4" style="z-index: unset">
+                            <label class="label-title mb-3"> {{__('Phone Number')}} <x-fields.mandatory-indicator/></label>
+                            <input class="form--control" type="tel" name="phone" placeholder="" id="telephone" value="{{old('phone')}}">
                         </div>
 
                         <x-fields.country-select name="country" label="{{__('Country')}}"/>
 
                         <div class="input-flex-item">
                             <div class="single-input mt-4">
-                                <label class="label-title mb-3"> {{__('Create Password')}} </label>
-                                <input class="form--control" type="password" name="password" placeholder="{{__('Type Password')}}">
+                                <label class="label-title mb-3"> {{__('Create Password')}} <x-fields.mandatory-indicator/></label>
+                                <input class="form--control" type="password" name="password" placeholder="{{__('Type password')}}">
                                 <div class="icon toggle-password">
                                     <div class="show-icon"><i class="las la-eye-slash"></i></div>
                                     <span class="hide-icon"> <i class="las la-eye"></i> </span>
                                 </div>
                             </div>
                             <div class="single-input mt-4">
-                                <label class="label-title mb-3"> {{__('Confirm Password')}} </label>
-                                <input class="form--control" type="password" name="password_confirmation" placeholder="{{__('Confirm Password')}}">
+                                <label class="label-title mb-3"> {{__('Confirm Password')}} <x-fields.mandatory-indicator/></label>
+                                <input class="form--control" type="password" name="password_confirmation" placeholder="{{__('Confirm password')}}">
                                 <div class="icon toggle-password">
                                     <div class="show-icon"><i class="las la-eye-slash"></i></div>
                                     <span class="hide-icon"> <i class="las la-eye"></i> </span>
@@ -66,7 +73,7 @@
                         </div>
 
                         <div class="input-item mt-2">
-                            <a class="generate-password" href="javascript:void(0)"><i class="las la-lock"></i> {{__('Generate random password')}}</a>
+                            <a class="generate-password" href="javascript:void(0)"><i class="las la-magic"></i> {{__('Generate random password')}}</a>
                         </div>
 
                         <div class="checkbox-inlines mt-5">
@@ -92,6 +99,7 @@
 
 @section('scripts')
     <x-custom-js.generate-password/>
+    <x-custom-js.phone-number-config selector="#telephone"/>
 
     {{--    Register Via Axax--}}
     <script>
@@ -124,19 +132,20 @@
                     username: document.querySelector('input[name="username"]').value,
                     password: document.querySelector('input[name="password"]').value,
                     country: document.querySelector('select[name="country"]').value,
+                    phone: iti.getNumber(),
                     password_confirmation: document.querySelector('input[name="password_confirmation"]').value,
                     terms_condition: terms,
                     _token: '{{csrf_token()}}'
                 }
             }).then(function (response) {
-
                 let $pf_name = $('.name').val();
                 let pf_email = $('.email').val();
 
                 registerFormButton.innerText = "{{__('Redirecting..')}}"
 
                 let plan = '{{$plan_id ?? ''}}';
-                if (plan != '')
+
+                if (plan !== '')
                 {
                     @php
                         session()->put('trial-register', __('Account Registration Successful'))
@@ -150,11 +159,12 @@
             }).catch(function (error) {
                 registerFormButton.innerText = "{{__('Register')}}"
 
+                let i = 1;
                 if (error.response.status === 422) {
                     var responseData = error.response.data.errors;
                     var child = '<ul class="alert alert-danger">'
                     Object.entries(responseData).forEach(function (value) {
-                        child += '<li>' + value[1] + '</li>';
+                        child += '<li>' + i++ + ". " + value[1] + '</li>';
                     });
                     child += '</ul>'
                     msgWrap.innerHTML = child;

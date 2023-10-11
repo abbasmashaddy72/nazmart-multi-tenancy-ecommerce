@@ -260,7 +260,6 @@ class LandlordFrontendController extends Controller
         return view('landlord.frontend.user.login');
     }
 
-
     public function showTenantRegistrationForm()
     {
         $plan_id= \request()->p ?? '';
@@ -278,6 +277,7 @@ class LandlordFrontendController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:191'],
             'email' => ['required', 'string', 'email', 'max:191', 'unique:users'],
+            'phone' => ['required', 'string', 'regex:/^[0-9+]+$/'],
             'username' => ['required', 'string', 'max:191', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'terms_condition' => ['required']
@@ -289,6 +289,7 @@ class LandlordFrontendController extends Controller
         $user_id = DB::table('users')->insertGetId([
             'name' => $request['name'],
             'email' => $request['email'],
+            'mobile' => $request['phone'],
             'country' => $request['country'],
             'city' => $request['city'],
             'username' => $request['username'],
@@ -392,6 +393,17 @@ class LandlordFrontendController extends Controller
             return redirect()->route('landlord.user.login')->with(['msg' => __('Password Changed Successfully'), 'type' => 'success']);
         }
         return redirect()->back()->with(['msg' => __('Somethings Going Wrong! Please Try Again or Check Your Old Password'), 'type' => 'danger']);
+    }
+
+
+    // OTP Login
+    public function showTenantOtpLoginForm()
+    {
+        if (auth('web')->check()) {
+            return redirect()->route('landlord.user.home');
+        }
+
+        return view('landlord.frontend.user.login-otp');
     }
 
 

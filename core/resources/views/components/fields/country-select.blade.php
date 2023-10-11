@@ -1,5 +1,5 @@
 <div class="single-input mt-4">
-    <label class="label-title mb-3">{{$label}}</label>
+    <label class="label-title mb-3">{{$label}} <x-fields.mandatory-indicator/></label>
     <select name="{{$name}}" class="form-control form--control {{$class ?? ''}}">
         <option @if(isset($value) && $value === "Afganistan") selected @endif value="Afganistan">Afghanistan</option>
         <option @if(isset($value) && $value === "Albania") selected @endif value="Albania">Albania</option>

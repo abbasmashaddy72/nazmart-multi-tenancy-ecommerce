@@ -1,11 +1,25 @@
 @extends('landlord.frontend.frontend-page-master')
 
 @section('title')
-    {{__('User Login')}}
+    {{__('User OTP Login')}}
 @endsection
 
 @section('page-title')
-    {{__('User Login')}}
+    {{__('User OTP Login')}}
+@endsection
+
+@section('style')
+    <style>
+        #telephone.error{
+            border-color: var(--main-color-one);
+        }
+        #telephone.success{
+            border-color: var(--main-color-three);
+        }
+        .single-input .iti {
+            width: 100%;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -15,19 +29,17 @@
             <div class="row justify-content-center">
                 <div class="col-md-9 col-lg-7 col-xl-6 col-xxl-5">
                     <div class="sign-in register signIn-signUp-wrapper">
-                        <h4 class="title signin-contents-title">{{__('Sign In')}}</h4>
+                        <h4 class="title signin-contents-title">{{__('OTP Sign In')}}</h4>
                         <div class="form-wrapper custom--form mt-5">
                             <x-error-msg/>
                             <x-flash-msg/>
+
                             <form action="" method="post" enctype="multipart/form-data" class="account-form" id="login_form_order_page">
                                 <div class="error-wrap"></div>
-                                <div class="form-group single-input">
-                                    <label for="exampleInputEmail1" class="label-title mb-3">{{__('Username')}}<span class="required">*</span></label>
-                                    <input type="text" name="username" class="form-control form--control" id="exampleInputEmail1" placeholder="{{__('Type your username')}}">
-                                </div>
-                                <div class="form-group single-input mt-4">
-                                    <label for="exampleInputEmail1" class="label-title mb-3">{{__('Password')}}<span class="required">*</span></label>
-                                    <input type="password" name="password" class="form-control form--control" id="exampleInputPassword1" placeholder="{{__('Password')}}">
+
+                                <div class="form-group single-input" style="z-index: unset">
+                                    <label for="exampleInputEmail1" class="label-title mb-3">{{__('Phone Number')}} <x-fields.mandatory-indicator/></label>
+                                    <input class="form--control" type="tel" name="phone" placeholder="" id="telephone" value="{{old('phone')}}">
                                 </div>
 
                                 <div class="form-group single-input form-check mt-4">
@@ -38,18 +50,13 @@
                                                 <label class="form-check-label checkbox-label" for="exampleCheck1">{{__('Remember me')}}</label>
                                             </div>
                                         </div>
-                                        <div class="right forgot-password">
-                                            <a href="{{route('tenant.user.forget.password')}}" class="forgot-btn">{{__('Forgot Password?')}}</a>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="btn-wrapper mt-4">
-                                    <button type="submit" id="login_btn" class="cmn-btn cmn-btn-bg-1 w-100">{{__('Sign In')}}</button>
-                                    <p class="font-weight-bold text-center my-2">{{__('Or')}}</p>
-                                    <a href="{{route('landlord.user.login.otp')}}" class="cmn-btn cmn-btn-outline-one color-one w-100" style="padding: 10px 25px">{{__('Sign In with OTP')}}</a>
+                                    <button type="submit" id="login_btn" class="cmn-btn cmn-btn-bg-1 w-100">{{__('Send OTP')}}</button>
                                 </div>
                             </form>
-                            <p class="info mt-3">{{__("Do not have an account")}} <a href="{{route('tenant.user.register')}}" class="active"> <strong>{{__('Sign up')}}</strong> </a></p>
+                            <p class="info mt-3">{{__("Do not have an account")}} <a href="{{route('landlord.user.login')}}" class="active"> <strong>{{__('Sign In')}}</strong> </a></p>
                         </div>
                     </div>
                 </div>
@@ -59,5 +66,6 @@
     <!-- sign-in area end -->
 @endsection
 @section('scripts')
-   <x-custom-js.ajax-login/>
+    <x-custom-js.ajax-login/>
+    <x-custom-js.phone-number-config selector="#telephone" submit-button-id="login_btn"/>
 @endsection

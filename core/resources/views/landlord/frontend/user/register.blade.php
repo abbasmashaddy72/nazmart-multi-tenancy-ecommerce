@@ -9,7 +9,6 @@
 @endsection
 
 @section('content')
-
     <div class="sign-in-area-wrapper">
         <div class="container">
             <div class="row justify-content-center">

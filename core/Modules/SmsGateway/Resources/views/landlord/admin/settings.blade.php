@@ -144,10 +144,7 @@
                     <x-fields.switcher label="Enable or disable OTP login" name="otp_login_status" value="{{get_static_option('otp_login_status')}}"/>
 
                     <div class="my-5 plugin-grid" @style(['display: none' => empty(get_static_option('otp_login_status'))])>
-                        @php
-                            $smsGatewayList = ['twilio'];
-                        @endphp
-                        @foreach($smsGatewayList as $item)
+                        @foreach(['twilio'] as $item)
                             @php
                                 $sms_gateway = \Modules\SmsGateway\Entities\SmsGateway::where('name', $item)->first();
                                 $status = $sms_gateway->status ?? 0;
