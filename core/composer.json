@@ -43,6 +43,7 @@
         "symfony/http-client": "^6.0",
         "symfony/mailgun-mailer": "^6.0",
         "symfony/postmark-mailer": "^6.0",
+        "twilio/sdk": "^7.11",
         "xgenious/paymentgateway": "^3.0.2",
         "xgenious/xgapiclient": "^1.2",
         "yajra/laravel-datatables-oracle": "~9.0"

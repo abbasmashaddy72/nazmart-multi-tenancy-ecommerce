@@ -87,7 +87,8 @@ Route::middleware(['landlord_glvar','maintenance_mode','set_lang'])->controller(
     Route::post('/register-store','tenant_user_create')->name('user.register.store');
     Route::get('/logout','tenant_logout')->name('user.logout');
 
-    Route::get('/login/otp', 'showTenantOtpLoginForm')->name('user.login.otp');
+    Route::get('/login/otp', 'showOtpLoginForm')->name('user.login.otp');
+    Route::post('/login/otp', 'sendOtp');
 
     Route::get('/login/forget-password','showUserForgetPasswordForm')->name('user.forget.password');
     Route::get('/login/reset-password/{user}/{token}','showUserResetPasswordForm')->name('user.reset.password');

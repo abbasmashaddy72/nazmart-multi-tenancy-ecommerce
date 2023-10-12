@@ -45,17 +45,19 @@ class LandlordSettingsController extends Controller
 
         unset($fields['_token'], $fields['sms_gateway_name'], $fields['user_otp_expire_time']);
 
-        SmsGateway::updateOrCreate(
+        $gateway = SmsGateway::updateOrCreate(
             [
                 'name' => $request->sms_gateway_name
             ],
             [
                 'name' => $request->sms_gateway_name,
-                'status' => false,
+                'status' => SmsGateway::where('name', $request->sms_gateway_name)->first()?->status,
                 'otp_expire_time' => $request->user_otp_expire_time,
                 'credentials' => json_encode($fields)
             ]
         );
+
+        SmsGateway::where('id', '!=', $gateway->id)->update(['status' => false]);
 
         return back()->with(['msg' => __('Settings updated'), 'type' => 'success']);
     }

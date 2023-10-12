@@ -34,7 +34,8 @@
                             <x-error-msg/>
                             <x-flash-msg/>
 
-                            <form action="" method="post" enctype="multipart/form-data" class="account-form" id="login_form_order_page">
+                            <form action="{{route('landlord.user.login.otp')}}" method="post" enctype="multipart/form-data" class="account-form" id="login_form_order_page">
+                               @csrf
                                 <div class="error-wrap"></div>
 
                                 <div class="form-group single-input" style="z-index: unset">
@@ -66,6 +67,5 @@
     <!-- sign-in area end -->
 @endsection
 @section('scripts')
-    <x-custom-js.ajax-login/>
     <x-custom-js.phone-number-config selector="#telephone" submit-button-id="login_btn"/>
 @endsection

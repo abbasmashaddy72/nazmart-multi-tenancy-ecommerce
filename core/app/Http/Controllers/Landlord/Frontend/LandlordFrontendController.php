@@ -37,12 +37,13 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
+use Modules\SmsGateway\Http\Traits\OtpGlobalTrait;
 use function view;
 use Artesaos\SEOTools\Traits\SEOTools as SEOToolsTrait;
 
 class LandlordFrontendController extends Controller
 {
-    use SEOToolsTrait, SeoDataConfig;
+    use SEOToolsTrait, SeoDataConfig, OtpGlobalTrait;
 
     private const BASE_VIEW_PATH = 'landlord.frontend.';
 
@@ -397,13 +398,25 @@ class LandlordFrontendController extends Controller
 
 
     // OTP Login
-    public function showTenantOtpLoginForm()
+    public function showOtpLoginForm()
     {
         if (auth('web')->check()) {
             return redirect()->route('landlord.user.home');
         }
 
         return view('landlord.frontend.user.login-otp');
+    }
+
+    public function sendOtp(Request $request)
+    {
+        $validated = $request->validate([
+            'phone' => 'required|string|regex:/^[0-9+]+$/|exists:users,mobile',
+            'remember' => 'nullable'
+        ], ['phone.exists' => __('No record found for this phone number.')]);
+
+        $otp = $this->generateOtp($validated['phone']);
+        dd($this->sendSms([$validated['phone'], 'Your login OTP: '.$otp->otp_code]));
+
     }
 
 
