@@ -132,7 +132,7 @@
                     username: document.querySelector('input[name="username"]').value,
                     password: document.querySelector('input[name="password"]').value,
                     country: document.querySelector('select[name="country"]').value,
-                    phone: iti.getNumber(),
+                    phone: iti1.getNumber(),
                     password_confirmation: document.querySelector('input[name="password_confirmation"]').value,
                     terms_condition: terms,
                     _token: '{{csrf_token()}}'

@@ -87,9 +87,6 @@ Route::middleware(['landlord_glvar','maintenance_mode','set_lang'])->controller(
     Route::post('/register-store','tenant_user_create')->name('user.register.store');
     Route::get('/logout','tenant_logout')->name('user.logout');
 
-    Route::get('/login/otp', 'showOtpLoginForm')->name('user.login.otp');
-    Route::post('/login/otp', 'sendOtp');
-
     Route::get('/login/forget-password','showUserForgetPasswordForm')->name('user.forget.password');
     Route::get('/login/reset-password/{user}/{token}','showUserResetPasswordForm')->name('user.reset.password');
     Route::post('/login/reset-password','UserResetPassword')->name('user.reset.password.change');
@@ -112,7 +109,6 @@ Route::middleware(['landlord_glvar','maintenance_mode','set_lang'])->controller(
     // Trial Account
     Route::post('/user/trial/account', 'user_trial_account')->name('frontend.trial.account');
 });
-
 
 // LANDLORD HOME PAGE Tenant Dashboard Routes
 Route::controller(\App\Http\Controllers\Landlord\Frontend\UserDashboardController::class)->middleware(['landlord_glvar','maintenance_mode','tenantMailVerify','set_lang'])->name('landlord.')->group(function(){

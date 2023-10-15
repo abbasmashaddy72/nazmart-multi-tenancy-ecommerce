@@ -43,16 +43,6 @@
                                     <input class="form--control" type="tel" name="phone" placeholder="" id="telephone" value="{{old('phone')}}">
                                 </div>
 
-                                <div class="form-group single-input form-check mt-4">
-                                    <div class="box-wrap">
-                                        <div class="left">
-                                            <div class="checkbox-inlines">
-                                                <input type="checkbox" name="remember" class="form-check-input check-input" id="exampleCheck1">
-                                                <label class="form-check-label checkbox-label" for="exampleCheck1">{{__('Remember me')}}</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="btn-wrapper mt-4">
                                     <button type="submit" id="login_btn" class="cmn-btn cmn-btn-bg-1 w-100">{{__('Send OTP')}}</button>
                                 </div>

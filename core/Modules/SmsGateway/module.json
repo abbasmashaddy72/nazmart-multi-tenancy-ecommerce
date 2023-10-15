@@ -29,7 +29,7 @@
                     "id" : "sms-manage-index",
                     "label": "SMS Settings",
                     "route": "landlord.admin.sms.settings",
-                    "tenantRoute": "landlord.admin.sms.settings",
+                    "tenantRoute": "tenant.admin.sms.settings",
                     "parent": "sms-gateway-menu"
                 },
                 {

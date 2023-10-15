@@ -127,9 +127,6 @@
                 line-height: 20px;
             }
         }
-        .iti{
-            width: 100%;
-        }
     </style>
 @endsection
 
@@ -137,22 +134,11 @@
     <div class="dashboard-recent-order">
         <div class="row">
             <x-flash-msg/>
-            <x-error-msg/>
             <div class="col-md-12">
                 <div class="p-4 recent-order-wrapper dashboard-table bg-white padding-30">
-                    <div class="wrapper d-flex justify-content-between">
-                        <div class="header-wrap">
-                            <h4 class="header-title mb-2">{{__("SMS Gateway Settings")}}</h4>
-                            <p>{{__("Manage all sms gateway from here, you can active/deactivate any sms gateway from here.")}}</p>
-                        </div>
-                        <div class="settings-options justify-content-end">
-                            <a href="#" data-bs-target="#settings_option_modal" data-bs-toggle="modal" class="btn btn-info btn-small settings-option-modal">
-                                <i class="mdi mdi-cogs"></i>
-                            </a>
-                            <a href="#" data-bs-target="#test_sms_modal" data-bs-toggle="modal" class="btn btn-success btn-small">
-                                <i class="mdi mdi-message-alert"></i>
-                            </a>
-                        </div>
+                    <div class="header-wrap">
+                        <h4 class="header-title mb-2">{{__("SMS Gateway Settings")}}</h4>
+                        <p>{{__("Manage all sms gateway from here, you can active/deactivate any sms gateway from here.")}}</p>
                     </div>
 
                     <x-fields.switcher label="Enable or disable OTP login" name="otp_login_status" value="{{get_static_option('otp_login_status')}}"/>
@@ -211,21 +197,30 @@
                         <h5 class="mb-4">{{ __('Configure Twilio credentials') }}</h5>
                         <div class="form-group mt-3">
                             <label for="TWILIO_SID"><strong>{{__('Twilio SID')}} <span class="text-danger">*</span> </strong></label>
-                            <input type="text"  class="form-control" name="twilio_sid" value=""
+                            <input type="text"  class="form-control" name="twilio_sid" value="{{ env('twilio_sid') }}"
                                    placeholder="{{ __('Twilio SID')}}">
                         </div>
 
                         <div class="form-group">
                             <label for="TWILIO_AUTH_TOKEN"><strong>{{__('Twilio Auth Token')}} <span class="text-danger">*</span></strong></label>
-                            <input type="text"  class="form-control" name="twilio_auth_token" value=""
+                            <input type="text"  class="form-control" name="twilio_auth_token" value="{{ env('twilio_auth_token') }}"
                                    placeholder="{{ __('Twilio Auth Token')}}">
                         </div>
 
                         <div class="form-group">
                             <label for="TWILIO_NUMBER"><strong>{{__('Valid Twilio Number')}} <span class="text-danger">*</span> </strong></label>
-                            <input type="text" class="form-control" name="twilio_number" value=""
+                            <input type="text" class="form-control" name="twilio_number" value="{{ env('twilio_number') }}"
                                    placeholder="{{ __('Valid Twilio Number')}}">
                         </div>
+
+                        {{--                            <div class="form-group">--}}
+                        {{--                                <label for="disable_user_otp_verify"><strong>{{__('User OTP Verify')}}</strong></label>--}}
+                        {{--                                <label class="switch">--}}
+                        {{--                                    <input type="checkbox" name="disable_user_otp_verify"  @if(!empty(get_static_option('disable_user_otp_verify'))) checked @endif id="disable_user_otp_verify">--}}
+                        {{--                                    <span class="slider-enable-disable"></span>--}}
+                        {{--                                </label>--}}
+                        {{--                                <span class="form-text text-muted">{{__('Disable, means user must have to verify their OTP in order to access his/her dashboard.')}}</span>--}}
+                        {{--                            </div>--}}
 
                         <div class="form-group">
                             <label for="disable_user_otp_verify"><strong>{{__('OTP Expire Time Add')}}</strong></label>
@@ -239,71 +234,6 @@
                         </div>
 
                         <button type="submit" id="update" class="btn btn-primary mt-4 pr-4 pl-4">{{__('Update Changes')}}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" tabindex="-1" id="settings_option_modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-capitalize">{{__("SMS Settings")}}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <form action="{{route(route_prefix().'admin.sms.options')}}" method="POST" enctype="multipart/form-data">
-                    @csrf
-
-                    <div class="card-body">
-                        <h5 class="mb-4">{{ __('Receive sms when the actions are triggered') }}</h5>
-
-                        <x-fields.switcher label="When new user is registered - for admin" name="new_user_admin" value="{{get_static_option('new_user_admin')}}"/>
-                        <x-fields.switcher label="When new user is registered - for user" name="new_user_user" value="{{get_static_option('new_user_user')}}"/>
-
-                        @if(!tenant())
-                            <x-fields.switcher label="When new tenant/shop is created - for admin" name="new_tenant_admin" value="{{get_static_option('new_tenant_admin')}}"/>
-                            <x-fields.switcher label="When new tenant/shop is created - for user" name="new_tenant_user" value="{{get_static_option('new_tenant_user')}}"/>
-                        @endif
-
-                        @tenant
-                            <x-fields.switcher label="When new order is placed - for admin" name="new_order_admin" value="{{get_static_option('new_order_admin')}}"/>
-                            <x-fields.switcher label="When new order is placed - for user" name="new_order_user" value="{{get_static_option('new_order_user')}}"/>
-                        @endtenant
-
-                        <div class="form-group">
-                            <label for="TWILIO_AUTH_TOKEN"><strong>{{__('Set a receiving phone number')}} <span class="text-danger">*</span></strong></label>
-                            <input type="tel"  class="form-control" name="receiving_phone_number" value="{{get_static_option('receiving_phone_number')}}"
-                                   placeholder="{{ __('Send test sms')}}" id="set-telephone">
-                        </div>
-
-                        <button type="submit" id="update" class="btn btn-primary mt-4 pr-4 pl-4">{{__('Update Changes')}}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" tabindex="-1" id="test_sms_modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-capitalize">{{__("Send Test SMS")}}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <form action="{{route(route_prefix().'admin.sms.test')}}" method="POST" enctype="multipart/form-data">
-                    @csrf
-
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="TWILIO_AUTH_TOKEN"><strong>{{__('Phone number')}} <span class="text-danger">*</span></strong></label>
-                            <input type="tel"  class="form-control" name="test_phone_number" value=""
-                                   placeholder="{{ __('Send test sms')}}" id="telephone">
-                        </div>
-
-                        <button type="submit" id="test-sms-btn" class="btn btn-primary mt-4 pr-4 pl-4" disabled>{{__('Send')}}</button>
                     </div>
                 </form>
             </div>
@@ -393,17 +323,5 @@
             })
 
         })(jQuery);
-    </script>
-
-    <x-custom-js.phone-number-config selector="#telephone" submit-button-id="test-sms-btn" key="1"/>
-    <x-custom-js.phone-number-config selector="#set-telephone" submit-button-id="test-sms-btn" key="2"/>
-
-    <script>
-        $(document).ready(function () {
-            setTimeout(() => {
-                $('#set-telephone').val(`{{get_static_option('receiving_phone_number')}}`);
-            }, 1000);
-
-        });
     </script>
 @endsection

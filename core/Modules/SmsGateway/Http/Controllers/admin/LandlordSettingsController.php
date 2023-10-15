@@ -2,13 +2,17 @@
 
 namespace Modules\SmsGateway\Http\Controllers\admin;
 
+use App\Helpers\FlashMsg;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\SmsGateway\Entities\SmsGateway;
+use Modules\SmsGateway\Http\Traits\OtpGlobalTrait;
 
 class LandlordSettingsController extends Controller
 {
+    use OtpGlobalTrait;
+
     public function login_otp_status()
     {
         if (!get_static_option('otp_login_status'))
@@ -25,7 +29,7 @@ class LandlordSettingsController extends Controller
 
     public function sms_settings()
     {
-        return view('smsgateway::landlord.admin.settings');
+        return view('smsgateway::'.route_prefix().'.admin.settings');
     }
 
     public function update_sms_settings(Request $request)
@@ -76,5 +80,61 @@ class LandlordSettingsController extends Controller
         return response()->json([
             'type' => 'success'
         ]);
+    }
+
+    public function update_sms_option_settings(Request $request)
+    {
+        abort_if($request->method() == 'GET', 404);
+
+        if (tenant())
+        {
+            $validated = [
+                'new_user_admin' => 'nullable',
+                'new_user_user' => 'nullable',
+                'new_order_admin' => 'nullable',
+                'new_order_user' => 'nullable'
+            ];
+        }
+
+        if (!tenant())
+        {
+            $validated = [
+                'new_user_admin' => 'nullable',
+                'new_user_user' => 'nullable',
+                'new_tenant_admin' => 'nullable',
+                'new_tenant_user' => 'nullable'
+            ];
+        }
+
+        $validated['receiving_phone_number'] = 'required|numeric|regex:/^[+].*/';
+
+        $request->validate($validated);
+
+        foreach ($validated ?? [] as $key => $value)
+        {
+            update_static_option($key, $request->$key);
+        }
+
+        return back()->with(FlashMsg::settings_update('SMS option settings updated successfully'));
+    }
+
+    public function send_test_sms(Request $request)
+    {
+        abort_if($request->method() == 'GET', 404);
+
+        $request->validate([
+            'test_phone_number' => 'required'
+        ]);
+
+        try {
+            $this->sendSms([$request->test_phone_number, __('Test SMS From '.get_static_option('site_title'))]);
+        } catch (\Exception $exception) {
+            if ($exception->getCode() == 20003)
+            {
+                return back()->with(FlashMsg::explain('danger', __('Authentication failed, sms gateway access credentials are incorrect.')));
+            }
+        }
+
+        return back()->with(FlashMsg::explain('success', __('Test SMS has sent to your phone number.')));
     }
 }

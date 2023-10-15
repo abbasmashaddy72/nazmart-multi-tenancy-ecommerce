@@ -1,6 +1,7 @@
 @props([
     'selector' => '#telephone',
-    'submitButtonId' => 'register_button'
+    'submitButtonId' => 'register_button',
+    'key' => 1
 ])
 
 <link rel="stylesheet" href="{{asset('assets/common/css/intlTelInput.min.css')}}">
@@ -18,11 +19,13 @@
 
 <script src="{{asset('assets/common/js/intlTelInput.js')}}"></script>
 <script>
-    let input = document.querySelector(`{{$selector}}`);
+    eval('let input' + `{{$key}}` + '= undefined;');
+    eval('let iti' + `{{$key}}` + '= undefined;');
 
-    let iti = window.intlTelInput(input, {
+    let input{{$key}} = document.querySelector(`{{$selector}}`);
+
+    let iti{{$key}} = window.intlTelInput(input{{$key}}, {
         autoPlaceholder: "aggressive",
-        // autoPlaceholder: "off",
         // formatOnDisplay: false,
         // initialCountry: "auto",
         // localizedCountries: { 'de': 'Deutschland' },
@@ -31,6 +34,7 @@
         utilsScript: `{{asset("assets/common/js/utils.js")}}`
     });
 
+    // TODO:: When user select a country and input another country phone number then again select the correct country then auto validate the full number
     $(document).on('keyup', `{{$selector}}`, function () {
         let el = $(this);
         let inputNumbers = el.val();
@@ -40,12 +44,14 @@
 
         $('.error-text').remove();
 
-        let isValid = iti.isValidNumber();
+        let isValid = iti{{$key}}.isValidNumber();
         if (!isValid) {
             el.addClass('error');
             el.parent().after(`<p class="text-end text-danger error-text"><small>{{__('The number is not valid.')}}</small></p>`);
             document.getElementById(`{{$submitButtonId}}`).disabled = true;
         } else {
+            el.val(iti{{$key}}.getNumber());
+
             el.removeClass('error');
             el.addClass('success');
             el.parent().after(`<p class="text-end text-success error-text"><small>{{__('The number is perfect.')}}</small></p>`);
