@@ -15,7 +15,7 @@
 
                         <form class="forms-sample" method="post" action="{{route('tenant.admin.general.email.settings')}}">
                             @csrf
-                            <x-fields.input type="email" value="{{get_static_option('site_global_email')}}" name="site_global_email" label="{{__('Site Global Email')}}" info="{{__('you will get all mail to this email, also this will be in your user form address in all the mail send from the system.')}}"/>
+                            <x-fields.input type="email" value="{{get_static_option('tenant_site_global_email')}}" name="site_global_email" label="{{__('Site Global Email')}}" info="{{__('you will get all mail to this email, also this will be in your user form address in all the mail send from the system.')}}"/>
                             <x-fields.input value="{{get_static_option('site_smtp_host')}}" name="site_smtp_host" label="{{__('SMTP host')}}" />
                             <x-fields.input value="{{get_static_option('site_smtp_username')}}" name="site_smtp_username" label="{{__('SMTP Username')}}" />
                             <x-fields.input type="password" value="{{get_static_option('site_smtp_password')}}" name="site_smtp_password" label="{{__('SMTP Password')}}" />
