@@ -403,7 +403,6 @@
             setTimeout(() => {
                 $('#set-telephone').val(`{{get_static_option('receiving_phone_number')}}`);
             }, 1000);
-
         });
     </script>
 @endsection

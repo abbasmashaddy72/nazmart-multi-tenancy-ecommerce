@@ -29,7 +29,7 @@ class LandlordSettingsController extends Controller
 
     public function sms_settings()
     {
-        return view('smsgateway::'.route_prefix().'.admin.settings');
+        return view('smsgateway::landlord.admin.settings');
     }
 
     public function update_sms_settings(Request $request)
@@ -55,7 +55,7 @@ class LandlordSettingsController extends Controller
             ],
             [
                 'name' => $request->sms_gateway_name,
-                'status' => SmsGateway::where('name', $request->sms_gateway_name)->first()?->status,
+                'status' => SmsGateway::where('name', $request->sms_gateway_name)->first()?->status ?? true,
                 'otp_expire_time' => $request->user_otp_expire_time,
                 'credentials' => json_encode($fields)
             ]
@@ -76,6 +76,7 @@ class LandlordSettingsController extends Controller
         $gateway = SmsGateway::where('name', $validated['option_name'])->update([
             'status' => !$validated['status']
         ]);
+        SmsGateway::where('id', '!=', $gateway->id)->update(['status' => false]);
 
         return response()->json([
             'type' => 'success'

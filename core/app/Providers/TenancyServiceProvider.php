@@ -7,6 +7,8 @@ namespace App\Providers;
 use App\Http\Middleware\Landlord\TenantAdminPanelMailVerifyMiddleware;
 use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 use App\Http\Middleware\Tenant\TenantConfigMiddleware;
+use App\Models\User;
+use App\Observers\TenantRegisterObserver;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;

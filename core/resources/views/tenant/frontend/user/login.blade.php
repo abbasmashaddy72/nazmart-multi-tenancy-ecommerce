@@ -41,8 +41,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="btn-wrapper">
-                                    <button type="submit" id="login_btn" class="btn-default rounded-btn">{{__('Sign In')}}</button>
+                                <div class="btn-wrapper text-center d-flex justify-content-between gap-5">
+                                    <button type="submit" id="login_btn" class="btn-default rounded-btn w-100">{{__('Login')}}</button>
+
+                                    @if(moduleExists('SmsGateway') && get_static_option('otp_login_status'))
+                                        <a href="{{route('tenant.user.login.otp')}}" id="otp_login_btn" class="btn-default rounded-btn w-100">{{__('Login with OTP')}}</a>
+                                    @endif
                                 </div>
 
                             </form>

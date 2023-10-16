@@ -90,7 +90,7 @@ class TenantManageController extends Controller
             'company'=> 'nullable',
         ]);
 
-           User::create([
+       User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),

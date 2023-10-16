@@ -131,7 +131,7 @@ class UserDashboardController extends Controller
         $this->validate($request, [
             'name' => 'required|string|max:191',
             'email' => 'required|email|max:191',
-            'phone' => 'nullable|string|max:191',
+            'phone' => 'nullable|numeric|users,mobile',
             'country' => 'required',
             'state' => 'nullable',
             'city' => 'nullable',
@@ -146,16 +146,16 @@ class UserDashboardController extends Controller
 
         $user = Auth::guard('web')->user();
         User::find($user->id)->update([
-                'name' => SanitizeInput::esc_html($request->name),
-                'email' => SanitizeInput::esc_html($request->email),
-                'mobile' => SanitizeInput::esc_html($request->phone),
-                'company' => SanitizeInput::esc_html($request->company),
-                'address' => SanitizeInput::esc_html($request->address),
-                'state' => SanitizeInput::esc_html($request->state),
-                'city' => SanitizeInput::esc_html($request->city),
-                'country' => SanitizeInput::esc_html($request->country),
-                'postal_code' => SanitizeInput::esc_html($request->postal_code),
-                'image' => SanitizeInput::esc_html($request->image)
+                'name' => esc_html($request->name),
+                'email' => esc_html($request->email),
+                'mobile' => esc_html($request->phone),
+                'company' => esc_html($request->company),
+                'address' => esc_html($request->address),
+                'state' => esc_html($request->state),
+                'city' => esc_html($request->city),
+                'country' => esc_html($request->country),
+                'postal_code' => esc_html($request->postal_code),
+                'image' => esc_html($request->image)
             ]
         );
 
@@ -228,7 +228,7 @@ class UserDashboardController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
-            'phone' => 'required',
+            'phone' => 'required|user_delivery_addresses,phone',
             'country' => 'required',
             'state' => 'nullable',
             'city' => 'required',

@@ -4,7 +4,7 @@
     'key' => 1
 ])
 
-<link rel="stylesheet" href="{{asset('assets/common/css/intlTelInput.min.css')}}">
+<link rel="stylesheet" href="{{global_asset('assets/common/css/intlTelInput.min.css')}}">
 <style>
     #telephone.error{
         border-color: var(--main-color-one);
@@ -17,7 +17,7 @@
     }
 </style>
 
-<script src="{{asset('assets/common/js/intlTelInput.js')}}"></script>
+<script src="{{global_asset('assets/common/js/intlTelInput.js')}}"></script>
 <script>
     eval('let input' + `{{$key}}` + '= undefined;');
     eval('let iti' + `{{$key}}` + '= undefined;');
@@ -31,7 +31,7 @@
         // localizedCountries: { 'de': 'Deutschland' },
         excludeCountries: ["il"],
         separateDialCode: true,
-        utilsScript: `{{asset("assets/common/js/utils.js")}}`
+        utilsScript: `{{global_asset("assets/common/js/utils.js")}}`
     });
 
     // TODO:: When user select a country and input another country phone number then again select the correct country then auto validate the full number

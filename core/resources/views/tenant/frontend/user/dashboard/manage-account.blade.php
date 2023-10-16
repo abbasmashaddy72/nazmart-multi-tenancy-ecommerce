@@ -71,6 +71,17 @@
 
 @section('scripts')
     <x-media-upload.js/>
+    <x-custom-js.phone-number-config selector="#phone" key="1"/>
+    <x-custom-js.phone-number-config selector="#address_phone" key="2"/>
+
+    <script>
+        $(document).ready(() => {
+            setTimeout(() => {
+                $("#phone").val(`{{$user_details->mobile}}`);
+                $("#address_phone").val(`{{$user_details?->user_delivery_address?->phone}}`);
+            }, 1000);
+        });
+    </script>
 
     <script>
         $(function () {

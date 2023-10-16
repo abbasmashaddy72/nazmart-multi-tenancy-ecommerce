@@ -25,7 +25,7 @@ class VerifyUserMailSend
             {
                 return redirect()->back()->with(['msg'=> __('Site or server email configuration  is incorrect'), 'type'=> 'danger']);
             }
-            return redirect()->back()->with(['msg'=> $e->getMessage(), 'type'=> 'danger']);
+//            return redirect()->back()->with(['msg'=> $e->getMessage(), 'type'=> 'danger']);
         }
     }
 

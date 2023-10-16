@@ -3,6 +3,7 @@
 use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 use Modules\SmsGateway\Http\Controllers\admin\LandlordSettingsController;
 use Modules\SmsGateway\Http\Controllers\frontend\LandlordFrontendController;
+use Modules\SmsGateway\Http\Controllers\frontend\TenantFrontendController;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
 
@@ -12,43 +13,57 @@ Route::middleware(['auth:admin', 'adminglobalVariable', 'set_lang'])
     ->name('landlord.')
     ->controller(LandlordSettingsController::class)
     ->group(function () {
-    Route::get('/', 'sms_settings')->name('admin.sms.settings');
-    Route::post('/', 'update_sms_settings');
-    Route::match(['get', 'post'] ,'/sms-options', 'update_sms_option_settings')->name('admin.sms.options');
-    Route::match(['get', 'post'],'/update-status', 'update_status')->name('admin.sms.status');
-    Route::get('/login-otp-status', 'login_otp_status')->name('admin.sms.login.otp.status');
+        Route::get('/', 'sms_settings')->name('admin.sms.settings');
+        Route::post('/', 'update_sms_settings');
+        Route::match(['get', 'post'], '/sms-options', 'update_sms_option_settings')->name('admin.sms.options');
+        Route::match(['get', 'post'], '/update-status', 'update_status')->name('admin.sms.status');
+        Route::get('/login-otp-status', 'login_otp_status')->name('admin.sms.login.otp.status');
 
-    Route::post('/test/otp', 'send_test_sms')->name('admin.sms.test');
-});
+        Route::post('/test/otp', 'send_test_sms')->name('admin.sms.test');
+    });
 
 // LANDLORD HOME PAGE FRONTEND TENANT OTP LOGIN
-Route::middleware(['landlord_glvar','maintenance_mode','set_lang'])
+Route::middleware(['landlord_glvar', 'maintenance_mode', 'set_lang'])
     ->controller(LandlordFrontendController::class)
     ->name('landlord.')
-    ->group(function (){
+    ->group(function () {
         Route::get('/login/otp', 'showOtpLoginForm')->name('user.login.otp');
         Route::post('/login/otp', 'sendOtp');
         Route::get('/login/otp/verification', 'showOtpVerificationForm')->name('user.login.otp.verification');
         Route::post('/login/otp/verification', 'verifyOtp');
         Route::get('/login/otp/resend', 'resendOtp')->name('user.login.otp.resend');
-});
+    });
 
 
 // TENANT ADMIN
-//Route::middleware([
-//    'web',
-//    InitializeTenancyByDomainCustomisedMiddleware::class,
-//    PreventAccessFromCentralDomains::class,
-//    'auth:admin',
-//    'tenant_admin_glvar',
-//    'package_expire',
-//    'tenantAdminPanelMailVerify',
-//    'set_lang'
-//])->prefix('admin-home/tenant-sms-gateway/')->name('tenant.')
-//    ->controller(LandlordSettingsController::class)
-//    ->group(function () {
-//        Route::get('/', 'sms_settings')->name('admin.sms.settings');
-//        Route::post('/', 'update_sms_settings');
-//        Route::match(['get', 'post'],'/update-status', 'update_status')->name('admin.sms.status');
-//        Route::get('/login-otp-status', 'login_otp_status')->name('admin.sms.login.otp.status');
-//});
+Route::group(['middleware' => [
+    'auth:admin', 'adminglobalVariable', 'set_lang',
+    InitializeTenancyByDomainCustomisedMiddleware::class,
+    PreventAccessFromCentralDomains::class,
+], 'prefix' => 'admin-home/sms-gateway/tenant', 'as' => 'tenant.'], function () {
+    Route::get('/', [LandlordSettingsController::class, 'sms_settings'])->name('admin.sms.settings');
+    Route::post('/', [LandlordSettingsController::class, 'update_sms_settings']);
+    Route::match(['get', 'post'], '/sms-options', [LandlordSettingsController::class, 'update_sms_option_settings'])->name('admin.sms.options');
+    Route::match(['get', 'post'], '/update-status', [LandlordSettingsController::class, 'update_status'])->name('admin.sms.status');
+    Route::get('/login-otp-status', [LandlordSettingsController::class, 'login_otp_status'])->name('admin.sms.login.otp.status');
+
+    Route::post('/test/otp', [LandlordSettingsController::class, 'send_test_sms'])->name('admin.sms.test');
+});
+
+// TENANT HOME PAGE FRONTEND USER OTP LOGIN
+Route::middleware([
+    'web',
+    InitializeTenancyByDomainCustomisedMiddleware::class,
+    PreventAccessFromCentralDomains::class,
+    'tenant_glvar',
+    'maintenance_mode',
+    'set_lang'
+])->controller(TenantFrontendController::class)
+    ->name('tenant.')
+    ->group(function () {
+        Route::get('/login/otp', 'showOtpLoginForm')->name('user.login.otp');
+        Route::post('/login/otp', 'sendOtp');
+        Route::get('/login/otp/verification', 'showOtpVerificationForm')->name('user.login.otp.verification');
+        Route::post('/login/otp/verification', 'verifyOtp');
+        Route::get('/login/otp/resend', 'resendOtp')->name('user.login.otp.resend');
+    });

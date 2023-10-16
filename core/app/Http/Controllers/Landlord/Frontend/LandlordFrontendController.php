@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Landlord\Frontend;
 
+use App\Actions\Sms\SmsSendAction;
 use App\Actions\Tenant\TenantCreateEventWithMail;
 use App\Actions\Tenant\TenantRegisterSeeding;
 use App\Actions\Tenant\TenantTrialPaymentLog;
@@ -44,7 +45,7 @@ use Artesaos\SEOTools\Traits\SEOTools as SEOToolsTrait;
 
 class LandlordFrontendController extends Controller
 {
-    use SEOToolsTrait, SeoDataConfig;
+    use SEOToolsTrait, SeoDataConfig, OtpGlobalTrait;
 
     private const BASE_VIEW_PATH = 'landlord.frontend.';
 
@@ -285,7 +286,7 @@ class LandlordFrontendController extends Controller
                 'terms_condition.required' => __('Please mark on our terms and condition to agree and proceed')
             ]);
 
-        $user_id = DB::table('users')->insertGetId([
+        $user_id = User::create([
             'name' => $request['name'],
             'email' => $request['email'],
             'mobile' => $request['phone'],
@@ -295,7 +296,7 @@ class LandlordFrontendController extends Controller
             'password' => Hash::make($request['password']),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
-        ]);
+        ])->id;
 
         $user = User::findOrFail($user_id);
 
@@ -519,6 +520,7 @@ class LandlordFrontendController extends Controller
                 'theme_slug' => $theme,
             ]);
 
+            (new SmsSendAction())->smsSender($user);
         } catch (\Exception $ex) {
             $message = $ex->getMessage();
 

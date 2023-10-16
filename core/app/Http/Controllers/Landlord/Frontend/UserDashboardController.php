@@ -509,11 +509,11 @@ class UserDashboardController extends Controller
         if(!empty($package)){
             if($package->type == 0){ //monthly
                 $package_start_date = Carbon::now()->format('d-m-Y h:i:s');
-                $package_expire_date = Carbon::now()->addMonth(1)->format('d-m-Y h:i:s');
+                $package_expire_date = Carbon::now()->addMonth()->format('d-m-Y h:i:s');
 
             }elseif ($package->type == 1){ //yearly
                 $package_start_date = Carbon::now()->format('d-m-Y h:i:s');
-                $package_expire_date = Carbon::now()->addYear(1)->format('d-m-Y h:i:s');
+                $package_expire_date = Carbon::now()->addYear()->format('d-m-Y h:i:s');
             }else{ //lifetime
                 $package_start_date = Carbon::now()->format('d-m-Y h:i:s');
                 $package_expire_date = null;

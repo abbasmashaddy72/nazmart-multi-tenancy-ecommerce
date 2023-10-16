@@ -1007,8 +1007,9 @@ class SidebarMenuHelper
                 $convert_to_array = (array) $individual_menu_item;
                 $convert_to_array['label'] = __($convert_to_array['label']);
 
-                $routeName = $convert_to_array['route'];
+                $routeName = $convert_to_array['tenantRoute'];
                 if (isset($routeName) && !empty($routeName) && Route::has($routeName)){
+                    $convert_to_array['route'] = $routeName;
                     $menu_instance->add_menu_item($convert_to_array['id'], $convert_to_array);
                 }
             }

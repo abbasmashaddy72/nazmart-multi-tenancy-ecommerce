@@ -5,8 +5,6 @@ namespace App\Observers;
 use App\Helpers\EmailHelpers\MarkupGenerator;
 use App\Helpers\EmailHelpers\VerifyUserMailSend;
 use App\Mail\BasicMail;
-use App\Models\CustomDomain;
-use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
@@ -23,18 +21,11 @@ class TenantRegisterObserver
         $this->mailToAdminAboutUserRegister($user);
         /* send email verify mail to user */
         VerifyUserMailSend::sendMail($user);
-        CustomDomain::create(['user_id' => $user->id]);
+//        CustomDomain::create(['user_id' => $user->id]);
 
         if (moduleExists('SmsGateway'))
         {
-            if (get_static_option('new_user_user'))
-            {
-                $this->smsToUserAboutUserRegister($user);
-            }
-            if (get_static_option('new_user_admin'))
-            {
-                $this->smsToAdminAboutUserRegister();
-            }
+            $this->smsSender($user);
         }
 
         if (!\tenant())
@@ -42,6 +33,7 @@ class TenantRegisterObserver
             Event::dispatch(new WebhookEventFire('user:register', $user));
         }
     }
+
 
     private function mailToAdminAboutUserRegister(User $user)
     {
@@ -56,11 +48,23 @@ class TenantRegisterObserver
         }
     }
 
+    private function smsSender($user)
+    {
+        if (get_static_option('new_user_user'))
+        {
+            $this->smsToUserAboutUserRegister($user);
+        }
+        if (get_static_option('new_user_admin'))
+        {
+            $this->smsToAdminAboutUserRegister();
+        }
+    }
+
     private function smsToUserAboutUserRegister(User $user)
     {
         $number = $user->mobile;
         try {
-            $this->sendSms([$number, __('Welcome to '.get_static_option('site_title').' .Your account is registration is successful')]);
+            $this->sendSms([$number, __('Welcome to '.get_static_option('site_title').' . Your account registration is successful')]);
         }
         catch (\Exception $exception) {}
     }
