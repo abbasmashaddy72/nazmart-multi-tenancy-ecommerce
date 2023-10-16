@@ -20,6 +20,7 @@
                     "id" : "woocommerce-manage-menu",
                     "label": "WooCommerce",
                     "route": "tenant.admin.woocommerce",
+                    "tenantRoute": "tenant.admin.woocommerce",
                     "parent": null,
                     "icon": "mdi mdi-wordpress",
                     "permissions": "woocommerce",
