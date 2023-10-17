@@ -40,7 +40,7 @@ Route::group(['middleware' => [
     'auth:admin', 'adminglobalVariable', 'set_lang',
     InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
-], 'prefix' => 'admin-home/sms-gateway/tenant', 'as' => 'tenant.'], function () {
+], 'prefix' => 'admin-home/tenant/sms-gateway/', 'as' => 'tenant.'], function () {
     Route::get('/', [LandlordSettingsController::class, 'sms_settings'])->name('admin.sms.settings');
     Route::post('/', [LandlordSettingsController::class, 'update_sms_settings']);
     Route::match(['get', 'post'], '/sms-options', [LandlordSettingsController::class, 'update_sms_option_settings'])->name('admin.sms.options');

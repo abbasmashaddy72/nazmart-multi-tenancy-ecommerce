@@ -1,4 +1,4 @@
-@extends('landlord.admin.admin-master')
+@extends(route_prefix().'admin.admin-master')
 
 @section('title')
     {{ __('SMS Gateway') }}

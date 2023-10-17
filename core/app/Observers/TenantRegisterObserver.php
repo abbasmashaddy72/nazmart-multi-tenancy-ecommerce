@@ -37,10 +37,9 @@ class TenantRegisterObserver
 
     private function mailToAdminAboutUserRegister(User $user)
     {
-
-        $msg = MarkupGenerator::paragraph(__('Hello'));
-        $msg .= MarkupGenerator::paragraph(sprintf(__('you have a user registration at %s'),site_title()));
-        $subject = sprintf(__('new user registration at %s'),site_title());
+        $msg = MarkupGenerator::paragraph(__('Hello,'));
+        $msg .= MarkupGenerator::paragraph(sprintf(__('You have a user registration at %s'),site_title()));
+        $subject = sprintf(__('New user registration at %s'),site_title());
         try {
             Mail::to(site_global_email())->send(new BasicMail($msg,$subject));
         }catch (\Exception $e){
@@ -64,7 +63,7 @@ class TenantRegisterObserver
     {
         $number = $user->mobile;
         try {
-            $this->sendSms([$number, __('Welcome to '.get_static_option('site_title').' . Your account registration is successful')]);
+            $this->sendSms([$number, __('Welcome to '.get_static_option('site_title').'. Your account registration is successful')]);
         }
         catch (\Exception $exception) {}
     }

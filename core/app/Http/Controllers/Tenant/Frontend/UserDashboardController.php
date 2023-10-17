@@ -156,10 +156,9 @@ class UserDashboardController extends Controller
                 'country' => esc_html($request->country),
                 'postal_code' => esc_html($request->postal_code),
                 'image' => esc_html($request->image)
-            ]
-        );
+            ]);
 
-        return response()->json(['msg' => __('Profile Update Success'), 'type' => 'success']);
+        return response()->json(['msg' => __('Profile update success'), 'type' => 'success']);
     }
 
     public function user_password_change(Request $request)
