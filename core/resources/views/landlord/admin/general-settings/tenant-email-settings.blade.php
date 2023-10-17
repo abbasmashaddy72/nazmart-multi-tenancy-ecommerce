@@ -19,19 +19,19 @@
                             <x-fields.input value="{{get_static_option('site_smtp_host')}}" name="site_smtp_host" label="{{__('SMTP host')}}" />
                             <x-fields.input value="{{get_static_option('site_smtp_username')}}" name="site_smtp_username" label="{{__('SMTP Username')}}" />
                             <x-fields.input type="password" value="{{get_static_option('site_smtp_password')}}" name="site_smtp_password" label="{{__('SMTP Password')}}" />
-                            <x-fields.select name="site_smtp_driver"  title="{{__('SMTP Driver')}}" info="{{__('you can add smtp settings manually form @core>.env file')}}">
+                            <x-fields.select name="site_smtp_driver"  title="{{__('SMTP Driver')}}">
                                 <option {{get_static_option('site_smtp_driver') == 'smtp' ? 'selected' : ''}} value="smtp">{{__('smtp')}}</option>
                                 <option {{get_static_option('site_smtp_driver') == 'sendmail' ? 'selected' : ''}} value="sendmail">{{__('sendmail')}}</option>
                                 <option {{get_static_option('site_smtp_driver') == 'mailgun' ? 'selected' : ''}} value="mailgun">{{__('mailgun')}}</option>
                                 <option {{get_static_option('site_smtp_driver') == 'postmark' ? 'selected' : ''}} value="postmark">{{__('postmark')}}</option>
                             </x-fields.select >
-                            <x-fields.select name="site_smtp_port"  title="{{__('SMTP Port')}}" info="{{__('if you did not found your port, you can add smtp settings manually form @core>.env file')}}">
+                            <x-fields.select name="site_smtp_port"  title="{{__('SMTP Port')}}">
                                 <option {{get_static_option('site_smtp_port') == '25' ? 'selected' : ''}} value="25">25</option>
                                 <option {{get_static_option('site_smtp_port') == '587' ? 'selected' : ''}} value="587">587</option>
                                 <option {{get_static_option('site_smtp_port') == '465' ? 'selected' : ''}} value="465">465</option>
                                 <option {{get_static_option('site_smtp_port')== '2525' ? 'selected' : ''}} value="2525">2525</option>
                             </x-fields.select >
-                            <x-fields.select name="site_smtp_encryption" title="{{__('SMTP Encryption')}}" info="{{__('if you did not found your port, you can add smtp settings manually form @core>.env file')}}">
+                            <x-fields.select name="site_smtp_encryption" title="{{__('SMTP Encryption')}}">
                                 <option {{get_static_option('site_smtp_encryption') == 'ssl' ? 'selected' : ''}} value="ssl">{{__('SSL')}}</option>
                                 <option {{get_static_option('site_smtp_encryption') == 'tls' ? 'selected' : ''}} value="tls">{{__('TLS')}}</option>
                                 <option {{get_static_option('site_smtp_encryption') == '' ? 'selected' : ''}} value="null">{{__('none')}}</option>
