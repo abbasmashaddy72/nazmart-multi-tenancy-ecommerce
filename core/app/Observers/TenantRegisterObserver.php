@@ -8,13 +8,13 @@ use App\Mail\BasicMail;
 use App\Models\User;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
+use Modules\SmsGateway\Http\Services\OtpTraitService;
 use Modules\SmsGateway\Http\Traits\OtpGlobalTrait;
 use Modules\WebHook\Events\WebhookEventFire;
 
 class TenantRegisterObserver
 {
-    use OtpGlobalTrait;
-
+    private $otp_instance;
     public function created(User $user)
     {
         /* send mail to admin about new user registration */
@@ -23,10 +23,7 @@ class TenantRegisterObserver
         VerifyUserMailSend::sendMail($user);
 //        CustomDomain::create(['user_id' => $user->id]);
 
-        if (moduleExists('SmsGateway'))
-        {
-            $this->smsSender($user);
-        }
+        $this->smsSender($user);
 
         if (!\tenant())
         {
@@ -49,13 +46,17 @@ class TenantRegisterObserver
 
     private function smsSender($user)
     {
-        if (get_static_option('new_user_user'))
+        if (moduleExists('SmsGateway') && trait_exists(OtpGlobalTrait::class) && get_static_option('otp_login_status'))
         {
-            $this->smsToUserAboutUserRegister($user);
-        }
-        if (get_static_option('new_user_admin'))
-        {
-            $this->smsToAdminAboutUserRegister();
+            $this->otp_instance = new OtpTraitService();
+            if (get_static_option('new_user_user'))
+            {
+                $this->smsToUserAboutUserRegister($user);
+            }
+            if (get_static_option('new_user_admin'))
+            {
+                $this->smsToAdminAboutUserRegister();
+            }
         }
     }
 
@@ -63,7 +64,7 @@ class TenantRegisterObserver
     {
         $number = $user->mobile;
         try {
-            $this->sendSms([$number, __('Welcome to '.get_static_option('site_title').'. Your account registration is successful')]);
+            $this->otp_instance->send([$number, __('Welcome to '.get_static_option('site_title').'. Your account registration is successful')]);
         }
         catch (\Exception $exception) {}
     }
@@ -72,7 +73,7 @@ class TenantRegisterObserver
     {
         $number = get_static_option('receiving_phone_number');
         try {
-            $this->sendSms([$number, __('A new user has been registered - '.get_static_option('site_title'))]);
+            $this->otp_instance->send([$number, __('A new user has been registered - '.get_static_option('site_title'))]);
         }
         catch (\Exception $exception) {}
     }

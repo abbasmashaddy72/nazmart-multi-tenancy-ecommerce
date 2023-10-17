@@ -6,13 +6,13 @@ use App\Helpers\EmailHelpers\MarkupGenerator;
 use App\Mail\BasicMail;
 use App\Models\ProductOrder;
 use Illuminate\Support\Facades\Mail;
+use Modules\SmsGateway\Http\Services\OtpTraitService;
 use Modules\SmsGateway\Http\Traits\OtpGlobalTrait;
 
 class TenantOrderObserver
 {
-    use OtpGlobalTrait;
-
     private object $order_details;
+    private $otp_instance;
 
     public function created(ProductOrder $order)
     {
@@ -37,7 +37,8 @@ class TenantOrderObserver
 
     private function smsSender($number)
     {
-        if (moduleExists('SmsGateway')) {
+        if (moduleExists('SmsGateway') && trait_exists(OtpGlobalTrait::class) && get_static_option('otp_login_status')) {
+            $this->otp_instance = new OtpTraitService();
             if (get_static_option('new_order_user')) {
                 $this->smsToUserAboutOrder($number);
             }
@@ -50,7 +51,7 @@ class TenantOrderObserver
     private function smsToUserAboutOrder($number)
     {
         try {
-            $this->sendSms([$number ?? 0, __('Hello, Your order has placed. Order ID: #'.$this->order_details->id. ' - ' .get_static_option('site_title'))]);
+            $this->otp_instance->send([$number ?? 0, __('Hello, Your order has placed. Order ID: #'.$this->order_details->id. ' - ' .get_static_option('site_title'))]);
         } catch (\Exception $exception) {
         }
     }
@@ -59,7 +60,7 @@ class TenantOrderObserver
     {
         $number = get_static_option('receiving_phone_number');
         try {
-            $this->sendSms([$number, __('A new order has placed. Order ID: #'.$this->order_details->id. ' - ' .get_static_option('site_title'))]);
+            $this->otp_instance->send([$number, __('A new order has placed. Order ID: #'.$this->order_details->id. ' - ' .get_static_option('site_title'))]);
         } catch (\Exception $exception) {
         }
     }
