@@ -130,11 +130,6 @@
         .iti{
             width: 100%;
         }
-
-        .modal-btn:hover{
-            background: #b66dff;
-            border-color: #b66dff;
-        }
     </style>
 @endsection
 
@@ -152,13 +147,13 @@
                         </div>
                         <div class="settings-options justify-content-end">
                             <span data-bs-toggle="modal" data-bs-target="#settings_option_modal">
-                                <a href="#" data-bs-toggle="tooltip"  data-bs-placement="top" title="{{__('SMS Settings')}}" class="modal-btn btn btn-info btn-small settings-option-modal">
-                                    <i class="mdi mdi-cogs"></i>
+                                <a href="#" data-bs-toggle="tooltip"  data-bs-placement="top" title="{{__('Configure when SMS will be send')}}" class="modal-btn btn btn-info btn-small settings-option-modal">
+                                    {{__('SMS Settings')}}
                                 </a>
                             </span>
                             <span data-bs-target="#test_sms_modal" data-bs-toggle="modal">
-                                <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="{{__('Send Test SMS')}}" class="modal-btn btn btn-success btn-small">
-                                    <i class="mdi mdi-message-alert"></i>
+                                <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="{{__('Send a test SMS')}}" class="modal-btn btn btn-success btn-small">
+                                    {{__('Test SMS')}}
                                 </a>
                             </span>
                         </div>
