@@ -393,7 +393,7 @@ class ModuleMetaData
                 $menuItem = $this->getAdminMenuSettings($adminSettings);
                 if (!empty((array)$menuItem)) {
                     if (tenant() && property_exists(current($menuItem), "permissions") && !empty(current($menuItem)->permissions)) {
-                        if (!tenant_plan_sidebar_permission('woocommerce')) {
+                        if (!tenant_plan_sidebar_permission(str_replace(['-','_'], '', current($menuItem)->permissions))) {
                             continue;
                         }
                     }
