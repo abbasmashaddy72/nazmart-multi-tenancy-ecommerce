@@ -1,7 +1,7 @@
 {
     "name": "WebHook",
     "alias": "webhook",
-    "description": "",
+    "description": "WebHook is an External Plugin developed by Core Team to enhance platform features",
     "keywords": [],
     "priority": 0,
     "providers": [

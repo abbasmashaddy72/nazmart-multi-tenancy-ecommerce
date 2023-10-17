@@ -139,7 +139,7 @@
                 <div class="recent-order-wrapper dashboard-table bg-white padding-30">
                     <div class="header-wrap">
                         <h4 class="header-title mb-2">{{__("All Plugins")}}</h4>
-                        <p>{{__("manage all plugins from here, you can active/deactivate plugin or can delete any plugin from here...")}}</p>
+                        <p>{{__("Manage all plugins from here, you can active/deactivate plugin or can delete any plugin from here...")}}</p>
                     </div>
                     <div class="plugin-grid">
                     @foreach($pluginList as $plugin)

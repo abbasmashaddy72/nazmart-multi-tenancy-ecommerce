@@ -591,7 +591,7 @@
                 {
                     $('form.checkout-form').trigger('submit');
                 } else {
-                    toastr.error('{{__('You need to agree to our Terms & Conditions to complete the order')}}');
+                    toastr.error('{{__('You need to agree to our terms & conditions to complete the order')}}');
                 }
             });
 

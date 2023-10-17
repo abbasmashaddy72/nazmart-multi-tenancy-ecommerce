@@ -880,7 +880,7 @@ class SidebarMenuHelper
     }
 
 
-    /* tenent menu */
+    /* tenant menu */
     public function render_tenant_sidebar_menus(): string
     {
         $menu_instance = new \App\Helpers\MenuWithPermission();

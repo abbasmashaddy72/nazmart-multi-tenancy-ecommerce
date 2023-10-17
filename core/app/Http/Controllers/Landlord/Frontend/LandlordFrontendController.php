@@ -38,14 +38,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
-use Modules\SmsGateway\Entities\UserOtp;
-use Modules\SmsGateway\Http\Traits\OtpGlobalTrait;
 use function view;
 use Artesaos\SEOTools\Traits\SEOTools as SEOToolsTrait;
 
 class LandlordFrontendController extends Controller
 {
-    use SEOToolsTrait, SeoDataConfig, OtpGlobalTrait;
+    use SEOToolsTrait, SeoDataConfig;
 
     private const BASE_VIEW_PATH = 'landlord.frontend.';
 
@@ -532,7 +530,6 @@ class LandlordFrontendController extends Controller
                 Mail::to(get_static_option('site_global_email'))->send(new BasicMail($admin_mail_message, $admin_mail_subject));
             } catch (\Exception $exception) {
             }
-
 
             LandlordPricePlanAndTenantCreate::store_exception($subdomain, 'domain failed on trial', $message, 0);
 

@@ -227,7 +227,7 @@ class UserDashboardController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
-            'phone' => 'required|user_delivery_addresses,phone',
+            'phone' => 'required|unique:user_delivery_addresses,phone',
             'country' => 'required',
             'state' => 'nullable',
             'city' => 'required',

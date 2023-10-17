@@ -130,6 +130,11 @@
         .iti{
             width: 100%;
         }
+
+        .modal-btn:hover{
+            background: #b66dff;
+            border-color: #b66dff;
+        }
     </style>
 @endsection
 
@@ -146,16 +151,20 @@
                             <p>{{__("Manage all sms gateway from here, you can active/deactivate any sms gateway from here.")}}</p>
                         </div>
                         <div class="settings-options justify-content-end">
-                            <a href="#" data-bs-target="#settings_option_modal" data-bs-toggle="modal" class="btn btn-info btn-small settings-option-modal">
-                                <i class="mdi mdi-cogs"></i>
-                            </a>
-                            <a href="#" data-bs-target="#test_sms_modal" data-bs-toggle="modal" class="btn btn-success btn-small">
-                                <i class="mdi mdi-message-alert"></i>
-                            </a>
+                            <span data-bs-toggle="modal" data-bs-target="#settings_option_modal">
+                                <a href="#" data-bs-toggle="tooltip"  data-bs-placement="top" title="{{__('SMS Settings')}}" class="modal-btn btn btn-info btn-small settings-option-modal">
+                                    <i class="mdi mdi-cogs"></i>
+                                </a>
+                            </span>
+                            <span data-bs-target="#test_sms_modal" data-bs-toggle="modal">
+                                <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="{{__('Send Test SMS')}}" class="modal-btn btn btn-success btn-small">
+                                    <i class="mdi mdi-message-alert"></i>
+                                </a>
+                            </span>
                         </div>
                     </div>
 
-                    <x-fields.switcher label="Enable or disable OTP login" name="otp_login_status" value="{{get_static_option('otp_login_status')}}"/>
+                    <x-fields.switcher label="Enable or disable OTP" name="otp_login_status" value="{{get_static_option('otp_login_status')}}"/>
 
                     <div class="my-5 plugin-grid" @style(['display: none' => empty(get_static_option('otp_login_status'))])>
                         @foreach(['twilio'] as $item)

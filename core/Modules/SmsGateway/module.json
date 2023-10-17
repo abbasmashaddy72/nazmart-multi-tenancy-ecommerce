@@ -22,7 +22,7 @@
                     "route": "landlord.admin.sms.settings",
                     "tenantRoute": "tenant.admin.sms.settings",
                     "parent": null,
-                    "icon": "mdi mdi-wordpress",
+                    "icon": "mdi mdi-cellphone-link",
                     "permissions": "sms-gateway",
                     "class": "plugin-menu"
                 },
