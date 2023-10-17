@@ -436,6 +436,10 @@ class GeneralSettingsController extends Controller
 
             Mail::to($request->email)->send(new BasicMail($message, __('SMTP Test email')));
         } catch (\Exception $e) {
+            if ($e->getCode() == 535)
+            {
+                return response()->warning(__('The email limit is reached. Upgrade it from your service provider.'));
+            }
             return response()->warning($e->getMessage());
         }
 
