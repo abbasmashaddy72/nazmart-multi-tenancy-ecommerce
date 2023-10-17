@@ -110,7 +110,6 @@ Route::middleware(['landlord_glvar','maintenance_mode','set_lang'])->controller(
     Route::post('/user/trial/account', 'user_trial_account')->name('frontend.trial.account');
 });
 
-
 // LANDLORD HOME PAGE Tenant Dashboard Routes
 Route::controller(\App\Http\Controllers\Landlord\Frontend\UserDashboardController::class)->middleware(['landlord_glvar','maintenance_mode','tenantMailVerify','set_lang'])->name('landlord.')->group(function(){
     Route::get('/user-home', 'user_index')->name('user.home');

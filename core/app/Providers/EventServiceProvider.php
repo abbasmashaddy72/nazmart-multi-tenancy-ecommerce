@@ -8,7 +8,10 @@ use App\Listeners\SupportSendMailToAdmin;
 use App\Listeners\SupportSendMailToUser;
 use App\Listeners\TenantDataSeedListener;
 use App\Listeners\TenantDomainCreate;
+use App\Models\ProductOrder;
+use App\Models\Tenant;
 use App\Models\User;
+use App\Observers\TenantOrderObserver;
 use App\Observers\TenantRegisterObserver;
 use App\Observers\WalletBalanceObserver;
 use Illuminate\Auth\Events\Registered;
@@ -45,7 +48,8 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        /* tenant model observer */
         User::observe(TenantRegisterObserver::class);
+        // Landlord new tenants creations sms sending are handling from the controllers
+        ProductOrder::observe(TenantOrderObserver::class);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Landlord\Frontend;
 
 use App\Actions\Payment\PaymentGateways;
+use App\Actions\Sms\SmsSendAction;
 use App\Events\TenantRegisterEvent;
 use App\Facades\ModuleDataFacade;
 use App\Helpers\FlashMsg;
@@ -27,6 +28,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Modules\SmsGateway\Http\Traits\OtpGlobalTrait;
 use Modules\Wallet\Entities\Wallet;
 use Modules\Wallet\Entities\WalletSettings;
 use Modules\Wallet\Entities\WalletTenantList;
@@ -657,7 +659,7 @@ class PaymentLogController extends Controller
                 'expire_date' => get_plan_left_days($payment_log->package_id, $tenant->expire_date)
             ]);
 
-
+            (new SmsSendAction())->smsSender($tenant->user);
         } catch (\Exception $exception) {
             $message = $exception->getMessage();
             if(str_contains($message,'Access denied')){
@@ -704,10 +706,7 @@ class PaymentLogController extends Controller
                 $credential_username = get_static_option_central('tenant_admin_default_username') ?? 'super_admin';
 
                 Mail::to($credential_email)->send(new TenantCredentialMail($credential_username, $credential_password));
-
-            } catch (\Exception $e) {
-
-            }
+            } catch (\Exception $e) {}
 
         } else if (!empty($log) && $log->payment_status == 'complete' && !is_null($tenant) && $log->is_renew == 0) {
             try {
@@ -717,7 +716,6 @@ class PaymentLogController extends Controller
                 $credential_username = get_static_option_central('tenant_admin_default_username') ?? 'super_admin';
 
                 Mail::to($credential_email)->send(new TenantCredentialMail($credential_username, $credential_password));
-
             } catch (\Exception $exception) {
                 $message = $exception->getMessage();
                 if(str_contains($message,'Access denied')){

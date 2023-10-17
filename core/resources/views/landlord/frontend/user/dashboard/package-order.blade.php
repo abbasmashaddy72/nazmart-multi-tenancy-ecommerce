@@ -48,7 +48,7 @@
                                     <small class="d-block"><strong>{{__('Renew Taken :')}}</strong> {{ $data->renew_status ?? 0 }}</small>
 
                                     @if($data->payment_status == 'complete')
-                                        <form action="{{route(route_prefix().'package.invoice.generate')}}"  method="post">
+                                        <form action="{{route(route_prefix().'frontend.package.invoice.generate')}}"  method="post">
                                             @csrf
                                             <input type="hidden" name="id" id="invoice_generate_order_field" value="{{$data->id}}">
                                             <button class="btn btn-secondary btn-xs btn-small margin-top-10" type="submit">{{__('Invoice')}}</button>

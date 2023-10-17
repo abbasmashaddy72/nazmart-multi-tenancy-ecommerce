@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tenant\Frontend;
 
+use App\Actions\Sms\SmsSendAction;
 use App\Enums\ProductTypeEnum;
 use App\Enums\StatusEnums;
 use App\Helpers\EmailHelpers\VerifyUserMailSend;
@@ -1455,6 +1456,7 @@ class TenantFrontendController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:191'],
             'email' => ['required', 'string', 'email', 'max:191', 'unique:users'],
+            'phone' => ['required', 'numeric', 'unique:users,mobile'],
             'username' => ['required', 'string', 'max:191', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'country' => ['required'],
@@ -1463,9 +1465,10 @@ class TenantFrontendController extends Controller
             'postal_code' => ['nullable', 'string'],
         ]);
 
-        $user = DB::table('users')->insert([
+        $user = User::create([
             'name' => $request['name'],
             'email' => $request['email'],
+            'mobile' => $request['phone'],
             'country' => $request['country'],
             'state' => $request['state'],
             'city' => $request['city'],
@@ -1483,10 +1486,12 @@ class TenantFrontendController extends Controller
             $message_body = __('New user registered : ') . ' <span class="user-registration">' . $request['name'] . '</span>';
             Mail::to($email)->send(new BasicMail($message_body, $subject));
 
-            Auth::guard('web')->attempt(['username' => $request->username, 'password' => $request->password]);
-            $user = User::where('username', $request['username'])->first();
+//            Auth::guard('web')->attempt(['username' => $request->username, 'password' => $request->password]);
+            Auth::guard('web')->login($user);
+//            $user = User::where('username', $request['username'])->first();
             VerifyUserMailSend::sendMail($user);
 
+            (new SmsSendAction())->smsSender($user);
         } catch (\Exception $e) {
             //handle error
         }

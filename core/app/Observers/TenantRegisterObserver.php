@@ -5,23 +5,25 @@ namespace App\Observers;
 use App\Helpers\EmailHelpers\MarkupGenerator;
 use App\Helpers\EmailHelpers\VerifyUserMailSend;
 use App\Mail\BasicMail;
-use App\Models\CustomDomain;
-use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
+use Modules\SmsGateway\Http\Services\OtpTraitService;
+use Modules\SmsGateway\Http\Traits\OtpGlobalTrait;
 use Modules\WebHook\Events\WebhookEventFire;
 
 class TenantRegisterObserver
 {
-
+    private $otp_instance;
     public function created(User $user)
     {
         /* send mail to admin about new user registration */
         $this->mailToAdminAboutUserRegister($user);
         /* send email verify mail to user */
         VerifyUserMailSend::sendMail($user);
-        CustomDomain::create(['user_id' => $user->id]);
+//        CustomDomain::create(['user_id' => $user->id]);
+
+        $this->smsSender($user);
 
         if (!\tenant())
         {
@@ -29,16 +31,50 @@ class TenantRegisterObserver
         }
     }
 
+
     private function mailToAdminAboutUserRegister(User $user)
     {
-
-        $msg = MarkupGenerator::paragraph(__('Hello'));
-        $msg .= MarkupGenerator::paragraph(sprintf(__('you have a user registration at %s'),site_title()));
-        $subject = sprintf(__('new user registration at %s'),site_title());
+        $msg = MarkupGenerator::paragraph(__('Hello,'));
+        $msg .= MarkupGenerator::paragraph(sprintf(__('You have a user registration at %s'),site_title()));
+        $subject = sprintf(__('New user registration at %s'),site_title());
         try {
             Mail::to(site_global_email())->send(new BasicMail($msg,$subject));
         }catch (\Exception $e){
             //handle exception
         }
+    }
+
+    private function smsSender($user)
+    {
+        if (moduleExists('SmsGateway') && trait_exists(OtpGlobalTrait::class) && get_static_option('otp_login_status'))
+        {
+            $this->otp_instance = new OtpTraitService();
+            if (get_static_option('new_user_user'))
+            {
+                $this->smsToUserAboutUserRegister($user);
+            }
+            if (get_static_option('new_user_admin'))
+            {
+                $this->smsToAdminAboutUserRegister();
+            }
+        }
+    }
+
+    private function smsToUserAboutUserRegister(User $user)
+    {
+        $number = $user->mobile;
+        try {
+            $this->otp_instance->send([$number, __('Welcome to '.get_static_option('site_title').'. Your account registration is successful')]);
+        }
+        catch (\Exception $exception) {}
+    }
+
+    private function smsToAdminAboutUserRegister()
+    {
+        $number = get_static_option('receiving_phone_number');
+        try {
+            $this->otp_instance->send([$number, __('A new user has been registered - '.get_static_option('site_title'))]);
+        }
+        catch (\Exception $exception) {}
     }
 }

@@ -22,9 +22,9 @@
                         </div>
                     </div>
                     <div class="single-dashboard-input">
-                        <div class="single-info-input margin-top-30">
+                        <div class="single-info-input single-input margin-top-30">
                             <label class="info-title"> {{__('Phone Number')}} </label>
-                            <input class="form--control" type="text" name="phone" placeholder="{{__('Type Your Number')}}" value="{{$user_details->mobile}}">
+                            <input class="form--control" id="phone" type="text" name="phone" placeholder="{{__('Type Your Number')}}" value="{{$user_details->mobile}}">
                         </div>
 
                         <div class="single-info-input margin-top-30">

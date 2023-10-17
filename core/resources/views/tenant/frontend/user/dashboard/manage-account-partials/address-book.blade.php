@@ -23,9 +23,9 @@
                         </div>
                     </div>
                     <div class="single-dashboard-input">
-                        <div class="single-info-input margin-top-30">
+                        <div class="single-info-input single-input margin-top-30">
                             <label class="info-title"> {{__('Phone Number')}} <x-fields.mandatory-indicator/></label>
-                            <input class="form--control" type="text" placeholder="{{__('Type Your Number')}}" name="phone" value="{{$user_delivery_address?->phone}}">
+                            <input class="form--control" id="address_phone" type="text" placeholder="{{__('Type Your Number')}}" name="phone" value="{{$user_delivery_address?->phone}}">
                         </div>
                     </div>
                     <div class="single-dashboard-input">

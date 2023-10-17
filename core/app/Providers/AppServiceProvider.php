@@ -8,6 +8,8 @@ use App\Helpers\SidebarMenuHelper;
 use App\Helpers\ThemeMetaData;
 use App\Http\Services\RenderImageMarkupService;
 use App\Models\Themes;
+use App\Models\User;
+use App\Observers\TenantRegisterObserver;
 use App\Observers\WalletBalanceObserver;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;

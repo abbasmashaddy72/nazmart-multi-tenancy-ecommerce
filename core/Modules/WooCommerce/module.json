@@ -1,7 +1,8 @@
 {
     "name": "WooCommerce",
     "alias": "woocommerce",
-    "description": "",
+    "version" : "1.0.1",
+    "description": "WooCommerce is an External Plugin developed by Core Team to enhance platform features",
     "keywords": [],
     "priority": 0,
     "providers": [
@@ -20,6 +21,7 @@
                     "id" : "woocommerce-manage-menu",
                     "label": "WooCommerce",
                     "route": "tenant.admin.woocommerce",
+                    "tenantRoute": "tenant.admin.woocommerce",
                     "parent": null,
                     "icon": "mdi mdi-wordpress",
                     "permissions": "woocommerce",

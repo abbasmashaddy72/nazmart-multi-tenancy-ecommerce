@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Landlord\Frontend;
 
+use App\Actions\Sms\SmsSendAction;
 use App\Actions\Tenant\TenantCreateEventWithMail;
 use App\Actions\Tenant\TenantRegisterSeeding;
 use App\Actions\Tenant\TenantTrialPaymentLog;
@@ -80,8 +81,7 @@ class LandlordFrontendController extends Controller
     public function verify_user_email()
     {
         if (empty(get_static_option('user_email_verify_status')) || Auth::guard('web')->user()) {
-            if (Auth::guard('web')->user()->email_verified == 1)
-            {
+            if (Auth::guard('web')->user()->email_verified == 1) {
                 return redirect()->route('landlord.user.home');
             }
         }
@@ -180,8 +180,7 @@ class LandlordFrontendController extends Controller
     public function view_plan($id, $trial = null)
     {
         $order_details = PricePlan::findOrFail($id);
-        if ($order_details->has_trial != 1)
-        {
+        if ($order_details->has_trial != 1) {
             return redirect()->route('landlord.frontend.plan.order', $id);
         }
 
@@ -200,8 +199,7 @@ class LandlordFrontendController extends Controller
         $payment_gateways = PaymentGateway::where('name', 'manual_payment')->first();
 
         $user = Auth::guard('web')->user();
-        if ($user)
-        {
+        if ($user) {
             $payment_old_data = PaymentLogs::where(['user_id' => $user->id, 'payment_status' => 'complete'])->get()->toArray();
         }
 
@@ -233,7 +231,7 @@ class LandlordFrontendController extends Controller
 
         $payment_details = PaymentLogs::findOrFail($extract_id);
 
-        $domain = \DB::table('domains')->where('tenant_id',$payment_details->tenant_id)->first();
+        $domain = \DB::table('domains')->where('tenant_id', $payment_details->tenant_id)->first();
 
         if (empty($extract_id)) {
             abort(404);
@@ -260,10 +258,9 @@ class LandlordFrontendController extends Controller
         return view('landlord.frontend.user.login');
     }
 
-
     public function showTenantRegistrationForm()
     {
-        $plan_id= \request()->p ?? '';
+        $plan_id = \request()->p ?? '';
         abort_if(!empty($plan_id) && empty(PricePlan::find($plan_id)), 404);
 
         if (auth('web')->check()) {
@@ -278,24 +275,26 @@ class LandlordFrontendController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:191'],
             'email' => ['required', 'string', 'email', 'max:191', 'unique:users'],
+            'phone' => ['required', 'string', 'regex:/^[0-9+]+$/', 'unique:users,mobile'],
             'username' => ['required', 'string', 'max:191', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'terms_condition' => ['required']
         ],
-        [
-            'terms_condition.required' => __('Please mark on our terms and condition to agree and proceed')
-        ]);
+            [
+                'terms_condition.required' => __('Please mark on our terms and condition to agree and proceed')
+            ]);
 
-        $user_id = DB::table('users')->insertGetId([
+        $user_id = User::create([
             'name' => $request['name'],
             'email' => $request['email'],
+            'mobile' => $request['phone'],
             'country' => $request['country'],
             'city' => $request['city'],
             'username' => $request['username'],
             'password' => Hash::make($request['password']),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
-        ]);
+        ])->id;
 
         $user = User::findOrFail($user_id);
 
@@ -394,7 +393,6 @@ class LandlordFrontendController extends Controller
         return redirect()->back()->with(['msg' => __('Somethings Going Wrong! Please Try Again or Check Your Old Password'), 'type' => 'danger']);
     }
 
-
     public function newsletter_store(Request $request)
     {
         $this->validate($request, [
@@ -420,7 +418,7 @@ class LandlordFrontendController extends Controller
             'order_id' => 'required',
             'subdomain' => 'required|unique:tenants,id',
             'theme' => 'required',
-        ],[
+        ], [
             'theme.required' => __('No theme is selected.')
         ]);
 
@@ -433,12 +431,11 @@ class LandlordFrontendController extends Controller
             $site_domain = url('/');
             $site_domain = str_replace(['http://', 'https://'], '', $site_domain);
             $site_domain = substr($site_domain, 0, strpos($site_domain, '.'));
-            $restricted_words = ['https', 'http', 'http://', 'https://','www', 'subdomain', 'domain', 'primary-domain', 'central-domain',
+            $restricted_words = ['https', 'http', 'http://', 'https://', 'www', 'subdomain', 'domain', 'primary-domain', 'central-domain',
                 'landlord', 'landlords', 'tenant', 'tenants', 'admin',
                 'user', 'user', $site_domain];
 
-            if (in_array(trim($request->subdomain), $restricted_words))
-            {
+            if (in_array(trim($request->subdomain), $restricted_words)) {
                 return response()->json([
                     'msg' => __('Sorry, You can not use this subdomain'),
                     'type' => 'danger'
@@ -447,15 +444,13 @@ class LandlordFrontendController extends Controller
 
             $sub = $request->subdomain;
             $check_type = false;
-            for ($i=0; $i<strlen($sub); $i++)
-            {
-                if(ctype_alnum($sub[$i])) {
+            for ($i = 0; $i < strlen($sub); $i++) {
+                if (ctype_alnum($sub[$i])) {
                     $check_type = true;
                 }
             }
 
-            if ($check_type == false)
-            {
+            if ($check_type == false) {
                 return response()->json([
                     'msg' => __('Sorry, You can not use this subdomain'),
                     'type' => 'danger'
@@ -465,14 +460,13 @@ class LandlordFrontendController extends Controller
 
         $user_id = Auth::guard('web')->user()->id;
         $user = User::find($user_id);
-        if(is_null($user)){
+        if (is_null($user)) {
             return response()->json([
                 'msg' => __('user not found'),
                 'type' => 'danger'
             ]);
         }
-        if (!empty(get_static_option('user_email_verify_status')) && !$user->email_verified)
-        {
+        if (!empty(get_static_option('user_email_verify_status')) && !$user->email_verified) {
             return response()->json([
                 'msg' => __('Please verify your account, Visit user dashboard for verification'),
                 'type' => 'danger'
@@ -480,7 +474,7 @@ class LandlordFrontendController extends Controller
         }
 
         $plan = PricePlan::find($request->order_id);
-        if(is_null($plan)){
+        if (is_null($plan)) {
             return response()->json([
                 'msg' => __('plan not found'),
                 'type' => 'danger'
@@ -490,63 +484,65 @@ class LandlordFrontendController extends Controller
         $subdomain = $request->subdomain;
         $theme = $request->theme ?? get_static_option('default_theme');
 
-        session()->put('theme',$theme);
+        session()->put('theme', $theme);
 
         $tenant_data = $user->tenant_details ?? [];
         $has_trial = false;
-        if(!is_null($tenant_data)){
-            foreach ($tenant_data as $tenant){
-                if(optional($tenant->payment_log)->status == 'trial'){
+        if (!is_null($tenant_data)) {
+            foreach ($tenant_data as $tenant) {
+                if (optional($tenant->payment_log)->status == 'trial') {
                     $has_trial = true;
                 }
             }
-            if($has_trial){
+            if ($has_trial) {
                 return response()->json([
-                    'msg' => __('Your trial limit is over! Please purchase a plan to continue').'<br>'.'<small>'.__('You can make trial once only..!').'</small>',
+                    'msg' => __('Your trial limit is over! Please purchase a plan to continue') . '<br>' . '<small>' . __('You can make trial once only..!') . '</small>',
                     'type' => 'danger'
                 ]);
             }
         }
 
-        try{
-            TenantTrialPaymentLog::trial_payment_log($user,$plan,$subdomain,$theme);
+        try {
+            TenantTrialPaymentLog::trial_payment_log($user, $plan, $subdomain, $theme);
 
-        }catch(\Exception $ex){}
+        } catch (\Exception $ex) {
+        }
 
-        try{
+        try {
             TenantCreateEventWithMail::tenant_create_event_with_credential_mail($user, $subdomain, $theme);
 
-            $log = PaymentLogs::where('tenant_id',$subdomain)->first();
-            DB::table('tenants')->where('id',$subdomain)->update([
+            $log = PaymentLogs::where('tenant_id', $subdomain)->first();
+            DB::table('tenants')->where('id', $subdomain)->update([
                 'start_date' => $log->start_date,
                 'expire_date' => $log->expire_date,
                 'theme_slug' => $theme,
             ]);
 
-        }catch(\Exception $ex){
+            (new SmsSendAction())->smsSender($user);
+        } catch (\Exception $ex) {
             $message = $ex->getMessage();
 
-            $log = PaymentLogs::where('tenant_id',$subdomain)->first();
+            $log = PaymentLogs::where('tenant_id', $subdomain)->first();
 
             try {
-                $admin_mail_message = sprintf(__('Database Crating failed for user id %1$s , please checkout admin panel and generate database for this user trial from admin panel manually'),$log->user_id);
-                $admin_mail_subject = sprintf(__('Database Crating failed on trial request for user id %1$s'),$log->user_id);
-                Mail::to(get_static_option('site_global_email'))->send(new BasicMail($admin_mail_message,$admin_mail_subject));
-            } catch (\Exception $exception) {}
+                $admin_mail_message = sprintf(__('Database Crating failed for user id %1$s , please checkout admin panel and generate database for this user trial from admin panel manually'), $log->user_id);
+                $admin_mail_subject = sprintf(__('Database Crating failed on trial request for user id %1$s'), $log->user_id);
+                Mail::to(get_static_option('site_global_email'))->send(new BasicMail($admin_mail_message, $admin_mail_subject));
+            } catch (\Exception $exception) {
+            }
 
-
-            LandlordPricePlanAndTenantCreate::store_exception($subdomain,'domain failed on trial',$message,0);
+            LandlordPricePlanAndTenantCreate::store_exception($subdomain, 'domain failed on trial', $message, 0);
 
             //Event Notification
             //todo tenant event notification
             //Event Notification
 
-            return response()->json(['msg' => __('Your trial website is not ready yet, we have notified to admin regarding your request, it is in admin approval stage..! please try later..!'), 'type'=>'danger']);
+            return response()->json(['msg' => __('Your trial website is not ready yet, we have notified to admin regarding your request, it is in admin approval stage..! please try later..!'), 'type' => 'danger']);
         }
 
-        $domain_details = DB::table('domains')->where('tenant_id',$subdomain)->first(); //domain; //issue in this line
+        $domain_details = DB::table('domains')->where('tenant_id', $subdomain)->first(); //domain; //issue in this line
 
-        if(!is_null($domain_details)){
+        if (!is_null($domain_details)) {
             $url = tenant_url_with_protocol($domain_details->domain);
             $user->update(['has_subdomain' => 1]);
             return response()->json([
@@ -561,15 +557,16 @@ class LandlordFrontendController extends Controller
         ]);
     }
 
-    public function loginUsingToken($token, Request $request){
-        if(empty($token)){
+    public function loginUsingToken($token, Request $request)
+    {
+        if (empty($token)) {
             return to_route('landlord.user.login');
         }
 
         abort_if(empty(Auth::guard('admin')->user()), 404);
 
         $user = null;
-        if(!empty($request->user_id)){
+        if (!empty($request->user_id)) {
             $user = User::find($request->user_id);
         }
 
@@ -578,12 +575,12 @@ class LandlordFrontendController extends Controller
             $user->username,
             $user->id
         );
-        if(!hash_equals($hash_token,$token)){
+        if (!hash_equals($hash_token, $token)) {
             return to_route('landlord.user.login');
         }
 
         //login using super admin id
-        if (Auth::guard('web')->loginUsingId($user->id)){
+        if (Auth::guard('web')->loginUsingId($user->id)) {
             return to_route('landlord.user.home');
         }
         //pic a random super admin account...

@@ -309,8 +309,8 @@
 
 @section('scripts')
     <x-media-upload.js :user-type="'user'"/>
-    <script>
 
+    <script>
         (function($){
             "use strict"
         $(document).ready(function(){

@@ -20,8 +20,9 @@
                     "id" : "sms-gateway-menu",
                     "label": "SMS Gateway",
                     "route": "landlord.admin.sms.settings",
+                    "tenantRoute": "tenant.admin.sms.settings",
                     "parent": null,
-                    "icon": "mdi mdi-wordpress",
+                    "icon": "mdi mdi-cellphone-link",
                     "permissions": "sms-gateway",
                     "class": "plugin-menu"
                 },
@@ -29,22 +30,8 @@
                     "id" : "sms-manage-index",
                     "label": "SMS Settings",
                     "route": "landlord.admin.sms.settings",
-                    "tenantRoute": "landlord.admin.sms.settings",
+                    "tenantRoute": "tenant.admin.sms.settings",
                     "parent": "sms-gateway-menu"
-                },
-                {
-                    "id" : "sms-manage-settings-import",
-                    "label": "Import Settings",
-                    "route": "tenant.admin.woocommerce.settings.import",
-                    "tenantRoute": "tenant.admin.woocommerce.settings.import",
-                    "parent": "woocommerce-manage-menu"
-                },
-                {
-                    "id" : "woocommerce-manage-settings",
-                    "label": "Settings",
-                    "route": "tenant.admin.woocommerce.settings",
-                    "tenantRoute": "tenant.admin.woocommerce.settings",
-                    "parent": "woocommerce-manage-menu"
                 }
             ]
         }

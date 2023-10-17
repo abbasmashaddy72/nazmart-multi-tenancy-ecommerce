@@ -13,6 +13,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Modules\CountryManage\Entities\City;
 use Modules\CountryManage\Entities\Country;
 use Modules\CountryManage\Entities\State;
+use Modules\SmsGateway\Entities\UserOtp;
 use Modules\Wallet\Entities\Wallet;
 use Modules\Wallet\Entities\WalletTenantList;
 use Spatie\Activitylog\LogOptions;
@@ -127,5 +128,10 @@ class User extends Authenticatable
     public function wallet(): HasOne
     {
         return $this->hasOne(Wallet::class, 'user_id', 'id');
+    }
+
+    public function otpInfo(): HasOne
+    {
+        return $this->hasOne(UserOtp::class, 'user_id', 'id');
     }
 }

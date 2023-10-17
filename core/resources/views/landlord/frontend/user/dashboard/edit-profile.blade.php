@@ -317,9 +317,7 @@
 @endsection
 
 @section('scripts')
-
     <script>
-
         (function($){
             "use strict"
         $(document).ready(function(){
@@ -339,5 +337,13 @@
         });
     </script>
 
+    <x-custom-js.phone-number-config selector="#phone"/>
+    <script>
+        $(document).ready(function () {
+            setTimeout(() => {
+                $('#phone').val(`{{$user_details->mobile}}`);
+            }, 800)
+        });
+    </script>
 @endsection
 

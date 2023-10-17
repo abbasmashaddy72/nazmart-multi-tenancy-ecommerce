@@ -25,5 +25,8 @@
     "WebHook": true,
     "Integrations": true,
     "WooCommerce": true,
-    "SmsGateway": true
+    "SmsGateway": true,
+    "SiteAnalytics": true,
+    "Controller": true,
+    "AdminSettingsController": true
 }

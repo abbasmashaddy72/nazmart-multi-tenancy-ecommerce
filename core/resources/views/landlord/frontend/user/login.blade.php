@@ -45,9 +45,14 @@
                                 </div>
                                 <div class="btn-wrapper mt-4">
                                     <button type="submit" id="login_btn" class="cmn-btn cmn-btn-bg-1 w-100">{{__('Sign In')}}</button>
+
+                                    @if(moduleExists('SmsGateway') && get_static_option('otp_login_status'))
+                                        <p class="font-weight-bold text-center my-2">{{__('Or')}}</p>
+                                        <a href="{{route(route_prefix().'user.login.otp')}}" class="cmn-btn cmn-btn-outline-one color-one w-100" style="padding: 10px 25px">{{__('Sign In with OTP')}}</a>
+                                    @endif
                                 </div>
                             </form>
-                            <p class="info mt-3">{{__("Do not have an account")}} <a href="{{route('tenant.user.register')}}" class="active"> <strong>{{__('Sign up')}}</strong> </a></p>
+                            <p class="info mt-3">{{__("Do not have an account")}} <a href="{{route(route_prefix().'user.register')}}" class="active"> <strong>{{__('Sign up')}}</strong> </a></p>
                         </div>
                     </div>
                 </div>

@@ -74,6 +74,13 @@
                                     <input type="email" name="email" class="form-control" id="exampleInputEmail1"
                                            placeholder="{{__('Type your email')}}">
                                 </div>
+
+                                <div class="form-group single-input mt-2">
+                                    <label for="phone_number">{{__('Phone Number')}} <x-fields.mandatory-indicator/></label>
+                                    <input type="tel" name="phone" class="form-control" id="phone_number"
+                                           placeholder="{{__('Type your phone')}}">
+                                </div>
+
                                 <div class="form-group">
                                     <label for="countryField">{{__('Country')}}
                                         <x-fields.mandatory-indicator/>
@@ -134,7 +141,7 @@
                                 </div>
 
                                 <div class="input-item mt-2">
-                                    <a class="generate-password" href="javascript:void(0)"><i class="las la-lock"></i> {{__('Generate random password')}}</a>
+                                    <a class="generate-password" href="javascript:void(0)"><i class="las la-magic"></i> {{__('Generate random password')}}</a>
                                 </div>
 
                                 <div class="btn-wrapper mt-4">
@@ -154,6 +161,8 @@
 @endsection
 @section('scripts')
     <x-custom-js.generate-password/>
+    <x-custom-js.phone-number-config selector="#phone_number"/>
+
     <script>
         (function ($) {
             "use strict";

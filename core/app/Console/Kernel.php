@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
         if (app()->environment('local'))
         {
             try {
-                $schedule->command('telescope:prune')->daily();
+                $schedule->command('telescope:prune')->everyMinute();
             } catch (\Exception $exception) {}
         }
     }

@@ -26,6 +26,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
+use LaravelDaily\Invoices\Classes\InvoiceItem;
+use LaravelDaily\Invoices\Classes\Party;
+use LaravelDaily\Invoices\Invoice;
 use Modules\Blog\Entities\Blog;
 use Barryvdh\DomPDF\Facade as PDF;
 use Stancl\Tenancy\Database\Models\Domain;
@@ -276,24 +279,91 @@ class UserDashboardController extends Controller
     public function generate_package_invoice(Request $request)
     {
         $payment_details = PaymentLogs::find($request->id);
-        if (empty($payment_details)) {
-            return abort(404);
+        abort_if(empty($payment_details), 404);
+
+        $invoice = $this->invoice_design($payment_details);
+        return $invoice->stream();
+    }
+
+    private function invoice_design($payment_details)
+    {
+        $client = new Party([
+            'name' => site_title(),
+            'custom_fields' => [
+                'email' => get_static_option('site_global_email'),
+                'website' => str_replace(['http://', 'https://'], '', url('/'))
+            ]
+        ]);
+
+        $user = User::find($payment_details->user_id);
+        $customer = new Party([
+            'name' => $payment_details->name,
+            'phone' => $payment_details->phone,
+            'custom_fields' => [
+                'username' => $user->username,
+                'email' => $payment_details->email
+            ]
+        ]);
+
+        $currency_symbol = site_currency_symbol();
+        $currency = site_currency_symbol(true);
+        $currency_symbol_position = get_static_option('site_currency_symbol_position');
+
+        $payment_status = $payment_details->payment_status == 'complete' ? __('paid') : __('unpaid');
+        if ($payment_details->status == 'cancel') {
+            $payment_status = __('cancel');
+        }
+        if ($payment_details->status == 'trial')
+        {
+            $payment_status = __('unpaid').'-'.__('trial');
         }
 
-        $pdf = PDF::loadview('tenant.frontend.invoice.package-order', ['payment_details' => $payment_details])->setOptions(['defaultFont' => 'sans-serif']);
+        $invoice_number_padding = get_static_option('invoice_number_padding') ?? 2;
+        $thousand_separator = get_static_option('site_custom_currency_thousand_separator') ?? ',';
+        $decimal_separator = get_static_option('site_custom_currency_decimal_separator') ?? '.';
+        $currency_fraction = get_static_option('currency_fraction_code') ?? 'cents.';
 
-        $pdf->setPaper('L');
-        $pdf->output();
-        $canvas = $pdf->getDomPDF()->getCanvas();
+        $site_logo = get_attachment_image_by_id(get_static_option('site_logo'))['img_url'] ?? '';
 
-        $height = $canvas->get_height();
-        $width = $canvas->get_width();
+        $tenant = Tenant::find($payment_details->tenant_id);
+        $package_details = PricePlan::find($payment_details->package_id);
 
-        $canvas->set_opacity(.2, "Multiply");
-        $canvas->set_opacity(.2);
-        $canvas->page_text($width / 5, $height / 2, __('Paid'), null, 55, array(0, 0, 0), 2, 2, -30);
+        $package_title = '';
+        $description = '';
+        if ($tenant)
+        {
+            $package_title = __('Package:').' '.$package_details->title;
+            $description = '<p>Shop Name: '.$tenant->id.'</p>';
+            $description .= '<p>Order Date: '.Carbon::parse($payment_details->created_at)->format('d/m/Y').'</p>';
+            $description .= '<p>Expire Date: '.Carbon::parse($tenant->expire_date)->format('d/m/Y').'</p>';
+        }
 
-        return $pdf->download('package-invoice.pdf');
+        $InvoiceItem = (new InvoiceItem())
+            ->title($package_title)
+            ->description($description)
+            ->pricePerUnit($package_details->price);
+
+        $invoiceInstance = Invoice::make(site_title() .' - '.__('Order Invoice'))
+            ->template('landlord')
+            ->status($payment_status)
+            ->sequence($payment_details->id)
+            ->sequencePadding($invoice_number_padding)
+            ->serialNumberFormat('{SEQUENCE}')
+            ->seller($client)
+            ->buyer($customer)
+            ->date(now())
+            ->dateFormat('d/m/Y')
+            ->currencySymbol($currency_symbol)
+            ->currencyCode($currency)
+            ->currencyFormat($currency_symbol_position == 'left' ? '{SYMBOL}{VALUE}' : '{VALUE}{SYMBOL}')
+            ->currencyThousandsSeparator($thousand_separator)
+            ->currencyDecimalPoint($decimal_separator)
+            ->currencyFraction($currency_fraction)
+            ->addItem($InvoiceItem)
+            ->payUntilDays(1)
+            ->logo($site_logo);
+
+        return $invoiceInstance->save();
     }
 
     public function order_details($id)
@@ -370,7 +440,7 @@ class UserDashboardController extends Controller
     {
         $request->validate([
             'old_domain' => 'required',
-            'custom_domain' => 'required|regex:/^[a-z0-9.-]+$/',
+            'custom_domain' => 'required|regex:/^([a-zA-Z0-9-]+\.)+[a-zA-Z0-9]{2,}+$/',
         ]);
 
         $tenant = Tenant::findOrFail($request->old_domain);
@@ -439,11 +509,11 @@ class UserDashboardController extends Controller
         if(!empty($package)){
             if($package->type == 0){ //monthly
                 $package_start_date = Carbon::now()->format('d-m-Y h:i:s');
-                $package_expire_date = Carbon::now()->addMonth(1)->format('d-m-Y h:i:s');
+                $package_expire_date = Carbon::now()->addMonth()->format('d-m-Y h:i:s');
 
             }elseif ($package->type == 1){ //yearly
                 $package_start_date = Carbon::now()->format('d-m-Y h:i:s');
-                $package_expire_date = Carbon::now()->addYear(1)->format('d-m-Y h:i:s');
+                $package_expire_date = Carbon::now()->addYear()->format('d-m-Y h:i:s');
             }else{ //lifetime
                 $package_start_date = Carbon::now()->format('d-m-Y h:i:s');
                 $package_expire_date = null;
