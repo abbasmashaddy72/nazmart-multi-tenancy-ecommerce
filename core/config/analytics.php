@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     'enabled' => env('ANALYTICS_ENABLED', true),
 
     /**
@@ -23,6 +22,13 @@ return [
     'exclude' => [
         '/analytics',
         '/analytics/*',
+        '/user-home',
+        '/user-home/*',
+        '/package-orders',
+        '/custom-domain',
+        '/landlord/wallet*',
+        '/user/*',
+        '/request-refund/*',
     ],
 
     /**
@@ -54,11 +60,10 @@ return [
      * The HTTP verbs/methods that should be excluded from page view tracking.
      */
     'ignoreMethods' => [
-        // 'OPTIONS', 'POST',
+         'OPTIONS', 'POST',
     ],
 
     'session' => [
         'provider' => \AndreasElia\Analytics\RequestSessionProvider::class,
     ],
-
 ];

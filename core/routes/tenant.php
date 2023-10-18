@@ -27,14 +27,12 @@ use App\Http\Controllers\Tenant\Frontend\FrontendDigitalProductController;
 
 Route::middleware([
     'web',
-//    InitializeTenancyByDomain::class,
     InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'tenant_glvar',
     'maintenance_mode',
     'set_lang'
 ])->group(function () {
-
     Route::middleware('package_expire')->controller(\App\Http\Controllers\Tenant\Frontend\TenantFrontendController::class)->group(function () {
         Route::get('/', 'homepage')->name('tenant.frontend.homepage');
         Route::get('/lang-change','lang_change')->name('tenant.frontend.langchange');
@@ -46,7 +44,7 @@ Route::middleware([
     });
 
     /* tenant admin login */
-    Route::middleware('package_expire')->controller(\App\Http\Controllers\Landlord\Admin\Auth\AdminLoginController::class)->prefix('admin')->group(function (){
+    Route::middleware(['package_expire'])->controller(\App\Http\Controllers\Landlord\Admin\Auth\AdminLoginController::class)->prefix('admin')->group(function (){
         Route::get('/','login_form')->name('tenant.admin.login')->withoutMiddleware('maintenance_mode');
         Route::post('/','login_admin')->withoutMiddleware('maintenance_mode');
         Route::post('/logout','logout_admin')->name('tenant.admin.logout');
@@ -123,7 +121,7 @@ Route::middleware([
             }
 
             return abort(404);
-        })->name("custom.css.file.url");
+        })->withoutMiddleware('analytics')->name("custom.css.file.url");
 
         Route::get("assets/js/{filename}", function ($filename){
             if(file_exists(theme_assets('js/'. $filename .'.js'))){
@@ -133,7 +131,7 @@ Route::middleware([
             }
 
             return abort(404);
-        })->name("custom.js.file.url");
+        })->withoutMiddleware('analytics')->name("custom.js.file.url");
 
         // Payment IPN
         Route::prefix("/")->as("user.frontend.")->group(function (){
@@ -168,7 +166,6 @@ Route::middleware([
 
 Route::group(['prefix' => 'product', 'as' => 'tenant.products.', 'middleware' =>[
     'web',
-//    InitializeTenancyByDomain::class,
     InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'tenant_glvar',
@@ -193,7 +190,6 @@ require_once __DIR__ .'/tenant_admin.php';
 
 Route::middleware([
     'web',
-//    InitializeTenancyByDomain::class,
     InitializeTenancyByDomainCustomisedMiddleware::class,
     PreventAccessFromCentralDomains::class,
     'tenant_glvar',

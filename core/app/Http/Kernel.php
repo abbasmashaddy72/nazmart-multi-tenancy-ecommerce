@@ -19,8 +19,11 @@ use App\Http\Middleware\Tenant\TenantFeaturePermission;
 use App\Http\Middleware\Tenant\TenantUserMailVerifyMiddleware;
 use App\Http\Middleware\TenantCheckMiddleware;
 use App\Http\Middleware\userMailVerifyMiddleware;
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Routing\Router;
 use Modules\Blog\Http\Middleware\BlogLimitMiddleware;
+use Modules\SiteAnalytics\Http\Middleware\Analytics;
 
 class Kernel extends HttpKernel
 {
@@ -38,7 +41,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
-        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class
     ];
 
     /**
@@ -65,6 +68,8 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
+
+
 
     /**
      * The application's route middleware.
@@ -103,4 +108,23 @@ class Kernel extends HttpKernel
         'set_lang' => SetLang::class,
         'redirect_if_no_digital_product' => RedirectIfNoDigitalProduct::class
     ];
+
+
+    /*==============================================
+        Register middleware for external plugins
+    ===============================================*/
+    public function __construct(Application $app, Router $router)
+    {
+        parent::__construct($app, $router);
+        $this->registerConditionalMiddleware();
+    }
+
+    protected function registerConditionalMiddleware(): void
+    {
+        $middleware = Analytics::class;
+
+        if (moduleExists('SiteAnalytics') && class_exists($middleware)) {
+            $this->middlewareGroups['web'][] = $middleware;
+        }
+    }
 }

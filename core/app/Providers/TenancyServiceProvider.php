@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use AndreasElia\Analytics\Http\Middleware\Analytics;
 use App\Http\Middleware\Landlord\TenantAdminPanelMailVerifyMiddleware;
 use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 use App\Http\Middleware\Tenant\TenantConfigMiddleware;
@@ -25,7 +26,6 @@ class TenancyServiceProvider extends ServiceProvider
 
     public function events()
     {
-
         return [
             // Tenant events
             Events\CreatingTenant::class => [],
@@ -157,7 +157,6 @@ class TenancyServiceProvider extends ServiceProvider
             Middleware\InitializeTenancyByDomainOrSubdomain::class,
             Middleware\InitializeTenancyByPath::class,
             Middleware\InitializeTenancyByRequestData::class,
-            //
         ];
 
         foreach (array_reverse($tenancyMiddleware) as $middleware) {

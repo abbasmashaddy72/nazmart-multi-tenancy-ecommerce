@@ -61,9 +61,9 @@ Route::middleware([
 ])->controller(TenantFrontendController::class)
     ->name('tenant.')
     ->group(function () {
-        Route::get('/login/otp', 'showOtpLoginForm')->name('user.login.otp');
-        Route::post('/login/otp', 'sendOtp');
-        Route::get('/login/otp/verification', 'showOtpVerificationForm')->name('user.login.otp.verification');
-        Route::post('/login/otp/verification', 'verifyOtp');
-        Route::get('/login/otp/resend', 'resendOtp')->name('user.login.otp.resend');
+        Route::get('/otp/login', 'showOtpLoginForm')->name('user.login.otp');
+        Route::post('/otp/login', 'sendOtp');
+        Route::get('/otp/login/verification', 'showOtpVerificationForm')->name('user.login.otp.verification');
+        Route::post('/otp/login/verification', 'verifyOtp');
+        Route::get('/otp/login/resend', 'resendOtp')->name('user.login.otp.resend');
     });

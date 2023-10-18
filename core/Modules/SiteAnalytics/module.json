@@ -23,13 +23,13 @@
                     "route": "landlord.admin.analytics.settings",
                     "tenantRoute": "tenant.admin.analytics.settings",
                     "parent": null,
-                    "icon": "mdi-google-analytics",
+                    "icon": "mdi mdi-google-analytics",
                     "permissions": "site-analytics",
                     "class": "plugin-menu"
                 },
                 {
                     "id" : "site-analytics-settings",
-                    "label": "SMS Settings",
+                    "label": "Analytics Settings",
                     "route": "landlord.admin.analytics.settings",
                     "tenantRoute": "tenant.admin.analytics.settings",
                     "parent": "site-analytics-menu"

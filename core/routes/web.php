@@ -167,7 +167,7 @@ Route::get("assets/theme/screenshot/{theme}", function ($theme){
     }
 
     return abort(404);
-})->name("theme.primary.screenshot");
+})->withoutMiddleware('analytics')->name("theme.primary.screenshot");
 
 Route::get("assets/payment-gateway/screenshot/{moduleName}/{gatewayName}", function ($moduleName, $gatewayName){
     $image_name = getPaymentGatewayImagePath($gatewayName);
@@ -178,4 +178,4 @@ Route::get("assets/payment-gateway/screenshot/{moduleName}/{gatewayName}", funct
     }
 
     return abort(404);
-})->name("payment.gateway.logo");
+})->withoutMiddleware('analytics')->name("payment.gateway.logo");

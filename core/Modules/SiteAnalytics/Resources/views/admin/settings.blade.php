@@ -18,20 +18,18 @@
                     <div class="wrapper d-flex justify-content-between">
                         <div class="header-wrap">
                             <h4 class="header-title mb-2">{{__("Site Analytics Settings")}}</h4>
-                            <p>{{__("Manage all sms gateway from here, you can active/deactivate any sms gateway from here.")}}</p>
+                            <p>{{__("Manage site analytics and views from here, you can active/deactivate the usages from here.")}}</p>
                         </div>
-                        <div class="settings-options justify-content-end">
-                            <span data-bs-toggle="modal" data-bs-target="#settings_option_modal">
-                                <a href="#" data-bs-toggle="tooltip"  data-bs-placement="top" title="{{__('SMS Settings')}}" class="modal-btn btn btn-info btn-small settings-option-modal">
-                                    <i class="mdi mdi-cogs"></i>
-                                </a>
-                            </span>
-                            <span data-bs-target="#test_sms_modal" data-bs-toggle="modal">
-                                <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="{{__('Send Test SMS')}}" class="modal-btn btn btn-success btn-small">
-                                    <i class="mdi mdi-message-alert"></i>
-                                </a>
-                            </span>
-                        </div>
+                    </div>
+
+                    <x-fields.switcher label="Enable or disable site analytics" name="site_analytics_status" value="{{get_static_option('site_analytics_status')}}"/>
+                    <div class="settings_wrapper">
+                        <x-fields.switcher label="Show or hide unique users" name="site_analytics_unique_user" value="{{get_static_option('site_analytics_unique_users')}}"/>
+                        <x-fields.switcher label="Show or hide page views" name="site_analytics_page_view" value="{{get_static_option('site_analytics_page_views')}}"/>
+                        <x-fields.switcher label="Show or hide page views" name="site_analytics_view_source" value="{{get_static_option('site_analytics_view_sources')}}"/>
+                        <x-fields.switcher label="Show or hide users country" name="site_analytics_users_country" value="{{get_static_option('site_analytics_users_country')}}"/>
+                        <x-fields.switcher label="Show or hide users country" name="site_analytics_users_device" value="{{get_static_option('site_analytics_users_devices')}}"/>
+                        <x-fields.switcher label="Show or hide users country" name="site_analytics_users_browser" value="{{get_static_option('site_analytics_users_browser')}}"/>
                     </div>
                 </div>
             </div>
