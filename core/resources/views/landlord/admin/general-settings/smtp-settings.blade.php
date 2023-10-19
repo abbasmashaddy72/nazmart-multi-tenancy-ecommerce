@@ -38,9 +38,9 @@
                                 <option {{get_static_option_central('site_smtp_port')== '2525' ? 'selected' : ''}} value="2525">2525</option>
                             </x-fields.select >
                             <x-fields.select name="site_smtp_encryption" title="{{__('SMTP Encryption')}}" info="{{__('if you did not found your port, you can add smtp settings manually form @core>.env file')}}">
-                                <option {{get_static_option_central('site_smtp_encryption') == 'ssl' ? 'selected' : ''}} value="ssl">{{__('SSL')}}</option>
-                                <option {{get_static_option_central('site_smtp_encryption') == 'tls' ? 'selected' : ''}} value="tls">{{__('TLS')}}</option>
-                                <option {{get_static_option_central('site_smtp_encryption') == '' ? 'selected' : ''}} value="null">{{__('none')}}</option>
+                                <option @selected(get_static_option_central('site_smtp_encryption') == 'ssl') value="ssl">{{__('SSL')}}</option>
+                                <option @selected(get_static_option_central('site_smtp_encryption') == 'tls') value="tls">{{__('TLS')}}</option>
+                                <option @selected(get_static_option_central('site_smtp_encryption') == 'null') value="null">{{__('none')}}</option>
                             </x-fields.select >
                             <button type="submit" class="btn btn-gradient-primary me-2">{{__('Save Changes')}}</button>
                         </form>

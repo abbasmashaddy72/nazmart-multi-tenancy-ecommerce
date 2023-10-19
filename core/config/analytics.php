@@ -29,6 +29,9 @@ return [
         '/landlord/wallet*',
         '/user/*',
         '/request-refund/*',
+        '/admin-home',
+        '/admin-home/*',
+        '/favicon.ico',
     ],
 
     /**

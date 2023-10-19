@@ -197,7 +197,7 @@
     </div>
 @endsection
 @section('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="{{global_asset('assets/landlord/admin/js/apexcharts.js')}}"></script>
     <x-datatable.js/>
     <x-table.btn.swal.js/>
 

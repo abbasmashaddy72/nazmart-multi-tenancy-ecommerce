@@ -4,6 +4,7 @@ namespace Modules\SiteAnalytics\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
+use Modules\SiteAnalytics\Http\Middleware\Analytics;
 
 class SiteAnalyticsServiceProvider extends ServiceProvider
 {
@@ -28,6 +29,7 @@ class SiteAnalyticsServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
+//        app()->make('router')->aliasMiddleware('analytics', Analytics::class);
     }
 
     /**

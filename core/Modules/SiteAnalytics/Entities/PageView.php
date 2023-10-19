@@ -21,6 +21,8 @@ class PageView extends Model
         'utm_content',
     ];
 
+    protected $dates = ['created_at'];
+
     public function setSourceAttribute($value): void
     {
         $this->attributes['source'] = $value

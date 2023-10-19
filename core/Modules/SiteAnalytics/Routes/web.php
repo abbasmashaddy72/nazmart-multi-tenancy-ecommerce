@@ -8,9 +8,9 @@ Route::middleware(['auth:admin', 'adminglobalVariable', 'set_lang'])
     ->name('landlord.')
     ->controller(SiteAnalyticsSettingsController::class)
     ->group(function () {
-        Route::get('/', 'settings')->name('admin.analytics.settings');
-//        Route::post('/', 'update_sms_settings');
-//        Route::match(['get', 'post'], '/sms-options', 'update_sms_option_settings')->name('admin.sms.options');
+        Route::get( '/', 'index')->name('admin.analytics');
+        Route::get('/settings', 'settings')->name('admin.analytics.settings');
+        Route::post('/settings', 'update_settings');
 //        Route::match(['get', 'post'], '/update-status', 'update_status')->name('admin.sms.status');
 //        Route::get('/login-otp-status', 'login_otp_status')->name('admin.sms.login.otp.status');
 //

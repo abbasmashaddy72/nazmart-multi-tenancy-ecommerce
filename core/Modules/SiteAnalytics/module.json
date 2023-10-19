@@ -28,6 +28,13 @@
                     "class": "plugin-menu"
                 },
                 {
+                    "id" : "site-analytics-index",
+                    "label": "Analytics Dashboard",
+                    "route": "landlord.admin.analytics",
+                    "tenantRoute": "tenant.admin.analytics",
+                    "parent": "site-analytics-menu"
+                },
+                {
                     "id" : "site-analytics-settings",
                     "label": "Analytics Settings",
                     "route": "landlord.admin.analytics.settings",
