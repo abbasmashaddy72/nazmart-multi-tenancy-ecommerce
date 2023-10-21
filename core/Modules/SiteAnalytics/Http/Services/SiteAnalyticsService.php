@@ -16,12 +16,12 @@ class SiteAnalyticsService
     public function periods(): array
     {
         return [
-            'today'     => 'Today',
-            'yesterday' => 'Yesterday',
-            '1_week'    => 'Last 7 days',
-            '30_days'   => 'Last 30 days',
-            '6_months'  => 'Last 6 months',
-            '12_months' => 'Last 12 months',
+            'today'     => __('Today'),
+            'yesterday' => __('Yesterday'),
+            '1_week'    => __('Last 7 days'),
+            '30_days'   => __('Last 30 days'),
+            '6_months'  => __('Last 6 months'),
+            '12_months' => __('Last 12 months'),
         ];
     }
 
@@ -29,7 +29,7 @@ class SiteAnalyticsService
     {
         return [
             [
-                'key'   => 'Unique Users',
+                'key'   => __('Unique Users'),
                 'value' => PageView::query()
                     ->scopes(['filter' => [$this->period]])
                     ->groupBy('session')
@@ -37,7 +37,7 @@ class SiteAnalyticsService
                     ->count(),
             ],
             [
-                'key'   => 'Page Views',
+                'key'   => __('Page Views'),
                 'value' => PageView::query()
                     ->scopes(['filter' => [$this->period]])
                     ->count(),
@@ -55,11 +55,22 @@ class SiteAnalyticsService
             ->get();
     }
 
+    public function pagesByPlan(): Collection
+    {
+        return PageView::query()
+            ->scopes(['filter' => [$this->period]])
+            ->where('uri', 'LIKE', '%plan-order/%')
+            ->orWhere('uri', 'LIKE', '%view-plan/%')
+            ->select('uri as page', DB::raw('count(*) as users'))
+            ->groupBy('page')
+            ->orderBy('users', 'desc')
+            ->get();
+    }
+
     public function pagesByDate(): Collection
     {
         return PageView::query()
-            ->whereDate('created_at', today())
-            ->select(DB::raw("DATE_FORMAT(created_at, '%h %p') as time"), DB::raw('count(*) as total_views'))
+            ->scopes(['chart' => [$this->period]])
             ->groupBy('time')
             ->orderBy('time')
             ->get();
@@ -69,6 +80,19 @@ class SiteAnalyticsService
     {
         return PageView::query()
             ->scopes(['filter' => [$this->period]])
+            ->select('source as page', DB::raw('count(*) as users'))
+            ->whereNotNull('source')
+            ->groupBy('source')
+            ->orderBy('users', 'desc')
+            ->get();
+    }
+
+    public function sourcesByPlan(): Collection
+    {
+        return PageView::query()
+            ->scopes(['filter' => [$this->period]])
+            ->where('uri', 'LIKE', '%plan-order/%')
+            ->orWhere('uri', 'LIKE', '%view-plan/%')
             ->select('source as page', DB::raw('count(*) as users'))
             ->whereNotNull('source')
             ->groupBy('source')
@@ -86,10 +110,34 @@ class SiteAnalyticsService
             ->get();
     }
 
+    public function usersByPlan(): Collection
+    {
+        return PageView::query()
+            ->scopes(['filter' => [$this->period]])
+            ->where('uri', 'LIKE', '%plan-order/%')
+            ->orWhere('uri', 'LIKE', '%view-plan/%')
+            ->select('country', DB::raw('count(*) as users'))
+            ->groupBy('country')
+            ->orderBy('users', 'desc')
+            ->get();
+    }
+
     public function devices(): Collection
     {
         return PageView::query()
             ->scopes(['filter' => [$this->period]])
+            ->select('device as type', DB::raw('count(*) as users'))
+            ->groupBy('type')
+            ->orderBy('users', 'desc')
+            ->get();
+    }
+
+    public function devicesByPlan(): Collection
+    {
+        return PageView::query()
+            ->scopes(['filter' => [$this->period]])
+            ->where('uri', 'LIKE', '%plan-order/%')
+            ->orWhere('uri', 'LIKE', '%view-plan/%')
             ->select('device as type', DB::raw('count(*) as users'))
             ->groupBy('type')
             ->orderBy('users', 'desc')

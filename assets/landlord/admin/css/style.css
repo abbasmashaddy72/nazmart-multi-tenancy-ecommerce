@@ -18316,7 +18316,7 @@ code {
 }
 
 .card .card-title {
-    color: #343a40;
+    color: #111827;
     margin-bottom: 0.75rem;
     text-transform: capitalize;
     font-family: "ubuntu-medium", sans-serif;
@@ -21485,4 +21485,20 @@ table .attachment-preview {
 
 .sidebar .nav .nav-item.plugin-menu {
     position: relative;
+}
+.card-title-custom {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--heading-color);
+}
+
+.card-title-value {
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: var(--heading-color);
+}
+
+.card-inner {
+    max-height: 16rem;
+    overflow-y: auto;
 }

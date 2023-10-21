@@ -38,10 +38,6 @@
             </div>
         </div>
 
-        <div class="row g-4 mt-1">
-            @each('siteanalytics::admin.stats.card', $stats, 'stat')
-        </div>
-
         <div class="dashboard-recent-order">
             <div class="row g-4 mt-1">
                 <x-flash-msg/>
@@ -50,7 +46,7 @@
                     <div class="p-4 recent-order-wrapper recent-orderChart bg-white">
                         <div class="wrapper d-flex justify-content-between">
                             <div class="header-wrap">
-                                <h4 class="header-title mb-2 text-capitalize">{{__("all page views")}}</h4>
+                                <h4 class="header-title mb-2 text-capitalize">{{__("all subscription plan views")}}</h4>
                             </div>
                         </div>
                         <div class="page-view chart-wrapper">
@@ -76,7 +72,7 @@
 
         <div class="mt-1 row g-4">
             <div class="col-lg-6">
-                @include('siteanalytics::admin.data.pages-card')
+                @include('siteanalytics::admin.data.plan-card')
             </div>
             <div class="col-lg-6">
                 @include('siteanalytics::admin.data.sources-card')
@@ -87,7 +83,6 @@
             <div class="col-lg-6">
                 @include('siteanalytics::admin.data.devices-card')
             </div>
-            @each('siteanalytics::admin.data.utm-card', $utm, 'data')
         </div>
         @endsection
 
@@ -95,8 +90,23 @@
             <script src="{{global_asset('assets/landlord/admin/js/apexcharts.js')}}"></script>
 
             @php
-                $views = json_encode(array_column(current($pages_charts) ,'total_views'));
-                $date = json_encode(array_column(current($pages_charts) ,'time'));
+                $plans = \App\Models\PricePlan::where('status', 1)->select(['id', 'title'])->pluck('title', 'id');
+
+                $pages_array = $pages->toArray();
+                $plan_pages = array_map(function ($item) {
+                    $item['page'] = str_replace(['/plan-order/', '/view-plan/','/trial'],'',$item['page']);
+                    return $item;
+                }, $pages_array);
+
+                $plan_with_names = [];
+                foreach ($plan_pages ?? [] as $key => $item)
+                {
+                    $plan_with_names[$key]['users'] = $item['users'];
+                    $plan_with_names[$key]['name'] = current($plans)[$item['page']] ?? '';
+                }
+
+                $views = json_encode(array_column($plan_with_names ,'users'));
+                $name = json_encode(array_column($plan_with_names ,'name'));
 
                 $country = json_encode(array_column(current($users) ,'country'));
                 $country_users = json_encode(array_column(current($users) ,'users'));
@@ -109,7 +119,7 @@
                     const chartByTotal = () => {
                         return {
                             series: [{
-                                name: `{{__('Page Views')}}`,
+                                name: `{{__('Plan Views')}}`,
                                 data: {{$views}}
                             }],
                             chart: {
@@ -134,7 +144,7 @@
                             },
 
                             xaxis: {
-                                categories: <?php echo $date ?>,
+                                categories: <?php echo $name ?>,
                                 position: 'top',
                                 axisBorder: {
                                     show: false

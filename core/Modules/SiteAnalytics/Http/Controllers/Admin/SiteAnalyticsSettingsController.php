@@ -15,7 +15,7 @@ class SiteAnalyticsSettingsController extends Controller
         $period = $request->get('period', 'today');
         $service = (new SiteAnalyticsService($period));
 
-//        dd($service->periods(), $service->pagesByDate());
+//        dd($service->periods(), $period, $service->pagesByDate());
 
         return view('siteanalytics::admin.dashboard', [
             'period'  => $period,
@@ -27,6 +27,21 @@ class SiteAnalyticsSettingsController extends Controller
             'devices' => $service->devices(),
             'utm'     => $service->utm(),
             'pages_charts'     => $service->pagesByDate(),
+        ]);
+    }
+
+    public function analytics(Request $request)
+    {
+        $period = $request->get('period', 'today');
+        $service = (new SiteAnalyticsService($period));
+
+        return view('siteanalytics::admin.analytics', [
+            'period'  => $period,
+            'periods' => $service->periods(),
+            'pages'   => $service->pagesByPlan(),
+            'sources' => $service->sourcesByPlan(),
+            'users'   => $service->usersByPlan(),
+            'devices' => $service->devicesByPlan(),
         ]);
     }
 

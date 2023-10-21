@@ -29,14 +29,21 @@
                 },
                 {
                     "id" : "site-analytics-index",
-                    "label": "Analytics Dashboard",
-                    "route": "landlord.admin.analytics",
+                    "label": "Dashboard",
+                    "route": "landlord.admin.dashboard",
                     "tenantRoute": "tenant.admin.analytics",
                     "parent": "site-analytics-menu"
                 },
                 {
+                    "id" : "site-analytics-packages",
+                    "label": "Analytics",
+                    "route": "landlord.admin.packages",
+                    "tenantRoute": "tenant.admin.packages",
+                    "parent": "site-analytics-menu"
+                },
+                {
                     "id" : "site-analytics-settings",
-                    "label": "Analytics Settings",
+                    "label": "Settings",
                     "route": "landlord.admin.analytics.settings",
                     "tenantRoute": "tenant.admin.analytics.settings",
                     "parent": "site-analytics-menu"
