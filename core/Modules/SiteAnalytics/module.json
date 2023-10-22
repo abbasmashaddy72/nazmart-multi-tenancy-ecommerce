@@ -31,14 +31,14 @@
                     "id" : "site-analytics-index",
                     "label": "Dashboard",
                     "route": "landlord.admin.dashboard",
-                    "tenantRoute": "tenant.admin.analytics",
+                    "tenantRoute": "tenant.admin.dashboard",
                     "parent": "site-analytics-menu"
                 },
                 {
                     "id" : "site-analytics-packages",
                     "label": "Analytics",
-                    "route": "landlord.admin.packages",
-                    "tenantRoute": "tenant.admin.packages",
+                    "route": "landlord.admin.analytics",
+                    "tenantRoute": "tenant.admin.analytics",
                     "parent": "site-analytics-menu"
                 },
                 {

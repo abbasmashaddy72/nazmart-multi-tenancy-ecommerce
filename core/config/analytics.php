@@ -32,6 +32,13 @@ return [
         '/admin-home',
         '/admin-home/*',
         '/favicon.ico',
+        '/shop/order-success',
+        '/shop/order-success/*',
+        '/shop/order-cancel',
+        '/shop/order-cancel/*',
+        '/shop/*-ipn',
+        '/shop/checkout/shipping-method-data',
+        '/shop/assets/*'
     ],
 
     /**

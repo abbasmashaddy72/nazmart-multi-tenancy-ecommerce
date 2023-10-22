@@ -15,8 +15,6 @@ class SiteAnalyticsSettingsController extends Controller
         $period = $request->get('period', 'today');
         $service = (new SiteAnalyticsService($period));
 
-//        dd($service->periods(), $period, $service->pagesByDate());
-
         return view('siteanalytics::admin.dashboard', [
             'period'  => $period,
             'periods' => $service->periods(),
@@ -38,10 +36,12 @@ class SiteAnalyticsSettingsController extends Controller
         return view('siteanalytics::admin.analytics', [
             'period'  => $period,
             'periods' => $service->periods(),
-            'pages'   => $service->pagesByPlan(),
+            'pages'   => tenant() ? $service->pagesByProduct() : $service->pagesByPlan(),
             'sources' => $service->sourcesByPlan(),
             'users'   => $service->usersByPlan(),
             'devices' => $service->devicesByPlan(),
+            'products_views' => tenant() ? $service->pagesByPlan() : [],
+            'orders' => tenant() ? $service->orders() : []
         ]);
     }
 
@@ -61,6 +61,17 @@ class SiteAnalyticsSettingsController extends Controller
             'site_analytics_users_device' => 'nullable',
             'site_analytics_users_browser' => 'nullable'
         ];
+
+        if (tenant())
+        {
+            $tenant_requested_params = [
+                'site_analytics_most_viewed_products' => 'nullable',
+                'site_analytics_most_sold_products' => 'nullable',
+                'site_analytics_purchase_bounce_rate' => 'nullable',
+            ];
+
+            $requested_params = array_merge($requested_params, $tenant_requested_params);
+        }
 
         $request->validate($requested_params);
 

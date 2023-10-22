@@ -3,10 +3,23 @@
         {{ $periods[$period] }}
     </a>
 
+    @php
+        if (isset($type))
+        {
+            if ($type == 'dashboard')
+            {
+                $route = route(route_prefix().'admin.dashboard');
+            }
+            elseif ($type == 'analytics')
+            {
+                $route = route(route_prefix().'admin.analytics');
+            }
+        }
+    @endphp
     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
         @foreach ($periods as $key => $value)
             <li>
-                <a class="dropdown-item" href="{{ route('landlord.admin.dashboard') }}?period={{ $key }}">{{ $value }}</a>
+                <a class="dropdown-item" href="{{ $route }}?period={{ $key }}">{{ $value }}</a>
             </li>
         @endforeach
     </ul>

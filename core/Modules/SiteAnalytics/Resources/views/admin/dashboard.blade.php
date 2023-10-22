@@ -33,7 +33,7 @@
         <div class="row mt-4">
             <div class="col-12">
                 <div class="d-flex justify-content-end">
-                    @include('siteanalytics::admin.data.filter')
+                    @include('siteanalytics::admin.data.filter', ['type' => 'dashboard'])
                 </div>
             </div>
         </div>
@@ -44,8 +44,6 @@
 
         <div class="dashboard-recent-order">
             <div class="row g-4 mt-1">
-                <x-flash-msg/>
-                <x-error-msg/>
                 <div class="col-md-6">
                     <div class="p-4 recent-order-wrapper recent-orderChart bg-white">
                         <div class="wrapper d-flex justify-content-between">
@@ -76,16 +74,16 @@
 
         <div class="mt-1 row g-4">
             <div class="col-lg-6">
-                @include('siteanalytics::admin.data.pages-card')
+                @includeWhen(!empty(get_static_option('site_analytics_page_view')) ,'siteanalytics::admin.data.pages-card')
             </div>
             <div class="col-lg-6">
-                @include('siteanalytics::admin.data.sources-card')
+                @includeWhen(!empty(get_static_option('site_analytics_view_source')) ,'siteanalytics::admin.data.sources-card')
             </div>
             <div class="col-lg-6">
-                @include('siteanalytics::admin.data.users-card')
+                @includeWhen(!empty(get_static_option('site_analytics_users_country')) ,'siteanalytics::admin.data.users-card')
             </div>
             <div class="col-lg-6">
-                @include('siteanalytics::admin.data.devices-card')
+                @includeWhen(!empty(get_static_option('site_analytics_users_device')) ,'siteanalytics::admin.data.devices-card')
             </div>
             @each('siteanalytics::admin.data.utm-card', $utm, 'data')
         </div>

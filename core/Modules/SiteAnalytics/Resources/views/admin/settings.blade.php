@@ -34,17 +34,17 @@
                                 <x-fields.switcher label="Show or hide page source" name="site_analytics_view_source" value="{{get_static_option('site_analytics_view_source')}}"/>
                                 <x-fields.switcher label="Show or hide users country" name="site_analytics_users_country" value="{{get_static_option('site_analytics_users_country')}}"/>
                                 <x-fields.switcher label="Show or hide users device" name="site_analytics_users_device" value="{{get_static_option('site_analytics_users_device')}}"/>
-                                <x-fields.switcher label="Show or hide users browser" name="site_analytics_users_browser" value="{{get_static_option('site_analytics_users_browser')}}"/>
+{{--                                <x-fields.switcher label="Show or hide users browser" name="site_analytics_users_browser" value="{{get_static_option('site_analytics_users_browser')}}"/>--}}
                             </div>
 
-{{--                            @tenant--}}
+                            @tenant
                                 <h4 class="mt-2">{{__('Products')}}</h4>
                                 <div class="d-flex gap-5">
                                     <x-fields.switcher label="Show or hide most viewed products" name="site_analytics_most_viewed_products" value="{{get_static_option('site_analytics_most_viewed_products')}}"/>
-                                    <x-fields.switcher label="Show or hide most sold products" name="site_analytics_most_sold_products" value="{{get_static_option('site_analytics_most_sold_products')}}"/>
+{{--                                    <x-fields.switcher label="Show or hide most sold products" name="site_analytics_most_sold_products" value="{{get_static_option('site_analytics_most_sold_products')}}"/>--}}
                                     <x-fields.switcher label="Show or hide purchase bounce rate" name="site_analytics_purchase_bounce_rate" value="{{get_static_option('site_analytics_purchase_bounce_rate')}}"/>
                                 </div>
-{{--                            @endtenant--}}
+                            @endtenant
                         </div>
 
                         <div class="form-group mt-4">
