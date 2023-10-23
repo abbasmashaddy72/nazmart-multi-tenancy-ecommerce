@@ -10,7 +10,7 @@ Route::middleware(['auth:admin', 'adminglobalVariable', 'set_lang'])
     ->name('landlord.')
     ->controller(SiteAnalyticsSettingsController::class)
     ->group(function () {
-        Route::get( '/', 'index')->name('admin.dashboard');
+        Route::get( '/', 'index')->name('admin.dashboard.analytics');
         Route::get( '/analytics', 'analytics')->name('admin.analytics');
         Route::get('/settings', 'settings')->name('admin.analytics.settings');
         Route::post('/settings', 'update_settings');
@@ -24,7 +24,7 @@ Route::group(['middleware' => [
     PreventAccessFromCentralDomains::class,
 ], 'prefix' => 'admin-home/tenant-site-analytics/', 'as' => 'tenant.'], function () {
     Route::controller(SiteAnalyticsSettingsController::class)->group( function () {
-        Route::get( '/', 'index')->name('admin.dashboard');
+        Route::get( '/', 'index')->name('admin.dashboard.analytics');
         Route::get( '/analytics', 'analytics')->name('admin.analytics');
         Route::get('/settings', 'settings')->name('admin.analytics.settings');
         Route::post('/settings', 'update_settings');

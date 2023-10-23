@@ -8,6 +8,12 @@ use AndreasElia\Analytics\Http\Middleware\Analytics;
 use App\Http\Middleware\Landlord\TenantAdminPanelMailVerifyMiddleware;
 use App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware;
 use App\Http\Middleware\Tenant\TenantConfigMiddleware;
+use App\Jobs\NewShopCreatedEmailNotificationJob;
+use App\Jobs\TenantCacheClearJob;
+use App\Jobs\TenantDomainCreateJob;
+use App\Jobs\TenantInformationUpdateJob;
+use App\Jobs\TenantMigrateDatabseJob;
+use App\Jobs\TenantSeedDatabaseJob;
 use App\Models\User;
 use App\Observers\TenantRegisterObserver;
 use Illuminate\Support\Facades\Event;
@@ -32,7 +38,14 @@ class TenancyServiceProvider extends ServiceProvider
             Events\TenantCreated::class => [
                 JobPipeline::make([
                     Jobs\CreateDatabase::class,
-                    Jobs\MigrateDatabase::class,
+                    TenantMigrateDatabseJob::class,
+                    TenantCacheClearJob::class,
+                    TenantDomainCreateJob::class,
+                    TenantInformationUpdateJob::class,
+                    TenantSeedDatabaseJob::class,
+                    \App\Jobs\TenantFileSycnForNewTenant::class,
+                    NewShopCreatedEmailNotificationJob::class
+
                 // TODO: Use this seeder as tenant seeder
 //                     Jobs\SeedDatabase::class,
 

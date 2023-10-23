@@ -60,6 +60,39 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
         ],
 
+        'wasabi' => [
+            'driver' => 's3',
+            'key' => env('WAS_ACCESS_KEY_ID'),
+            'secret' => env('WAS_SECRET_ACCESS_KEY'),
+            'region' => env('WAS_DEFAULT_REGION'),
+            'bucket' => env('WAS_BUCKET'),
+            'endpoint' => env('WAS_URL'),
+        ],
+
+        'LandlordMediaUploader' => [
+            'driver' => 'local',
+            'root' => storage_path('../../assets/landlord/uploads/media-uploader/'),
+            'throw' => false,
+        ],
+
+        'TenantMediaUploader' => [
+            'driver' => 'local',
+            'root' => storage_path('../../assets/tenant/uploads/media-uploader/'),
+            'throw' => false,
+        ],
+
+        'cloudFlareR2' => [
+            'driver' => 's3',
+            'key' => env('CLOUDFLARE_R2_ACCESS_KEY_ID'),
+            'secret' => env('CLOUDFLARE_R2_SECRET_ACCESS_KEY'),
+            'region' => 'us-east-1',
+            'bucket' => env('CLOUDFLARE_R2_BUCKET'),
+            'url' => env('CLOUDFLARE_R2_URL'),
+            'visibility' => 'private',
+            'endpoint' => env('CLOUDFLARE_R2_ENDPOINT'),
+            'use_path_style_endpoint' => env('CLOUDFLARE_R2_USE_PATH_STYLE_ENDPOINT', false),
+            'throw' => false,
+        ]
     ],
 
     /*
@@ -76,5 +109,4 @@ return [
     'links' => [
         public_path('storage') => storage_path('app/public'),
     ],
-
 ];

@@ -1975,3 +1975,13 @@ function calculatePercentageAmount($price, $percentage): float|int
 {
     return ($price * $percentage) / 100;
 }
+
+
+// Check the middleware exist
+function safeMiddleware(string $middlewareName): ?string
+{
+    $kernel = app()->make(\Illuminate\Contracts\Http\Kernel::class);
+    return array_key_exists($middlewareName, $kernel->getMiddlewareGroups()) ||
+    array_key_exists($middlewareName, $kernel->getRouteMiddleware())
+        ? $middlewareName : null;
+}

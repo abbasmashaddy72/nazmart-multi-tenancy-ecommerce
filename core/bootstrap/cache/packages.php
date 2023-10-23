@@ -205,6 +205,13 @@
       'Module' => 'Nwidart\\Modules\\Facades\\Module',
     ),
   ),
+  'pion/laravel-chunk-upload' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Pion\\Laravel\\ChunkUpload\\Providers\\ChunkUploadServiceProvider',
+    ),
+  ),
   'sharifur/payfast' => 
   array (
     'providers' => 

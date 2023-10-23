@@ -3,7 +3,9 @@
 namespace App\Http\Services;
 
 use App\Models\MediaUploader;
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use phpDocumentor\Reflection\Types\Self_;
 
 class HandleImageUploadService
 {
@@ -37,6 +39,8 @@ class HandleImageUploadService
         $resize_thumb_image = Image::make($image)->resize(150, 150);
         $resize_tiny_image = Image::make($image)->resize(15, 15)->blur(50);
 
+        $storage_driver = Storage::getDefaultDriver();
+
         if (!$woocommerce_import)
         {
             $request->file->move($folder_path, $image_db);
@@ -53,8 +57,11 @@ class HandleImageUploadService
             'path' => $image_db,
             'user_type' => 0, //0 == admin 1 == user
             'user_id' => \Auth::guard('admin')->id(),
-            'dimensions' => $image_dimension_for_db
+            'dimensions' => $image_dimension_for_db,
+            'is_synced' => in_array(get_static_option_central('storage_driver'),['s3','cloudFlareR2'])? 1 : 0,
+            'load_from' => in_array($storage_driver,['TenantMediaUploader','LandlordMediaUploader']) ? 0 : 1
         ];
+
         if ($request->user_type === 'user'){
             $imageData['user_type'] = 1;
             $imageData['user_id'] = \Auth::guard('web')->id();
@@ -65,8 +72,17 @@ class HandleImageUploadService
         }
 
         $image_data = MediaUploader::create($imageData);
+        $upload_folder = '/';
+        if (in_array(Storage::getDefaultDriver(),['s3','cloudFlareR2'])){
+            $upload_folder = is_null(tenant()) ? '/' : tenant()->getTenantKey().'/';
+        }
+        Storage::putFileAs($upload_folder, $image, $image_db); //$request->file->move($folder_path, $image_db);
 
         if ($image_width > 150){
+            self::mkdirByPath($folder_path .'thumb/');
+            self::mkdirByPath($folder_path .'grid/');
+            self::mkdirByPath($folder_path .'large/');
+
             $resize_thumb_image->save($folder_path .'thumb/'. $image_thumb);
             $resize_grid_image->save($folder_path .'grid/'. $image_grid);
             $resize_large_image->save($folder_path .'large/'. $image_large);
@@ -80,5 +96,14 @@ class HandleImageUploadService
         }
 
         return $image_data->id ?? '';
+    }
+
+    public static function mkdirByPath($path)
+    {
+        if (!is_dir($path))
+        {
+            return mkdir($path, 0777);
+        }
+
     }
 }

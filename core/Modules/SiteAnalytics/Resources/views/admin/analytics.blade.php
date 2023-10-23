@@ -75,7 +75,7 @@
             </div>
         </div>
 
-        <div class="mt-1 row g-4">
+        <div class="mt-1 row g-4 mb-5">
             <div class="col-lg-6">
                 @includeWhen(empty(tenant()) && get_static_option('site_analytics_page_view') ,'siteanalytics::admin.data.plan-card')
                 @includeWhen(!empty(tenant()) && get_static_option('site_analytics_most_viewed_products') ,'siteanalytics::admin.data.product-card')

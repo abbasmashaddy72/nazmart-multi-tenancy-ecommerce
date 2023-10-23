@@ -30,8 +30,8 @@
                 {
                     "id" : "site-analytics-index",
                     "label": "Dashboard",
-                    "route": "landlord.admin.dashboard",
-                    "tenantRoute": "tenant.admin.dashboard",
+                    "route": "landlord.admin.dashboard.analytics",
+                    "tenantRoute": "tenant.admin.dashboard.analytics",
                     "parent": "site-analytics-menu"
                 },
                 {

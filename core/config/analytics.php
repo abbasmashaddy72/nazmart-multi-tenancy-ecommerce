@@ -38,7 +38,9 @@ return [
         '/shop/order-cancel/*',
         '/shop/*-ipn',
         '/shop/checkout/shipping-method-data',
-        '/shop/assets/*'
+        '/shop/assets/*',
+        '/telescope',
+        '/telescope/*'
     ],
 
     /**

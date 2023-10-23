@@ -8,6 +8,9 @@ use App\Models\MediaUploader;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
+use Pion\Laravel\ChunkUpload\Exceptions\UploadMissingFileException;
+use Pion\Laravel\ChunkUpload\Handler\HandlerFactory;
+use Pion\Laravel\ChunkUpload\Receiver\FileReceiver;
 use Storage;
 use function PHPUnit\Framework\isNull;
 
@@ -30,8 +33,25 @@ class MediaUploaderController extends Controller
 
             if (tenant()?->payment_log?->package?->storage_permission_feature != -1 && $directory_size >= $storage_limit)
             {
-                return \Response::make(array('file' => false, 'error' => 'Your storage limit is over! You can not upload more media files'), 400);
+                return \Response::make(array('file' => false, 'error' => __('Your storage limit is over! You can not upload more media files')), 400);
             }
+        }
+
+        // create the file receiver
+        $receiver = new FileReceiver("file", $request, HandlerFactory::classFromRequest($request));
+        // check if the upload is success, throw exception or return response you need
+        if ($receiver->isUploaded() === false) {
+            throw new UploadMissingFileException();
+        }
+        // receive the file
+        $save = $receiver->receive();
+
+        // check if the upload has finished (in chunk mode it will send smaller files)
+        if ($save->isFinished())
+        {
+            $this->insert_media_image($save->getFile(), $request->user_type);
+            // save the file and return any response you need, current example uses `move` function. If you are
+            // not using move, you need to manually delete the file by unlink($save->getFile()->getPathname())
         }
 
 
@@ -56,7 +76,13 @@ class MediaUploaderController extends Controller
             $folder_path = global_assets_path('assets/'. $this->folderPrefix().'/uploads/media-uploader/'.$tenant_path);
 
             if (in_array($image_extenstion,['pdf','doc','docx','txt','svg','zip','csv','xlsx','xlsm','xlsb','xltx','pptx','pptm','ppt'])){
-                $request->file->move($folder_path, $image_db);
+                $upload_folder = '/';
+                if (in_array(Storage::getDefaultDriver(),['s3','cloudFlareR2'])){
+                    $upload_folder = is_null(tenant()) ? '/' : tenant()->getTenantKey().'/';
+                }
+
+                Storage::putFileAs($upload_folder, $image, $image_db);
+                $storage_driver = Storage::getDefaultDriver();
 
                 $imageData = [
                     'title' => $image_name_with_ext,
@@ -65,7 +91,9 @@ class MediaUploaderController extends Controller
                     'path' => $image_db,
                     'dimensions' => null,
                     'user_id' =>  \Auth::guard('admin')->id(),
+                    'load_from' => in_array($storage_driver,['TenantMediaUploader','LandlordMediaUploader']) ? 0 : 1,
                 ];
+
                 if ($request->user_type === 'user'){
                     $imageData['user_type'] = 1;
                     $imageData['user_id'] = \Auth::guard('web')->id();
@@ -92,44 +120,47 @@ class MediaUploaderController extends Controller
         if ($request->user_type === 'user'){
             $image_query->where(['user_type' => 1,'user_id' => \Auth::guard('web')->id()]);
         }
+
         $all_images = $image_query->orderBy('id', 'DESC')->take(20)->get();
         $selected_image = MediaUploader::find($request->selected);
         $all_image_files = [];
-        if (!is_null($selected_image)){
-            if ($this->check_file_exists($selected_image->path)) {
-                $image_url = $this->getUploadAssetPath($selected_image->path);
-                if ($this->check_file_exists('grid/grid-'.optional($selected_image)->path)) {
-                    $image_url = $this->getUploadAssetPath('grid/grid-' . optional($selected_image)->path);
-                }
-                $all_image_files[] = [
-                    'image_id' => $selected_image->id,
-                    'title' => $selected_image->title,
-                    'dimensions' => $selected_image->dimensions,
-                    'alt' => $selected_image->alt,
-                    'size' => $selected_image->size,
-                    'type' => pathinfo($image_url,PATHINFO_EXTENSION),
-                    'user_type' => $selected_image->type === 0 ? 'admin' : 'user',
-                    'path' => $selected_image->path,
-                    'img_url' => $image_url,
-                    'upload_at' => date_format($selected_image->created_at, 'd M y')
-                ];
-            }else{
-                //todo:: delete assets as well
-                $this->deleteOldFile($selected_image->path);
-                MediaUploader::find($selected_image->id)->delete();
-            }
-        }
+
+//        if (!is_null($selected_image)){
+//            if ($this->check_file_exists($selected_image->path)) {
+//                $image_url = $this->getUploadAssetPath($selected_image->path);
+//                if ($this->check_file_exists('grid/grid-'.optional($selected_image)->path)) {
+//                    $image_url = $this->getUploadAssetPath('grid/grid-' . optional($selected_image)->path);
+//                }
+//                $all_image_files[] = [
+//                    'image_id' => $selected_image->id,
+//                    'title' => $selected_image->title,
+//                    'dimensions' => $selected_image->dimensions,
+//                    'alt' => $selected_image->alt,
+//                    'size' => $selected_image->size,
+//                    'type' => pathinfo($image_url,PATHINFO_EXTENSION),
+//                    'user_type' => $selected_image->type === 0 ? 'admin' : 'user',
+//                    'path' => $selected_image->path,
+//                    'img_url' => $image_url,
+//                    'upload_at' => date_format($selected_image->created_at, 'd M y')
+//                ];
+//            }else{
+//                //todo:: delete assets as well
+//                $this->deleteOldFile($selected_image->path);
+//                MediaUploader::find($selected_image->id)->delete();
+//            }
+//        }
 
         foreach ($all_images as $image){
             if (!is_null($selected_image) && $image->id === $selected_image->id){
                 continue;
             }
 
-            if ($this->check_file_exists($image->path)){
-                $image_url = $this->getUploadAssetPath($image->path);
-                if ($this->check_file_exists('grid/grid-'.$image->path)) {
-                    $image_url = $this->getUploadAssetPath('grid/grid-' . $image->path);
+            if ($this->check_file_exists($image->path, load_from:$image->load_from)){
+                $image_url = $this->getUploadAssetPath($image->path, load_from:$image->load_from);
+                if ($this->check_file_exists('grid/grid-'.$image->path, load_from:$image->load_from)) {
+                    $image_url = $this->getUploadAssetPath('grid/grid-' . $image->path, load_from:$image->load_from);
                 }
+
                 $all_image_files[] = [
                     'image_id' => $image->id,
                     'title' => $image->title,
@@ -145,8 +176,8 @@ class MediaUploaderController extends Controller
 
             }else{
                 //todo:: delete assets as well
-                $this->deleteOldFile($image->path);
-                MediaUploader::find($image->id)->delete();
+//                $this->deleteOldFile($image->path);
+//                MediaUploader::find($image->id)->delete();
             }
         }
         return response()->json($all_image_files);
@@ -191,11 +222,13 @@ class MediaUploaderController extends Controller
         }
         $all_image_files = [];
         foreach ($all_images as $image){
-            if ($this->check_file_exists($image->path)){
-                $image_url = $this->getUploadAssetPath($image->path);
+            if ($this->check_file_exists($image->path, load_from:$image->load_from))
+            {
+                $image_url = $this->getUploadAssetPath($image->path, load_from:$image->load_from);
                 if ($this->check_file_exists('grid-'.$image->path)) {
-                    $image_url = $this->getUploadAssetPath('/grid-' . $image->path);
+                    $image_url = $this->getUploadAssetPath('/grid-' . $image->path, load_from:$image->load_from);
                 }
+
                 $all_image_files[] = [
                     'image_id' => $image->id,
                     'title' => $image->title,
@@ -280,26 +313,28 @@ class MediaUploaderController extends Controller
     {
         $file_type_list = ['','grid/grid-','large/large-','thumb/thumb-','tiny/tiny-'];
         foreach ($file_type_list as $file_type){
-            if ($this->check_file_exists($file_type.$get_image_details)){
-                unlink($this->getUploadBasePath($file_type.$get_image_details));
-            }
+//            if ($this->check_file_exists($file_type.$get_image_details)){
+                @unlink($this->getUploadBasePath($file_type.$get_image_details));
+//            }
         }
     }
 
-    private function check_file_exists($path) : bool
+    private function check_file_exists($path, $load_from = 0) : bool
     {
         $file_path = $this->getUploadBasePath($path);
         return file_exists($file_path) && !is_dir($file_path);
     }
 
-    private function getUploadBasePath($path = '') :string
+    private function getUploadBasePath($path = '', $load_from=0) :string
     {
-        return global_assets_path('assets/'.$this->folderPrefix().'/uploads/media-uploader/'.$this->getTenantFolderPath().$path);
+        return Storage::renderUrl($path,load_from:$load_from);
+//        return global_assets_path('assets/'.$this->folderPrefix().'/uploads/media-uploader/'.$this->getTenantFolderPath().$path);
     }
 
-    private function getUploadAssetPath($path = '') :string
+    private function getUploadAssetPath($path = '', $load_from=0) :string
     {
-        return global_asset('assets/'.$this->folderPrefix().'/uploads/media-uploader/'.$this->getTenantFolderPath().$path);
+        return Storage::renderUrl($path,load_from:$load_from);
+//        return global_asset('assets/'.$this->folderPrefix().'/uploads/media-uploader/'.$this->getTenantFolderPath().$path);
     }
 
     private function getTenantFolderPath(){

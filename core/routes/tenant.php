@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Tenant\Frontend\UserDashboardController;
 use Illuminate\Support\Facades\Route;
+use Modules\SiteAnalytics\Http\Middleware\Analytics;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Controllers\Tenant\Frontend\ShopCreationController;
@@ -121,7 +122,7 @@ Route::middleware([
             }
 
             return abort(404);
-        })->withoutMiddleware('analytics')->name("custom.css.file.url");
+        })->withoutMiddleware(Analytics::class)->name("custom.css.file.url");
 
         Route::get("assets/js/{filename}", function ($filename){
             if(file_exists(theme_assets('js/'. $filename .'.js'))){
@@ -131,7 +132,7 @@ Route::middleware([
             }
 
             return abort(404);
-        })->withoutMiddleware('analytics')->name("custom.js.file.url");
+        })->withoutMiddleware(Analytics::class)->name("custom.js.file.url");
 
         // Payment IPN
         Route::prefix("/")->as("user.frontend.")->group(function (){

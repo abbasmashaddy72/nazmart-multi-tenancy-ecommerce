@@ -7,6 +7,7 @@ use App\Events\TenantRegisterEvent;
 use App\Helpers\FlashMsg;
 use App\Helpers\Payment\DatabaseUpdateAndMailSend\LandlordPricePlanAndTenantCreate;
 use App\Helpers\ResponseMessage;
+use App\Helpers\TenantHelper\TenantHelpers;
 use App\Http\Controllers\Controller;
 use App\Mail\BasicMail;
 use App\Mail\PlaceOrder;
@@ -345,48 +346,53 @@ class TenantManageController extends Controller
        }
 
         $subdomain = $request->custom_subdomain != null ? $request->custom_subdomain : $request->subdomain;
-
         $user = User::findOrFail($request->subs_user_id);
         $package = PricePlan::findOrFail($request->subs_pack_id);
+        $old_tenant_log = PaymentLogs::where(['user_id' => $user->id, 'tenant_id' => $subdomain])->latest()->first();
 
-        $package_start_date = '';
-        $package_expire_date =  '';
-        if(!empty($package)){
+        $tenantHelper = TenantHelpers::init()->setTenantId($subdomain)
+            ->setPackage($package)
+            ->setPaymentLog($old_tenant_log)
+            ->setTheme($request->custom_theme);
 
-            if($package->type == 0){ //monthly
-                $package_start_date = Carbon::now()->format('d-m-Y h:i:s');
-                $package_expire_date = Carbon::now()->addMonth(1)->format('d-m-Y h:i:s');
+//        if ($tenantHelper->getPackageType() === 'custom') {
+//            $request->validate([
+//                'custom_expire_date' => 'required',
+//            ], ['custom_expire_date.required' => __('Please select custom package expire date')]);
+//        }
 
-            }elseif ($package->type == 1){ //yearly
-                $package_start_date = Carbon::now()->format('d-m-Y h:i:s');
-                $package_expire_date = Carbon::now()->addYear(1)->format('d-m-Y h:i:s');
-            }else{ //lifetime
-                $package_start_date = Carbon::now()->format('d-m-Y h:i:s');
-                $package_expire_date = null;
-            }
-        }
+//        $custom_expire_date = $request->custom_expire_date;
+//        $request_theme_slug_or_default = $request->custom_theme;
+//        try {
+//            $request_theme_slug_or_default = $tenantHelper->isThemeAvailableForThisPlanFeature();
+//        } catch (\Exception $e) {
+//            return redirect()->back()->with(FlashMsg::item_delete($e->getMessage()));
+//        }
+
+        $theme_code = '';
+        $package_start_date = $tenantHelper->getStartDate();
+        $package_expire_date = $tenantHelper->getExpiredDate();
 
         $tenant = Tenant::find($subdomain);
         if (!empty($tenant))
         {
-            $old_tenant_log = PaymentLogs::where(['user_id'=>$user->id, 'tenant_id' => $tenant->id ])->latest()->first();
+            $old_tenant_log = PaymentLogs::where(['user_id' => $user->id, 'tenant_id' => $tenant->id ])->latest()->first();
 
-            if (!empty($old_tenant_log->package_id) && !empty($old_tenant_log->user_id) && $old_tenant_log->user_id == $user->id)
-            {
+            if ($package_expire_date != null) {
                 $old_days_left = Carbon::now()->diff($old_tenant_log->expire_date);
                 $left_days = 0;
-                if(!$old_days_left->invert){
+
+                if (!$old_days_left->invert) {
                     $left_days = $old_days_left->days;
                 }
 
-                $new_days_left = Carbon::now()->diff($package_expire_date);
-                $renew_left_days = 0;
-                if(!$new_days_left->invert){
-                    $renew_left_days = $new_days_left->days;
-                }
-
+                $renew_left_days = Carbon::parse($package_expire_date)->diffInDays();
                 $sum_days = $left_days + $renew_left_days;
-                $new_package_expire_date = Carbon::now()->addDay($sum_days)->format("d-m-Y h:i:s");
+                $new_package_expire_date = Carbon::today()->addDays($sum_days)->format("d-m-Y h:i:s");
+            } else {
+                $new_package_expire_date = null;
+            }
+
 
                 PaymentLogs::findOrFail($old_tenant_log->id)->update([
                     'custom_fields' =>  [],
@@ -397,9 +403,9 @@ class TenantManageController extends Controller
                     'package_price' => $package->price,
                     'package_gateway' => null,
                     'package_id' => $package->id,
-                    'theme_slug' => $request->custom_theme,
+                    'theme_slug' => $tenantHelper->getTheme(),
                     'user_id' => $old_tenant_log->user_id,
-                    'tenant_id' => $tenant->id,
+                    'tenant_id' => $tenantHelper->getTenantId(),
                     'status' => $request->account_status,
                     'payment_status' => $request->payment_status,
                     'renew_status' => is_null($old_tenant_log->renew_status) ? 1 : $old_tenant_log->renew_status + 1,
@@ -410,22 +416,22 @@ class TenantManageController extends Controller
                     'expire_date' => $new_package_expire_date
                 ]);
 
-                DB::table('tenants')->where('id', $tenant->id)->update([
+                DB::table('tenants')->where('id', $tenantHelper->getTenantId())->update([
                     'renew_status' => $renew_status = is_null($tenant->renew_status) ? 0 : $tenant->renew_status+1,
                     'is_renew' => $renew_status == 0 ? 0 : 1,
-                    'theme_slug' => $request->custom_theme,
+                    'theme_slug' => $tenantHelper->getTheme(),
                     'start_date' => $package_start_date,
                     'expire_date' => $new_package_expire_date
                 ]);
-
-                $payment_details = PaymentLogs::findOrFail($old_tenant_log->id);
             }
-            else {
-                $package_start_date = $tenant->start_date;
-                $new_package_expire_date = $tenant->expire_date;
+            else
+            {
+                $request->validate([
+                    'custom_theme' => 'required',
+                    'custom_subdomain' =>'required'
+                ]);
 
-                $user = User::find($request->subs_user_id);
-                $payment_log = PaymentLogs::create([
+                PaymentLogs::create([
                     'custom_fields' =>  '',
                     'attachments' =>  '',
                     'email' => $user->email,
@@ -434,95 +440,24 @@ class TenantManageController extends Controller
                     'package_price' => $package->price,
                     'package_gateway' => null,
                     'package_id' => $package->id,
-                    'theme_slug' => $request->custom_theme,
+                    'theme_slug' => $tenantHelper->getTheme(),
                     'user_id' => $user->id,
-                    'tenant_id' => $tenant->id,
+                    'tenant_id' => $tenantHelper->getTenantId(),
                     'payment_status' => $request->payment_status,
                     'status' => $request->account_status,
                     'renew_status' => 0,
                     'is_renew' => 0,
-                    'track' => Str::random(10) . Str::random(10),
-                    'start_date' => $package_start_date,
-                    'expire_date' => $new_package_expire_date
+                    'track' => Str::random(10) . Str::random(10)
                 ]);
 
-                DB::table('tenants')->where('id', $tenant->id)->update([
-                    'renew_status' => 0,
-                    'is_renew' => 0,
-                    'theme_slug' => $request->custom_theme,
-                    'start_date' => $package_start_date,
-                    'expire_date' => $new_package_expire_date
-                ]);
-
-                $payment_details = PaymentLogs::findOrFail($payment_log->id);
-            }
-        } else {
-            $payment_log = PaymentLogs::create([
-                'email' => $user->email,
-                'name' => $user->name,
-                'package_name' => $package->title,
-                'package_price' => $package->price,
-                'package_gateway' => null,
-                'package_id' => $package->id,
-                'user_id' => $user->id,
-                'tenant_id' => $subdomain,
-                'theme_slug' => $request->custom_theme,
-                'is_renew' => 0,
-                'payment_status' => $request->payment_status,
-                'status' => $request->account_status,
-                'track' => Str::random(10) . Str::random(10),
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-                'start_date' => $package_start_date,
-                'expire_date' => $package_expire_date,
-            ]);
-
-            try{
-                event(new TenantRegisterEvent($user, $subdomain, $request->custom_theme));
-
-                DB::table('tenants')->where('id', $payment_log->tenant_id)->update([
-                    'start_date' => $package_start_date,
-                    'expire_date' => $package_expire_date,
-                ]);
-            }catch(\Exception $e){
-                $message = $e->getMessage();
-
-                if(strpos($message,'Access denied') == true){
-
-                    $admin_mail_message = sprintf(__('Database Crating failed for user id %1$s , please checkout admin panel and generate database for this user trial from admin panel manually'), $payment_log->user_id);
-                    $admin_mail_subject = sprintf(__('Database Crating failed on trial request for user id %1$s'), $payment_log->user_id);
-                    //added in try catch block, because if any user did not configure smtp yet, but trying to create user website, it throwing 500error
-                    try{
-                        Mail::to(get_static_option('site_global_email'))->send(new BasicMail($admin_mail_message, $admin_mail_subject));
-                    }catch(\Exception $e){}
-
-                    LandlordPricePlanAndTenantCreate::store_exception($payment_log->tenant_id,'domain create failed',$message,0);
-
-                    return redirect()->back()->with(FlashMsg::item_delete(__('You have no permission to create database, we have created an issue, please go to website settings and manually generate this..!')));
+                try {
+                    Tenant::create(['id' => $subdomain]);
+                }catch (\Exception $e){
+                    return response()->success(ResponseMessage::delete(__($e->getMessage())));
                 }
             }
 
-            $payment_details = PaymentLogs::findOrFail($payment_log->id);
-        }
-
-        $order_mail = get_static_option('order_page_form_mail') ? get_static_option('order_page_form_mail') : get_static_option('site_global_email');
-
-        try {
-            $all_fields = [];
-            $all_attachment = [];
-            Mail::to($order_mail)->send(new PlaceOrder($all_fields, $all_attachment, $payment_details,"admin",'custom_sub'));
-            Mail::to($payment_details->email)->send(new PlaceOrder($all_fields, $all_attachment, $payment_details,'user','custom_sub'));
-
-            $raw_pass = get_static_option_central('tenant_admin_default_password') ?? '12345678';
-            $credential_password = $raw_pass;
-            $credential_email = $user->email;
-            $credential_username = get_static_option_central('tenant_admin_default_username') ?? 'super_admin';
-            Mail::to($credential_email)->send(new TenantCredentialMail($credential_username, $credential_password));
-        }catch (\Exception $e){
-
-        }
-
-        return response()->success(ResponseMessage::success(__('Subscription assigned for this user')));
+        return response()->success(ResponseMessage::success(__('Subscription assigned for this user, you will get notified when website is ready')));
     }
 
 

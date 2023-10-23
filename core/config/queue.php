@@ -29,7 +29,6 @@ return [
     */
 
     'connections' => [
-
         'sync' => [
             'driver' => 'sync',
         ],
@@ -41,6 +40,15 @@ return [
             'retry_after' => 90,
             'after_commit' => false,
             'connection' => 'mysql'
+        ],
+
+        'tenant_file_sync' => [
+            'driver' => 'database',
+            'table' => 'file_sync_jobs',
+            'queue' => 'default',
+            'retry_after' => 90,
+            'after_commit' => false,
+            'connection' => 'mysql',
         ],
 
         'beanstalkd' => [

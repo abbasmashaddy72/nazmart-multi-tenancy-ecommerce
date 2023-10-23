@@ -8,7 +8,7 @@
         {
             if ($type == 'dashboard')
             {
-                $route = route(route_prefix().'admin.dashboard');
+                $route = route(route_prefix().'admin.dashboard.analytics');
             }
             elseif ($type == 'analytics')
             {
