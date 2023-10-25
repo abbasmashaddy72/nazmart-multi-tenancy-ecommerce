@@ -21,7 +21,6 @@ class TenantCredentialJob implements ShouldQueue
         $this->details = $details;
     }
 
-
     public function handle()
     {
         Mail::to($this->details['credential_email'])->send(new TenantCredentialMail($this->details['credential_username'],$this->details['credential_password']));

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Landlord\Admin;
 use App\Helpers\FlashMsg;
 use App\Helpers\ResponseMessage;
 use App\Http\Controllers\Controller;
+use App\Jobs\SyncLocalFileWithCloud;
 use App\Mail\BasicMail;
+use App\Models\MediaUploader;
 use App\Models\Page;
 use App\Models\PaymentGateway;
 use App\Models\Tenant;
@@ -800,6 +802,32 @@ class GeneralSettingsController extends Controller
     public function software_update_check_settings(Request $request){
         //todo run app update and database migrate here for test...
         return view(self::BASE_PATH."check-update");
+    }
+
+    public function storage_settings(Request $request){
+        return view(self::BASE_PATH."storage-settings");
+    }
+
+    public function update_storage_settings(Request $request)
+    {
+        if ( $request->_action === 'sync_file'){
+
+            MediaUploader::where(["is_synced"=> 0])->chunk(50,function ($items){
+                foreach ($items as $item){
+                    SyncLocalFileWithCloud::dispatch($item);
+                }
+            });
+
+            return back()->with(['msg' => __('File Sync Started In The Background'), 'type' => 'success']);
+        }
+
+        $this->validate($request, [
+            'storage_driver' => 'required|string|max:191',
+        ]);
+
+        update_static_option_central('storage_driver',$request->storage_driver);
+
+        return back()->with(['msg' => __('Storage Settings Updated'), 'type' => 'success']);
     }
 
     public function update_version_check(Request $request){

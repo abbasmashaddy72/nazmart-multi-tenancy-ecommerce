@@ -50,6 +50,17 @@ class TenantConfigMiddleware
                 return get_static_option('timezone');
             });
             \Config::set('app.timezone', $timezone);
+
+            // storage management
+            $storagePathFix = str_replace('tenant'.tenant()->getTenantKey(),'', storage_path('../../assets/tenant/uploads/media-uploader/'));
+            Config::set('filesystems.disks.TenantMediaUploader.root',$storagePathFix.tenant()->getTenantKey());
+            $storage_driver = get_static_option_central('storage_driver','TenantMediaUploader');
+            $defaultStorage = is_null($storage_driver) ? "cloudFlareR2" : $storage_driver;
+            Config::set('filesystems.default',$defaultStorage);
+        }
+        else
+        {
+            Config::set('filesystems.default', get_static_option_central('storage_driver','LandlordMediaUploader'));
         }
 
         return $next($request);

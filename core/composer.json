@@ -32,6 +32,7 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",
         "laraveldaily/laravel-invoices": "^3.0",
+        "league/flysystem-aws-s3-v3": "^3.16",
         "mews/purifier": "^3.3",
         "nwidart/laravel-modules": "^8.3",
         "pion/laravel-chunk-upload": "^1.5",

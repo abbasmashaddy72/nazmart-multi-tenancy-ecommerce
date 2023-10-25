@@ -22,7 +22,7 @@ class MediaSeed extends Seeder
         $this->seedMediaUploaderFiles();
 
         // coping media
-        $source_dir = 'assets/tenant/seeder_files/all-media';
+        $source_dir = 'assets/tenant/seeder-files/all-media';
         $destination_dir = 'assets/tenant/uploads/media-uploader/' . tenant()->id;
         $this->recursive_files_copy($source_dir, $destination_dir);
     }

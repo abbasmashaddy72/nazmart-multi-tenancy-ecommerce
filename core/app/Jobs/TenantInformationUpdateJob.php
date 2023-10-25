@@ -67,7 +67,7 @@ class TenantInformationUpdateJob implements ShouldQueue
              'start_date' => $package_start_date,
              'expire_date' => $package_expire_date,
              'user_id' => $paymentLog->user_id,
-             'theme_slug' => $paymentLog->theme,
+             'theme_slug' => $paymentLog->theme_slug,
              'unique_key' => GenerateTenantToken::token(),
              'in_progress' => 1,
              'cleanup' => 1,

@@ -37,7 +37,6 @@ class TenantCleanup extends Command
             foreach ($tenans as $tenant){
                 \DB::table("tenants")->where("id",$tenant->id)->update(["cleanup" => 1]);
                 TenandOperations::dispatch($tenant);
-                $this->repareDataColumn($tenant);
             }
         });
 

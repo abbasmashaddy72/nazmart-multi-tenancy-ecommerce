@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Helpers\DatabaseHelper;
 use App\Models\MediaUploader;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -35,7 +34,7 @@ class TenanFileCopyFromCloudForNewTenant implements ShouldQueue
     public function handle()
     {
         Tenancy::initialize($this->tenantId);
-        $move_path = str_replace('seeder-demo-assets',$this->tenantId,$this->pathname);
+        $move_path = str_replace('seeder-files/all-media',$this->tenantId,$this->pathname);
         try {
             Storage::disk('s3')->copy($this->pathname,$move_path);
             $file_name = pathinfo($this->pathname,PATHINFO_BASENAME);
@@ -43,7 +42,7 @@ class TenanFileCopyFromCloudForNewTenant implements ShouldQueue
             //todo:: update database to use this file from the cloud
 //            DatabaseHelper::switchDatabase($this->tenantId);
 
-            //todo:: need to switch data into this tenant for get tenant mediauploader tablea ccesss
+            //todo:: need to switch data into this tenant for get tenant media uploader table accesss
             MediaUploader::where(['path' => $file_name])->update([
                 'is_synced' => 1,
                 'load_from' => 1

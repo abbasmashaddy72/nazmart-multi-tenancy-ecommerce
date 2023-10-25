@@ -131,7 +131,6 @@ class PageSeed extends Seeder
 
         $this->upload_layout($file_name, $page_data_5->id);
 
-
         $page_data_6 = new Page();
         $page_data_6->slug = Str::slug('shop');
         $page_data_6->title = SanitizeInput::esc_html('Shop');

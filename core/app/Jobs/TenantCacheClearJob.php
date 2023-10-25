@@ -28,6 +28,5 @@ class TenantCacheClearJob implements ShouldQueue
     public function handle()
     {
         Cache::forget(CacheKeyEnums::ALL_TENANT_CACHE->value);
-
     }
 }

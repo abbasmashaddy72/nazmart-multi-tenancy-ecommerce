@@ -376,6 +376,7 @@ class TenantManageController extends Controller
         $tenant = Tenant::find($subdomain);
         if (!empty($tenant))
         {
+            // existing tenant
             $old_tenant_log = PaymentLogs::where(['user_id' => $user->id, 'tenant_id' => $tenant->id ])->latest()->first();
 
             if ($package_expire_date != null) {
@@ -392,7 +393,6 @@ class TenantManageController extends Controller
             } else {
                 $new_package_expire_date = null;
             }
-
 
                 PaymentLogs::findOrFail($old_tenant_log->id)->update([
                     'custom_fields' =>  [],
@@ -426,6 +426,7 @@ class TenantManageController extends Controller
             }
             else
             {
+                // new tenant
                 $request->validate([
                     'custom_theme' => 'required',
                     'custom_subdomain' =>'required'
@@ -447,14 +448,16 @@ class TenantManageController extends Controller
                     'status' => $request->account_status,
                     'renew_status' => 0,
                     'is_renew' => 0,
-                    'track' => Str::random(10) . Str::random(10)
+                    'track' => Str::random(10) . Str::random(10),
+                    'start_date' => $package_start_date,
+                    'expire_date' => $package_expire_date
                 ]);
 
-                try {
+//                try {
                     Tenant::create(['id' => $subdomain]);
-                }catch (\Exception $e){
-                    return response()->success(ResponseMessage::delete(__($e->getMessage())));
-                }
+//                }catch (\Exception $e){
+//                    return response()->success(ResponseMessage::delete(__($e->getMessage())));
+//                }
             }
 
         return response()->success(ResponseMessage::success(__('Subscription assigned for this user, you will get notified when website is ready')));

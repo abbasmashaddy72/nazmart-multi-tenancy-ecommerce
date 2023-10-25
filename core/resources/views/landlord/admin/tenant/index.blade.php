@@ -8,6 +8,14 @@
 @section('style')
     <x-datatable.css/>
     <x-summernote.css/>
+
+    <style>
+        .change-theme{
+            cursor: pointer;
+            color: #0a53be;
+            display: none;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -132,6 +140,9 @@
                             <select class="form-select subdomain" id="subdomain" name="subdomain">
 
                             </select>
+                            <p class="m-0 mt-2 text-end change-theme">
+                                <small>{{__('Change theme?')}}</small>
+                            </p>
                         </div>
 
                         <div class="form-group custom_subdomain_wrapper mt-3">
@@ -300,10 +311,18 @@
                 {
                     custom_subdomain_wrapper.slideDown();
                     custom_subdomain_wrapper.find('#custom-subdomain').attr('name', 'custom_subdomain');
+                    $('#custom-theme').parent().show();
+                    $('.change-theme').hide();
                 } else {
                     custom_subdomain_wrapper.slideUp();
                     custom_subdomain_wrapper.removeAttr('#custom-subdomain').attr('name', 'custom_subdomain');
+                    $('#custom-theme').parent().hide();
+                    $('.change-theme').show();
                 }
+            });
+
+            $(document).on('click', '.change-theme', function () {
+                $('#custom-theme').parent().show();
             });
 
             $(document).on('change', '#subdomain', function (){

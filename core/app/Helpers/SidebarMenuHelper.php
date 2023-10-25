@@ -546,6 +546,13 @@ class SidebarMenuHelper
             'permissions' => ['general-settings-gdpr-settings'],
         ]);
 
+        $menu_instance->add_menu_item('general-settings-storage-settings', [
+            'route' => 'landlord.admin.general.storage.settings',
+            'label' => __('Storage Settings'),
+            'parent' => 'general-settings-menu-items',
+            'permissions' => ['general-settings-license-settings'],
+        ]);
+
         $menu_instance->add_menu_item('general-settings-custom-css-settings', [
             'route' => 'landlord.admin.general.custom.css.settings',
             'label' => __('Custom CSS'),

@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Helpers\DatabaseHelper;
 use App\Models\MediaUploader;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -41,7 +40,7 @@ class SyncFileForNewTenantJob implements ShouldQueue
                 $prefix = str_replace('/','',$vFile).'-';
             }
 
-            $local_file_path = base_path("../assets/tenant/seeder-demo-assets/".$vFile.$prefix.$file_instance->getFilename());
+            $local_file_path = base_path("../assets/tenant/seeder-files/all-media/".$vFile.$prefix.$file_instance->getFilename());
             $cl_file_path = $tenant_id."/".$vFile.$prefix.$file_instance->getFilename();
             // // /* checking the file exits in locally or not, if not exits return this jobs. */
 

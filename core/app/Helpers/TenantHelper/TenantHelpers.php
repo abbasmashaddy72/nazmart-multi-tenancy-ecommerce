@@ -72,6 +72,7 @@ class TenantHelpers
 
     public function setTheme($theme)
     {
+        session()->put('theme', $theme); // It will be used while seeding the home page for specific theme
         $this->theme = $theme;
         return $this;
     }

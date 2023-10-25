@@ -30,7 +30,7 @@ trait ProductGlobalTrait {
         $multiple_date = $this->is_date_range_multiple();
 
         // create product model instance
-//        $all_products = Product::query()->with("brand", "category", "childCategory", "subCategory", "inventory");
+        // $all_products = Product::query()->with("brand", "category", "childCategory", "subCategory", "inventory");
         // first I need to check who is currently want to take data
         // run a condition that will check if vendor is currently login then only vendor product will return
 
@@ -368,7 +368,17 @@ trait ProductGlobalTrait {
         return $arr;
     }
 
-    public function createdByUpdatedBy($product_id, $type= "create"){
+    public function createdByUpdatedBy($product_id, $type = "create"): ProductCreatedBy
+    {
+        if (!ProductCreatedBy::where('product_id' ,$product_id)->exists())
+        {
+            ProductCreatedBy::create([
+                "product_id" => $product_id,
+                "created_by_id" => $this->userId(),
+                "guard_name" => $this->getGuardName(),
+            ]);
+        }
+
         return ProductCreatedBy::updateOrCreate(
             [
                 "product_id" => $product_id
