@@ -43,7 +43,7 @@
                             <x-fields.input name="title" label="{{__('Title')}}" value="{{$page->title}}" id="title"/>
                             <div class="form-group permalink_label" style="">
                                 <label class="text-dark">{{__('Permalink')}} * :
-                                    <span id="slug_show" class="display-inline" style="color: blue;">{{route('landlord.homepage')}}/{{$page->slug}}</span>
+                                    <span id="slug_show" class="display-inline" style="color: blue;">{{getUserBasedDomain(tenant())}}/{{$page->slug}}</span>
                                     <span id="slug_edit" class="display-inline">
                                          <button class="btn btn-warning btn-sm slug_edit_button"> <i class="mdi mdi-lead-pencil"></i> </button>
                                         <input type="text" name="slug" class="form-control blog_slug mt-2" value="{{$page->slug}}" style="display: none">

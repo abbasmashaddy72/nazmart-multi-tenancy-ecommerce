@@ -1985,3 +1985,23 @@ function safeMiddleware(string $middlewareName): ?string
     array_key_exists($middlewareName, $kernel->getRouteMiddleware())
         ? $middlewareName : null;
 }
+
+function getUserBasedDomain($tenant): string
+{
+    $url = '';
+    $central = '.' . env('CENTRAL_DOMAIN');
+
+    if (tenant()) {
+        if (!empty($tenant->custom_domain?->custom_domain) && $tenant->custom_domain?->custom_domain_status == 'connected') {
+            $custom_url = $tenant->custom_domain?->custom_domain;
+            $url = tenant_url_with_protocol($custom_url);
+        } else {
+            $local_url = $tenant->id . $central;
+            $url = tenant_url_with_protocol($local_url);
+        }
+    } else {
+        $url = route('landlord.homepage');
+    }
+
+    return $url;
+}
