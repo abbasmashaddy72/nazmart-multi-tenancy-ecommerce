@@ -29,7 +29,7 @@ class GenerateTenantToken
     {
         $token = self::token();
         try {
-            $tenant->update([
+            DB::table('tenants')->find($tenant->id)->update([
                 'unique_key' => $token
             ]);
 
