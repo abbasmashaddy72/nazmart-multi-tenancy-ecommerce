@@ -47,20 +47,20 @@ class TenantManageController extends Controller
         $this->middleware('permission:users-failed-shop', ['only' => ['failed_tenants', 'failed_tenants_edit', 'failed_tenants_delete', 'failed_regenerate_subscription']]);
     }
 
-    public function all_tenants(){
+    public function all_tenants()
+    {
         $all_users = User::latest()->get();
         $deleted_users = User::onlyTrashed()->count();
 
-        return view(self::BASE_PATH.'index',compact('all_users','deleted_users'));
+        return view(self::BASE_PATH . 'index', compact('all_users', 'deleted_users'));
     }
 
     public function all_tenants_list()
     {
-        $all_tenants = \Cache::remember('all_tenants', 60*60, function (){
+        $all_tenants = \Cache::remember('all_tenants', 60 * 60, function () {
             $every = [];
             Tenant::whereNotNull('user_id')->chunk(100, function ($tenants) use (&$every) {
-                foreach ($tenants as $tenant)
-                {
+                foreach ($tenants as $tenant) {
                     $every[] = $tenant;
                 }
             });
@@ -68,30 +68,30 @@ class TenantManageController extends Controller
             return $every;
         });
 
-        return view(self::BASE_PATH.'shop-list', compact('all_tenants'));
+        return view(self::BASE_PATH . 'shop-list', compact('all_tenants'));
     }
 
     public function new_tenant()
     {
-        return view(self::BASE_PATH.'new');
+        return view(self::BASE_PATH . 'new');
     }
 
     public function new_tenant_store(Request $request)
     {
         $request->validate([
-            'name'=> 'required|string|max:191',
+            'name' => 'required|string|max:191',
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'country'=> 'nullable',
-            'city'=> 'nullable',
-            'mobile'=> 'nullable',
-            'state'=> 'nullable',
-            'address'=> 'nullable',
-            'image'=> 'nullable',
-            'company'=> 'nullable',
+            'country' => 'nullable',
+            'city' => 'nullable',
+            'mobile' => 'nullable',
+            'state' => 'nullable',
+            'address' => 'nullable',
+            'image' => 'nullable',
+            'company' => 'nullable',
         ]);
 
-       User::create([
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -114,25 +114,25 @@ class TenantManageController extends Controller
     {
 
         $user = User::find($id);
-        return view(self::BASE_PATH.'edit',compact('user'));
+        return view(self::BASE_PATH . 'edit', compact('user'));
     }
 
     public function update_edit_profile(Request $request)
     {
         $request->validate([
-            'name'=> 'required|string|max:191',
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users','email')->ignore($request->id)],
-            'username' => ['required', 'string','max:255', Rule::unique('users','username')->ignore($request->id)],
-            'country'=> 'nullable',
-            'city'=> 'nullable',
-            'mobile'=> 'nullable',
-            'state'=> 'nullable',
-            'address'=> 'nullable',
-            'image'=> 'nullable',
-            'company'=> 'nullable',
+            'name' => 'required|string|max:191',
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($request->id)],
+            'username' => ['required', 'string', 'max:255', Rule::unique('users', 'username')->ignore($request->id)],
+            'country' => 'nullable',
+            'city' => 'nullable',
+            'mobile' => 'nullable',
+            'state' => 'nullable',
+            'address' => 'nullable',
+            'image' => 'nullable',
+            'company' => 'nullable',
         ]);
 
-     User::where('id',$request->id)->update([
+        User::where('id', $request->id)->update([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -153,24 +153,22 @@ class TenantManageController extends Controller
     public function delete($id)
     {
         $user = User::findOrFail($id);
-        $tenants = Tenant::where('user_id',$user->id)->get();
+        $tenants = Tenant::where('user_id', $user->id)->get();
 
-        foreach ($tenants ?? [] as $tenant)
-        {
-            $path = 'assets/tenant/uploads/media-uploader/'.$tenant->id;
+        foreach ($tenants ?? [] as $tenant) {
+            $path = 'assets/tenant/uploads/media-uploader/' . $tenant->id;
 
-            if(\File::exists($path) && is_dir($path)){
+            if (\File::exists($path) && is_dir($path)) {
                 File::deleteDirectory($path);
             }
         }
 
-        PaymentLogs::where('user_id',$user->id)->delete();
-        CustomDomain::where('user_id',$user->id)->delete();
+        PaymentLogs::where('user_id', $user->id)->delete();
+        CustomDomain::where('user_id', $user->id)->delete();
         ZeroPricePlanHistory::where('user_id', $user->id)->delete();
 
-        if(!empty($tenants)){
-            foreach ($tenants as $tenant)
-            {
+        if (!empty($tenants)) {
+            foreach ($tenants as $tenant) {
                 $tenant->domains()->delete();
                 $tenant->delete();
             }
@@ -184,7 +182,7 @@ class TenantManageController extends Controller
     public function trash()
     {
         $trashed_users = User::onlyTrashed()->get();
-        return view(self::BASE_PATH.'trash',compact('trashed_users'));
+        return view(self::BASE_PATH . 'trash', compact('trashed_users'));
     }
 
     public function trash_restore($id)
@@ -193,7 +191,8 @@ class TenantManageController extends Controller
 
         try {
             $user->restore();
-        } catch (\Exception $exception) {}
+        } catch (\Exception $exception) {
+        }
 
         return back()->with(FlashMsg::explain('success', __('The user is restored')));
     }
@@ -204,7 +203,8 @@ class TenantManageController extends Controller
 
         try {
             $user->forceDelete();
-        } catch (\Exception $exception) {}
+        } catch (\Exception $exception) {
+        }
 
         return back()->with(FlashMsg::explain('danger', __('The user is deleted permanently')));
     }
@@ -212,9 +212,9 @@ class TenantManageController extends Controller
     public function update_change_password(Request $request)
     {
         $this->validate(
-            $request,[
-                'password' => 'required|string|min:8|confirmed'
-            ],
+            $request, [
+            'password' => 'required|string|min:8|confirmed'
+        ],
             [
                 'password.required' => __('password is required'),
                 'password.confirmed' => __('password does not matched'),
@@ -224,45 +224,47 @@ class TenantManageController extends Controller
         $user = User::findOrFail($request->ch_user_id);
         $user->password = Hash::make($request->password);
         $user->save();
-         return response()->success(ResponseMessage::success(__('Password updated successfully..!')));
+        return response()->success(ResponseMessage::success(__('Password updated successfully..!')));
     }
 
-    public function send_mail(Request $request){
-        $this->validate($request,[
+    public function send_mail(Request $request)
+    {
+        $this->validate($request, [
             'email' => 'required|email',
             'subject' => 'required',
             'message' => 'required',
         ]);
 
-            $sub =  $request->subject;
-            $msg = $request->message;
+        $sub = $request->subject;
+        $msg = $request->message;
 
         try {
-            Mail::to($request->email)->send(new BasicMail($msg,$sub));
-        }catch (\Exception $ex){
+            Mail::to($request->email)->send(new BasicMail($msg, $sub));
+        } catch (\Exception $ex) {
             return response()->danger(ResponseMessage::delete($ex->getMessage()));
         }
 
         return response()->success(ResponseMessage::success(__('Mail Send Successfully..!')));
     }
 
-    public function resend_verify_mail(Request $request){
+    public function resend_verify_mail(Request $request)
+    {
         $subscriber_details = User::findOrFail($request->id);
-        $token = $subscriber_details->email_verify_token ? $subscriber_details->email_verify_token  : Str::random(8);
+        $token = $subscriber_details->email_verify_token ? $subscriber_details->email_verify_token : Str::random(8);
 
-        if (empty($subscriber_details->email_verify_token)){
+        if (empty($subscriber_details->email_verify_token)) {
             $subscriber_details->email_verify_token = $token;
             $subscriber_details->save();
         }
-             $message = __('Verification Code: ').'<strong>'.$token.'</strong>'.'<br>'.__('Verify your email to get all news from '). get_static_option('site_'.get_default_language().'_title') . '<div class="btn-wrap"> <a class="anchor-btn" href="' . route('landlord.user.login') . '">' . __('Login') . '</a></div>';
+        $message = __('Verification Code: ') . '<strong>' . $token . '</strong>' . '<br>' . __('Verify your email to get all news from ') . get_static_option('site_' . get_default_language() . '_title') . '<div class="btn-wrap"> <a class="anchor-btn" href="' . route('landlord.user.login') . '">' . __('Login') . '</a></div>';
 
-            $msg = $message;
-            $subject = __('verify your email');
+        $msg = $message;
+        $subject = __('verify your email');
 
 
         try {
-            Mail::to($subscriber_details->email)->send(new BasicMail($msg,$subject));
-        }catch (\Exception $ex){
+            Mail::to($subscriber_details->email)->send(new BasicMail($msg, $subject));
+        } catch (\Exception $ex) {
             return response()->danger(ResponseMessage::delete($ex->getMessage()));
         }
 
@@ -271,15 +273,15 @@ class TenantManageController extends Controller
 
     public function tenant_activity_log()
     {
-        $activities = Activity::with(['subject','causer'])->latest()->paginate(8);
-        return view(self::BASE_PATH.'activity-log',compact('activities'));
+        $activities = Activity::with(['subject', 'causer'])->latest()->paginate(8);
+        return view(self::BASE_PATH . 'activity-log', compact('activities'));
     }
 
     public function tenant_details($id)
     {
-        $user = User::with('tenant_details','tenant_details.payment_log')->findOrFail($id);
+        $user = User::with('tenant_details', 'tenant_details.payment_log')->findOrFail($id);
 
-        return view(self::BASE_PATH.'details',compact('user'));
+        return view(self::BASE_PATH . 'details', compact('user'));
     }
 
     public function tenant_domain_delete($tenant_id)
@@ -289,24 +291,24 @@ class TenantManageController extends Controller
         $tenant = Tenant::findOrFail($tenant_id);
         $user_id = $tenant->user_id;
 
-        $path = 'assets/tenant/uploads/media-uploader/'.$tenant->id;
-        CustomDomain::where([['old_domain', $tenant->id], ['custom_domain_status', '!=','connected']])
-                    ->orWhere([['custom_domain', $tenant->id], ['custom_domain_status', '==', 'connected']])->delete();
-        PaymentLogs::where('tenant_id',$tenant->id)->delete();
+        $path = 'assets/tenant/uploads/media-uploader/' . $tenant->id;
+        CustomDomain::where([['old_domain', $tenant->id], ['custom_domain_status', '!=', 'connected']])
+            ->orWhere([['custom_domain', $tenant->id], ['custom_domain_status', '==', 'connected']])->delete();
+        PaymentLogs::where('tenant_id', $tenant->id)->delete();
 
-        if(!empty($tenant)){
+        if (!empty($tenant)) {
             $tenant->domains()->delete();
             try {
                 $tenant->delete();
-            } catch (\Exception $exception) {}
+            } catch (\Exception $exception) {
+            }
         }
-        if(\File::exists($path) && is_dir($path)){
+        if (\File::exists($path) && is_dir($path)) {
             File::deleteDirectory($path);
         }
 
         $check_tenant = Tenant::where('user_id', $user_id)->count();
-        if ($check_tenant >! 0)
-        {
+        if ($check_tenant > !0) {
             User::findOrFail($user_id)->update(['has_subdomain' => false]);
         }
 
@@ -316,9 +318,9 @@ class TenantManageController extends Controller
     public function tenant_account_status(Request $request)
     {
         $request->validate([
-           'payment_log_id' => 'required',
-           'account_status' => 'required',
-           'payment_status' => 'required',
+            'payment_log_id' => 'required',
+            'account_status' => 'required',
+            'payment_status' => 'required',
         ]);
 
         $payment_log = PaymentLogs::findOrFail($request->payment_log_id)->update([
@@ -331,19 +333,18 @@ class TenantManageController extends Controller
 
     public function assign_subscription(Request $request)
     {
-       $request->validate([
-           'package' => 'required',
-           'payment_status' => 'required',
-           'account_status' => 'required',
-           'custom_theme' => 'required'
-       ]);
+        $request->validate([
+            'package' => 'required',
+            'payment_status' => 'required',
+            'account_status' => 'required',
+            'custom_theme' => 'required'
+        ]);
 
-       if ($request->custom_subdomain == null)
-       {
-           $request->validate([
-               'subdomain' => 'required'
-           ]);
-       }
+        if ($request->custom_subdomain == null) {
+            $request->validate([
+                'subdomain' => 'required'
+            ]);
+        }
 
         $subdomain = $request->custom_subdomain != null ? $request->custom_subdomain : $request->subdomain;
         $user = User::findOrFail($request->subs_user_id);
@@ -374,10 +375,9 @@ class TenantManageController extends Controller
         $package_expire_date = $tenantHelper->getExpiredDate();
 
         $tenant = Tenant::find($subdomain);
-        if (!empty($tenant))
-        {
+        if (!empty($tenant)) {
             // existing tenant
-            $old_tenant_log = PaymentLogs::where(['user_id' => $user->id, 'tenant_id' => $tenant->id ])->latest()->first();
+            $old_tenant_log = PaymentLogs::where(['user_id' => $user->id, 'tenant_id' => $tenant->id])->latest()->first();
 
             if ($package_expire_date != null) {
                 $old_days_left = Carbon::now()->diff($old_tenant_log->expire_date);
@@ -390,75 +390,77 @@ class TenantManageController extends Controller
                 $renew_left_days = Carbon::parse($package_expire_date)->diffInDays();
                 $sum_days = $left_days + $renew_left_days;
                 $new_package_expire_date = Carbon::today()->addDays($sum_days)->format("d-m-Y h:i:s");
-            } else {
-                $new_package_expire_date = null;
-            }
-
-                PaymentLogs::findOrFail($old_tenant_log->id)->update([
-                    'custom_fields' =>  [],
-                    'attachments' =>  [],
-                    'email' => $old_tenant_log->email,
-                    'name' => $old_tenant_log->name,
-                    'package_name' => $package->title,
-                    'package_price' => $package->price,
-                    'package_gateway' => null,
-                    'package_id' => $package->id,
-                    'theme_slug' => $tenantHelper->getTheme(),
-                    'user_id' => $old_tenant_log->user_id,
-                    'tenant_id' => $tenantHelper->getTenantId(),
-                    'status' => $request->account_status,
-                    'payment_status' => $request->payment_status,
-                    'renew_status' => is_null($old_tenant_log->renew_status) ? 1 : $old_tenant_log->renew_status + 1,
-                    'is_renew' => 1,
-                    'track' => Str::random(10) . Str::random(10),
-                    'updated_at' => Carbon::now(),
-                    'start_date' => $package_start_date,
-                    'expire_date' => $new_package_expire_date
-                ]);
-
-                DB::table('tenants')->where('id', $tenantHelper->getTenantId())->update([
-                    'renew_status' => $renew_status = is_null($tenant->renew_status) ? 0 : $tenant->renew_status+1,
-                    'is_renew' => $renew_status == 0 ? 0 : 1,
-                    'theme_slug' => $tenantHelper->getTheme(),
-                    'start_date' => $package_start_date,
-                    'expire_date' => $new_package_expire_date
-                ]);
             }
             else
             {
-                // new tenant
-                $request->validate([
-                    'custom_theme' => 'required',
-                    'custom_subdomain' =>'required'
-                ]);
+                $new_package_expire_date = null;
+            }
 
-                PaymentLogs::create([
-                    'custom_fields' =>  '',
-                    'attachments' =>  '',
-                    'email' => $user->email,
-                    'name' => $user->name,
-                    'package_name' => $package->title,
-                    'package_price' => $package->price,
-                    'package_gateway' => null,
-                    'package_id' => $package->id,
-                    'theme_slug' => $tenantHelper->getTheme(),
-                    'user_id' => $user->id,
-                    'tenant_id' => $tenantHelper->getTenantId(),
-                    'payment_status' => $request->payment_status,
-                    'status' => $request->account_status,
-                    'renew_status' => 0,
-                    'is_renew' => 0,
-                    'track' => Str::random(10) . Str::random(10),
-                    'start_date' => $package_start_date,
-                    'expire_date' => $package_expire_date
-                ]);
+            PaymentLogs::findOrFail($old_tenant_log->id)->update([
+                'custom_fields' => [],
+                'attachments' => [],
+                'email' => $old_tenant_log->email,
+                'name' => $old_tenant_log->name,
+                'package_name' => $package->title,
+                'package_price' => $package->price,
+                'package_gateway' => null,
+                'package_id' => $package->id,
+                'theme_slug' => $tenantHelper->getTheme(),
+                'user_id' => $old_tenant_log->user_id,
+                'tenant_id' => $tenantHelper->getTenantId(),
+                'status' => $request->account_status,
+                'payment_status' => $request->payment_status,
+                'renew_status' => is_null($old_tenant_log->renew_status) ? 1 : $old_tenant_log->renew_status + 1,
+                'is_renew' => 1,
+                'track' => Str::random(10) . Str::random(10),
+                'updated_at' => Carbon::now(),
+                'start_date' => $package_start_date,
+                'expire_date' => $new_package_expire_date
+            ]);
+
+            DB::table('tenants')->where('id', $tenantHelper->getTenantId())->update([
+                'renew_status' => $renew_status = is_null($tenant->renew_status) ? 0 : $tenant->renew_status + 1,
+                'is_renew' => $renew_status == 0 ? 0 : 1,
+                'theme_slug' => $tenantHelper->getTheme(),
+                'start_date' => $package_start_date,
+                'expire_date' => $new_package_expire_date
+            ]);
+        }
+        else
+        {
+            // new tenant
+            $request->validate([
+                'custom_theme' => 'required',
+                'custom_subdomain' => 'required'
+            ]);
+
+            PaymentLogs::create([
+                'custom_fields' => '',
+                'attachments' => '',
+                'email' => $user->email,
+                'name' => $user->name,
+                'package_name' => $package->title,
+                'package_price' => $package->price,
+                'package_gateway' => null,
+                'package_id' => $package->id,
+                'theme_slug' => $tenantHelper->getTheme(),
+                'user_id' => $user->id,
+                'tenant_id' => $tenantHelper->getTenantId(),
+                'payment_status' => $request->payment_status,
+                'status' => $request->account_status,
+                'renew_status' => 0,
+                'is_renew' => 0,
+                'track' => Str::random(10) . Str::random(10),
+                'start_date' => $package_start_date,
+                'expire_date' => $package_expire_date
+            ]);
 
 //                try {
-                    Tenant::create(['id' => $subdomain]);
+            Tenant::create(['id' => $subdomain]);
 //                }catch (\Exception $e){
 //                    return response()->success(ResponseMessage::delete(__($e->getMessage())));
 //                }
-            }
+        }
 
         return response()->success(ResponseMessage::success(__('Subscription assigned for this user, you will get notified when website is ready')));
     }
@@ -466,12 +468,12 @@ class TenantManageController extends Controller
 
     public function account_settings()
     {
-       return view(self::BASE_PATH.'settings');
+        return view(self::BASE_PATH . 'settings');
     }
 
     public function account_settings_update(Request $request)
     {
-         $request->validate([
+        $request->validate([
             'tenant_account_auto_remove' => 'nullable',
             'tenant_account_delete_notify_mail_days' => 'required',
             'account_remove_day_within_expiration' => 'required|alpha_num|min:1',
@@ -479,16 +481,15 @@ class TenantManageController extends Controller
 
         $limit_days = 15;
 
-        if($request->account_remove_day_within_expiration >= $limit_days){
+        if ($request->account_remove_day_within_expiration >= $limit_days) {
 
-            return redirect()->back()->with(['type'=> 'danger', 'msg' => sprintf('You can not set remove account day above %d',$limit_days)]);
+            return redirect()->back()->with(['type' => 'danger', 'msg' => sprintf('You can not set remove account day above %d', $limit_days)]);
         }
 
         update_static_option('tenant_account_auto_remove', $request->tenant_account_auto_remove);
-        if ($request->tenant_account_auto_remove)
-        {
-            update_static_option('tenant_account_delete_notify_mail_days',json_encode($request->tenant_account_delete_notify_mail_days));
-            update_static_option('account_remove_day_within_expiration',$request->account_remove_day_within_expiration);
+        if ($request->tenant_account_auto_remove) {
+            update_static_option('tenant_account_delete_notify_mail_days', json_encode($request->tenant_account_delete_notify_mail_days));
+            update_static_option('account_remove_day_within_expiration', $request->account_remove_day_within_expiration);
         } else {
             delete_static_option('tenant_account_delete_notify_mail_days');
             delete_static_option('account_remove_day_within_expiration');
@@ -509,17 +510,17 @@ class TenantManageController extends Controller
             'email_verified_at' => now()
         ]);
 
-        $message = wrap_by_paragraph(__('Hello').' '.$user->name, true);
+        $message = wrap_by_paragraph(__('Hello') . ' ' . $user->name, true);
         $message .= wrap_by_paragraph(__('Your user account is verified by admin'));
         $subject = __('Account verification');
 
         try {
             Mail::to($user->email)->send(new BasicMail($message, $subject));
-        }catch (\Exception $ex){
+        } catch (\Exception $ex) {
             return response()->danger(ResponseMessage::delete($ex->getMessage()));
         }
 
-        return back()->with(FlashMsg::explain('success', $user->name .' '. __('user account is verified')));
+        return back()->with(FlashMsg::explain('success', $user->name . ' ' . __('user account is verified')));
     }
 
     public function check_subdomain_theme(Request $request)
@@ -531,8 +532,7 @@ class TenantManageController extends Controller
         $new_tenant = true;
         $theme = '';
         $tenant = Tenant::find($request->subdomain);
-        if (!empty($tenant))
-        {
+        if (!empty($tenant)) {
             $theme = $tenant->theme_slug ?? '';
             $new_tenant = false;
         }
@@ -552,7 +552,7 @@ class TenantManageController extends Controller
 
         $users = User::orderBy('created_at', 'desc')->get();
 
-        return view(self::BASE_PATH.'failed',compact('tenants', 'users'));
+        return view(self::BASE_PATH . 'failed', compact('tenants', 'users'));
     }
 
     public function failed_tenants_edit(Request $request)
@@ -591,8 +591,7 @@ class TenantManageController extends Controller
         $reassign_object = new ReGenerateTenant($validated);
         $response[] = $reassign_object->regenerateTenant();
 
-        if (!empty($response))
-        {
+        if (!empty($response)) {
             $response[] = __('Kindly check user website issues to fix it');
             return back()->withErrors($response);
         }

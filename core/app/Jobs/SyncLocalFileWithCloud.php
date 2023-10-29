@@ -63,9 +63,9 @@ class SyncLocalFileWithCloud implements ShouldQueue
                 MediaUploader::find($item->id)->update(["is_synced" => 1,'load_from' => 1]);
 
             }
+
             /* change the database status to is_synced because the file is already exits on the cloud */
             MediaUploader::find($item->id)->update(["is_synced" => 1,'load_from' => 1]);
-
         }
     }
 }

@@ -455,8 +455,8 @@ class TenantHelpers
         CustomDomain::where([['old_domain', $this->getTenantId()], ['custom_domain_status', '!=','connected']])
             ->orWhere([['custom_domain', $this->getTenantId()], ['custom_domain_status', '==', 'connected']])->delete();
         PaymentLogs::where('tenant_id', $this->getTenantId())->delete();
-        PaymentLogHistory::where('tenant_id', $this->getTenantId())->delete();
-        PackageHistory::where('user_id',$user_id)->delete();
+//        PaymentLogHistory::where('tenant_id', $this->getTenantId())->delete();
+//        PackageHistory::where('user_id',$user_id)->delete();
 
 
         if(!empty($tenant)){
@@ -522,7 +522,7 @@ class TenantHelpers
             $finalData = $data;
         }
 
-        $this->paymentLogHistory = PaymentLogHistory::create($finalData);;
+//        $this->paymentLogHistory = PaymentLogHistory::create($finalData);;
 
 
         return $this;

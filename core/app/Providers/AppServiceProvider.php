@@ -11,8 +11,10 @@ use App\Models\Themes;
 use App\Models\User;
 use App\Observers\TenantRegisterObserver;
 use App\Observers\WalletBalanceObserver;
+use Carbon\Carbon;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Modules\Blog\Entities\BlogCategory;
@@ -64,5 +66,85 @@ class AppServiceProvider extends ServiceProvider
         if (get_static_option('site_force_ssl_redirection') === 'on'){
             URL::forceScheme('https');
         }
+
+        /**
+         * Setup micros for mediauploader url or cloudlflareurl
+         * */
+
+        Storage::macro("renderUrl", function ($filepath, $size = null, $load_from = 0)
+        {
+            $prefix = !empty($size) ? '' : $size."/".$size."-";
+            if ($size == ""){
+                $prefix = "";
+            }
+
+            if ($prefix == "full"){
+                $prefix = "";
+            }
+
+            $driver = Storage::getDefaultDriver();
+
+            if ($load_from === 0 && !is_null(tenant())){
+                $driver = "TenantMediaUploader";
+            }else{
+                $driver = "LandlordMediaUploader";
+            }
+
+            $file_url = Storage::disk($driver)->url($prefix.$filepath);
+//dd($file_url,$prefix);
+
+            if ($load_from == 0 && !is_null(tenant())){
+                return str_replace("/storage",url("/assets/tenant/uploads/media-uploader/".tenant()->getTenantKey().$prefix),$file_url);
+            }elseif($load_from == 0 && is_null(tenant())){
+                return str_replace("/storage",url("/assets/landlord/uploads/media-uploader").$prefix,$file_url);
+            }
+
+
+            if (Storage::getDefaultDriver() == "TenantMediaUploader"){
+                return str_replace("/storage",url("/assets/tenant/uploads/media-uploader/".tenant()->getTenantKey().$prefix),$file_url);
+            }
+
+            if (Storage::getDefaultDriver() == "LandlordMediaUploader"){
+                return str_replace("/storage",url("/assets/landlord/uploads/media-uploader").$prefix,$file_url);
+            }
+
+            if (Storage::getDefaultDriver() == "wasabi"){
+                $bucket = get_static_option_central('wasabi_bucket') ?? '';
+                $endpoint = get_static_option_central('wasabi_url') ?? '';
+
+                dd(231321231);
+                $finalUrl = renderWasabiCloudFile(str_replace("https://".$bucket.".".str_replace("https://","",$endpoint."/"),"",$file_url));
+
+                return $finalUrl;
+            }
+
+            $folder_prefix = "";
+            if (!is_null(tenant())){
+                $folder_prefix = tenant()->getTenantKey()."/";
+            }
+
+            if (Storage::getDefaultDriver() == "s3"){
+                $tempUrl = Storage::temporaryUrl($folder_prefix.$prefix.$filepath,Carbon::now()->addMinutes(20));
+                return $tempUrl;
+            }
+
+
+
+//            $tempUrl = Cache::remember($filepath,Carbon::now()->addMinutes(15),function ()use($filepath){
+//                Storage::temporaryUrl($filepath,Carbon::now()->addMinutes(20));
+//            });
+
+//            dd($folder_prefix.$prefix.$filepath,$size);
+            $tempUrl = Storage::temporaryUrl($folder_prefix.$prefix.$filepath,Carbon::now()->addMinutes(20));
+//            dd($tempUrl);
+            //cloudflare temporary url
+            $finalUrl = str_replace([
+                "https://".env("CLOUDFLARE_R2_BUCKET").".".str_replace("https://","",env("CLOUDFLARE_R2_ENDPOINT"))
+            ],[
+                "https://".env("CLOUDFLARE_R2_URL")
+            ],$tempUrl);
+
+            return $finalUrl;
+        });
     }
 }

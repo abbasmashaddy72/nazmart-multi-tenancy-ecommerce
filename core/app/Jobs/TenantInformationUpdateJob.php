@@ -36,9 +36,11 @@ class TenantInformationUpdateJob implements ShouldQueue
     public function handle()
     {
        $paymentLog =  PaymentLogs::where('tenant_id',$this->tenant->getTenantKey())->latest()->first();
-         if (is_null($paymentLog)){
+         if (is_null($paymentLog))
+         {
               return;
          }
+
         $package = $paymentLog->package;
         $package_start_date = '';
         $package_expire_date =  '';
@@ -56,8 +58,6 @@ class TenantInformationUpdateJob implements ShouldQueue
                 $package_expire_date = null;
             }
         }
-
-
 
         $paymentLog->status = $paymentLog->status  == 'trial' ? 'trial' : 'complete';
         $paymentLog->payment_status = $paymentLog->status  == 'trial' ? 'pending' : 'complete';

@@ -43,74 +43,132 @@ class MediaUploaderController extends Controller
         if ($receiver->isUploaded() === false) {
             throw new UploadMissingFileException();
         }
+
         // receive the file
         $save = $receiver->receive();
 
         // check if the upload has finished (in chunk mode it will send smaller files)
         if ($save->isFinished())
         {
-            $this->insert_media_image($save->getFile(), $request->user_type);
+            $this->insert_media_image($save->getFile(), $request->user_type, $request);
             // save the file and return any response you need, current example uses `move` function. If you are
             // not using move, you need to manually delete the file by unlink($save->getFile()->getPathname())
         }
 
 
-        if ($request->hasFile('file')) {
+//        if ($request->hasFile('file')) {
+//
+//            $image = $request->file;
+//
+//            $image_extenstion = $image->extension();
+//            $image_name_with_ext = $image->getClientOriginalName();
+//
+//            $image_name = pathinfo($image_name_with_ext, PATHINFO_FILENAME);
+//            $image_name = strtolower(Str::slug($image_name));
+//
+//            $image_db = $image_name . time() . '.' . $image_extenstion;
+//
+//            //TODO:: write method to handle file upload
+//            $tenant_path = '';
+//            if(tenant()){
+//                $tenant_user = tenant() ?? null;
+//                $tenant_path = !is_null($tenant_user) ? $tenant_user->id.'/' : '';
+//            }
+//            $folder_path = global_assets_path('assets/'. $this->folderPrefix().'/uploads/media-uploader/'.$tenant_path);
+//
+//            if (in_array($image_extenstion,['pdf','doc','docx','txt','svg','zip','csv','xlsx','xlsm','xlsb','xltx','pptx','pptm','ppt'])){
+//                $upload_folder = '/';
+//                if (in_array(Storage::getDefaultDriver(),['s3','cloudFlareR2'])){
+//                    $upload_folder = is_null(tenant()) ? '/' : tenant()->getTenantKey().'/';
+//                }
+//
+//                Storage::putFileAs($upload_folder, $image, $image_db);
+//                $storage_driver = Storage::getDefaultDriver();
+//
+//                $imageData = [
+//                    'title' => $image_name_with_ext,
+//                    'size' => null,
+//                    'user_type' => 0, //0 == admin 1 == user
+//                    'path' => $image_db,
+//                    'dimensions' => null,
+//                    'user_id' =>  \Auth::guard('admin')->id(),
+//                    'load_from' => in_array($storage_driver,['TenantMediaUploader','LandlordMediaUploader']) ? 0 : 1,
+//                ];
+//
+//                if ($request->user_type === 'user'){
+//                    $imageData['user_type'] = 1;
+//                    $imageData['user_id'] = \Auth::guard('web')->id();
+//                }
+//
+//                MediaUploader::create($imageData);
+//            }
+//
+//            if (in_array($image_extenstion,['jpg','jpeg','png','gif','webp'])){
+//                HandleImageUploadService::handle_image_upload(
+//                    $image_db,
+//                    $image,
+//                    $image_name_with_ext,
+//                    $folder_path,
+//                    $request
+//                );
+//            }
+//        }
+    }
 
-            $image = $request->file;
+    public function insert_media_image($file, $userType, $request) {
+        $image = $file;
+        $image_extenstion = $image->extension();
+        $image_name_with_ext = $image->getClientOriginalName();
 
-            $image_extenstion = $image->extension();
-            $image_name_with_ext = $image->getClientOriginalName();
+        $image_name = pathinfo($image_name_with_ext, PATHINFO_FILENAME);
+        $image_name = strtolower(Str::slug($image_name));
 
-            $image_name = pathinfo($image_name_with_ext, PATHINFO_FILENAME);
-            $image_name = strtolower(Str::slug($image_name));
+        $image_db = $image_name . time() . '.' . $image_extenstion;
 
-            $image_db = $image_name . time() . '.' . $image_extenstion;
+        //TODO:: write method to handle file upload
+        $tenant_path = '';
+        if(tenant()){
+            $tenant_user = tenant() ?? null;
+            $tenant_path = !is_null($tenant_user) ? $tenant_user->id.'/' : '';
+        }
+        $folder_path = global_assets_path('assets/'. $this->folderPrefix().'/uploads/media-uploader/'.$tenant_path);
 
-            //TODO:: write method to handle file upload
-            $tenant_path = '';
-            if(tenant()){
-                $tenant_user = tenant() ?? null;
-                $tenant_path = !is_null($tenant_user) ? $tenant_user->id.'/' : '';
+        if (in_array($image_extenstion, ['pdf','doc','docx','txt','svg','zip','csv','xlsx','xlsm','xlsb','xltx','pptx','pptm','ppt','mp4','avi','flv'])){
+
+            $upload_folder = '/';
+            if (in_array(\Illuminate\Support\Facades\Storage::getDefaultDriver(),['s3','cloudFlareR2'])){
+                $upload_folder = is_null(tenant()) ? '/' : tenant()->getTenantKey().'/';
             }
-            $folder_path = global_assets_path('assets/'. $this->folderPrefix().'/uploads/media-uploader/'.$tenant_path);
 
-            if (in_array($image_extenstion,['pdf','doc','docx','txt','svg','zip','csv','xlsx','xlsm','xlsb','xltx','pptx','pptm','ppt'])){
-                $upload_folder = '/';
-                if (in_array(Storage::getDefaultDriver(),['s3','cloudFlareR2'])){
-                    $upload_folder = is_null(tenant()) ? '/' : tenant()->getTenantKey().'/';
-                }
+            Storage::putFileAs($upload_folder, $image, $image_db); //$request->file->move($folder_path, $image_db);
+            $storage_driver = Storage::getDefaultDriver();
 
-                Storage::putFileAs($upload_folder, $image, $image_db);
-                $storage_driver = Storage::getDefaultDriver();
+            $imageData = [
+                'title' => $image_name_with_ext,
+                'size' => null,
+                'user_type' => 0, //0 == admin 1 == user
+                'path' => $image_db,
+                'dimensions' => null,
+                'user_id' =>  \Auth::guard('admin')->id(),
+                'load_from' => in_array($storage_driver,['TenantMediaUploader','LandlordMediaUploader']) ? 0 : 1,
+            ];
 
-                $imageData = [
-                    'title' => $image_name_with_ext,
-                    'size' => null,
-                    'user_type' => 0, //0 == admin 1 == user
-                    'path' => $image_db,
-                    'dimensions' => null,
-                    'user_id' =>  \Auth::guard('admin')->id(),
-                    'load_from' => in_array($storage_driver,['TenantMediaUploader','LandlordMediaUploader']) ? 0 : 1,
-                ];
-
-                if ($request->user_type === 'user'){
-                    $imageData['user_type'] = 1;
-                    $imageData['user_id'] = \Auth::guard('web')->id();
-                }
-
-                MediaUploader::create($imageData);
+            if ($userType === 'user'){
+                $imageData['user_type'] = 1;
+                $imageData['user_id'] = \Auth::guard('web')->id();
             }
 
-            if (in_array($image_extenstion,['jpg','jpeg','png','gif','webp'])){
-                HandleImageUploadService::handle_image_upload(
-                    $image_db,
-                    $image,
-                    $image_name_with_ext,
-                    $folder_path,
-                    $request
-                );
-            }
+            MediaUploader::create($imageData);
+        }
+
+        if (in_array($image_extenstion, ['jpg','jpeg','png','gif','webp'])){
+            HandleImageUploadService::handle_image_upload(
+                $image_db,
+                $image,
+                $image_name_with_ext,
+                $folder_path,
+                $request
+            );
         }
     }
 
@@ -122,7 +180,7 @@ class MediaUploaderController extends Controller
         }
 
         $all_images = $image_query->orderBy('id', 'DESC')->take(20)->get();
-        $selected_image = MediaUploader::find($request->selected);
+        $selected_image = MediaUploader::find((int) $request->selected);
         $all_image_files = [];
 
 //        if (!is_null($selected_image)){
@@ -180,6 +238,7 @@ class MediaUploaderController extends Controller
 //                MediaUploader::find($image->id)->delete();
             }
         }
+
         return response()->json($all_image_files);
     }
 
@@ -322,12 +381,31 @@ class MediaUploaderController extends Controller
     private function check_file_exists($path, $load_from = 0) : bool
     {
         $file_path = $this->getUploadBasePath($path);
-        return file_exists($file_path) && !is_dir($file_path);
+        //todo:: change code here to make it work with mediaUploader and cloudflare R2
+        try {
+            $folder = is_null(tenant()) ? $path : tenant()->getTenantKey()."/";
+            $driver = \Illuminate\Support\Facades\Storage::getDefaultDriver();
+            if ($load_from == 0 && !is_null(tenant())){
+                $driver = "TenantMediaUploader";
+            }elseif($load_from == 0 && is_null(tenant())){
+                $driver = "LandlordMediaUploader";
+            }
+            $upload_folder = '/';
+            if (in_array(Storage::getDefaultDriver(),['s3','cloudFlareR2'])  && $load_from === 1){
+                $upload_folder = is_null(tenant()) ? '/' : tenant()->getTenantKey().'/';
+            }
+            return Storage::disk($driver)->fileExists($upload_folder.$path);
+        }catch (\Exception $e){
+            return "";
+        }
+
+//        $file_path = $this->getUploadBasePath($path);
+//        return file_exists($file_path) && !is_dir($file_path);
     }
 
-    private function getUploadBasePath($path = '', $load_from=0) :string
+    private function getUploadBasePath($path = '', $load_from = 0) :string
     {
-        return Storage::renderUrl($path,load_from:$load_from);
+        return Storage::renderUrl($path, load_from:$load_from);
 //        return global_assets_path('assets/'.$this->folderPrefix().'/uploads/media-uploader/'.$this->getTenantFolderPath().$path);
     }
 

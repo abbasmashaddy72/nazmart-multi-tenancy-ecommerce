@@ -34,16 +34,16 @@ class TenantFileSycnForNewTenant implements ShouldQueue
      */
     public function handle()
     {
-//        /* file sync test */
-//        $allFiles = Cache::remember(CacheKeyEnums::ALL_AWS_S3_DEMO_IMAGES_FILES->value, 300 * 60,function (){
-//            return  Storage::disk('s3')->allFiles('/seeder-files/all-media');
-//        });
-//
-//        $tenantKey = $this->tenant->id;
-//        //todo get folder name
-//        foreach ($allFiles as $file){
-//            TenanFileCopyFromCloudForNewTenant::dispatch($file,$tenantKey)->onConnection('tenant_file_sync')->delay(Carbon::now()->addSeconds(2));
-//        }
+        /* file sync test */
+        $allFiles = Cache::remember(CacheKeyEnums::ALL_AWS_S3_DEMO_IMAGES_FILES->value, 300 * 60,function (){
+            return  Storage::disk('s3')->allFiles('/seeder-files/all-media');
+        });
+
+        $tenantKey = $this->tenant->id;
+        //todo get folder name
+        foreach ($allFiles as $file){
+            TenanFileCopyFromCloudForNewTenant::dispatch($file,$tenantKey)->onConnection('tenant_file_sync')->delay(Carbon::now()->addSeconds(2));
+        }
     }
 
 }

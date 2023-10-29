@@ -821,11 +821,37 @@ class GeneralSettingsController extends Controller
             return back()->with(['msg' => __('File Sync Started In The Background'), 'type' => 'success']);
         }
 
-        $this->validate($request, [
+        $rules = [
             'storage_driver' => 'required|string|max:191',
-        ]);
 
-        update_static_option_central('storage_driver',$request->storage_driver);
+            'wasabi_access_key_id' => 'required_if:storage_driver,==,wasabi',
+            'wasabi_secret_access_key' => 'required_if:storage_driver,==,wasabi',
+            'wasabi_default_region' => 'required_if:storage_driver,==,wasabi',
+            'wasabi_bucket' => 'required_if:storage_driver,==,wasabi',
+            'wasabi_endpoint' => 'required_if:storage_driver,==,wasabi',
+
+            'cloudflare_r2_access_key_id' => 'required_if:storage_driver,==,cloudFlareR2',
+            'cloudflare_r2_secret_access_key' => 'required_if:storage_driver,==,cloudFlareR2',
+            'cloudflare_r2_bucket' => 'required_if:storage_driver,==,cloudFlareR2',
+            'cloudflare_r2_url' => 'required_if:storage_driver,==,cloudFlareR2',
+            'cloudflare_r2_endpoint' => 'required_if:storage_driver,==,cloudFlareR2',
+            'cloudflare_r2_use_path_style_endpoint' => 'required_if:storage_driver,==,cloudFlareR2',
+
+            'aws_access_key_id' => 'required_if:storage_driver,==,s3',
+            'aws_secret_access_key' => 'required_if:storage_driver,==,s3',
+            'aws_default_region' => 'required_if:storage_driver,==,s3',
+            'aws_bucket' => 'required_if:storage_driver,==,s3',
+            'aws_url' => 'required_if:storage_driver,==,s3',
+            'aws_endpoint' => 'required_if:storage_driver,==,s3',
+            'aws_use_path_style_endpoint' => 'required_if:storage_driver,==,s3',
+        ];
+
+        $this->validate($request, $rules);
+
+        foreach ($rules as $index => $value)
+        {
+            update_static_option_central($index, $request->$index);
+        }
 
         return back()->with(['msg' => __('Storage Settings Updated'), 'type' => 'success']);
     }

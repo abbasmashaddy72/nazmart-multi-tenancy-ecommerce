@@ -19,7 +19,6 @@ class TenantConfigMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-
         // switches timezone according to tenant timezone from database value
         if (tenant()){
             $smtp_settings_values = StaticOption::select(['option_name','option_value'])->whereIn('option_name',[
@@ -56,13 +55,47 @@ class TenantConfigMiddleware
             Config::set('filesystems.disks.TenantMediaUploader.root',$storagePathFix.tenant()->getTenantKey());
             $storage_driver = get_static_option_central('storage_driver','TenantMediaUploader');
             $defaultStorage = is_null($storage_driver) ? "cloudFlareR2" : $storage_driver;
-            Config::set('filesystems.default',$defaultStorage);
+            Config::set('filesystems.default', $defaultStorage);
         }
         else
         {
             Config::set('filesystems.default', get_static_option_central('storage_driver','LandlordMediaUploader'));
+            $this->setDrivers();
         }
 
         return $next($request);
+    }
+
+    private function setDrivers()
+    {
+        $driver = get_static_option_central('storage_driver','LandlordMediaUploader');
+
+        Config::set('filesystems.default', $driver);
+
+        if (in_array($driver, ['wasabi', 's3', 'cloudFlareR2']))
+        {
+            $db_name = match ($driver)
+            {
+                "wasabi" => "wasabi",
+                "s3" => "aws",
+                "cloudFlareR2" => "cloudflare_r2"
+            };
+
+            Config::set([
+                "filesystems.disks.{$driver}.key" => get_static_option_central("{$db_name}_access_key_id") ?? Config::get("filesystems.disks.{$driver}.key"),
+                "filesystems.disks.{$driver}.secret" => get_static_option_central("{$db_name}_secret_access_key") ?? Config::get("filesystems.disks.{$driver}.secret"),
+                "filesystems.disks.{$driver}.region" => get_static_option_central("{$db_name}_default_region") ?? Config::get("filesystems.disks.{$driver}.region"),
+                "filesystems.disks.{$driver}.bucket" => get_static_option_central("{$db_name}_bucket") ?? Config::get("filesystems.disks.{$driver}.bucket"),
+                "filesystems.disks.{$driver}.endpoint" => get_static_option_central("{$db_name}_endpoint") ?? Config::get("filesystems.disks.{$driver}.endpoint"),
+            ]);
+
+            if (in_array($driver, ['s3', 'cloudFlareR2']))
+            {
+                Config::set([
+                    "filesystems.disks.{$driver}.url" => get_static_option_central("{$db_name}_url") ?? Config::get("filesystems.disks.{$driver}.url"),
+                    "filesystems.disks.{$driver}.use_path_style_endpoint" => get_static_option_central("{$db_name}_use_path_style_endpoint") ?? Config::get("filesystems.disks.{$driver}.use_path_style_endpoint")
+                ]);
+            }
+        }
     }
 }

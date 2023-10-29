@@ -39,8 +39,6 @@ class HandleImageUploadService
         $resize_thumb_image = Image::make($image)->resize(150, 150);
         $resize_tiny_image = Image::make($image)->resize(15, 15)->blur(50);
 
-        $storage_driver = Storage::getDefaultDriver();
-
         if (!$woocommerce_import)
         {
             $request->file->move($folder_path, $image_db);
@@ -50,6 +48,8 @@ class HandleImageUploadService
                 \File::move($woocommerce_import_path.$image_db, $folder_path.$image_db);
             }
         }
+
+        $storage_driver = Storage::getDefaultDriver();
 
         $imageData = [
             'title' => $image_name_with_ext,
@@ -73,26 +73,27 @@ class HandleImageUploadService
 
         $image_data = MediaUploader::create($imageData);
         $upload_folder = '/';
-        if (in_array(Storage::getDefaultDriver(),['s3','cloudFlareR2'])){
+        if (in_array(Storage::getDefaultDriver(), ['s3','cloudFlareR2'])){
             $upload_folder = is_null(tenant()) ? '/' : tenant()->getTenantKey().'/';
         }
+
         Storage::putFileAs($upload_folder, $image, $image_db); //$request->file->move($folder_path, $image_db);
 
         if ($image_width > 150){
             self::mkdirByPath($folder_path .'thumb/');
             self::mkdirByPath($folder_path .'grid/');
             self::mkdirByPath($folder_path .'large/');
+            self::mkdirByPath($folder_path .'tiny/');
 
             $resize_thumb_image->save($folder_path .'thumb/'. $image_thumb);
             $resize_grid_image->save($folder_path .'grid/'. $image_grid);
             $resize_large_image->save($folder_path .'large/'. $image_large);
-
-            $tiny_path = $folder_path .'tiny';
-            if (!is_dir($tiny_path))
-            {
-                mkdir($tiny_path, 0777);
-            }
             $resize_tiny_image->save($folder_path .'tiny/'. $image_tiny);
+
+            Storage::put($upload_folder.'thumb/' . $image_thumb, $resize_thumb_image->encode(), 'public');
+            Storage::put($upload_folder.'grid/' . $image_grid, $resize_grid_image->encode(), 'public');
+            Storage::put($upload_folder.'large/' . $image_large, $resize_large_image->encode(), 'public');
+            Storage::put($upload_folder.'tiny/' . $image_tiny, $resize_tiny_image->encode(), 'public');
         }
 
         return $image_data->id ?? '';

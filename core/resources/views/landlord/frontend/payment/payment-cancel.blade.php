@@ -1,7 +1,7 @@
 @extends(route_prefix().'frontend.frontend-page-master')
 @section('page-title')
 
-    {{__('Order Cancelled Of:'.' '.$order_details->package_name ?? '')}}
+    {{__('Order Cancelled Of:'.' '.($order_details->package_name ?? ''))}}
 @endsection
 @section('content')
     <div class="error-page-content padding-120">
@@ -13,7 +13,7 @@
                         <h3 class="sub-title mt-3">
                             @php
                                 $subtitle = get_static_option('site_order_cancel_page_subtitle');
-                                $subtitle = str_replace('{pkname}',$order_details->package_name,$subtitle);
+                                $subtitle = str_replace('{pkname}',$order_details->package_name ?? '',$subtitle);
                             @endphp
                             {{$subtitle}}
                         </h3>
