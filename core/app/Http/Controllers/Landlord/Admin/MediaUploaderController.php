@@ -22,9 +22,9 @@ class MediaUploaderController extends Controller
 
     public function upload_media_file(Request $request)
     {
-        $this->validate($request,[
-            'file' => 'nullable|mimes:jpg,jpeg,png,gif,webp,pdf,doc,docx,txt,svg,zip,csv,xlsx,xlsm,xlsb,xltx,pptx,pptm,ppt|max:10240'
-        ]);
+//        $this->validate($request,[
+//            'file' => 'nullable|mimes:jpg,jpeg,png,gif,webp,pdf,doc,docx,txt,svg,zip,csv,xlsx,xlsm,xlsb,xltx,pptx,pptm,ppt|max:10240'
+//        ]);
 
         if (tenant())
         {
@@ -136,7 +136,7 @@ class MediaUploaderController extends Controller
         if (in_array($image_extenstion, ['pdf','doc','docx','txt','svg','zip','csv','xlsx','xlsm','xlsb','xltx','pptx','pptm','ppt','mp4','avi','flv'])){
 
             $upload_folder = '/';
-            if (in_array(\Illuminate\Support\Facades\Storage::getDefaultDriver(),['s3','cloudFlareR2'])){
+            if (in_array(Storage::getDefaultDriver(),['s3','cloudFlareR2','wasabi'])){
                 $upload_folder = is_null(tenant()) ? '/' : tenant()->getTenantKey().'/';
             }
 
@@ -391,9 +391,10 @@ class MediaUploaderController extends Controller
                 $driver = "LandlordMediaUploader";
             }
             $upload_folder = '/';
-            if (in_array(Storage::getDefaultDriver(),['s3','cloudFlareR2'])  && $load_from === 1){
+            if (in_array(Storage::getDefaultDriver(),['s3','cloudFlareR2','wasabi'])  && $load_from === 1){
                 $upload_folder = is_null(tenant()) ? '/' : tenant()->getTenantKey().'/';
             }
+
             return Storage::disk($driver)->fileExists($upload_folder.$path);
         }catch (\Exception $e){
             return "";

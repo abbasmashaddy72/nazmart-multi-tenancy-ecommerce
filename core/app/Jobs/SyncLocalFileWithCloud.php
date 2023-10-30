@@ -2,13 +2,17 @@
 
 namespace App\Jobs;
 
+use App\Http\Middleware\Tenant\TenantConfigMiddleware;
 use App\Models\MediaUploader;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Http\File;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class SyncLocalFileWithCloud implements ShouldQueue
@@ -22,7 +26,7 @@ class SyncLocalFileWithCloud implements ShouldQueue
      */
     public function __construct(public $file)
     {
-        //
+
     }
 
     /**
@@ -32,40 +36,82 @@ class SyncLocalFileWithCloud implements ShouldQueue
      */
     public function handle()
     {
+
+        $this->setDrivers();
+        \Log::info('start');
         $files = ["grid/",'large/','thumb/','tiny/',''];
         $item = $this->file;
 
+        \Log::info($item);
+        Log::info(Storage::getDefaultDriver());
         foreach ($files as $vFile) {
             $prefix = '';
             if ($vFile != ''){
                 $prefix = str_replace('/','',$vFile).'-';
             }
 
+            \Log::info('lin 50 - '. $prefix);
+
             //todo, run query from the database get all media file then run loop and send file to the jobs done it through queue, update database that this file is already synced
             $local_file_path = base_path("../assets/landlord/uploads/media-uploader/".$vFile.$prefix.$item?->path);
 
             $cl_file_path = $vFile.$prefix.$item?->path;
 
+            \Log::info('lin 57 - '. $cl_file_path);
+
             // /* checking the file exits in locally or not, if not exits return this jobs. */
             if (empty($item->path)){
+                \Log::info('lin 60 - '. $cl_file_path);
                 return;
             }
             if (!file_exists($local_file_path)){
+                \Log::info('lin 65 - '. $cl_file_path);
                 return;
             }
 
-
             // //todo:: check the file already exists in the cloud if not exits then create then copy that file to cloud
-            if (!Storage::drive("s3")->exists($cl_file_path)){
-                $fileNeed =  new \Illuminate\Http\File($local_file_path);
+            if (!Storage::exists($cl_file_path))
+            {
+                \Log::info('lin 70 - '. $cl_file_path);
+                $fileNeed =  new File($local_file_path);
                 //todo: have to check for three file
-                Storage::drive("s3")->putFileAs("/".$vFile,$fileNeed,$prefix.$item->path);
-                MediaUploader::find($item->id)->update(["is_synced" => 1,'load_from' => 1]);
-
+                Storage::putFileAs("/".$vFile,$fileNeed,$prefix.$item->path, 'public');
+//                MediaUploader::find($item->id)->update(["is_synced" => 1,'load_from' => 1]);
             }
-
+            \Log::info('lin 76 - '. $cl_file_path);
             /* change the database status to is_synced because the file is already exits on the cloud */
-            MediaUploader::find($item->id)->update(["is_synced" => 1,'load_from' => 1]);
+//            MediaUploader::find($item->id)->update(["is_synced" => 1,'load_from' => 1]);
+        }
+    }
+
+    private function setDrivers()
+    {
+        $driver = get_static_option_central('storage_driver', empty(tenant()) ? 'LandlordMediaUploader' : 'TenantMediaUploader');
+        Log::info($driver .' ddd');
+        if (in_array($driver, ['wasabi', 's3', 'cloudFlareR2']))
+        {
+            $db_name = match ($driver)
+            {
+                "wasabi" => "wasabi",
+                "s3" => "aws",
+                "cloudFlareR2" => "cloudflare_r2"
+            };
+            Config::set('filesystems.default',$driver);
+            Config::set([
+                "filesystems.disks.{$driver}.key" => get_static_option_central("{$db_name}_access_key_id") ?? Config::get("filesystems.disks.{$driver}.key"),
+                "filesystems.disks.{$driver}.secret" => get_static_option_central("{$db_name}_secret_access_key") ?? Config::get("filesystems.disks.{$driver}.secret"),
+                "filesystems.disks.{$driver}.region" => get_static_option_central("{$db_name}_default_region") ?? Config::get("filesystems.disks.{$driver}.region"),
+                "filesystems.disks.{$driver}.bucket" => get_static_option_central("{$db_name}_bucket") ?? Config::get("filesystems.disks.{$driver}.bucket"),
+                "filesystems.disks.{$driver}.endpoint" => get_static_option_central("{$db_name}_endpoint") ?? Config::get("filesystems.disks.{$driver}.endpoint"),
+            ]);
+
+            if (in_array($driver, ['s3', 'cloudFlareR2']))
+            {
+                Config::set([
+                    "filesystems.disks.{$driver}.url" => get_static_option_central("{$db_name}_url") ?? Config::get("filesystems.disks.{$driver}.url"),
+                    "filesystems.disks.{$driver}.use_path_style_endpoint" => get_static_option_central("{$db_name}_use_path_style_endpoint") ?? Config::get("filesystems.disks.{$driver}.use_path_style_endpoint")
+                ]);
+            }
         }
     }
 }

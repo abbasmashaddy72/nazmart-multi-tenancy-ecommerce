@@ -91,7 +91,6 @@ class AppServiceProvider extends ServiceProvider
             }
 
             $file_url = Storage::disk($driver)->url($prefix.$filepath);
-//dd($file_url,$prefix);
 
             if ($load_from == 0 && !is_null(tenant())){
                 return str_replace("/storage",url("/assets/tenant/uploads/media-uploader/".tenant()->getTenantKey().$prefix),$file_url);
@@ -108,40 +107,39 @@ class AppServiceProvider extends ServiceProvider
                 return str_replace("/storage",url("/assets/landlord/uploads/media-uploader").$prefix,$file_url);
             }
 
-            if (Storage::getDefaultDriver() == "wasabi"){
-                $bucket = get_static_option_central('wasabi_bucket') ?? '';
-                $endpoint = get_static_option_central('wasabi_url') ?? '';
-
-                dd(231321231);
-                $finalUrl = renderWasabiCloudFile(str_replace("https://".$bucket.".".str_replace("https://","",$endpoint."/"),"",$file_url));
-
-                return $finalUrl;
-            }
-
             $folder_prefix = "";
             if (!is_null(tenant())){
                 $folder_prefix = tenant()->getTenantKey()."/";
             }
+
+            if (Storage::getDefaultDriver() == "wasabi"){
+//                $bucket = get_static_option_central('wasabi_bucket') ?? '';
+//                $endpoint = get_static_option_central('wasabi_url') ?? '';
+
+//                $path = str_replace("https://".$bucket.".".str_replace("https://","",$endpoint."/"),"",$file_url);
+                $filepath = tenant() ? tenant()->id.'/'.$filepath : $filepath;
+                $finalUrl = renderWasabiCloudFile($filepath);
+
+                return $finalUrl;
+            }
+
 
             if (Storage::getDefaultDriver() == "s3"){
                 $tempUrl = Storage::temporaryUrl($folder_prefix.$prefix.$filepath,Carbon::now()->addMinutes(20));
                 return $tempUrl;
             }
 
-
-
 //            $tempUrl = Cache::remember($filepath,Carbon::now()->addMinutes(15),function ()use($filepath){
 //                Storage::temporaryUrl($filepath,Carbon::now()->addMinutes(20));
 //            });
 
-//            dd($folder_prefix.$prefix.$filepath,$size);
             $tempUrl = Storage::temporaryUrl($folder_prefix.$prefix.$filepath,Carbon::now()->addMinutes(20));
-//            dd($tempUrl);
+
             //cloudflare temporary url
             $finalUrl = str_replace([
-                "https://".env("CLOUDFLARE_R2_BUCKET").".".str_replace("https://","",env("CLOUDFLARE_R2_ENDPOINT"))
+                "https://".get_static_option_central('cloudflare_r2_bucket').".".str_replace("https://","",get_static_option_central('cloudflare_r2_endpoint'))
             ],[
-                "https://".env("CLOUDFLARE_R2_URL")
+                "https://".get_static_option_central('cloudflare_r2_url')
             ],$tempUrl);
 
             return $finalUrl;

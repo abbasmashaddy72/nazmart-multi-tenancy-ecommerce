@@ -54,23 +54,22 @@ class TenantConfigMiddleware
             $storagePathFix = str_replace('tenant'.tenant()->getTenantKey(),'', storage_path('../../assets/tenant/uploads/media-uploader/'));
             Config::set('filesystems.disks.TenantMediaUploader.root',$storagePathFix.tenant()->getTenantKey());
             $storage_driver = get_static_option_central('storage_driver','TenantMediaUploader');
-            $defaultStorage = is_null($storage_driver) ? "cloudFlareR2" : $storage_driver;
+            $defaultStorage = is_null($storage_driver) ? "TenantMediaUploader" : $storage_driver;
             Config::set('filesystems.default', $defaultStorage);
         }
         else
         {
             Config::set('filesystems.default', get_static_option_central('storage_driver','LandlordMediaUploader'));
-            $this->setDrivers();
         }
+
+        $this->setDrivers();
 
         return $next($request);
     }
 
     private function setDrivers()
     {
-        $driver = get_static_option_central('storage_driver','LandlordMediaUploader');
-
-        Config::set('filesystems.default', $driver);
+        $driver = get_static_option_central('storage_driver', empty(tenant()) ? 'LandlordMediaUploader' : 'TenantMediaUploader');
 
         if (in_array($driver, ['wasabi', 's3', 'cloudFlareR2']))
         {

@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class MediaUploader extends Model
 {
     use HasFactory;
-    protected $fillable = ['title','alt','size','path','dimensions','user_type','user_id'];
+    protected $fillable = ['title','alt','size','path','dimensions','user_type','user_id','load_from','is_synced'];
 
 }

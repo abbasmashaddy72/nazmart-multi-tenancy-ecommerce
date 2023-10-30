@@ -36,7 +36,7 @@ class TenanFileCopyFromCloudForNewTenant implements ShouldQueue
         Tenancy::initialize($this->tenantId);
         $move_path = str_replace('seeder-files/all-media',$this->tenantId,$this->pathname);
         try {
-            Storage::disk('s3')->copy($this->pathname,$move_path);
+            Storage::copy($this->pathname,$move_path);
             $file_name = pathinfo($this->pathname,PATHINFO_BASENAME);
             //todo:: change database connection to tenant
             //todo:: update database to use this file from the cloud

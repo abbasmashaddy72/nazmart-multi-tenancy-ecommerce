@@ -39,14 +39,10 @@ class HandleImageUploadService
         $resize_thumb_image = Image::make($image)->resize(150, 150);
         $resize_tiny_image = Image::make($image)->resize(15, 15)->blur(50);
 
-        if (!$woocommerce_import)
+        // todo::convert this woocommerce import into cloud too
+        if ($woocommerce_import && !empty($woocommerce_import_path))
         {
-            $request->file->move($folder_path, $image_db);
-        } else {
-            if (!empty($woocommerce_import_path))
-            {
-                \File::move($woocommerce_import_path.$image_db, $folder_path.$image_db);
-            }
+            \File::move($woocommerce_import_path.$image_db, $folder_path.$image_db);
         }
 
         $storage_driver = Storage::getDefaultDriver();
@@ -58,7 +54,7 @@ class HandleImageUploadService
             'user_type' => 0, //0 == admin 1 == user
             'user_id' => \Auth::guard('admin')->id(),
             'dimensions' => $image_dimension_for_db,
-            'is_synced' => in_array(get_static_option_central('storage_driver'),['s3','cloudFlareR2'])? 1 : 0,
+            'is_synced' => in_array(get_static_option_central('storage_driver'),['s3','cloudFlareR2','wasabi'])? 1 : 0,
             'load_from' => in_array($storage_driver,['TenantMediaUploader','LandlordMediaUploader']) ? 0 : 1
         ];
 
@@ -73,13 +69,14 @@ class HandleImageUploadService
 
         $image_data = MediaUploader::create($imageData);
         $upload_folder = '/';
-        if (in_array(Storage::getDefaultDriver(), ['s3','cloudFlareR2'])){
+        if (in_array(Storage::getDefaultDriver(), ['s3','cloudFlareR2','wasabi'])){
             $upload_folder = is_null(tenant()) ? '/' : tenant()->getTenantKey().'/';
         }
 
-        Storage::putFileAs($upload_folder, $image, $image_db); //$request->file->move($folder_path, $image_db);
+        Storage::putFileAs($upload_folder, $image, $image_db, 'public'); //$request->file->move($folder_path, $image_db);
 
-        if ($image_width > 150){
+        if ($image_width > 150)
+        {
             self::mkdirByPath($folder_path .'thumb/');
             self::mkdirByPath($folder_path .'grid/');
             self::mkdirByPath($folder_path .'large/');

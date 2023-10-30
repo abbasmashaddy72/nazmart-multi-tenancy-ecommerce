@@ -52,7 +52,7 @@ class SyncFileForNewTenantJob implements ShouldQueue
                 $fileNeed =  new \Illuminate\Http\File($local_file_path);
                 //todo: have to check for three file
 
-                Storage::drive("s3")->putFileAs("/".$tenant_id."/".$vFile,$fileNeed,$prefix.$file_instance->getFilename());
+                Storage::putFileAs("/".$tenant_id."/".$vFile,$fileNeed,$prefix.$file_instance->getFilename());
 //            }
         }
     }

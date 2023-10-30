@@ -74,21 +74,30 @@ function get_user_lang()
     return $lang = \App\Facades\GlobalLanguage::user_lang_slug();
 }
 
-//render_image_markup_by_attachment_id
+
 function render_image_markup_by_attachment_data($data)
 {
     //todo: render image based on image data not from database
-
 }
 
-function get_attachment_image_by_id($id, $size = null, $default = false): array
+function get_attachment_image_by_id($id, $size = null, $default = false)
 {
     $image_details = Cache::remember('media_image_' . $id, 60 * 60 * 24, function () use ($id) {
         return \App\Models\MediaUploader::find($id);
     });
 
-    $return_val = [];
+    $return_val = ['img_url' => '','img_alt' => '','image_id' =>'' ,'path' => ''];
     $image_url = '';
+
+    if (is_null(optional($image_details)->path)){
+        return ['img_url' => '','img_alt' => '','image_id' =>'' ,'path' => ''];
+    }
+
+    try {
+        $image_url = Storage::renderUrl($image_details?->path,$size,$image_details->load_from);
+    }catch (\Exception $e){
+        return ['img_url' => '','img_alt' => '','image_id' =>'' ,'path' => ''];
+    }
 
     if (!empty($id) && !empty($image_details)) {
 
@@ -104,29 +113,54 @@ function get_attachment_image_by_id($id, $size = null, $default = false): array
         $image_url = $path . '/' . $image_details->path;
         switch ($size) {
             case "large":
-                if ($base_path . 'large/large-' . $image_details->path && !is_dir($base_path . 'large/large-' . $image_details->path)) {
-                    $image_url = $path . '/large/large-' . $image_details->path;
+                try {
+                    $image_url = Storage::renderUrl(optional($image_details)->path,size:"large",load_from: $image_details->load_from);
                 }
+                catch (\Exception $e){}
+//                if ($base_path . 'large/large-' . $image_details->path && !is_dir($base_path . 'large/large-' . $image_details->path)) {
+//                    $image_url = $path . '/large/large-' . $image_details->path;
+//                }
                 break;
             case "grid":
-                if ($base_path . 'grid/grid-' . $image_details->path && !is_dir($base_path . 'grid/grid-' . $image_details->path)) {
-                    $image_url = $path . '/grid/grid-' . $image_details->path;
+                try {
+                    $image_url = Storage::renderUrl(optional($image_details)->path,size:"grid",load_from: $image_details->load_from);
                 }
+                catch (\Exception $e){}
+//                if ($base_path . 'grid/grid-' . $image_details->path && !is_dir($base_path . 'grid/grid-' . $image_details->path)) {
+//                    $image_url = $path . '/grid/grid-' . $image_details->path;
+//                }
                 break;
             case "thumb":
-                if ($base_path . 'thumb/thumb-' . $image_details->path && !is_dir($base_path . 'thumb/thumb-' . $image_details->path)) {
-                    $image_url = $path . '/thumb/thumb-' . $image_details->path;
+                try {
+                    $image_url = Storage::renderUrl(optional($image_details)->path,size:"thumb",load_from: $image_details->load_from);
                 }
+                catch (\Exception $e){}
+//                if ($base_path . 'thumb/thumb-' . $image_details->path && !is_dir($base_path . 'thumb/thumb-' . $image_details->path)) {
+//                    $image_url = $path . '/thumb/thumb-' . $image_details->path;
+//                }
                 break;
             case "tiny":
-                if ($base_path . 'tiny/tiny-' . $image_details->path && !is_dir($base_path . 'tiny/tiny-' . $image_details->path)) {
-                    $image_url = $path . '/tiny/tiny-' . $image_details->path;
+                $image_url = "";
+                try {
+                    $image_url = \Illuminate\Support\Facades\Storage::renderUrl(optional($image_details)->path,size:"tiny",load_from: $image_details->load_from);
                 }
+                catch (\Exception $e){}
+//                if ($base_path . 'tiny/tiny-' . $image_details->path && !is_dir($base_path . 'tiny/tiny-' . $image_details->path)) {
+//                    $image_url = $path . '/tiny/tiny-' . $image_details->path;
+//                }
                 break;
             default:
-                if (is_numeric($id) && file_exists($base_path . $image_details->path) && !is_dir($base_path . $image_details->path)) {
-                    $image_url = $path . '/' . $image_details->path;
+                try {
+                    $image_url = \Illuminate\Support\Facades\Storage::renderUrl(optional($image_details)->path,load_from: $image_details->load_from);
                 }
+                catch (\Exception $e)
+                {
+                    return "";
+                }
+
+//                if (is_numeric($id) && file_exists($base_path . $image_details->path) && !is_dir($base_path . $image_details->path)) {
+//                    $image_url = $path . '/' . $image_details->path;
+//                }
                 break;
         }
     }
@@ -2010,7 +2044,7 @@ if (!function_exists('renderWasabiCloudFile')) {
     function renderWasabiCloudFile($fileLocation)
     {
         $s3 = new \Aws\S3\S3Client([
-            'endpoint' => get_static_option_central('wasabi_url') ?? config('filesystems.disks.wasabi.endpoint'),
+            'endpoint' => get_static_option_central('wasabi_endpoint') ?? config('filesystems.disks.wasabi.endpoint'),
             'region' => get_static_option_central('wasabi_default_region') ?? config('filesystems.disks.wasabi.region'),
             'version' => 'latest',
             'credentials' => array(

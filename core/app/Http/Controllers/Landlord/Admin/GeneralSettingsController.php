@@ -14,10 +14,12 @@ use App\Models\Tenant;
 use Config;
 use Database\Seeders\ThemeModifySeeder;
 use Database\Seeders\ThemeModifySeederTenant;
+use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use App\Helpers\SanitizeInput;
+use Illuminate\Support\Facades\Storage;
 use Xgenious\XgApiClient\Facades\XgApiClient;
 use Illuminate\Support\Facades\DB;
 
@@ -810,10 +812,11 @@ class GeneralSettingsController extends Controller
 
     public function update_storage_settings(Request $request)
     {
-        if ( $request->_action === 'sync_file'){
-
+        if ( $request->_action === 'sync_file')
+        {
             MediaUploader::where(["is_synced"=> 0])->chunk(50,function ($items){
-                foreach ($items as $item){
+                foreach ($items as $item)
+                {
                     SyncLocalFileWithCloud::dispatch($item);
                 }
             });

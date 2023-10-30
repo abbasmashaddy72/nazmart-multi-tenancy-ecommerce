@@ -37,7 +37,7 @@
                     <x-fields.select name="storage_driver" id="storage-driver" title="{{__('Disks Driver')}}"
                                      info="{{__('By default it is local, if you have disk driver you can set here, unless leave this as (Local)')}}">
                         <option
-                            value="local" {{ get_static_option_central('storage_driver') == 'local' ? 'selected' : '' }}>{{__('Local')}}</option>
+                            value="LandlordMediaUploader" {{ get_static_option_central('storage_driver') == 'LandlordMediaUploader' ? 'selected' : '' }}>{{__('Local')}}</option>
                         <option
                             value="cloudFlareR2" {{ get_static_option_central('storage_driver') == 'cloudFlareR2' ? 'selected' : '' }}>{{__('cloud Flare R2')}}</option>
                         <option

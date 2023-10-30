@@ -52,22 +52,22 @@ return [
 
         's3' => [
             'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
-            'bucket' => env('AWS_BUCKET'),
-            'url' => env('AWS_URL'),
-            'endpoint' => env('AWS_ENDPOINT'),
-            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'key' => "",
+            'secret' => "",
+            'region' => "",
+            'bucket' => "",
+            'url' => "",
+            'endpoint' => "",
+            'use_path_style_endpoint' => false,
         ],
 
         'wasabi' => [
             'driver' => 's3',
-            'key' => "env('WAS_ACCESS_KEY_ID')",
-            'secret' => "env('WAS_SECRET_ACCESS_KEY')",
-            'region' => "env('WAS_DEFAULT_REGION')",
-            'bucket' => "env('WAS_BUCKET')",
-            'endpoint' => "env('WAS_URL')",
+            'key' => "",
+            'secret' => "",
+            'region' => "",
+            'bucket' => "",
+            'endpoint' => "",
         ],
 
         'LandlordMediaUploader' => [
@@ -84,14 +84,14 @@ return [
 
         'cloudFlareR2' => [
             'driver' => 's3',
-            'key' => env('CLOUDFLARE_R2_ACCESS_KEY_ID'),
-            'secret' => env('CLOUDFLARE_R2_SECRET_ACCESS_KEY'),
+            'key' => "",
+            'secret' => "",
             'region' => 'us-east-1',
-            'bucket' => env('CLOUDFLARE_R2_BUCKET'),
-            'url' => env('CLOUDFLARE_R2_URL'),
+            'bucket' => "",
+            'url' => "",
             'visibility' => 'private',
-            'endpoint' => env('CLOUDFLARE_R2_ENDPOINT'),
-            'use_path_style_endpoint' => env('CLOUDFLARE_R2_USE_PATH_STYLE_ENDPOINT', false),
+            'endpoint' => "",
+            'use_path_style_endpoint' => false,
             'throw' => false,
         ]
     ],
