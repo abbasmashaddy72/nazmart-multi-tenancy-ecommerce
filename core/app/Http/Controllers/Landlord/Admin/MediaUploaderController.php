@@ -136,7 +136,7 @@ class MediaUploaderController extends Controller
         if (in_array($image_extenstion, ['pdf','doc','docx','txt','svg','zip','csv','xlsx','xlsm','xlsb','xltx','pptx','pptm','ppt','mp4','avi','flv'])){
 
             $upload_folder = '/';
-            if (in_array(Storage::getDefaultDriver(),['s3','cloudFlareR2','wasabi'])){
+            if (cloudStorageExist() && in_array(Storage::getDefaultDriver(),['s3','cloudFlareR2','wasabi'])){
                 $upload_folder = is_null(tenant()) ? '/' : tenant()->getTenantKey().'/';
             }
 
@@ -391,7 +391,7 @@ class MediaUploaderController extends Controller
                 $driver = "LandlordMediaUploader";
             }
             $upload_folder = '/';
-            if (in_array(Storage::getDefaultDriver(),['s3','cloudFlareR2','wasabi'])  && $load_from === 1){
+            if (cloudStorageExist() && in_array(Storage::getDefaultDriver(),['s3','cloudFlareR2','wasabi'])  && $load_from === 1){
                 $upload_folder = is_null(tenant()) ? '/' : tenant()->getTenantKey().'/';
             }
 

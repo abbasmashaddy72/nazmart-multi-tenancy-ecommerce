@@ -17,6 +17,21 @@ class TenantConfigMiddleware
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
+    public function __destruct()
+    {
+        if ((!moduleExists('CloudStorage') || !isPluginActive('CloudStorage')))
+        {
+            if (tenant())
+            {
+                Config::set('filesystems.default', 'TenantMediaUploader');
+            } else {
+                Config::set('filesystems.default', 'LandlordMediaUploader');
+            }
+        }
+
+        $this->setDrivers();
+    }
+
     public function handle(Request $request, Closure $next)
     {
         // switches timezone according to tenant timezone from database value
@@ -61,8 +76,6 @@ class TenantConfigMiddleware
         {
             Config::set('filesystems.default', get_static_option_central('storage_driver','LandlordMediaUploader'));
         }
-
-        $this->setDrivers();
 
         return $next($request);
     }

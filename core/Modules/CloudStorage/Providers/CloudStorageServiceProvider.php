@@ -1,21 +1,21 @@
 <?php
 
-namespace Modules\Controller\Providers;
+namespace Modules\CloudStorage\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 
-class ControllerServiceProvider extends ServiceProvider
+class CloudStorageServiceProvider extends ServiceProvider
 {
     /**
      * @var string $moduleName
      */
-    protected $moduleName = 'Controller';
+    protected $moduleName = 'CloudStorage';
 
     /**
      * @var string $moduleNameLower
      */
-    protected $moduleNameLower = 'controller';
+    protected $moduleNameLower = 'cloudstorage';
 
     /**
      * Boot the application events.

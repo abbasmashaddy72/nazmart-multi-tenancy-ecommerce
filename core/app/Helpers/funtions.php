@@ -2065,3 +2065,8 @@ if (!function_exists('renderWasabiCloudFile')) {
         return $img_url;
     }
 }
+
+function cloudStorageExist(): bool
+{
+    return (moduleExists('CloudStorage') && isPluginActive('CloudStorage'));
+}

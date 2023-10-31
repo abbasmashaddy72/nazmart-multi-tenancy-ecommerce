@@ -112,7 +112,7 @@ class AppServiceProvider extends ServiceProvider
                 $folder_prefix = tenant()->getTenantKey()."/";
             }
 
-            if (Storage::getDefaultDriver() == "wasabi"){
+            if (cloudStorageExist() && Storage::getDefaultDriver() == "wasabi"){
 //                $bucket = get_static_option_central('wasabi_bucket') ?? '';
 //                $endpoint = get_static_option_central('wasabi_url') ?? '';
 
@@ -124,7 +124,7 @@ class AppServiceProvider extends ServiceProvider
             }
 
 
-            if (Storage::getDefaultDriver() == "s3"){
+            if (cloudStorageExist() && Storage::getDefaultDriver() == "s3"){
                 $tempUrl = Storage::temporaryUrl($folder_prefix.$prefix.$filepath,Carbon::now()->addMinutes(20));
                 return $tempUrl;
             }

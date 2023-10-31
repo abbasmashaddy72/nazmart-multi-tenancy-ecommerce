@@ -6,6 +6,7 @@ use App\Helpers\FlashMsg;
 use App\Helpers\ResponseMessage;
 use App\Http\Controllers\Controller;
 use App\Jobs\SyncLocalFileWithCloud;
+use App\Jobs\SyncTenantLocalFileWithCloud;
 use App\Mail\BasicMail;
 use App\Models\MediaUploader;
 use App\Models\Page;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use App\Helpers\SanitizeInput;
 use Illuminate\Support\Facades\Storage;
+use Stancl\Tenancy\Facades\Tenancy;
 use Xgenious\XgApiClient\Facades\XgApiClient;
 use Illuminate\Support\Facades\DB;
 
@@ -804,59 +806,6 @@ class GeneralSettingsController extends Controller
     public function software_update_check_settings(Request $request){
         //todo run app update and database migrate here for test...
         return view(self::BASE_PATH."check-update");
-    }
-
-    public function storage_settings(Request $request){
-        return view(self::BASE_PATH."storage-settings");
-    }
-
-    public function update_storage_settings(Request $request)
-    {
-        if ( $request->_action === 'sync_file')
-        {
-            MediaUploader::where(["is_synced"=> 0])->chunk(50,function ($items){
-                foreach ($items as $item)
-                {
-                    SyncLocalFileWithCloud::dispatch($item);
-                }
-            });
-
-            return back()->with(['msg' => __('File Sync Started In The Background'), 'type' => 'success']);
-        }
-
-        $rules = [
-            'storage_driver' => 'required|string|max:191',
-
-            'wasabi_access_key_id' => 'required_if:storage_driver,==,wasabi',
-            'wasabi_secret_access_key' => 'required_if:storage_driver,==,wasabi',
-            'wasabi_default_region' => 'required_if:storage_driver,==,wasabi',
-            'wasabi_bucket' => 'required_if:storage_driver,==,wasabi',
-            'wasabi_endpoint' => 'required_if:storage_driver,==,wasabi',
-
-            'cloudflare_r2_access_key_id' => 'required_if:storage_driver,==,cloudFlareR2',
-            'cloudflare_r2_secret_access_key' => 'required_if:storage_driver,==,cloudFlareR2',
-            'cloudflare_r2_bucket' => 'required_if:storage_driver,==,cloudFlareR2',
-            'cloudflare_r2_url' => 'required_if:storage_driver,==,cloudFlareR2',
-            'cloudflare_r2_endpoint' => 'required_if:storage_driver,==,cloudFlareR2',
-            'cloudflare_r2_use_path_style_endpoint' => 'required_if:storage_driver,==,cloudFlareR2',
-
-            'aws_access_key_id' => 'required_if:storage_driver,==,s3',
-            'aws_secret_access_key' => 'required_if:storage_driver,==,s3',
-            'aws_default_region' => 'required_if:storage_driver,==,s3',
-            'aws_bucket' => 'required_if:storage_driver,==,s3',
-            'aws_url' => 'required_if:storage_driver,==,s3',
-            'aws_endpoint' => 'required_if:storage_driver,==,s3',
-            'aws_use_path_style_endpoint' => 'required_if:storage_driver,==,s3',
-        ];
-
-        $this->validate($request, $rules);
-
-        foreach ($rules as $index => $value)
-        {
-            update_static_option_central($index, $request->$index);
-        }
-
-        return back()->with(['msg' => __('Storage Settings Updated'), 'type' => 'success']);
     }
 
     public function update_version_check(Request $request){

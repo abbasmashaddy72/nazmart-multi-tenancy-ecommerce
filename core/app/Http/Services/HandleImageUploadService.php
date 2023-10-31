@@ -69,7 +69,7 @@ class HandleImageUploadService
 
         $image_data = MediaUploader::create($imageData);
         $upload_folder = '/';
-        if (in_array(Storage::getDefaultDriver(), ['s3','cloudFlareR2','wasabi'])){
+        if (cloudStorageExist() && in_array(Storage::getDefaultDriver(), ['s3','cloudFlareR2','wasabi'])){
             $upload_folder = is_null(tenant()) ? '/' : tenant()->getTenantKey().'/';
         }
 
