@@ -30,7 +30,7 @@ class CloudStorageController extends Controller
 
             Tenant::chunk(5,function ($items) {
                 foreach ($items as $item) {
-//                    Tenancy::initialize($item->id);
+                    Tenancy::initialize($item->id);
                     //todo:: get all file list for tenant, and put it into the jobs for upload into clouldflare
                     //todo switch database connect to current tenant
 

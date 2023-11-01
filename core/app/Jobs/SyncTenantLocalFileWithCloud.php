@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Storage;
 use Stancl\Tenancy\Contracts\TenantWithDatabase;
 use Stancl\Tenancy\Events\DatabaseDeleted;
 use Stancl\Tenancy\Events\DeletingDatabase;
+use Stancl\Tenancy\Facades\Tenancy;
 
 class SyncTenantLocalFileWithCloud implements ShouldQueue
 {

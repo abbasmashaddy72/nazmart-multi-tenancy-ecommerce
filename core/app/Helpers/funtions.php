@@ -142,7 +142,7 @@ function get_attachment_image_by_id($id, $size = null, $default = false)
             case "tiny":
                 $image_url = "";
                 try {
-                    $image_url = \Illuminate\Support\Facades\Storage::renderUrl(optional($image_details)->path,size:"tiny",load_from: $image_details->load_from);
+                    $image_url = Storage::renderUrl(optional($image_details)->path,size:"tiny",load_from: $image_details->load_from);
                 }
                 catch (\Exception $e){}
 //                if ($base_path . 'tiny/tiny-' . $image_details->path && !is_dir($base_path . 'tiny/tiny-' . $image_details->path)) {
@@ -151,7 +151,7 @@ function get_attachment_image_by_id($id, $size = null, $default = false)
                 break;
             default:
                 try {
-                    $image_url = \Illuminate\Support\Facades\Storage::renderUrl(optional($image_details)->path,load_from: $image_details->load_from);
+                    $image_url = Storage::renderUrl(optional($image_details)->path,load_from: $image_details->load_from);
                 }
                 catch (\Exception $e)
                 {

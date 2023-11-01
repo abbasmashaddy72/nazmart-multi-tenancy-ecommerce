@@ -13,6 +13,11 @@ class LandlordFrontendController
 {
     use OtpGlobalTrait;
 
+    public function __construct()
+    {
+        abort_if(empty(get_static_option('otp_login_status')), 404);
+    }
+
     // OTP Login
     public function showOtpLoginForm()
     {

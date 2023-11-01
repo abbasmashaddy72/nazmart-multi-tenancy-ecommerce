@@ -17,8 +17,10 @@ class TenantConfigMiddleware
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function __destruct()
+    public function __construct()
     {
+        $this->setDrivers();
+
         if ((!moduleExists('CloudStorage') || !isPluginActive('CloudStorage')))
         {
             if (tenant())
@@ -28,8 +30,6 @@ class TenantConfigMiddleware
                 Config::set('filesystems.default', 'LandlordMediaUploader');
             }
         }
-
-        $this->setDrivers();
     }
 
     public function handle(Request $request, Closure $next)

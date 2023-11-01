@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('file_sync_jobs', function (Blueprint $table) {
+        Schema::create('test_queue_jobs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('queue')->index();
             $table->longText('payload');
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('file_sync_jobs');
+        Schema::dropIfExists('test_queue_jobs');
     }
 };

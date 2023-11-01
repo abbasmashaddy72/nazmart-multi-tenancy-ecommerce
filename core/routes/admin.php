@@ -376,10 +376,6 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::get('/gdpr-settings', 'gdpr_settings')->name('landlord.admin.general.gdpr.settings');
         Route::post('/gdpr-settings', 'update_gdpr_cookie_settings');
 
-        //Storage Settings
-        Route::get('/storage-settings', 'storage_settings')->name('landlord.admin.general.storage.settings');
-        Route::post('/storage-settings', 'update_storage_settings');
-
         /* Payment Settings (Static) */
         Route::get('/payment-settings','payment_settings')->name('landlord.admin.general.payment.settings');
         Route::post('/payment-settings','update_payment_settings');
@@ -422,7 +418,6 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::get('/update-check', 'update_version_check')->name('landlord.admin.general.update.version.check');
         Route::post('/download-update/{productId}/{tenant}', 'updateDownloadLatestVersion')->name('landlord.admin.general.update.download.settings');
         Route::get('/software-update-setting', 'software_update_check_settings')->name('landlord.admin.general.software.update.settings');
-
     });
 
     Route::controller(PaymentSettingsController::class)->name('landlord.admin.payment.settings.')->prefix('payment-settings/payment')->group(function (){

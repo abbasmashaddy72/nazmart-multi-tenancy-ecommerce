@@ -511,14 +511,14 @@ class LandlordFrontendController extends Controller
         try {
             TenantCreateEventWithMail::tenant_create_event_with_credential_mail($user, $subdomain, $theme);
 
-            $log = PaymentLogs::where('tenant_id', $subdomain)->first();
-            DB::table('tenants')->where('id', $subdomain)->update([
-                'start_date' => $log->start_date,
-                'expire_date' => $log->expire_date,
-                'theme_slug' => $theme,
-            ]);
+//            $log = PaymentLogs::where('tenant_id', $subdomain)->first();
+//            DB::table('tenants')->where('id', $subdomain)->update([
+//                'start_date' => $log->start_date,
+//                'expire_date' => $log->expire_date,
+//                'theme_slug' => $theme,
+//            ]);
 
-            (new SmsSendAction())->smsSender($user);
+//            (new SmsSendAction())->smsSender($user);
         } catch (\Exception $ex) {
             $message = $ex->getMessage();
 

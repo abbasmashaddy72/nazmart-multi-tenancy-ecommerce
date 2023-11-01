@@ -406,7 +406,11 @@ class DatabaseSeeder extends Seeder
             'payment-settings-toyyibpay',
             'payment-settings-flutterwave',
             'payment-settings-payfast',
-            'payment-settings-manual_payment'
+            'payment-settings-manual_payment',
+
+            'site-analytics',
+            'cloud-storage',
+            'sms-gateway'
         ];
 
         foreach ($permissions as $permission) {

@@ -24,7 +24,7 @@
                     "tenantRoute": "tenant.admin.cloud.storage.settings",
                     "parent": null,
                     "icon": "mdi mdi-cloud-sync",
-                    "permissions": "sms-gateway",
+                    "permissions": "cloud-storage",
                     "class": "plugin-menu"
                 }
             ]

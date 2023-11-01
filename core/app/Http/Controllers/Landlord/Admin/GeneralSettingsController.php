@@ -123,15 +123,13 @@ class GeneralSettingsController extends Controller
             update_static_option($field_name, $request->$field_name);
         }
 
-        if (!\tenant())
-        {
+        if (!\tenant()) {
             $timezone = get_static_option('timezone');
             if (!empty($timezone)) {
                 setEnvValue(['APP_TIMEZONE' => $timezone]);
             }
 
-            if (!empty($request->debug_mode))
-            {
+            if (!empty($request->debug_mode)) {
                 setEnvValue(['APP_DEBUG' => 'true']);
             } else {
                 setEnvValue(['APP_DEBUG' => 'false']);
@@ -179,21 +177,21 @@ class GeneralSettingsController extends Controller
         $fields['tenant_site_global_email'] = $fields['site_global_email'];
         unset($fields['site_global_email']);
 
-        foreach ($fields as $field_name => $rule){
+        foreach ($fields as $field_name => $rule) {
             update_static_option($field_name, $rule);
         }
 
-        if (is_null(\tenant())){
-            update_static_option('site_global_email',$request->site_global_email);
+        if (is_null(\tenant())) {
+            update_static_option('site_global_email', $request->site_global_email);
 
             setEnvValue([
-                'MAIL_MAILER'=> $request->site_smtp_driver,
-                'MAIL_HOST'=> $request->site_smtp_host,
-                'MAIL_PORT'=> $request->site_smtp_port,
-                'MAIL_USERNAME'=>$request->site_smtp_username,
-                'MAIL_PASSWORD'=> addQuotes($request->site_smtp_password),
-                'MAIL_ENCRYPTION'=> $request->site_smtp_encryption,
-                'MAIL_FROM_ADDRESS'=> $request->site_global_email
+                'MAIL_MAILER' => $request->site_smtp_driver,
+                'MAIL_HOST' => $request->site_smtp_host,
+                'MAIL_PORT' => $request->site_smtp_port,
+                'MAIL_USERNAME' => $request->site_smtp_username,
+                'MAIL_PASSWORD' => addQuotes($request->site_smtp_password),
+                'MAIL_ENCRYPTION' => $request->site_smtp_encryption,
+                'MAIL_FROM_ADDRESS' => $request->site_global_email
             ]);
         }
 
@@ -442,8 +440,7 @@ class GeneralSettingsController extends Controller
 
             Mail::to($request->email)->send(new BasicMail($message, __('SMTP Test email')));
         } catch (\Exception $e) {
-            if ($e->getCode() == 535)
-            {
+            if ($e->getCode() == 535) {
                 return response()->warning(__('The email limit is reached. Upgrade it from your service provider.'));
             }
             return response()->warning($e->getMessage());
@@ -648,12 +645,12 @@ class GeneralSettingsController extends Controller
         Artisan::call('migrate', ['--force' => true]);
 
         //todo run a query to get all the tenant then run migrate one by one...
-        Tenant::latest()->chunk(50,function ($tenants){
-            foreach ($tenants as $tenant){
+        Tenant::latest()->chunk(50, function ($tenants) {
+            foreach ($tenants as $tenant) {
                 try {
-                    Config::set("database.connections.mysql.engine","InnoDB");
-                    Artisan::call('tenants:migrate', ['--force' => true,'--tenants'=>$tenant->id]);
-                }catch (\Exception $e){
+                    Config::set("database.connections.mysql.engine", "InnoDB");
+                    Artisan::call('tenants:migrate', ['--force' => true, '--tenants' => $tenant->id]);
+                } catch (\Exception $e) {
                     //if issue is related to the mysql database engine,
                 }
             }
@@ -692,10 +689,10 @@ class GeneralSettingsController extends Controller
             'envato_username' => 'required|string|max:191',
         ]);
 
-        $result = XgApiClient::activeLicense($request->site_license_key,$request->envato_username);
+        $result = XgApiClient::activeLicense($request->site_license_key, $request->envato_username);
         $type = "danger";
         $msg = __("could not able to verify your license key, please try after sometime, if you still face this issue, contact support");
-        if (!empty($result["success"]) && $result["success"]){
+        if (!empty($result["success"]) && $result["success"]) {
             update_static_option('site_license_key', $request->site_license_key);
             update_static_option('item_license_status', $result['success'] ? 'verified' : "");
             update_static_option('item_license_msg', $result['message']);
@@ -750,7 +747,7 @@ class GeneralSettingsController extends Controller
 
     public function gdpr_settings()
     {
-        return view(self::BASE_PATH.'gdpr-settings');
+        return view(self::BASE_PATH . 'gdpr-settings');
     }
 
     public function update_gdpr_cookie_settings(Request $request)
@@ -761,39 +758,39 @@ class GeneralSettingsController extends Controller
             'site_gdpr_cookie_delay' => 'required|string|max:191',
         ]);
 
-            $this->validate($request, [
-                "site_gdpr_cookie_title" => 'nullable|string',
-                "site_gdpr_cookie_message" => 'nullable|string',
-                "site_gdpr_cookie_more_info_label" => 'nullable|string',
-                "site_gdpr_cookie_more_info_link" => 'nullable|string',
-                "site_gdpr_cookie_accept_button_label" => 'nullable|string',
-                "site_gdpr_cookie_decline_button_label" => 'nullable|string',
-            ]);
+        $this->validate($request, [
+            "site_gdpr_cookie_title" => 'nullable|string',
+            "site_gdpr_cookie_message" => 'nullable|string',
+            "site_gdpr_cookie_more_info_label" => 'nullable|string',
+            "site_gdpr_cookie_more_info_link" => 'nullable|string',
+            "site_gdpr_cookie_accept_button_label" => 'nullable|string',
+            "site_gdpr_cookie_decline_button_label" => 'nullable|string',
+        ]);
 
-            $fields = [
-                "site_gdpr_cookie_title",
-                "site_gdpr_cookie_message",
-                "site_gdpr_cookie_more_info_label",
-                "site_gdpr_cookie_more_info_link",
-                "site_gdpr_cookie_accept_button_label",
-                "site_gdpr_cookie_decline_button_label",
-                "site_gdpr_cookie_manage_button_label",
-                "site_gdpr_cookie_manage_title",
-            ];
+        $fields = [
+            "site_gdpr_cookie_title",
+            "site_gdpr_cookie_message",
+            "site_gdpr_cookie_more_info_label",
+            "site_gdpr_cookie_more_info_link",
+            "site_gdpr_cookie_accept_button_label",
+            "site_gdpr_cookie_decline_button_label",
+            "site_gdpr_cookie_manage_button_label",
+            "site_gdpr_cookie_manage_title",
+        ];
 
-            foreach ($fields as $field){
-                update_static_option($field, $request->$field);
-            }
+        foreach ($fields as $field) {
+            update_static_option($field, $request->$field);
+        }
 
-            $all_fields = [
-                'site_gdpr_cookie_manage_item_title',
-                'site_gdpr_cookie_manage_item_description',
-            ];
+        $all_fields = [
+            'site_gdpr_cookie_manage_item_title',
+            'site_gdpr_cookie_manage_item_description',
+        ];
 
-            foreach ($all_fields as $field){
-                $value = $request->$field ?? [];
-                update_static_option($field,serialize($value));
-            }
+        foreach ($all_fields as $field) {
+            $value = $request->$field ?? [];
+            update_static_option($field, serialize($value));
+        }
 
         update_static_option('site_gdpr_cookie_delay', $request->site_gdpr_cookie_delay);
         update_static_option('site_gdpr_cookie_enabled', $request->site_gdpr_cookie_enabled);
@@ -803,90 +800,94 @@ class GeneralSettingsController extends Controller
     }
 
 
-    public function software_update_check_settings(Request $request){
+    public function software_update_check_settings(Request $request)
+    {
         //todo run app update and database migrate here for test...
-        return view(self::BASE_PATH."check-update");
+        return view(self::BASE_PATH . "check-update");
     }
 
-    public function update_version_check(Request $request){
+    public function update_version_check(Request $request)
+    {
 
-        $result = XgApiClient::checkForUpdate(get_static_option("site_license_key"),get_static_option_central("get_script_version"));
+        $result = XgApiClient::checkForUpdate(get_static_option("site_license_key"), get_static_option_central("get_script_version"));
 
-        if (isset($result["success"]) && $result["success"]){
+        if (isset($result["success"]) && $result["success"]) {
 
 
             $productUid = $result['data']['product_uid'] ?? null;
             $clientVersion = $result['data']['client_version'] ?? null;
             $latestVersion = $result['data']['latest_version'] ?? null;
             $productName = $result['data']['product'] ?? null;
-            $releaseDate =  $result['data']['release_date'] ?? null;
-            $changelog =  $result['data']['changelog'] ?? null;
-            $phpVersionReq =  $result['data']['php_version'] ?? null;
-            $mysqlVersionReq =  $result['data']['mysql_version'] ?? null;
-            $extensions =  $result['data']['extension'] ?? null;
-            $isTenant =  $result['data']['is_tenant'] ?? null;
+            $releaseDate = $result['data']['release_date'] ?? null;
+            $changelog = $result['data']['changelog'] ?? null;
+            $phpVersionReq = $result['data']['php_version'] ?? null;
+            $mysqlVersionReq = $result['data']['mysql_version'] ?? null;
+            $extensions = $result['data']['extension'] ?? null;
+            $isTenant = $result['data']['is_tenant'] ?? null;
             $daysDiff = $releaseDate;
             $msg = $result['data']['message'] ?? null;
 
             $output = "";
-            $phpVCompare = version_compare(number_format((float) PHP_VERSION, 1), $phpVersionReq == 8 ? '8.0' : $phpVersionReq, '>=');
+            $phpVCompare = version_compare(number_format((float)PHP_VERSION, 1), $phpVersionReq == 8 ? '8.0' : $phpVersionReq, '>=');
             $mysqlServerVersion = DB::select('select version()')[0]->{'version()'};
-            $mysqlVCompare = version_compare(number_format((float) $mysqlServerVersion, 1), $mysqlVersionReq, '<=');
+            $mysqlVCompare = version_compare(number_format((float)$mysqlServerVersion, 1), $mysqlVersionReq, '<=');
             $extensionReq = true;
             if ($extensions) {
-                foreach (explode(',', str_replace(' ','', strtolower($extensions))) as $extension) {
-                    if(!empty($extension)) continue;
+                foreach (explode(',', str_replace(' ', '', strtolower($extensions))) as $extension) {
+                    if (!empty($extension)) continue;
                     $extensionReq = XgApiClient::extensionCheck($extension);
                 }
             }
-            if(($phpVCompare === false || $mysqlVCompare === false) && $extensionReq === false){
-                $output .='<div class="text-danger">'.__('Your server does not have required software version installed.  Required: Php'). $phpVersionReq == 8 ? '8.0' : $phpVersionReq .', Mysql'.  $mysqlVersionReq . '/ Extensions:' .$extensions . 'etc </div>';
-                return response()->json(["msg" => $result["message"],"type" => "success","markup" => $output ]);
+            if (($phpVCompare === false || $mysqlVCompare === false) && $extensionReq === false) {
+                $output .= '<div class="text-danger">' . __('Your server does not have required software version installed.  Required: Php') . $phpVersionReq == 8 ? '8.0' : $phpVersionReq . ', Mysql' . $mysqlVersionReq . '/ Extensions:' . $extensions . 'etc </div>';
+                return response()->json(["msg" => $result["message"], "type" => "success", "markup" => $output]);
             }
 
-            if (!empty($latestVersion)){
-                $output .= '<div class="text-success">'.$msg.'</div>';
-                $output .= '<div class="card text-center" ><div class="card-header bg-transparent text-warning" >'.__("Please backup your database & script files before upgrading.").'</div>';
-                $output .= '<div class="card-body" ><h5 class="card-title" >'.__("new Version").' ('.$latestVersion.') '.__("is Available for").' '.$productName.'!</h5 >';
+            if (!empty($latestVersion)) {
+                $output .= '<div class="text-success">' . $msg . '</div>';
+                $output .= '<div class="card text-center" ><div class="card-header bg-transparent text-warning" >' . __("Please backup your database & script files before upgrading.") . '</div>';
+                $output .= '<div class="card-body" ><h5 class="card-title" >' . __("new Version") . ' (' . $latestVersion . ') ' . __("is Available for") . ' ' . $productName . '!</h5 >';
                 $updateActionUrl = route('landlord.admin.general.update.download.settings', [$productUid, $isTenant]);
-                $output .= '<a href = "#"  class="btn btn-warning" id="update_download_and_run_update" data-version="'.$latestVersion.'" data-action="'.$updateActionUrl.'"> <i class="las la-spinner la-spin d-none"></i>'.__("Download & Update").' </a>';
-                $output .= '<small class="text-warning d-block">'.__('it can take upto 5-10min to complete update download and initiate upgrade').'</small></div>';
-                $changesLongByLine = explode("\n",$changelog);
+                $output .= '<a href = "#"  class="btn btn-warning" id="update_download_and_run_update" data-version="' . $latestVersion . '" data-action="' . $updateActionUrl . '"> <i class="las la-spinner la-spin d-none"></i>' . __("Download & Update") . ' </a>';
+                $output .= '<small class="text-warning d-block">' . __('it can take upto 5-10min to complete update download and initiate upgrade') . '</small></div>';
+                $changesLongByLine = explode("\n", $changelog);
                 $output .= '<p class="changes-log">';
-                $output .= '<strong>'.__("Released:")." ".$daysDiff." "."</strong><br>";
+                $output .= '<strong>' . __("Released:") . " " . $daysDiff . " " . "</strong><br>";
                 $output .= "-------------------------------------------<br>";
-                foreach($changesLongByLine as $cg){
-                    $output .= $cg."<br>";
+                foreach ($changesLongByLine as $cg) {
+                    $output .= $cg . "<br>";
                 }
                 $output .= '</p>';
 
-                $output .='</div>';
+                $output .= '</div>';
             }
 
-            return response()->json(["msg" => $result["message"],"type" => "success","markup" => $output ]);
+            return response()->json(["msg" => $result["message"], "type" => "success", "markup" => $output]);
         }
 
-        return response()->json(["msg" => $result["message"],"type" => "danger","markup" => "<p class='text-danger'>".$result["message"]."</p>" ]);
+        return response()->json(["msg" => $result["message"], "type" => "danger", "markup" => "<p class='text-danger'>" . $result["message"] . "</p>"]);
 
     }
 
-    public function updateDownloadLatestVersion($productUid, $isTenant){
+    public function updateDownloadLatestVersion($productUid, $isTenant)
+    {
 
         $version = \request()->get("version");
         //todo wrap this function through xgapiclient facades
         $getItemLicenseKey = get_static_option('site_license_key');
-        $return_val = XgApiClient::downloadAndRunUpdateProcess($productUid, $isTenant,$getItemLicenseKey,$version);
+        $return_val = XgApiClient::downloadAndRunUpdateProcess($productUid, $isTenant, $getItemLicenseKey, $version);
 
-        if (is_array($return_val)){
-            return response()->json(['msg' => $return_val['msg'] , 'type' => $return_val['type']]);
-        }elseif (is_bool($return_val) && $return_val){
-            return response()->json(['msg' => __('system upgrade success') , 'type' => 'success']);
+        if (is_array($return_val)) {
+            return response()->json(['msg' => $return_val['msg'], 'type' => $return_val['type']]);
+        } elseif (is_bool($return_val) && $return_val) {
+            return response()->json(['msg' => __('system upgrade success'), 'type' => 'success']);
         }
         //it is false
-        return response()->json(['msg' => __('Update failed, please contact support for further assistance') , 'type' => 'danger']);
+        return response()->json(['msg' => __('Update failed, please contact support for further assistance'), 'type' => 'danger']);
     }
 
-    public function license_key_generate(Request $request){
+    public function license_key_generate(Request $request)
+    {
         $request->validate([
             "envato_purchase_code" => "required",
             "envato_username" => "required",
@@ -896,16 +897,54 @@ class GeneralSettingsController extends Controller
         $type = $res["success"] ? "success" : "danger";
         $message = $res["message"];
         //store information in database
-        if (!empty($res["success"])){
+        if (!empty($res["success"])) {
             //success verify
-            $res["data"] = is_array($res["data"]) ? $res["data"] : (array) $res["data"];
-            update_static_option("license_product_uuid",$res["data"]["product_uid"] ?? "");
-            update_static_option("site_license_key",$res["data"]["license_key"] ?? "");
+            $res["data"] = is_array($res["data"]) ? $res["data"] : (array)$res["data"];
+            update_static_option("license_product_uuid", $res["data"]["product_uid"] ?? "");
+            update_static_option("site_license_key", $res["data"]["license_key"] ?? "");
         }
-        update_static_option("license_purchase_code",$request->envato_purchase_code);
-        update_static_option("license_email",$request->email);
-        update_static_option("license_username",$request->envato_username);
+        update_static_option("license_purchase_code", $request->envato_purchase_code);
+        update_static_option("license_email", $request->email);
+        update_static_option("license_username", $request->envato_username);
 
         return back()->with(["msg" => $message, "type" => $type]);
+    }
+
+    public function globalSearch()
+    {
+        $routes_list_array = [
+            'landlord.admin.general.basic.settings' => __('basic settings'),
+            'landlord.admin.general.page.settings' => __('page settings'),
+            'landlord.admin.general.page.settings.home' => __('set home page'),
+            'landlord.admin.general.site.identity' => __('site identity'),
+            'landlord.admin.general.color.settings' => __('color settings'),
+            'landlord.admin.general.typography.settings' => __('typography settings'),
+            'landlord.admin.general.seo.settings' => __('seo settings'),
+            'landlord.admin.general.gdpr.settings' => __('GDPR settings'),
+            'landlord.admin.general.payment.settings' => __('currency settings'),
+            'landlord.admin.general.third.party.script.settings' => __('third party script settings'),
+            'landlord.admin.general.smtp.settings' => __('SMTP settings'),
+            'landlord.admin.general.ssl.settings' => __('SSL settings'),
+            'landlord.admin.general.custom.css.settings' => __('custom CSS settings'),
+            'landlord.admin.general.custom.js.settings' => __('custom JS settings'),
+            'landlord.admin.general.database.upgrade.settings' => __('database upgrade'),
+            'landlord.admin.general.cache.settings' => __('cache settings'),
+            'landlord.admin.general.license.settings' => __('license settings'),
+            'landlord.admin.general.update.version.check' => __('version settings'),
+            'landlord.admin.general.software.update.settings' => __('software update')
+        ];
+
+        $results = $this->searchRoutes($routes_list_array, 'css');
+        dd($results);
+    }
+
+    function searchRoutes($routes, $query) {
+        $result = [];
+        foreach($routes as $route => $text) {
+            if(stripos($text, $query) !== false) {
+                $result[$route] = $text;
+            }
+        }
+        return $result;
     }
 }

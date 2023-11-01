@@ -234,8 +234,8 @@ class MediaUploaderController extends Controller
 
             }else{
                 //todo:: delete assets as well
-//                $this->deleteOldFile($image->path);
-//                MediaUploader::find($image->id)->delete();
+                $this->deleteOldFile($image->path);
+                MediaUploader::find($image->id)->delete();
             }
         }
 

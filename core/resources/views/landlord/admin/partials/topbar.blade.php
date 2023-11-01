@@ -203,7 +203,7 @@
             @endphp
 
             <li class="nav-item nav-logout d-none d-lg-block mx-2">
-                <a class="btn {{$warning ? 'btn-danger site-health-btn' : 'btn-success'}} btn-icon-text" href="{{route('landlord.admin.health')}}">
+                <a class="btn {{$warning ? 'btn-danger site-health-btn' : 'btn-success'}} btn-icon-text" href="{{route('landlord.admin.health') ?? ''}}">
                     <i class="mdi mdi-stethoscope"></i> {{__('Health')}}
                 </a>
             </li>

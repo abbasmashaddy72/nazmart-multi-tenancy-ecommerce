@@ -50,7 +50,8 @@ class TenantTrialPaymentLog
 
         \DB::table('tenants')->where('id', $subdomain)->update([
             'start_date' => $trial_start_date,
-            'expire_date' => $trial_expire_date
+            'expire_date' => $trial_expire_date,
+            'theme_slug' => $theme
         ]);
 
         return true;
