@@ -12,9 +12,14 @@
         </a>
     </div>
     <div class="navbar-menu-wrapper d-flex align-items-stretch">
-        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-            <span class="mdi mdi-menu"></span>
-        </button>
+        <div class="align-self-center d-flex gap-3">
+            <button class="navbar-toggler navbar-toggler " type="button" data-toggle="minimize">
+                <span class="mdi mdi-menu"></span>
+            </button>
+
+            <input class="global-search-input form-control" type="text" placeholder="Search..">
+            <div class="search-dropdown dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="messageDropdown" style="top: 80px"></div>
+        </div>
 
         <ul class="navbar-nav navbar-nav-right">
             <li class="nav-item nav-profile dropdown">
@@ -203,7 +208,8 @@
             @endphp
 
             <li class="nav-item nav-logout d-none d-lg-block mx-2">
-                <a class="btn {{$warning ? 'btn-danger site-health-btn' : 'btn-success'}} btn-icon-text" href="{{route('landlord.admin.health') ?? ''}}">
+                <a class="btn {{$warning ? 'btn-danger site-health-btn' : 'btn-success'}} btn-icon-text"
+                   href="{{route('landlord.admin.health') ?? ''}}">
                     <i class="mdi mdi-stethoscope"></i> {{__('Health')}}
                 </a>
             </li>

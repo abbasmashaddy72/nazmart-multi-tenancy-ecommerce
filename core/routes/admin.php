@@ -494,7 +494,8 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::post('/get-admin-markup', 'get_admin_panel_addon_markup')->name('landlord.admin.page.builder.get.addon.markup');
     });
 
-} );
+    Route::get('/global-search', [GeneralSettingsController::class, 'globalSearch'])->name('landlord.admin.search.global');
+});
 
 /* ------------------------------------------
       MEDIA UPLOADER ROUTES

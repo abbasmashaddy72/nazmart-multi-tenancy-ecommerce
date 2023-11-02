@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Landlord\Admin;
 
+use App\Enums\AdminGetRoutesEnum;
 use App\Helpers\FlashMsg;
 use App\Helpers\ResponseMessage;
 use App\Http\Controllers\Controller;
@@ -912,37 +913,41 @@ class GeneralSettingsController extends Controller
 
     public function globalSearch()
     {
-        $routes_list_array = [
-            'landlord.admin.general.basic.settings' => __('basic settings'),
-            'landlord.admin.general.page.settings' => __('page settings'),
-            'landlord.admin.general.page.settings.home' => __('set home page'),
-            'landlord.admin.general.site.identity' => __('site identity'),
-            'landlord.admin.general.color.settings' => __('color settings'),
-            'landlord.admin.general.typography.settings' => __('typography settings'),
-            'landlord.admin.general.seo.settings' => __('seo settings'),
-            'landlord.admin.general.gdpr.settings' => __('GDPR settings'),
-            'landlord.admin.general.payment.settings' => __('currency settings'),
-            'landlord.admin.general.third.party.script.settings' => __('third party script settings'),
-            'landlord.admin.general.smtp.settings' => __('SMTP settings'),
-            'landlord.admin.general.ssl.settings' => __('SSL settings'),
-            'landlord.admin.general.custom.css.settings' => __('custom CSS settings'),
-            'landlord.admin.general.custom.js.settings' => __('custom JS settings'),
-            'landlord.admin.general.database.upgrade.settings' => __('database upgrade'),
-            'landlord.admin.general.cache.settings' => __('cache settings'),
-            'landlord.admin.general.license.settings' => __('license settings'),
-            'landlord.admin.general.update.version.check' => __('version settings'),
-            'landlord.admin.general.software.update.settings' => __('software update')
-        ];
+        $query = \request('query');
 
-        $results = $this->searchRoutes($routes_list_array, 'css');
-        dd($results);
+//        $routes_list_array = [
+//            'landlord.admin.general.basic.settings' => __('basic settings'),
+//            'landlord.admin.general.page.settings' => __('page settings'),
+//            'landlord.admin.general.site.identity' => __('site identity'),
+//            'landlord.admin.general.color.settings' => __('color settings'),
+//            'landlord.admin.general.typography.settings' => __('typography settings'),
+//            'landlord.admin.general.seo.settings' => __('seo settings'),
+//            'landlord.admin.general.gdpr.settings' => __('GDPR settings'),
+//            'landlord.admin.general.payment.settings' => __('currency settings'),
+//            'landlord.admin.general.third.party.script.settings' => __('third party script settings'),
+//            'landlord.admin.general.smtp.settings' => __('SMTP settings'),
+//            'landlord.admin.general.ssl.settings' => __('SSL settings'),
+//            'landlord.admin.general.custom.css.settings' => __('custom CSS settings'),
+//            'landlord.admin.general.custom.js.settings' => __('custom JS settings'),
+//            'landlord.admin.general.database.upgrade.settings' => __('database upgrade'),
+//            'landlord.admin.general.cache.settings' => __('cache settings'),
+//            'landlord.admin.general.license.settings' => __('license settings'),
+//            'landlord.admin.general.update.version.check' => __('version settings'),
+//            'landlord.admin.general.software.update.settings' => __('software update')
+//        ];
+
+        $results = $this->searchRoutes(AdminGetRoutesEnum::landlordAdminRoutes(), e(strip_tags(trim($query))));
+
+        return response()->json([
+            'response' => $results
+        ]);
     }
 
-    function searchRoutes($routes, $query) {
+    private function searchRoutes($routes, $query) {
         $result = [];
         foreach($routes as $route => $text) {
             if(stripos($text, $query) !== false) {
-                $result[$route] = $text;
+                $result[route($route)] = $text;
             }
         }
         return $result;
