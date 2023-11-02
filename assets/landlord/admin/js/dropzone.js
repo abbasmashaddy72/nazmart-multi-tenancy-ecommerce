@@ -181,7 +181,7 @@ class Dropzone extends Emitter {
              *
              * See [chunksUploaded](#config-chunksUploaded) for the callback to finalise an upload.
              */
-            chunking: false,
+            chunking: true,
 
             /**
              * If `chunking` is enabled, this defines whether **every** file should be chunked,
@@ -193,7 +193,7 @@ class Dropzone extends Emitter {
             /**
              * If `chunking` is `true`, then this defines the chunk size in bytes.
              */
-            chunkSize: 2000000,
+            chunkSize: 3000000,
 
             /**
              * If `true`, the individual chunks of a file are being uploaded simultaneously.
@@ -215,7 +215,7 @@ class Dropzone extends Emitter {
              * the event `maxfilesexceeded` will be called. The dropzone element gets the
              * class `dz-max-files-reached` accordingly so you can provide visual feedback.
              */
-            maxFilesize: 256,
+            maxFilesize: 2048,
 
             /**
              * The name of the file param that gets transferred.
@@ -1062,7 +1062,7 @@ class Dropzone extends Emitter {
         }
 
         if (this.element.classList.contains("dropzone") && !this.element.querySelector(".dz-message")) {
-            this.element.appendChild(Dropzone.createElement(`<div class="dz-default dz-message"><span>${this.options.dictDefaultMessage}</span> <span class="xg-accept-files">Support Formats ( jpg,jpeg,png,gif,pdf,doc,docx,txt,svg,zip,csv,xlsx,xlsm,xlsb,xltx,pptx,pptm,ppt )</span> <span class="xg-accept-files">Max Upload Size: 200MB</span> <span class="xg-accept-files">Max Upload Files: 50</span></div>`));
+            this.element.appendChild(Dropzone.createElement(`<div class="dz-default dz-message"><span>${this.options.dictDefaultMessage}</span> <span class="xg-accept-files">Support Formats ( jpg,jpeg,png,gif,mp4,avi,flv,pdf,doc,docx,txt,svg,zip,csv,xlsx,xlsm,xlsb,xltx,pptx,pptm,ppt )</span> <span class="xg-accept-files">Max Upload Size: 2048MB</span> <span class="xg-accept-files">Max Upload Files: 50</span></div>`));
         }
 
         if (this.clickableElements.length) {

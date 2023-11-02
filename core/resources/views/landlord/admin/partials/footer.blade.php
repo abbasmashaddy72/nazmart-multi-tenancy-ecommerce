@@ -55,7 +55,6 @@
         "use strict";
 
         $(document).ready(function ($) {
-
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl)
@@ -120,8 +119,72 @@
 
             $(document).on('click','.close',function(e){
                $('.alert').hide();
-
             });
+
+            let timeout = null;
+            $(document).on('keyup', '.global-search-input', function (e) {
+                e.preventDefault();
+
+                let search = $(this).val();
+
+                clearTimeout(timeout);
+
+                timeout = setTimeout(function() {
+                    sendSearchRequest(search);
+                }, 350);
+            });
+
+            let sendSearchRequest = (search_ext) => {
+                let search = search_ext;
+                let search_dropdown = $('.search-dropdown');
+
+                $.ajax({
+                    type: 'GET',
+                    url: `{{route('landlord.admin.search.global')}}`,
+                    data: {
+                        query: search
+                    },
+                    success: function (data) {
+                        search_dropdown.empty();
+
+                        let item = '';
+
+                        if (data.response.length === 0)
+                        {
+                            item = searchMarkup('#', 'no result found');
+                            search_dropdown.append(item);
+                            search_dropdown.addClass('show');
+                            return;
+                        }
+
+                        if (search === '')
+                        {
+                            search_dropdown.removeClass('show');
+                            return;
+                        }
+
+                        $.each(data.response, function (key, value) {
+                            item = searchMarkup(key, value);
+                            search_dropdown.append(item);
+                        });
+
+                        search_dropdown.addClass('show');
+                    },
+                    error: function (data)
+                    {
+                        search_dropdown.removeClass('show');
+                    }
+                });
+            }
+
+            let searchMarkup = (key, value) => {
+                return `<a class="search-item dropdown-item preview-item" href="${key}">
+                             <div class="search-text-wrapper preview-item-content d-flex align-items-start flex-column justify-content-center">
+                                   <h6 class="search-text preview-subject mb-1 font-weight-normal text-capitalize">${value}</h6>
+                             </div>
+                       <div class="dropdown-divider"></div>
+                       </a>`;
+            }
         });
     })(jQuery);
 </script>

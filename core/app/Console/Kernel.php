@@ -24,6 +24,11 @@ class Kernel extends ConsoleKernel
             ->withoutOverlapping()
             ->sendOutputTo(storage_path() . '/logs/queue-jobs.log');
 
+        $schedule->command('queue:work tenant_file_sync --timeout=60 --tries=1 --once')
+            ->everyMinute()
+            ->withoutOverlapping()
+            ->sendOutputTo(storage_path() . '/logs/new-website-file-sync-jobs.log');
+
         if (app()->environment('local'))
         {
             try {

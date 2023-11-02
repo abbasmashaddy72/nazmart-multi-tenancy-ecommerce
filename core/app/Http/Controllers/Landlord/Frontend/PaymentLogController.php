@@ -9,6 +9,7 @@ use App\Facades\ModuleDataFacade;
 use App\Helpers\FlashMsg;
 use App\Helpers\Payment\DatabaseUpdateAndMailSend\LandlordPricePlanAndTenantCreate;
 use App\Helpers\Payment\PaymentGatewayCredential;
+use App\Helpers\TenantHelper\TenantHelpers;
 use App\Http\Controllers\Controller;
 use App\Mail\BasicMail;
 use App\Mail\PlaceOrder;
@@ -78,7 +79,7 @@ class PaymentLogController extends Controller
             $selected_payment_gateway = 'required';
         }
 
-        $data = $request->validate([
+        $request->validate([
             'name' => 'nullable|string|max:191',
             'email' => 'nullable|email|max:191',
             'theme_slug' => ['required', Rule::in(getAllThemeSlug())],
@@ -146,7 +147,7 @@ class PaymentLogController extends Controller
             }
         }
 
-        $order_details = PricePlan::find($request->package_id) ?? '';
+        $order_details = $plan ?? '';
 
         $package_start_date = '';
         $package_expire_date = '';
@@ -215,6 +216,15 @@ class PaymentLogController extends Controller
 
         $auth = auth()->guard('web')->user();
         $auth_id = $auth->id;
+        $old_tenant_log = PaymentLogs::where(['user_id' => $auth_id, 'tenant_id' => $subdomain])->latest()->first() ?? '';
+
+        $tenantHelper = TenantHelpers::init()->setTenantId($subdomain)
+            ->setPackage($plan)
+            ->setPaymentLog($old_tenant_log)
+            ->setTheme($request->theme_slug);
+
+        $package_start_date = $tenantHelper->getStartDate();
+        $package_expire_date = $tenantHelper->getExpiredDate();
 
         $is_tenant = Tenant::find($subdomain);
 
@@ -652,14 +662,20 @@ class PaymentLogController extends Controller
             $payment_log = PaymentLogs::where('id', $payment_data['order_id'])->first();
             $tenant = Tenant::find($payment_log->tenant_id);
 
-            \DB::table('tenants')->where('id', $tenant->id)->update([
-                'renew_status' => $renew_status = is_null($tenant->renew_status) ? 0 : $tenant->renew_status+1,
-                'is_renew' => $renew_status == 0 ? 0 : 1,
-                'start_date' => $payment_log->start_date,
-                'expire_date' => get_plan_left_days($payment_log->package_id, $tenant->expire_date)
-            ]);
+            if ($payment_log->payment_status == 'complete')
+            {
+                if ($payment_log->is_renew == 1)
+                {
+                    \DB::table('tenants')->where('id', $tenant->id)->update([
+                        'renew_status' => $renew_status = is_null($tenant->renew_status) ? 0 : $tenant->renew_status+1,
+                        'is_renew' => $renew_status == 0 ? 0 : 1,
+                        'start_date' => $payment_log->start_date,
+                        'expire_date' => get_plan_left_days($payment_log->package_id, $tenant->expire_date)
+                    ]);
+                }
 
-            (new SmsSendAction())->smsSender($tenant->user);
+                (new SmsSendAction())->smsSender($tenant->user);
+            }
         } catch (\Exception $exception) {
             $message = $exception->getMessage();
             if(str_contains($message,'Access denied')){
@@ -698,7 +714,8 @@ class PaymentLogController extends Controller
         $tenant = Tenant::find($log->tenant_id);
 
         if (!empty($log) && $log->payment_status == 'complete' && is_null($tenant)) {
-            event(new TenantRegisterEvent($user, $log->tenant_id, $log->theme_slug));
+//            event(new TenantRegisterEvent($user, $log->tenant_id, $log->theme_slug));
+                Tenant::create(['id' => $log->tenant_id]);
             try {
                 $raw_pass = get_static_option_central('tenant_admin_default_password') ??'12345678';
                 $credential_password = $raw_pass;

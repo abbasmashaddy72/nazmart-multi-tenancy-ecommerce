@@ -26,6 +26,5 @@ class PlaceOrderMailJob implements ShouldQueue
     {
         Mail::to($this->details['order_mail'])->send(new PlaceOrder($this->details['all_fields'], $this->details['all_attachment'], $this->details['package_details'],"admin"));
         Mail::to($this->details['package_details']->mail)->send(new PlaceOrder($this->details['all_fields'], $this->details['all_attachment'], $this->details['package_details'],'user'));
-
     }
 }

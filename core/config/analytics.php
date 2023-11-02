@@ -1,33 +1,81 @@
 <?php
 
 return [
+    'enabled' => env('ANALYTICS_ENABLED', true),
 
-    /*
-     * The view id of which you want to display data.
-     */
-    'view_id' => env('ANALYTICS_VIEW_ID'),
-
-    /*
-     * Path to the client secret json file. Take a look at the README of this package
-     * to learn how to get this file. You can also pass the credentials as an array
-     * instead of a file path.
-     */
-    'service_account_credentials_json' => storage_path('app/analytics/service-account-credentials.json'),
-
-    /*
-     * The amount of minutes the Google API responses will be cached.
-     * If you set this to zero, the responses won't be cached at all.
-     */
-    'cache_lifetime_in_minutes' => 60 * 24,
-
-    /*
-     * Here you may configure the "store" that the underlying Google_Client will
-     * use to store it's data.  You may also add extra parameters that will
-     * be passed on setCacheConfig (see docs for google-api-php-client).
+    /**
+     * Analytics Dashboard.
      *
-     * Optional parameters: "lifetime", "prefix"
+     * The prefix and middleware for the analytics dashboard.
      */
-    'cache' => [
-        'store' => 'file',
+    'prefix' => 'analytics',
+
+    'middleware' => [
+        'web',
+    ],
+
+    /**
+     * Exclude.
+     *
+     * The routes excluded from page view tracking.
+     */
+    'exclude' => [
+        '/analytics',
+        '/analytics/*',
+        '/user-home',
+        '/user-home/*',
+        '/package-orders',
+        '/custom-domain',
+        '/landlord/wallet*',
+        '/user/*',
+        '/request-refund/*',
+        '/admin-home',
+        '/admin-home/*',
+        '/favicon.ico',
+        '/shop/order-success',
+        '/shop/order-success/*',
+        '/shop/order-cancel',
+        '/shop/order-cancel/*',
+        '/shop/*-ipn',
+        '/shop/checkout/shipping-method-data',
+        '/shop/assets/*',
+        '/telescope',
+        '/telescope/*'
+    ],
+
+    /**
+     * Determine if traffic from robots should be tracked.
+     */
+    'ignoreRobots' => false,
+
+    /**
+     * Ignored IP addresses.
+     *
+     * The IP addresses excluded from page view tracking.
+     */
+    'ignoredIPs' => [
+        // '192.168.1.1',
+    ],
+
+    /**
+     * Mask.
+     *
+     * Mask routes so they are tracked together.
+     */
+    'mask' => [
+        // '/users/*',
+    ],
+
+    /**
+     * Ignore methods.
+     *
+     * The HTTP verbs/methods that should be excluded from page view tracking.
+     */
+    'ignoreMethods' => [
+         'OPTIONS', 'POST',
+    ],
+
+    'session' => [
+        'provider' => \AndreasElia\Analytics\RequestSessionProvider::class,
     ],
 ];

@@ -15,6 +15,8 @@ return [
 
     'default' => env('FILESYSTEM_DRIVER', 'local'),
 
+    'cloud' => env('FILESYSTEM_CLOUD', 's3'),
+
     /*
     |--------------------------------------------------------------------------
     | Filesystem Disks
@@ -29,7 +31,6 @@ return [
     */
 
     'disks' => [
-
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
@@ -51,15 +52,48 @@ return [
 
         's3' => [
             'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
-            'bucket' => env('AWS_BUCKET'),
-            'url' => env('AWS_URL'),
-            'endpoint' => env('AWS_ENDPOINT'),
-            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'key' => "",
+            'secret' => "",
+            'region' => "",
+            'bucket' => "",
+            'url' => "",
+            'endpoint' => "",
+            'use_path_style_endpoint' => false,
         ],
 
+        'wasabi' => [
+            'driver' => 's3',
+            'key' => "",
+            'secret' => "",
+            'region' => "",
+            'bucket' => "",
+            'endpoint' => "",
+        ],
+
+        'LandlordMediaUploader' => [
+            'driver' => 'local',
+            'root' => storage_path('../../assets/landlord/uploads/media-uploader/'),
+            'throw' => false,
+        ],
+
+        'TenantMediaUploader' => [
+            'driver' => 'local',
+            'root' => storage_path('../../assets/tenant/uploads/media-uploader/'),
+            'throw' => false,
+        ],
+
+        'cloudFlareR2' => [
+            'driver' => 's3',
+            'key' => "",
+            'secret' => "",
+            'region' => 'us-east-1',
+            'bucket' => "",
+            'url' => "",
+            'visibility' => 'private',
+            'endpoint' => "",
+            'use_path_style_endpoint' => false,
+            'throw' => false,
+        ]
     ],
 
     /*
@@ -76,5 +110,4 @@ return [
     'links' => [
         public_path('storage') => storage_path('app/public'),
     ],
-
 ];

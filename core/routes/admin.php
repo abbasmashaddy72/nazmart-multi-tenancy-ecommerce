@@ -418,7 +418,6 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::get('/update-check', 'update_version_check')->name('landlord.admin.general.update.version.check');
         Route::post('/download-update/{productId}/{tenant}', 'updateDownloadLatestVersion')->name('landlord.admin.general.update.download.settings');
         Route::get('/software-update-setting', 'software_update_check_settings')->name('landlord.admin.general.software.update.settings');
-
     });
 
     Route::controller(PaymentSettingsController::class)->name('landlord.admin.payment.settings.')->prefix('payment-settings/payment')->group(function (){
@@ -495,7 +494,8 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::post('/get-admin-markup', 'get_admin_panel_addon_markup')->name('landlord.admin.page.builder.get.addon.markup');
     });
 
-} );
+    Route::get('/global-search', [GeneralSettingsController::class, 'globalSearch'])->name('landlord.admin.search.global');
+});
 
 /* ------------------------------------------
       MEDIA UPLOADER ROUTES

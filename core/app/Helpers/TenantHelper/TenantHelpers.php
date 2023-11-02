@@ -3,35 +3,26 @@
 namespace App\Helpers\TenantHelper;
 
 use App\Helpers\FlashMsg;
-use App\Helpers\Payment\DatabaseUpdateAndMailSend\LandlordPricePlanAndTenantCreate;
-use App\Helpers\ResponseMessage;
-use App\Mail\BasicDynamicTemplateMail;
+use App\Helpers\Payment\DatabaseUpdateAndMailSend\LandlordPricePlanAndTenantCreate;;
 use App\Mail\BasicMail;
 use App\Mail\PlaceOrder;
 use App\Mail\TenantCredentialMail;
-use App\Models\Coupon;
-use App\Models\CouponLog;
 use App\Models\CustomDomain;
-use App\Models\PackageHistory;
-use App\Models\PaymentLogHistory;
 use App\Models\PaymentLogs;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
-use Modules\EmailTemplate\Traits\EmailTemplate\Landlord\SubscriptionEmailTemplate;
-use phpDocumentor\Reflection\DocBlock\Tags\Method;
+use Illuminate\Support\Str;;
 
 class TenantHelpers
 {
     private $tenant_id;
-    private $package; //price plan
-    private $theme;
+    private $package = null; //price plan
+    private $theme = 'hexfashion';
     private $tenant;
     private $instance = null;
     private bool $isRenew = false;
@@ -81,6 +72,7 @@ class TenantHelpers
 
     public function setTheme($theme)
     {
+        session()->put('theme', $theme); // It will be used while seeding the home page for specific theme
         $this->theme = $theme;
         return $this;
     }
@@ -116,6 +108,7 @@ class TenantHelpers
     {
         $old_tenant_log = $this->getPaymentLog();
         $package = $this->getPackage();
+
         //if it asked for only update given array data
        $finalData =  array_merge([
             'renew_status' => is_null($old_tenant_log->renew_status) ? 1 : $old_tenant_log->renew_status + 1,
@@ -133,6 +126,7 @@ class TenantHelpers
             'coupon_id' => $this->getCouponAdditionalInformation()['coupon_id'] ?? null,// ?? null, //get coupon from tenant helpers
             'coupon_discount' => $this->getCouponAdditionalInformation()['coupon_discount'] ?? null,
         ], $data);
+
         if ($updateOnlyGivenField){
             $finalData = $data;
         }
@@ -205,9 +199,9 @@ class TenantHelpers
             'updated_at' => Carbon::now(),
             'start_date' => $this->getStartDate(),
             'expire_date' => $this->getExpiredDate(),
-            'coupon_id' => $this->getCouponAdditionalInformation()['coupon_id'] ?? null,// ?? null, //get coupon from tenant helpers
-            'coupon_discount' => $this->getCouponAdditionalInformation()['coupon_discount'] ?? null,
-            'assign_status' => 1
+//            'coupon_id' => $this->getCouponAdditionalInformation()['coupon_id'] ?? null,// ?? null, //get coupon from tenant helpers
+//            'coupon_discount' => $this->getCouponAdditionalInformation()['coupon_discount'] ?? null,
+//            'assign_status' => 1
         ], $data));
         $this->setPaymentLog($newPaymentLog);
         return $this;
@@ -461,8 +455,8 @@ class TenantHelpers
         CustomDomain::where([['old_domain', $this->getTenantId()], ['custom_domain_status', '!=','connected']])
             ->orWhere([['custom_domain', $this->getTenantId()], ['custom_domain_status', '==', 'connected']])->delete();
         PaymentLogs::where('tenant_id', $this->getTenantId())->delete();
-        PaymentLogHistory::where('tenant_id', $this->getTenantId())->delete();
-        PackageHistory::where('user_id',$user_id)->delete();
+//        PaymentLogHistory::where('tenant_id', $this->getTenantId())->delete();
+//        PackageHistory::where('user_id',$user_id)->delete();
 
 
         if(!empty($tenant)){
@@ -491,7 +485,7 @@ class TenantHelpers
     }
 
 
-    public function createPaymentLogHistory(array $data=[],$updateOnlyGivenField=false)
+    public function createPaymentLogHistory(array $data=[], $updateOnlyGivenField = false)
     {
         $payment_log = $this->getPaymentLog();
 
@@ -521,14 +515,14 @@ class TenantHelpers
             'expire_date' => $payment_log->expire_date,
             'theme' => $payment_log->theme,
             'assign_status' => $payment_log->assign_status,
-            'manual_payment_attachment' => $payment_log->manual_payment_attachment,
+            'attachments' => $payment_log->manual_payment_attachment,
         ],$data);
 
         if ($updateOnlyGivenField){
             $finalData = $data;
         }
 
-        $this->paymentLogHistory = PaymentLogHistory::create($finalData);;
+//        $this->paymentLogHistory = PaymentLogHistory::create($finalData);;
 
 
         return $this;
@@ -724,7 +718,7 @@ class TenantHelpers
         return $this;
     }
 
-    public function getExpiredDate($absoluteDate=false)
+    public function getExpiredDate($absoluteDate = false)
     {
         $packageDetails = $this->getPackage();
         if ($absoluteDate){

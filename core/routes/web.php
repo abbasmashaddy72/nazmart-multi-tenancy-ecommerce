@@ -3,6 +3,7 @@
 use App\Http\Controllers\Landlord\Frontend\LandlordFrontendController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Landlord\Frontend\PaymentLogController;
+use Modules\SiteAnalytics\Http\Middleware\Analytics;
 
 Route::middleware(['landlord_glvar','maintenance_mode'])->group(function (){
     Auth::routes(['register' => false]);
@@ -167,7 +168,7 @@ Route::get("assets/theme/screenshot/{theme}", function ($theme){
     }
 
     return abort(404);
-})->name("theme.primary.screenshot");
+})->withoutMiddleware(Analytics::class)->name("theme.primary.screenshot");
 
 Route::get("assets/payment-gateway/screenshot/{moduleName}/{gatewayName}", function ($moduleName, $gatewayName){
     $image_name = getPaymentGatewayImagePath($gatewayName);
@@ -178,4 +179,4 @@ Route::get("assets/payment-gateway/screenshot/{moduleName}/{gatewayName}", funct
     }
 
     return abort(404);
-})->name("payment.gateway.logo");
+})->withoutMiddleware(Analytics::class)->name("payment.gateway.logo");

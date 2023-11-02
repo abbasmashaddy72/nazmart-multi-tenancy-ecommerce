@@ -23,13 +23,27 @@
                     "route": "landlord.admin.analytics.settings",
                     "tenantRoute": "tenant.admin.analytics.settings",
                     "parent": null,
-                    "icon": "mdi-google-analytics",
+                    "icon": "mdi mdi-google-analytics",
                     "permissions": "site-analytics",
                     "class": "plugin-menu"
                 },
                 {
+                    "id" : "site-analytics-index",
+                    "label": "Dashboard",
+                    "route": "landlord.admin.dashboard.analytics",
+                    "tenantRoute": "tenant.admin.dashboard.analytics",
+                    "parent": "site-analytics-menu"
+                },
+                {
+                    "id" : "site-analytics-packages",
+                    "label": "Analytics",
+                    "route": "landlord.admin.analytics",
+                    "tenantRoute": "tenant.admin.analytics",
+                    "parent": "site-analytics-menu"
+                },
+                {
                     "id" : "site-analytics-settings",
-                    "label": "SMS Settings",
+                    "label": "Settings",
                     "route": "landlord.admin.analytics.settings",
                     "tenantRoute": "tenant.admin.analytics.settings",
                     "parent": "site-analytics-menu"

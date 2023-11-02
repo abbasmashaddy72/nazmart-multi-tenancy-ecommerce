@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        update_static_option_central('get_script_version', '1.3.0');
+        update_static_option_central('get_script_version', '1.4.0');
 
 //        $payment_gateway_markup = [
 //            [
@@ -406,7 +406,11 @@ class DatabaseSeeder extends Seeder
             'payment-settings-toyyibpay',
             'payment-settings-flutterwave',
             'payment-settings-payfast',
-            'payment-settings-manual_payment'
+            'payment-settings-manual_payment',
+
+            'site-analytics',
+            'cloud-storage',
+            'sms-gateway'
         ];
 
         foreach ($permissions as $permission) {

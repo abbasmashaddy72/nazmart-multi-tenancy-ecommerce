@@ -14,11 +14,12 @@ use Modules\SmsGateway\Http\Traits\OtpGlobalTrait;
 
 class TenantCreateEventWithMail
 {
-    use OtpGlobalTrait;
+    private static $otp_instance;
 
     public static function tenant_create_event_with_credential_mail($user, $subdomain, $theme = 'hexfashion')
     {
-        event(new TenantRegisterEvent($user, $subdomain, $theme));
+//        event(new TenantRegisterEvent($user, $subdomain, $theme));
+        Tenant::create(['id' => $subdomain]);
         try {
             $raw_pass = get_static_option_central('tenant_admin_default_password') ?? '12345678';
             $credential_password = $raw_pass;
@@ -26,7 +27,11 @@ class TenantCreateEventWithMail
             $credential_username = get_static_option_central('tenant_admin_default_username') ?? 'super_admin';
 
             Mail::to($credential_email)->send(new TenantCredentialMail($credential_username, $credential_password));
-            self::smsSender($user);
+
+            if ((moduleExists('SmsGateway') && isPluginActive('SmsGateway')) && get_static_option('otp_login_status'))
+            {
+                self::smsSender($user);
+            }
 
             return true;
         } catch (\Exception $e) {
@@ -35,6 +40,7 @@ class TenantCreateEventWithMail
 
     private static function smsSender($user)
     {
+        self::$otp_instance = new OtpTraitService();
         if (get_static_option('new_tenant_user'))
         {
             self::smsToUserAboutNewTenant($user);
@@ -49,7 +55,7 @@ class TenantCreateEventWithMail
     {
         $number = $user->mobile;
         try {
-            self::sendSms([$number, __('Hello, Your new shop is created successfully - ' . get_static_option('site_title'))]);
+            self::$otp_instance::sendSms([$number, __('Hello, Your new shop is created successfully - ' . get_static_option('site_title'))]);
         }
         catch (\Exception $exception) {}
     }
@@ -58,7 +64,7 @@ class TenantCreateEventWithMail
     {
         $number = get_static_option('receiving_phone_number');
         try {
-            self::sendSms([$number, __('A new shop has been created - '.get_static_option('site_title'))]);
+            self::$otp_instance::sendSms([$number, __('A new shop has been created - '.get_static_option('site_title'))]);
         }
         catch (\Exception $exception) {}
     }

@@ -10,6 +10,13 @@
       'PaytmWallet' => 'Anand\\LaravelPaytmWallet\\Facades\\PaytmWallet',
     ),
   ),
+  'andreaselia/analytics' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'AndreasElia\\Analytics\\AnalyticsServiceProvider',
+    ),
+  ),
   'artesaos/seotools' => 
   array (
     'providers' => 
@@ -74,6 +81,17 @@
     'aliases' => 
     array (
       'Image' => 'Intervention\\Image\\Facades\\Image',
+    ),
+  ),
+  'jenssegers/agent' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Jenssegers\\Agent\\AgentServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Agent' => 'Jenssegers\\Agent\\Facades\\Agent',
     ),
   ),
   'jomweb/billplz-laravel' => 
@@ -187,6 +205,13 @@
       'Module' => 'Nwidart\\Modules\\Facades\\Module',
     ),
   ),
+  'pion/laravel-chunk-upload' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Pion\\Laravel\\ChunkUpload\\Providers\\ChunkUploadServiceProvider',
+    ),
+  ),
   'sharifur/payfast' => 
   array (
     'providers' => 
@@ -199,17 +224,6 @@
     'providers' => 
     array (
       0 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
-    ),
-  ),
-  'spatie/laravel-analytics' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Spatie\\Analytics\\AnalyticsServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'Analytics' => 'Spatie\\Analytics\\AnalyticsFacade',
     ),
   ),
   'spatie/laravel-ignition' => 

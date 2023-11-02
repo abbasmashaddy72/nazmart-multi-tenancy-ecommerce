@@ -11,7 +11,7 @@ class SmsSendAction
 
     public function smsSender($user): void
     {
-        if (moduleExists('SmsGateway') && trait_exists(OtpGlobalTrait::class) && get_static_option('otp_login_status'))
+        if ((moduleExists('SmsGateway') && isPluginActive('SmsGateway')) && get_static_option('otp_login_status'))
         {
             $this->otp_instance = new OtpTraitService();
             if (get_static_option('new_tenant_user'))

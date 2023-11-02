@@ -66,10 +66,11 @@ class PluginManageController extends Controller
     private  function  replacePluginFile($file){
         $plugin_name = pathinfo($file->getClientOriginalName(),PATHINFO_FILENAME);
 
-        $uploaded_plugin_path = Storage::putFile('/plugins-file', $file);
+        $uploaded_plugin_path = Storage::drive('local')->putFile('/plugins-file', $file);
 
         $getLatestUpdateFile = storage_path('app/'.$uploaded_plugin_path);
         $zipArchive = new \ZipArchive();
+
         $zipArchive->open($getLatestUpdateFile);
 
         $updatedFileLocation = "plugins-file/".$plugin_name;
@@ -81,7 +82,7 @@ class PluginManageController extends Controller
             //delete zip after extracted
             @unlink(storage_path('app/'.$uploaded_plugin_path));
             //todo move full folder into module_path folder
-            $updateFiles = Storage::allFiles($updatedFileLocation);
+            $updateFiles = Storage::drive('local')->allFiles($updatedFileLocation);
             if (!in_array("plugins-file/".$plugin_name."/module.json",$updateFiles)){
                 return false;
             }
@@ -107,7 +108,8 @@ class PluginManageController extends Controller
 
         }
 
-        Storage::deleteDirectory($updatedFileLocation);
+        Storage::drive('local')->deleteDirectory($updatedFileLocation);
+        Storage::drive('local')->deleteDirectory('plugins-file/__MACOSX');
 
         return true;
     }
@@ -116,18 +118,18 @@ class PluginManageController extends Controller
     public function delete_plugin(Request $request)
     {
         $request->validate([
-           "plugin" => "required|string"
+            "plugin" => "required|string"
         ]);
         //todo:: remove this name from modules_status.json file
-        File::deleteDirectory(module_path(implode("",explode(" ",$request->plugin))));
+        File::drive('local')->deleteDirectory(module_path(implode("",explode(" ",$request->plugin))));
         return response()->json("ok");
     }
 
     public function change_status(Request $request)
     {
         $request->validate([
-           "plugin" => "required|string",
-           "status" => "required|string",
+            "plugin" => "required|string",
+            "status" => "required|string",
         ]);
         $status = $request->status == 1 ? false : true;
         PluginManageHelpers::getPluginInfo(implode("",explode(" ",$request->plugin)))->changePluginStatus($status )->saveModuleListFile();
